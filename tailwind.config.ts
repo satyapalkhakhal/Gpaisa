@@ -9,18 +9,20 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
+                // Primary Green (Growth & Money) - #1E7F43
                 primary: {
-                    50: '#fef7ee',
-                    100: '#fdecd3',
-                    200: '#fad6a5',
-                    300: '#f7ba6d',
-                    400: '#f39333',
-                    500: '#f0760b',
-                    600: '#e15a01',
-                    700: '#ba4104',
-                    800: '#94330a',
-                    900: '#782c0b',
+                    50: '#f0fdf4',
+                    100: '#dcfce7',
+                    200: '#bbf7d0',
+                    300: '#86efac',
+                    400: '#4ade80',
+                    500: '#2DBE60', // Light Green for CTAs
+                    600: '#1E7F43', // Main Brand Green
+                    700: '#15803d',
+                    800: '#166534',
+                    900: '#14532d',
                 },
+                // Success/Profit Green - #16A34A
                 success: {
                     50: '#f0fdf4',
                     100: '#dcfce7',
@@ -28,11 +30,12 @@ const config: Config = {
                     300: '#86efac',
                     400: '#4ade80',
                     500: '#22c55e',
-                    600: '#16a34a',
+                    600: '#16A34A', // Profit/Positive indicator
                     700: '#15803d',
                     800: '#166534',
                     900: '#14532d',
                 },
+                // Danger/Loss Red - #DC2626
                 danger: {
                     50: '#fef2f2',
                     100: '#fee2e2',
@@ -40,11 +43,43 @@ const config: Config = {
                     300: '#fca5a5',
                     400: '#f87171',
                     500: '#ef4444',
-                    600: '#dc2626',
+                    600: '#DC2626', // Loss/Negative indicator
                     700: '#b91c1c',
                     800: '#991b1b',
                     900: '#7f1d1d',
                 },
+                // Gold Accent - #D4AF37
+                gold: {
+                    50: '#fefce8',
+                    100: '#fef9c3',
+                    200: '#fef08a',
+                    300: '#fde047',
+                    400: '#facc15',
+                    500: '#eab308',
+                    600: '#D4AF37', // Gold accent for wealth
+                    700: '#a16207',
+                    800: '#854d0e',
+                    900: '#713f12',
+                },
+                // Agriculture Accent - #8BC34A
+                agri: {
+                    50: '#f7fee7',
+                    100: '#ecfccb',
+                    200: '#d9f99d',
+                    300: '#bef264',
+                    400: '#a3e635',
+                    500: '#8BC34A', // Agriculture/Crop accent
+                    600: '#65a30d',
+                    700: '#4d7c0f',
+                    800: '#3f6212',
+                    900: '#365314',
+                },
+                // Text Colors
+                textPrimary: '#1F2937',
+                textSecondary: '#6B7280',
+                // Background Colors
+                bgMain: '#F9FAFB',
+                bgCard: '#FFFFFF',
             },
             fontFamily: {
                 sans: ['Inter', 'system-ui', 'sans-serif'],

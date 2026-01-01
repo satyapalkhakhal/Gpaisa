@@ -52,7 +52,7 @@ export default function CommoditiesPage() {
 
                 {/* Gold Chart */}
                 <section className="mb-12">
-                    <ChartCard title="Gold Price Trend (24K) - Last 30 Days" data={goldChartData} color="#f0760b" height={400} />
+                    <ChartCard title="Gold Price Trend (24K) - Last 30 Days" data={goldChartData} color="#D4AF37" height={400} />
                 </section>
 
                 {/* Other Commodities */}

@@ -26,7 +26,7 @@ export default function Header() {
                                 <TrendingUp className="h-6 w-6 text-white" />
                             </div>
                             <span className="text-2xl font-display font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
-                                gpaisa.in
+                                Gpaisa
                             </span>
                         </Link>
                     </div>

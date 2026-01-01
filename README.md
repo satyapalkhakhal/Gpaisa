@@ -2,6 +2,16 @@
 
 A production-grade, SEO-optimized financial information website built with Next.js 15, TypeScript, and Tailwind CSS.
 
+## 🎨 Brand Colors
+
+### Primary Green Theme
+- **Brand Green**: `#1E7F43` - Main brand color for logo, buttons, links
+- **CTA Green**: `#2DBE60` - Call-to-action buttons and highlights
+- **Success Green**: `#16A34A` - Positive price changes, gains
+- **Danger Red**: `#DC2626` - Negative price changes, losses
+- **Gold Accent**: `#D4AF37` - Gold rates and precious metals
+- **Agriculture Green**: `#8BC34A` - Agriculture and farming sections
+
 ## 🚀 Features
 
 - **Live Market Updates**: Real-time Sensex, Nifty, and stock market data
@@ -24,23 +34,24 @@ gpaisa/
 │   ├── finance/              # Personal finance page
 │   ├── markets/              # Stock markets page
 │   ├── news/                 # News page
-│   ├── globals.css           # Global styles
+│   ├── globals.css           # Global styles with green theme
 │   ├── layout.tsx            # Root layout
 │   └── page.tsx              # Home page
 ├── components/
 │   ├── AgricultureTable.tsx  # Agriculture price table
 │   ├── ArticleCard.tsx       # Article card component
-│   ├── ChartCard.tsx         # Chart component
+│   ├── ChartCard.tsx         # Chart component (green theme)
 │   ├── Footer.tsx            # Footer component
 │   ├── Header.tsx            # Header with navigation
 │   ├── MarketTicker.tsx      # Animated market ticker
 │   └── PriceCard.tsx         # Price display card
 ├── lib/
-│   └── mockData.ts           # Mock data for all sections
+│   ├── mockData.ts           # Mock data for all sections
+│   └── utils.ts              # Utility functions
 ├── types/
 │   └── index.ts              # TypeScript type definitions
+├── tailwind.config.ts        # Tailwind with green brand colors
 ├── package.json
-├── tailwind.config.ts
 ├── tsconfig.json
 └── next.config.ts
 ```
@@ -49,7 +60,7 @@ gpaisa/
 
 - **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript 5.7
-- **Styling**: Tailwind CSS 3.4
+- **Styling**: Tailwind CSS 3.4 with custom green theme
 - **Charts**: Recharts 2.15
 - **Icons**: Lucide React
 - **Fonts**: Inter, Outfit (Google Fonts)
@@ -74,15 +85,12 @@ npm start
 
 ### Colors
 
-- **Primary (Gold/Orange)**: Financial trust and warmth
-  - `primary-600`: #e15a01
-  - `primary-700`: #ba4104
-  
-- **Success (Green)**: Positive price changes
-  - `success-600`: #16a34a
-  
-- **Danger (Red)**: Negative price changes
-  - `danger-600`: #dc2626
+- **Primary Green**: #1E7F43 - Financial trust and growth
+- **CTA Green**: #2DBE60 - Action buttons
+- **Success**: #16A34A - Positive changes
+- **Danger**: #DC2626 - Negative changes
+- **Gold**: #D4AF37 - Gold sections
+- **Agriculture**: #8BC34A - Farming sections
 
 ### Typography
 
@@ -95,7 +103,7 @@ All components are reusable and follow consistent design patterns:
 - Cards with hover effects
 - Price change indicators (up/down)
 - Responsive tables
-- Interactive charts
+- Interactive charts with green theme
 
 ## 📊 Data Structure
 
@@ -119,12 +127,13 @@ Components are designed to be API-ready. To integrate real data:
 
 ## 🎯 SEO Features
 
-- Semantic HTML structure
-- Meta tags for all pages
-- Open Graph tags
-- Structured data ready
-- Descriptive alt texts
-- Fast Core Web Vitals
+- ✅ Proper meta tags on all pages
+- ✅ Open Graph tags
+- ✅ Semantic HTML structure
+- ✅ Descriptive page titles
+- ✅ Meta descriptions
+- ✅ Structured heading hierarchy
+- ✅ Fast Core Web Vitals
 
 ## 📱 Responsive Breakpoints
 
@@ -134,11 +143,11 @@ Components are designed to be API-ready. To integrate real data:
 
 ## 🚦 Performance
 
-- Server-side rendering with Next.js
-- Optimized images
-- Code splitting
-- CSS optimization with Tailwind
-- Minimal JavaScript bundle
+- ✅ Server-side rendering with Next.js
+- ✅ Optimized images
+- ✅ Code splitting
+- ✅ CSS optimization with Tailwind
+- ✅ Minimal JavaScript bundle
 
 ## 📄 Pages
 
@@ -153,13 +162,19 @@ Components are designed to be API-ready. To integrate real data:
 ## 🎨 Customization
 
 ### Colors
-Edit `tailwind.config.ts` to customize the color palette.
+Edit `tailwind.config.ts` to customize the green color palette.
 
 ### Fonts
 Change fonts in `app/globals.css` by updating the Google Fonts import.
 
 ### Mock Data
 Update `lib/mockData.ts` to change displayed data.
+
+## 📝 Documentation
+
+- **README.md** - This file
+- **PROJECT_SUMMARY.md** - Complete feature documentation
+- **GREEN_THEME_IMPLEMENTATION.md** - Brand color guide
 
 ## 📝 License
 
@@ -172,3 +187,5 @@ This is a demo project. For production use, integrate with real financial APIs a
 ---
 
 **Built with ❤️ for the Indian financial community**
+
+**Theme**: Professional Green - Representing Growth, Trust & Financial Success 🌱

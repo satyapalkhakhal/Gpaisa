@@ -10,7 +10,7 @@ interface ChartCardProps {
     height?: number;
 }
 
-export default function ChartCard({ title, data, color = '#f0760b', height = 300 }: ChartCardProps) {
+export default function ChartCard({ title, data, color = '#1E7F43', height = 300 }: ChartCardProps) {
     return (
         <div className="card">
             <h3 className="text-lg font-display font-semibold text-gray-900 mb-4">{title}</h3>
