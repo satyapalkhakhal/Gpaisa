@@ -4,8 +4,9 @@ import { articles } from '@/lib/mockData';
 import ArticleCard from '@/components/ArticleCard';
 import { Calendar, Clock, User, Tag } from 'lucide-react';
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-    const article = articles.find(a => a.id === params.id);
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    const { id } = await params;
+    const article = articles.find(a => a.id === id);
 
     if (!article) {
         return {
@@ -19,8 +20,9 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
     };
 }
 
-export default function ArticlePage({ params }: { params: { id: string } }) {
-    const article = articles.find(a => a.id === params.id);
+export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
+    const { id } = await params;
+    const article = articles.find(a => a.id === id);
 
     if (!article) {
         notFound();
