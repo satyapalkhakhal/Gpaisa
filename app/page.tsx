@@ -4,11 +4,15 @@ import { articles, marketIndices, commodities } from '@/lib/mockData';
 import { TrendingUp, ArrowRight, ChevronRight, Zap, RefreshCw } from 'lucide-react';
 import DynamicGoldRates from '@/components/DynamicGoldRates';
 import LastUpdatedTime from '@/components/LastUpdatedTime';
+import { fetchArticlesByCategorySlug, fetchLatestArticles } from '@/lib/supabaseApi';
 
 export const metadata: Metadata = {
     title: 'Gpaisa - Gold Rates, Silver Price, Fuel Price, Currency & Business News',
     description: 'India\'s leading financial portal for live gold rates, silver prices, petrol/diesel prices, currency exchange rates, and business news.',
 };
+
+export const revalidate = 600; // Revalidate every 10 minutes
+
 
 // Helper Components
 const SectionHeading = ({ title, color = 'blue' }: { title: string, color?: string }) => {
@@ -35,9 +39,12 @@ const SectionHeading = ({ title, color = 'blue' }: { title: string, color?: stri
 const NewsListItem = ({ article }: { article: any }) => (
     <div className="group mb-4 pb-4 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0">
         <Link href={`/articles/${article.id}`} className="flex gap-3">
-            <div className="w-20 h-16 bg-gray-200 flex-shrink-0 rounded flex items-center justify-center">
-                {/* Placeholder for image */}
-                <span className="text-xs text-gray-400">IMG</span>
+            <div className="w-20 h-16 bg-gray-200 flex-shrink-0 rounded overflow-hidden">
+                {article.featured_image_url ? (
+                    <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover" />
+                ) : (
+                    <span className="text-xs text-gray-400 flex items-center justify-center h-full">IMG</span>
+                )}
             </div>
             <div>
                 <h3 className="text-sm font-semibold text-gray-900 leading-snug group-hover:text-primary-600 transition-colors line-clamp-2">
@@ -49,12 +56,20 @@ const NewsListItem = ({ article }: { article: any }) => (
     </div>
 );
 
-export default function HomePage() {
-    const featuredStory = articles[0];
-    const topStories = articles.slice(1, 6);
-    const businessNews = articles.slice(2, 5); // Mock different set
-    const internationalNews = articles.slice().reverse().slice(0, 4);
+export default async function HomePage() {
+    // Fetch articles from Supabase
+    const [topNewsArticles, businessNewsArticles, worldAffairsArticles] = await Promise.all([
+        fetchArticlesByCategorySlug('news', 6),  // Latest news across all categories
+        fetchArticlesByCategorySlug('business', 3),   // Business category
+        fetchArticlesByCategorySlug('world-affairs', 4), // World Affairs category
+    ]);
+
+    // Fallback to mock data if API fails
+    const topStories = topNewsArticles.length > 0 ? topNewsArticles : articles.slice(0, 6);
+    const businessNews = businessNewsArticles.length > 0 ? businessNewsArticles : articles.slice(2, 5);
+    const internationalNews = worldAffairsArticles.length > 0 ? worldAffairsArticles : articles.slice().reverse().slice(0, 4);
     const financeNews = articles.slice(0, 4);
+    const featuredStory = topStories[0] || articles[0];
 
     return (
         <div className="bg-white text-gray-800 font-sans min-h-screen">
@@ -92,7 +107,7 @@ export default function HomePage() {
                                     <h3 className="font-bold text-gray-900 uppercase text-sm">Top Stories</h3>
                                 </div>
                                 <div className="space-y-0">
-                                    {topStories.map(article => (
+                                    {topStories.slice(1).map(article => (
                                         <NewsListItem key={article.id} article={article} />
                                     ))}
                                 </div>
@@ -105,7 +120,13 @@ export default function HomePage() {
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {businessNews.map(article => (
                                     <Link key={article.id} href={`/articles/${article.id}`} className="group block">
-                                        <div className="h-40 bg-gray-100 rounded mb-3"></div>
+                                        <div className="h-40 bg-gray-100 rounded mb-3 overflow-hidden">
+                                            {article.featured_image_url ? (
+                                                <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full bg-gray-100"></div>
+                                            )}
+                                        </div>
                                         <h3 className="font-bold text-sm text-gray-900 leading-snug group-hover:text-blue-700 mb-1">
                                             {article.title}
                                         </h3>
@@ -121,8 +142,12 @@ export default function HomePage() {
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {internationalNews.map(article => (
                                     <div key={article.id} className="flex gap-4 group">
-                                        <div className="w-24 h-20 bg-gray-200 rounded shrink-0 flex items-center justify-center text-xs text-gray-400">
-                                            IMG
+                                        <div className="w-24 h-20 bg-gray-200 rounded shrink-0 overflow-hidden">
+                                            {article.featured_image_url ? (
+                                                <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">IMG</div>
+                                            )}
                                         </div>
                                         <div>
                                             <h3 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-purple-700 mb-1 line-clamp-2">
