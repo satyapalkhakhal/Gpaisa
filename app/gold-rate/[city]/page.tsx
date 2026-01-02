@@ -164,7 +164,7 @@ export default function CityGoldRatePage({ params }: { params: { city: string } 
                         <div className="flex items-center space-x-3 mb-6">
                             <Coins className="h-7 w-7 text-primary-600" aria-hidden="true" />
                             <h2 id="current-rates-heading" className="text-2xl font-display font-semibold text-gray-900">
-                                Today's Gold Rates in {cityName}
+                                Today&apos;s Gold Rates in {cityName}
                             </h2>
                         </div>
                         <DynamicGoldRates />
