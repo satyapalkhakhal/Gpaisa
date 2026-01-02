@@ -27,8 +27,8 @@ export default function ArticleCard({ article }: ArticleCardProps) {
         <Link href={`/articles/${article.id}`}>
             <div className="card group cursor-pointer h-full flex flex-col">
                 <div className="flex items-center justify-between mb-3">
-                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${categoryColors[article.category]}`}>
-                        {categoryLabels[article.category]}
+                    <span className={`text-xs font-semibold px-3 py-1 rounded-full ${categoryColors[article.category as keyof typeof categoryColors] || 'bg-gray-100 text-gray-800'}`}>
+                        {categoryLabels[article.category as keyof typeof categoryLabels] || article.category}
                     </span>
                     <span className="flex items-center text-xs text-gray-500">
                         <Clock className="h-3 w-3 mr-1" />

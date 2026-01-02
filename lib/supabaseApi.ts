@@ -20,6 +20,7 @@ export interface Article {
     category_id: string;
     status: string;
     published_at: string;
+    publishedAt?: string;
     author: string;
     read_time: string;
     views?: number;

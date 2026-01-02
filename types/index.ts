@@ -92,13 +92,15 @@ export interface Article {
     id: string;
     title: string;
     excerpt: string;
-    category: 'investments' | 'tax-saving' | 'loans' | 'basics' | 'news';
+    category: 'investments' | 'tax-saving' | 'loans' | 'basics' | 'news' | string;
     author: string;
     publishedAt: string;
     readTime: string;
     image?: string;
     content?: string;
     tags?: string[];
+    featured_image_url?: string;
+    published_at?: string;
 }
 
 // Chart Data Types

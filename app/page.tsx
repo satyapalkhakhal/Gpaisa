@@ -11,8 +11,7 @@ export const metadata: Metadata = {
     description: 'India\'s leading financial portal for live gold rates, silver prices, petrol/diesel prices, currency exchange rates, and business news.',
 };
 
-export const revalidate = 600; // Revalidate every 10 minutes
-
+export const revalidate = 0; // Instant revalidation for debugging
 
 // Helper Components
 const SectionHeading = ({ title, color = 'blue' }: { title: string, color?: string }) => {
@@ -50,7 +49,11 @@ const NewsListItem = ({ article }: { article: any }) => (
                 <h3 className="text-sm font-semibold text-gray-900 leading-snug group-hover:text-primary-600 transition-colors line-clamp-2">
                     {article.title}
                 </h3>
-                <p className="text-xs text-gray-500 mt-1">{article.publishedAt}</p>
+                <p className="text-xs text-gray-500 mt-1">
+                    {article.published_at
+                        ? new Date(article.published_at).toLocaleDateString()
+                        : article.publishedAt}
+                </p>
             </div>
         </Link>
     </div>
@@ -63,6 +66,12 @@ export default async function HomePage() {
         fetchArticlesByCategorySlug('business', 3),   // Business category
         fetchArticlesByCategorySlug('world-affairs', 4), // World Affairs category
     ]);
+
+    console.log('📰 Homepage Data:', {
+        topNews: topNewsArticles.length,
+        business: businessNewsArticles.length,
+        world: worldAffairsArticles.length
+    });
 
     // Fallback to mock data if API fails
     const topStories = topNewsArticles.length > 0 ? topNewsArticles : articles.slice(0, 6);
@@ -85,8 +94,18 @@ export default async function HomePage() {
                             {/* Big Story */}
                             <div className="md:col-span-7">
                                 <Link href={`/articles/${featuredStory.id}`} className="group block h-full">
-                                    <div className="aspect-video bg-gray-200 w-full rounded mb-3 flex items-center justify-center text-gray-400">
-                                        <span className="font-medium">Featured Image</span>
+                                    <div className="aspect-video bg-gray-200 w-full rounded mb-3 overflow-hidden">
+                                        {featuredStory.featured_image_url ? (
+                                            <img
+                                                src={featuredStory.featured_image_url}
+                                                alt={featuredStory.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                            />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                                <span className="font-medium">Featured Image</span>
+                                            </div>
+                                        )}
                                     </div>
                                     <h1 className="text-2xl font-bold text-gray-900 leading-tight mb-2 group-hover:text-primary-700 transition-colors">
                                         {featuredStory.title}
@@ -94,9 +113,15 @@ export default async function HomePage() {
                                     <p className="text-gray-600 text-sm line-clamp-3 mb-3">
                                         {featuredStory.excerpt}
                                     </p>
-                                    <span className="text-xs font-bold text-primary-600 uppercase tracking-wider">
-                                        {featuredStory.category}
-                                    </span>
+                                    <div className="flex items-center text-xs font-bold text-primary-600 uppercase tracking-wider mt-3">
+                                        <span>{typeof featuredStory.category === 'string' ? featuredStory.category : 'Breaking News'}</span>
+                                        <span className="mx-2 text-gray-300">•</span>
+                                        <span className="text-gray-500 font-medium normal-case">
+                                            {featuredStory.published_at
+                                                ? new Date(featuredStory.published_at).toLocaleDateString()
+                                                : featuredStory.publishedAt}
+                                        </span>
+                                    </div>
                                 </Link>
                             </div>
 
@@ -116,7 +141,7 @@ export default async function HomePage() {
 
                         {/* BUSINESS NEWS SECTION */}
                         <div className="mb-10">
-                            <SectionHeading title="Business News" color="blue" />
+                            <SectionHeading title="Business News" color="gray" />
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {businessNews.map(article => (
                                     <Link key={article.id} href={`/articles/${article.id}`} className="group block">
@@ -138,7 +163,7 @@ export default async function HomePage() {
 
                         {/* INTERNATIONAL NEWS */}
                         <div className="mb-10">
-                            <SectionHeading title="International News" color="purple" />
+                            <SectionHeading title="International News" color="gray" />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {internationalNews.map(article => (
                                     <div key={article.id} className="flex gap-4 group">
@@ -153,8 +178,14 @@ export default async function HomePage() {
                                             <h3 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-purple-700 mb-1 line-clamp-2">
                                                 <Link href={`/articles/${article.id}`}>{article.title}</Link>
                                             </h3>
-                                            <span className="text-xs font-bold text-purple-600 uppercase tracking-wider">Global</span>
-                                            <span className="text-xs text-gray-400 ml-2">{article.publishedAt}</span>
+                                            <p className="text-xs text-gray-500 line-clamp-2 mb-1">
+                                                {article.excerpt}
+                                            </p>
+                                            <span className="text-xs text-gray-400">
+                                                {article.published_at
+                                                    ? new Date(article.published_at).toLocaleDateString()
+                                                    : article.publishedAt}
+                                            </span>
                                         </div>
                                     </div>
                                 ))}
