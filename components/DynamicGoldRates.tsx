@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import PriceCard from './PriceCard';
+import Link from 'next/link';
 import { GoldCalculatorData } from '@/types';
 
 interface DynamicGoldRate {
@@ -12,7 +13,11 @@ interface DynamicGoldRate {
     changePercent: number;
 }
 
-export default function DynamicGoldRates() {
+interface DynamicGoldRatesProps {
+    simpleView?: boolean;
+}
+
+export default function DynamicGoldRates({ simpleView = false }: DynamicGoldRatesProps) {
     const [goldRates, setGoldRates] = useState<DynamicGoldRate[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -95,6 +100,32 @@ export default function DynamicGoldRates() {
         return (
             <div className="card bg-red-50 border-red-200">
                 <p className="text-red-600 text-center">{error}</p>
+            </div>
+        );
+    }
+
+    if (simpleView) {
+        return (
+            <div className="space-y-3">
+                {goldRates.map((rate) => (
+                    <div key={rate.purity} className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0">
+                        <div>
+                            <p className="font-semibold text-sm text-gray-900">{rate.purity} Gold</p>
+                            <p className="text-xs text-gray-500">per 10g</p>
+                        </div>
+                        <div className="text-right">
+                            <p className="font-bold text-sm text-gray-900">₹{(rate.pricePerGram * 10).toLocaleString('en-IN', { maximumFractionDigits: 0 })}</p>
+                            <p className={`text-xs font-medium ${rate.changePercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
+                                {rate.changePercent >= 0 ? '+' : ''}{rate.changePercent.toFixed(2)}%
+                            </p>
+                        </div>
+                    </div>
+                ))}
+                <div className="pt-2">
+                    <Link href="/gold-rate" className="text-xs text-primary-600 hover:text-primary-700 font-medium">
+                        View Historical Trends →
+                    </Link>
+                </div>
             </div>
         );
     }
