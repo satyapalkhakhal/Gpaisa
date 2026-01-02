@@ -6,7 +6,8 @@ import { Menu, X, TrendingUp } from 'lucide-react';
 
 const navigation = [
     { name: 'Markets', href: '/markets' },
-    { name: 'Gold & Commodities', href: '/commodities' },
+    { name: 'Gold Rate', href: '/gold-rate' },
+    { name: 'Commodities', href: '/commodities' },
     { name: 'Agriculture', href: '/agriculture' },
     { name: 'Personal Finance', href: '/finance' },
     { name: 'News', href: '/news' },

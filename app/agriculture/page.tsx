@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { Metadata } from 'next';
 import AgricultureTable from '@/components/AgricultureTable';
+import LastUpdatedTime from '@/components/LastUpdatedTime';
 import { agriculturePrices } from '@/lib/mockData';
-import { getLastUpdatedTime } from '@/lib/utils';
 import { Wheat, Filter } from 'lucide-react';
 
 export default function AgriculturePage() {
@@ -129,9 +129,7 @@ export default function AgriculturePage() {
 
                 {/* Last Updated */}
                 <div className="mt-8 text-center">
-                    <p className="text-sm text-gray-500">
-                        Last updated: {getLastUpdatedTime()} IST
-                    </p>
+                    <LastUpdatedTime />
                 </div>
             </div>
         </div>

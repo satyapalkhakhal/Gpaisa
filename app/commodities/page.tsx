@@ -5,8 +5,8 @@ import GoldCalculator from '@/components/GoldCalculator';
 import CityWiseGoldRates from '@/components/CityWiseGoldRates';
 import DynamicGoldRates from '@/components/DynamicGoldRates';
 import DynamicGoldChart from '@/components/DynamicGoldChart';
+import LastUpdatedTime from '@/components/LastUpdatedTime';
 import { commodities } from '@/lib/mockData';
-import { getLastUpdatedTime } from '@/lib/utils';
 import { Coins, TrendingUp, History } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -146,9 +146,7 @@ export default function CommoditiesPage() {
 
                     {/* Last Updated */}
                     <footer className="mt-8 text-center">
-                        <p className="text-sm text-gray-500">
-                            Last updated: <time dateTime={new Date().toISOString()}>{getLastUpdatedTime()} IST</time>
-                        </p>
+                        <LastUpdatedTime />
                     </footer>
                 </div>
             </div>

@@ -4,8 +4,8 @@ import ArticleCard from '@/components/ArticleCard';
 import AgricultureTable from '@/components/AgricultureTable';
 import ChartCard from '@/components/ChartCard';
 import DynamicGoldRates from '@/components/DynamicGoldRates';
+import LastUpdatedTime from '@/components/LastUpdatedTime';
 import { marketIndices, commodities, agriculturePrices, articles, sensexChartData } from '@/lib/mockData';
-import { getLastUpdatedTime } from '@/lib/utils';
 import { TrendingUp, Coins, Wheat, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 
@@ -133,9 +133,9 @@ export default function HomePage() {
             {/* Last Updated */}
             <section className="py-6 bg-white border-t border-gray-200">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <p className="text-sm text-gray-500 text-center">
-                        Last updated: {getLastUpdatedTime()} IST
-                    </p>
+                    <div className="text-center">
+                        <LastUpdatedTime />
+                    </div>
                 </div>
             </section>
         </div>

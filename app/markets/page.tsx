@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import PriceCard from '@/components/PriceCard';
 import ChartCard from '@/components/ChartCard';
+import LastUpdatedTime from '@/components/LastUpdatedTime';
 import { marketIndices, stocks, sensexChartData } from '@/lib/mockData';
-import { getLastUpdatedTime } from '@/lib/utils';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -114,9 +114,7 @@ export default function MarketsPage() {
 
                 {/* Last Updated */}
                 <div className="mt-8 text-center">
-                    <p className="text-sm text-gray-500">
-                        Last updated: {getLastUpdatedTime()} IST
-                    </p>
+                    <LastUpdatedTime />
                 </div>
             </div>
         </div>
