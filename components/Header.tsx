@@ -1,8 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { useState } from 'react';
-import { Menu, X, TrendingUp } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 
 const navigation = [
     { name: 'Markets', href: '/markets' },
@@ -22,10 +23,15 @@ export default function Header() {
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
                     <div className="flex items-center">
-                        <Link href="/" className="flex items-center space-x-2">
-                            <div className="bg-gradient-to-br from-primary-500 to-primary-700 p-2 rounded-lg">
-                                <TrendingUp className="h-6 w-6 text-white" />
-                            </div>
+                        <Link href="/" className="flex items-center space-x-3">
+                            <Image
+                                src="/icon-192.png"
+                                alt="gpaisa.in logo"
+                                width={40}
+                                height={40}
+                                className="rounded-lg"
+                                priority
+                            />
                             <span className="text-2xl font-display font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
                                 Gpaisa
                             </span>
