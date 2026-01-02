@@ -146,7 +146,7 @@ export default function GoldRatePage() {
                         <p>
                             Gold prices differ across Indian cities due to factors like local taxes, transportation costs,
                             demand-supply dynamics, and making charges. Metropolitan cities like Mumbai, Delhi, and Bangalore
-                            may have different rates compared to smaller cities. Always check your local city's gold rate
+                            may have different rates compared to smaller cities. Always check your local city&apos;s gold rate
                             before making a purchase.
                         </p>
 

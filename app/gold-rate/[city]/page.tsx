@@ -30,7 +30,8 @@ export async function generateStaticParams() {
 }
 
 // Generate metadata for each city
-export async function generateMetadata({ params }: { params: { city: string } }): Promise<Metadata> {
+export async function generateMetadata(props: { params: Promise<{ city: string }> }): Promise<Metadata> {
+    const params = await props.params;
     const cityName = params.city.charAt(0).toUpperCase() + params.city.slice(1);
 
     // Validate city
@@ -63,7 +64,8 @@ export async function generateMetadata({ params }: { params: { city: string } })
     };
 }
 
-export default function CityGoldRatePage({ params }: { params: { city: string } }) {
+export default async function CityGoldRatePage(props: { params: Promise<{ city: string }> }) {
+    const params = await props.params;
     const cityName = params.city.charAt(0).toUpperCase() + params.city.slice(1);
 
     // Validate city

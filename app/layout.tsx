@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MarketTicker from "@/components/MarketTicker";
+import Script from "next/script";
 
 export const metadata: Metadata = {
     title: "gpaisa.in - Live Market Updates, Gold Rates & Financial News",
@@ -51,17 +52,19 @@ export default function RootLayout({
         <html lang="en">
             <head>
                 {/* Google Analytics */}
-                <script async src="https://www.googletagmanager.com/gtag/js?id=G-TV8X50LJB1"></script>
-                <script
-                    dangerouslySetInnerHTML={{
-                        __html: `
-                            window.dataLayer = window.dataLayer || [];
-                            function gtag(){dataLayer.push(arguments);}
-                            gtag('js', new Date());
-                            gtag('config', 'G-TV8X50LJB1');
-                        `,
-                    }}
+                {/* Google Analytics */}
+                <Script
+                    src="https://www.googletagmanager.com/gtag/js?id=G-TV8X50LJB1"
+                    strategy="afterInteractive"
                 />
+                <Script id="google-analytics" strategy="afterInteractive">
+                    {`
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-TV8X50LJB1');
+                    `}
+                </Script>
             </head>
             <body className="flex flex-col min-h-screen">
                 <Header />

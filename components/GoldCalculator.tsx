@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { IndianCity, GoldCalculatorData } from '@/types';
 import { Calculator, TrendingUp, TrendingDown, MapPin, Weight, Coins } from 'lucide-react';
 
@@ -34,7 +34,7 @@ export default function GoldCalculator() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const fetchGoldPrice = async () => {
+    const fetchGoldPrice = useCallback(async () => {
         try {
             setLoading(true);
             setError(null);
@@ -55,11 +55,11 @@ export default function GoldCalculator() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [city, carat, grams]);
 
     useEffect(() => {
         fetchGoldPrice();
-    }, [city, carat, grams]);
+    }, [fetchGoldPrice]);
 
     const handleCustomGramsChange = (value: string) => {
         setCustomGrams(value);
@@ -121,8 +121,8 @@ export default function GoldCalculator() {
                                 <label
                                     key={option.value}
                                     className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${carat === option.value
-                                            ? 'border-primary-500 bg-primary-50'
-                                            : 'border-gray-200 hover:border-primary-300'
+                                        ? 'border-primary-500 bg-primary-50'
+                                        : 'border-gray-200 hover:border-primary-300'
                                         }`}
                                 >
                                     <input
@@ -153,8 +153,8 @@ export default function GoldCalculator() {
                                     key={weight}
                                     onClick={() => handlePresetWeight(weight)}
                                     className={`px-3 py-2 rounded-lg font-medium transition-all ${grams === weight
-                                            ? 'bg-primary-600 text-white'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                        ? 'bg-primary-600 text-white'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         }`}
                                 >
                                     {weight}g
