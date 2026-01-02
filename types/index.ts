@@ -36,6 +36,45 @@ export interface Commodity {
     changePercent: number;
 }
 
+// Gold History Types
+export interface GoldHistoryItem {
+    date: string;
+    rate: string;
+    change: string;
+}
+
+export interface GoldHistoryResponse {
+    success: boolean;
+    data: GoldHistoryItem[];
+}
+
+// Gold Calculator Types
+export interface GoldCalculatorData {
+    city: string;
+    grams: number;
+    carat: string;
+    price: string;
+    difference: string;
+    percentage: string;
+}
+
+export interface GoldCalculatorResponse {
+    success: boolean;
+    data: GoldCalculatorData;
+}
+
+export type IndianCity =
+    | "Delhi"
+    | "Chennai"
+    | "Mumbai"
+    | "Pune"
+    | "Hyderabad"
+    | "Bangalore"
+    | "Coimbatore"
+    | "Kolkata"
+    | "Ahmedabad"
+    | "Kerala";
+
 // Agriculture Types
 export interface AgriculturePrice {
     id: string;

@@ -3,7 +3,8 @@ import PriceCard from '@/components/PriceCard';
 import ArticleCard from '@/components/ArticleCard';
 import AgricultureTable from '@/components/AgricultureTable';
 import ChartCard from '@/components/ChartCard';
-import { marketIndices, goldRates, commodities, agriculturePrices, articles, sensexChartData } from '@/lib/mockData';
+import DynamicGoldRates from '@/components/DynamicGoldRates';
+import { marketIndices, commodities, agriculturePrices, articles, sensexChartData } from '@/lib/mockData';
 import { getLastUpdatedTime } from '@/lib/utils';
 import { TrendingUp, Coins, Wheat, BookOpen } from 'lucide-react';
 import Link from 'next/link';
@@ -75,19 +76,7 @@ export default function HomePage() {
                         </Link>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {goldRates.map((rate) => (
-                            <PriceCard
-                                key={rate.purity}
-                                title={`Gold ${rate.purity}`}
-                                value={`₹${rate.pricePerGram.toLocaleString('en-IN')}`}
-                                change={rate.change}
-                                changePercent={rate.changePercent}
-                                subtitle="per gram"
-                                variant="gold"
-                            />
-                        ))}
-                    </div>
+                    <DynamicGoldRates />
 
                     <div className="mt-6 grid grid-cols-1 md:grid-cols-3 gap-6">
                         <PriceCard

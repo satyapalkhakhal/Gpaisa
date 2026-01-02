@@ -1,0 +1,252 @@
+'use client';
+
+import { useState, useEffect } from 'react';
+import { IndianCity, GoldCalculatorData } from '@/types';
+import { Calculator, TrendingUp, TrendingDown, MapPin, Weight, Coins } from 'lucide-react';
+
+const INDIAN_CITIES: IndianCity[] = [
+    "Delhi",
+    "Chennai",
+    "Mumbai",
+    "Pune",
+    "Hyderabad",
+    "Bangalore",
+    "Coimbatore",
+    "Kolkata",
+    "Ahmedabad",
+    "Kerala"
+];
+
+const CARAT_OPTIONS = [
+    { value: '24k', label: '24 Karat (99.9% Pure)' },
+    { value: '22k', label: '22 Karat (91.67% Pure)' },
+    { value: '18k', label: '18 Karat (75% Pure)' }
+];
+
+const WEIGHT_PRESETS = [1, 5, 10, 50, 100];
+
+export default function GoldCalculator() {
+    const [city, setCity] = useState<IndianCity>('Mumbai');
+    const [carat, setCarat] = useState('24k');
+    const [grams, setGrams] = useState(10);
+    const [customGrams, setCustomGrams] = useState('10');
+    const [calculatorData, setCalculatorData] = useState<GoldCalculatorData | null>(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+
+    const fetchGoldPrice = async () => {
+        try {
+            setLoading(true);
+            setError(null);
+
+            const response = await fetch(
+                `/api/gold-calculator?city=${city}&carat=${carat}&grams=${grams}`
+            );
+            const data = await response.json();
+
+            if (data.success) {
+                setCalculatorData(data.data);
+            } else {
+                setError('Failed to calculate gold price');
+            }
+        } catch (err) {
+            setError('Error calculating gold price');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchGoldPrice();
+    }, [city, carat, grams]);
+
+    const handleCustomGramsChange = (value: string) => {
+        setCustomGrams(value);
+        const numValue = parseFloat(value);
+        if (!isNaN(numValue) && numValue > 0) {
+            setGrams(numValue);
+        }
+    };
+
+    const handlePresetWeight = (weight: number) => {
+        setGrams(weight);
+        setCustomGrams(weight.toString());
+    };
+
+    const formatPrice = (price: string) => {
+        const numPrice = parseFloat(price);
+        return numPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    const isPositiveChange = calculatorData?.difference.startsWith('+');
+
+    return (
+        <div className="card">
+            <div className="flex items-center space-x-3 mb-6">
+                <Calculator className="h-8 w-8 text-primary-600" />
+                <h2 className="text-2xl font-display font-bold text-gray-900">Gold Price Calculator</h2>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Input Section */}
+                <div className="space-y-6">
+                    {/* City Selection */}
+                    <div>
+                        <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
+                            <MapPin className="h-4 w-4" />
+                            <span>Select City</span>
+                        </label>
+                        <select
+                            value={city}
+                            onChange={(e) => setCity(e.target.value as IndianCity)}
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                        >
+                            {INDIAN_CITIES.map((cityName) => (
+                                <option key={cityName} value={cityName}>
+                                    {cityName}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Carat Selection */}
+                    <div>
+                        <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
+                            <Coins className="h-4 w-4" />
+                            <span>Gold Purity</span>
+                        </label>
+                        <div className="space-y-2">
+                            {CARAT_OPTIONS.map((option) => (
+                                <label
+                                    key={option.value}
+                                    className={`flex items-center p-3 border-2 rounded-lg cursor-pointer transition-all ${carat === option.value
+                                            ? 'border-primary-500 bg-primary-50'
+                                            : 'border-gray-200 hover:border-primary-300'
+                                        }`}
+                                >
+                                    <input
+                                        type="radio"
+                                        name="carat"
+                                        value={option.value}
+                                        checked={carat === option.value}
+                                        onChange={(e) => setCarat(e.target.value)}
+                                        className="mr-3 text-primary-600 focus:ring-primary-500"
+                                    />
+                                    <span className="font-medium text-gray-900">{option.label}</span>
+                                </label>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Weight Selection */}
+                    <div>
+                        <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
+                            <Weight className="h-4 w-4" />
+                            <span>Weight (Grams)</span>
+                        </label>
+
+                        {/* Preset Buttons */}
+                        <div className="grid grid-cols-5 gap-2 mb-3">
+                            {WEIGHT_PRESETS.map((weight) => (
+                                <button
+                                    key={weight}
+                                    onClick={() => handlePresetWeight(weight)}
+                                    className={`px-3 py-2 rounded-lg font-medium transition-all ${grams === weight
+                                            ? 'bg-primary-600 text-white'
+                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                        }`}
+                                >
+                                    {weight}g
+                                </button>
+                            ))}
+                        </div>
+
+                        {/* Custom Input */}
+                        <input
+                            type="number"
+                            value={customGrams}
+                            onChange={(e) => handleCustomGramsChange(e.target.value)}
+                            min="0.1"
+                            step="0.1"
+                            placeholder="Enter custom weight"
+                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                        />
+                    </div>
+                </div>
+
+                {/* Result Section */}
+                <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-6 border-2 border-primary-200">
+                    {loading ? (
+                        <div className="flex items-center justify-center h-full">
+                            <div className="animate-pulse space-y-4 w-full">
+                                <div className="h-8 bg-primary-200 rounded w-3/4"></div>
+                                <div className="h-12 bg-primary-200 rounded"></div>
+                                <div className="h-6 bg-primary-200 rounded w-1/2"></div>
+                            </div>
+                        </div>
+                    ) : error ? (
+                        <div className="flex items-center justify-center h-full">
+                            <p className="text-red-600 text-center">{error}</p>
+                        </div>
+                    ) : calculatorData ? (
+                        <div className="space-y-6">
+                            <div>
+                                <p className="text-sm font-medium text-gray-600 mb-1">Total Price</p>
+                                <p className="text-4xl font-bold text-gray-900">
+                                    ₹{formatPrice(calculatorData.price)}
+                                </p>
+                            </div>
+
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="bg-white rounded-lg p-4">
+                                    <p className="text-xs text-gray-600 mb-1">City</p>
+                                    <p className="text-lg font-semibold text-gray-900">{calculatorData.city}</p>
+                                </div>
+                                <div className="bg-white rounded-lg p-4">
+                                    <p className="text-xs text-gray-600 mb-1">Weight</p>
+                                    <p className="text-lg font-semibold text-gray-900">{calculatorData.grams}g</p>
+                                </div>
+                            </div>
+
+                            <div className="bg-white rounded-lg p-4">
+                                <p className="text-xs text-gray-600 mb-2">Price Change</p>
+                                <div className="flex items-center justify-between">
+                                    <div className={`flex items-center space-x-2 ${isPositiveChange ? 'text-green-600' : 'text-red-600'
+                                        }`}>
+                                        {isPositiveChange ? (
+                                            <TrendingUp className="h-5 w-5" />
+                                        ) : (
+                                            <TrendingDown className="h-5 w-5" />
+                                        )}
+                                        <span className="text-lg font-bold">
+                                            {calculatorData.difference}
+                                        </span>
+                                    </div>
+                                    <span className={`text-lg font-bold ${isPositiveChange ? 'text-green-600' : 'text-red-600'
+                                        }`}>
+                                        {calculatorData.percentage}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="bg-primary-600 text-white rounded-lg p-4">
+                                <p className="text-xs opacity-90 mb-1">Price per gram ({calculatorData.carat.toUpperCase()})</p>
+                                <p className="text-2xl font-bold">
+                                    ₹{formatPrice((parseFloat(calculatorData.price) / calculatorData.grams).toString())}
+                                </p>
+                            </div>
+                        </div>
+                    ) : null}
+                </div>
+            </div>
+
+            {/* Disclaimer */}
+            <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                <p className="text-xs text-yellow-800">
+                    <strong>Note:</strong> Prices are indicative and may vary. Actual prices may include making charges, GST, and other applicable taxes. Please verify with local jewelers before making any purchase decisions.
+                </p>
+            </div>
+        </div>
+    );
+}
