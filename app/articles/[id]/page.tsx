@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { articles } from '@/lib/mockData';
 import ArticleCard from '@/components/ArticleCard';
@@ -159,9 +160,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                                         </a>
                                     </li>
                                     <li>
-                                        <a href="/agriculture" className="text-primary-700 hover:text-primary-800 font-medium">
+                                        <Link href="/agriculture" className="text-primary-700 hover:text-primary-800 font-medium">
                                             → Agriculture Prices
-                                        </a>
+                                        </Link>
                                     </li>
                                     <li>
                                         <a href="/finance" className="text-primary-700 hover:text-primary-800 font-medium">

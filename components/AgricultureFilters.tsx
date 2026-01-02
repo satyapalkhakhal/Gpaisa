@@ -43,7 +43,7 @@ export default function AgricultureFilters() {
             setMandis([]);
             setSelectedMandi('all');
         }
-    }, [selectedDistrict]);
+    }, [selectedDistrict]);  // eslint-disable-line react-hooks/exhaustive-deps
 
     // Fetch prices when any filter changes
     useEffect(() => {
@@ -51,7 +51,7 @@ export default function AgricultureFilters() {
             selectedMandi !== 'all' || selectedCommodity !== 'all') {
             fetchPrices();
         }
-    }, [selectedState, selectedDistrict, selectedMandi, selectedCommodity]);
+    }, [selectedState, selectedDistrict, selectedMandi, selectedCommodity]);  // eslint-disable-line react-hooks/exhaustive-deps
 
     const fetchInitialData = async () => {
         try {
