@@ -1,16 +1,42 @@
-import { Metadata } from 'next';
+'use client';
+
+import { useState, useEffect } from 'react';
 import PriceCard from '@/components/PriceCard';
 import ChartCard from '@/components/ChartCard';
 import LastUpdatedTime from '@/components/LastUpdatedTime';
-import { marketIndices, stocks, sensexChartData } from '@/lib/mockData';
+import { marketIndices as initialIndices, stocks as initialStocks, sensexChartData } from '@/lib/mockData';
+import { MarketIndex } from '@/types';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
-export const metadata: Metadata = {
-    title: 'Live Stock Market Updates - Sensex, Nifty, BSE, NSE | gpaisa.in',
-    description: 'Get real-time stock market updates, live Sensex and Nifty values, top gainers and losers, and comprehensive market analysis.',
-};
-
 export default function MarketsPage() {
+    const [indices, setIndices] = useState<MarketIndex[]>(initialIndices);
+    const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const res = await fetch('/api/market-indices');
+                const json = await res.json();
+                if (json.success && json.data.length > 0) {
+                    setIndices(json.data);
+                    // Use the first index's update time as reference
+                    setLastUpdated(json.data[0].lastUpdated);
+                }
+            } catch (err) {
+                console.error('Failed to fetch market data', err);
+            }
+        };
+
+        fetchData();
+        const interval = setInterval(fetchData, 60000); // 1-minute refresh
+
+        return () => clearInterval(interval);
+    }, []);
+
+    // NOTE: Stocks are still static mock data for now because we don't have a reliable free API for individual stock list.
+    // If the user wants specific stocks dynamic, I would need a specific list of tickers to scrape.
+    // For now, making the INDICES dynamic is the first big step requested.
+
     return (
         <div className="bg-gray-50 py-12">
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -24,7 +50,7 @@ export default function MarketsPage() {
                 <section className="mb-12">
                     <h2 className="text-2xl font-display font-semibold text-gray-900 mb-6">Market Indices</h2>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {marketIndices.map((index) => (
+                        {indices.map((index) => (
                             <PriceCard
                                 key={index.symbol}
                                 title={index.name}
@@ -38,7 +64,7 @@ export default function MarketsPage() {
                     </div>
                 </section>
 
-                {/* Chart */}
+                {/* Chart - Keeping static for now as we don't have historical API, only live price scraping */}
                 <section className="mb-12">
                     <ChartCard title="Sensex - 30 Day Performance" data={sensexChartData} height={400} />
                 </section>
@@ -72,7 +98,7 @@ export default function MarketsPage() {
                                     </tr>
                                 </thead>
                                 <tbody className="bg-white divide-y divide-gray-200">
-                                    {stocks.map((stock) => {
+                                    {initialStocks.map((stock) => {
                                         const isPositive = stock.change >= 0;
                                         return (
                                             <tr key={stock.symbol} className="hover:bg-gray-50 transition-colors">
@@ -115,6 +141,11 @@ export default function MarketsPage() {
                 {/* Last Updated */}
                 <div className="mt-8 text-center">
                     <LastUpdatedTime />
+                    {lastUpdated && (
+                        <p className="text-xs text-gray-400 mt-2">
+                            Live Data Fetched: {new Date(lastUpdated).toLocaleTimeString('en-IN')}
+                        </p>
+                    )}
                 </div>
             </div>
         </div>

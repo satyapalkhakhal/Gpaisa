@@ -39,24 +39,24 @@ export default function PriceCard({
                 {icon && <div className="text-gray-400">{icon}</div>}
             </div>
 
-            <div className="flex items-end justify-between">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2 mt-2">
                 <div>
-                    <p className="text-3xl font-display font-bold text-gray-900">
+                    <p className="text-2xl font-display font-bold text-gray-900 break-words">
                         {typeof value === 'number' ? value.toLocaleString('en-IN') : value}
                     </p>
                 </div>
 
                 {change !== undefined && changePercent !== undefined && (
-                    <div className={`flex items-center space-x-1 px-2 py-1 rounded-md ${isPositive ? 'price-up' : 'price-down'}`}>
+                    <div className={`flex items-center space-x-1 px-2 py-1 rounded-md self-start sm:self-auto ${isPositive ? 'price-up' : 'price-down'}`}>
                         {isPositive ? (
                             <TrendingUp className="h-4 w-4" />
                         ) : (
                             <TrendingDown className="h-4 w-4" />
                         )}
-                        <span className="text-sm font-semibold">
+                        <span className="text-sm font-semibold whitespace-nowrap">
                             {isPositive ? '+' : ''}{change.toFixed(2)}
                         </span>
-                        <span className="text-xs">
+                        <span className="text-xs whitespace-nowrap">
                             ({isPositive ? '+' : ''}{changePercent.toFixed(2)}%)
                         </span>
                     </div>
