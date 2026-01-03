@@ -34,11 +34,43 @@ export default function GoldCalculator() {
     const [makingChargePercentage, setMakingChargePercentage] = useState(10);
     const [makingChargeFixed, setMakingChargeFixed] = useState(0);
     const [includeGST, setIncludeGST] = useState(true);
+
+    // Manual rate input states
+    const [useManualRate, setUseManualRate] = useState(false);
+    const [manualRate24k, setManualRate24k] = useState('');
+    const [manualRate22k, setManualRate22k] = useState('');
+    const [manualRate18k, setManualRate18k] = useState('');
+
     const [calculatorData, setCalculatorData] = useState<GoldCalculatorData | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const fetchGoldPrice = useCallback(async () => {
+        if (useManualRate) {
+            // Use manual rates for calculation
+            const ratePerGram = carat === '24k' ? parseFloat(manualRate24k) :
+                carat === '22k' ? parseFloat(manualRate22k) :
+                    parseFloat(manualRate18k);
+
+            if (isNaN(ratePerGram) || ratePerGram <= 0) {
+                setError('Please enter a valid gold rate per gram');
+                return;
+            }
+
+            const totalPrice = ratePerGram * grams;
+
+            setCalculatorData({
+                city: city,
+                carat: carat,
+                grams: grams,
+                price: totalPrice.toFixed(2),
+                difference: '+0.00',
+                percentage: '0.00%'
+            });
+            setError(null);
+            return;
+        }
+
         try {
             setLoading(true);
             setError(null);
@@ -50,6 +82,11 @@ export default function GoldCalculator() {
 
             if (data.success) {
                 setCalculatorData(data.data);
+                // Update manual rate fields with API rates for reference
+                const pricePerGram = parseFloat(data.data.price) / grams;
+                if (carat === '24k') setManualRate24k(pricePerGram.toFixed(2));
+                if (carat === '22k') setManualRate22k(pricePerGram.toFixed(2));
+                if (carat === '18k') setManualRate18k(pricePerGram.toFixed(2));
             } else {
                 setError('Failed to calculate gold price');
             }
@@ -59,7 +96,7 @@ export default function GoldCalculator() {
         } finally {
             setLoading(false);
         }
-    }, [city, carat, grams]);
+    }, [city, carat, grams, useManualRate, manualRate24k, manualRate22k, manualRate18k]);
 
     useEffect(() => {
         fetchGoldPrice();
@@ -210,6 +247,81 @@ export default function GoldCalculator() {
                         />
                     </div>
 
+                    {/* Manual Rate Input Toggle */}
+                    <div className="border-t pt-6">
+                        <div className="flex items-center justify-between mb-4">
+                            <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700">
+                                <IndianRupee className="h-4 w-4" />
+                                <span>Gold Rate Source</span>
+                            </label>
+                            <button
+                                onClick={() => setUseManualRate(!useManualRate)}
+                                className={`px-4 py-2 rounded-lg font-medium transition-all ${useManualRate
+                                        ? 'bg-primary-600 text-white'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    }`}
+                            >
+                                {useManualRate ? 'Manual Rate' : 'Live Rate'}
+                            </button>
+                        </div>
+
+                        {useManualRate && (
+                            <div className="space-y-3 bg-blue-50 p-4 rounded-lg border border-blue-200">
+                                <p className="text-xs text-blue-800 mb-3">
+                                    <strong>Enter custom rates per gram:</strong> Input your local jeweler's rates for accurate calculations.
+                                </p>
+
+                                {/* 24K Rate Input */}
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                                        24K Gold Rate (per gram)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={manualRate24k}
+                                        onChange={(e) => setManualRate24k(e.target.value)}
+                                        placeholder="e.g., 7500"
+                                        min="0"
+                                        step="0.01"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                                    />
+                                </div>
+
+                                {/* 22K Rate Input */}
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                                        22K Gold Rate (per gram)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={manualRate22k}
+                                        onChange={(e) => setManualRate22k(e.target.value)}
+                                        placeholder="e.g., 6875"
+                                        min="0"
+                                        step="0.01"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                                    />
+                                </div>
+
+                                {/* 18K Rate Input */}
+                                <div>
+                                    <label className="block text-xs font-medium text-gray-700 mb-1">
+                                        18K Gold Rate (per gram)
+                                    </label>
+                                    <input
+                                        type="number"
+                                        value={manualRate18k}
+                                        onChange={(e) => setManualRate18k(e.target.value)}
+                                        placeholder="e.g., 5625"
+                                        min="0"
+                                        step="0.01"
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent text-sm"
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </div>
+
                     {/* Making Charges */}
                     <div>
                         <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
@@ -222,8 +334,8 @@ export default function GoldCalculator() {
                             <button
                                 onClick={() => setMakingChargeType('percentage')}
                                 className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${makingChargeType === 'percentage'
-                                        ? 'bg-primary-600 text-white'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    ? 'bg-primary-600 text-white'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                     }`}
                             >
                                 Percentage
@@ -231,8 +343,8 @@ export default function GoldCalculator() {
                             <button
                                 onClick={() => setMakingChargeType('fixed')}
                                 className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${makingChargeType === 'fixed'
-                                        ? 'bg-primary-600 text-white'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    ? 'bg-primary-600 text-white'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                     }`}
                             >
                                 Fixed Amount
