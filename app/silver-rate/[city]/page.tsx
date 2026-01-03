@@ -30,17 +30,38 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
 
     return {
         title: `Silver Rate in ${cityName} Today - Live Price Per Gram/Kg | gpaisa.in`,
-        description: `Check today's silver rate in ${cityName}. Live silver prices per gram and per kg in ${cityName}. Updated in real-time.`,
+        description: `Check today's silver rate in ${cityName}. Live silver prices per gram and per kg in ${cityName}. Updated in real-time with silver calculator and historical data.`,
         keywords: [
+            // Primary keywords
             `silver rate in ${cityName}`,
-            `${cityName} silver price`,
-            `silver price today ${cityName}`,
+            `silver price in ${cityName}`,
+            `silver rate today in ${cityName}`,
+            `silver price today in ${cityName}`,
+            `today silver rate in ${cityName}`,
+            `todays silver rate in ${cityName}`,
+            `silver rate in ${cityName} today`,
+            `silver rate ${cityName}`,
+            `silver price today`,
+
+            // Weight-specific keywords
             `${cityName} silver rate per gram`,
-            `${cityName} silver rate per kg`
+            `${cityName} silver rate per kg`,
+            `${cityName} silver price per gram`,
+            `${cityName} silver price per kg`,
+            `silver rate per kg in ${cityName}`,
+            `silver rate per gram in ${cityName}`,
+
+            // Additional variations
+            `live silver rate ${cityName}`,
+            `current silver rate ${cityName}`,
+            `${cityName} silver rate today per gram`,
+            `${cityName} silver rate today per kg`,
+            `999 silver rate in ${cityName}`,
+            `pure silver rate in ${cityName}`
         ],
         openGraph: {
-            title: `Silver Rate in ${cityName} Today - Live Prices`,
-            description: `Check today's silver rate in ${cityName}. Live silver prices per gram and per kg.`,
+            title: `Silver Rate in ${cityName} Today - Live Prices Per Gram/Kg`,
+            description: `Check today's silver rate in ${cityName}. Live silver prices per gram and per kg with silver calculator.`,
             type: 'website',
         },
         alternates: {

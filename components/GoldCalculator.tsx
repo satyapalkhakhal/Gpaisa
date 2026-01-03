@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { IndianCity, GoldCalculatorData } from '@/types';
-import { Calculator, TrendingUp, TrendingDown, MapPin, Weight, Coins } from 'lucide-react';
+import { Calculator, TrendingUp, TrendingDown, MapPin, Weight, Coins, Percent, IndianRupee } from 'lucide-react';
 
 const INDIAN_CITIES: IndianCity[] = [
     "Delhi",
@@ -30,6 +30,10 @@ export default function GoldCalculator() {
     const [carat, setCarat] = useState('24k');
     const [grams, setGrams] = useState(10);
     const [customGrams, setCustomGrams] = useState('10');
+    const [makingChargeType, setMakingChargeType] = useState<'percentage' | 'fixed'>('percentage');
+    const [makingChargePercentage, setMakingChargePercentage] = useState(10);
+    const [makingChargeFixed, setMakingChargeFixed] = useState(0);
+    const [includeGST, setIncludeGST] = useState(true);
     const [calculatorData, setCalculatorData] = useState<GoldCalculatorData | null>(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -74,12 +78,44 @@ export default function GoldCalculator() {
         setCustomGrams(weight.toString());
     };
 
-    const formatPrice = (price: string) => {
-        const numPrice = parseFloat(price);
-        return numPrice.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const formatPrice = (price: number) => {
+        return price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    };
+
+    // Calculate total with making charges and GST
+    const calculateTotal = () => {
+        if (!calculatorData) return null;
+
+        const basePrice = parseFloat(calculatorData.price);
+
+        // Calculate making charges
+        let makingCharges = 0;
+        if (makingChargeType === 'percentage') {
+            makingCharges = (basePrice * makingChargePercentage) / 100;
+        } else {
+            makingCharges = makingChargeFixed;
+        }
+
+        // Calculate subtotal (base + making charges)
+        const subtotal = basePrice + makingCharges;
+
+        // Calculate GST (3% on subtotal)
+        const gst = includeGST ? (subtotal * 3) / 100 : 0;
+
+        // Calculate final total
+        const total = subtotal + gst;
+
+        return {
+            basePrice,
+            makingCharges,
+            subtotal,
+            gst,
+            total
+        };
     };
 
     const isPositiveChange = calculatorData?.difference.startsWith('+');
+    const calculations = calculateTotal();
 
     return (
         <div className="card">
@@ -173,6 +209,81 @@ export default function GoldCalculator() {
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                         />
                     </div>
+
+                    {/* Making Charges */}
+                    <div>
+                        <label className="flex items-center space-x-2 text-sm font-semibold text-gray-700 mb-2">
+                            <Percent className="h-4 w-4" />
+                            <span>Making Charges</span>
+                        </label>
+
+                        {/* Making Charge Type Toggle */}
+                        <div className="flex gap-2 mb-3">
+                            <button
+                                onClick={() => setMakingChargeType('percentage')}
+                                className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${makingChargeType === 'percentage'
+                                        ? 'bg-primary-600 text-white'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    }`}
+                            >
+                                Percentage
+                            </button>
+                            <button
+                                onClick={() => setMakingChargeType('fixed')}
+                                className={`flex-1 px-4 py-2 rounded-lg font-medium transition-all ${makingChargeType === 'fixed'
+                                        ? 'bg-primary-600 text-white'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    }`}
+                            >
+                                Fixed Amount
+                            </button>
+                        </div>
+
+                        {makingChargeType === 'percentage' ? (
+                            <div>
+                                <input
+                                    type="number"
+                                    value={makingChargePercentage}
+                                    onChange={(e) => setMakingChargePercentage(parseFloat(e.target.value) || 0)}
+                                    min="0"
+                                    max="100"
+                                    step="0.5"
+                                    placeholder="Enter percentage"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                />
+                                <p className="text-xs text-gray-600 mt-1">Typical range: 6-15%</p>
+                            </div>
+                        ) : (
+                            <div>
+                                <input
+                                    type="number"
+                                    value={makingChargeFixed}
+                                    onChange={(e) => setMakingChargeFixed(parseFloat(e.target.value) || 0)}
+                                    min="0"
+                                    step="100"
+                                    placeholder="Enter fixed amount"
+                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                />
+                                <p className="text-xs text-gray-600 mt-1">Enter amount in ₹</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* GST Toggle */}
+                    <div>
+                        <label className="flex items-center space-x-3 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={includeGST}
+                                onChange={(e) => setIncludeGST(e.target.checked)}
+                                className="w-5 h-5 text-primary-600 focus:ring-primary-500 rounded"
+                            />
+                            <div>
+                                <span className="text-sm font-semibold text-gray-700">Include GST (3%)</span>
+                                <p className="text-xs text-gray-600">GST is calculated on gold price + making charges</p>
+                            </div>
+                        </label>
+                    </div>
                 </div>
 
                 {/* Result Section */}
@@ -189,51 +300,74 @@ export default function GoldCalculator() {
                         <div className="flex items-center justify-center h-full">
                             <p className="text-red-600 text-center">{error}</p>
                         </div>
-                    ) : calculatorData ? (
-                        <div className="space-y-6">
-                            <div>
-                                <p className="text-sm font-medium text-gray-600 mb-1">Total Price</p>
-                                <p className="text-4xl font-bold text-gray-900">
-                                    ₹{formatPrice(calculatorData.price)}
-                                </p>
+                    ) : calculatorData && calculations ? (
+                        <div className="space-y-4">
+                            {/* Price Breakdown */}
+                            <div className="bg-white rounded-lg p-4 space-y-3">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm text-gray-600">Gold Price ({calculatorData.carat.toUpperCase()})</span>
+                                    <span className="font-semibold text-gray-900">₹{formatPrice(calculations.basePrice)}</span>
+                                </div>
+
+                                <div className="flex justify-between items-center">
+                                    <span className="text-sm text-gray-600">Making Charges</span>
+                                    <span className="font-semibold text-gray-900">₹{formatPrice(calculations.makingCharges)}</span>
+                                </div>
+
+                                {includeGST && (
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-sm text-gray-600">GST (3%)</span>
+                                        <span className="font-semibold text-gray-900">₹{formatPrice(calculations.gst)}</span>
+                                    </div>
+                                )}
+
+                                <div className="border-t pt-3 mt-3">
+                                    <div className="flex justify-between items-center">
+                                        <span className="text-base font-semibold text-gray-900">Total Amount</span>
+                                        <span className="text-2xl font-bold text-primary-600">₹{formatPrice(calculations.total)}</span>
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="bg-white rounded-lg p-4">
+                            {/* Details */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <div className="bg-white rounded-lg p-3">
                                     <p className="text-xs text-gray-600 mb-1">City</p>
-                                    <p className="text-lg font-semibold text-gray-900">{calculatorData.city}</p>
+                                    <p className="text-sm font-semibold text-gray-900">{calculatorData.city}</p>
                                 </div>
-                                <div className="bg-white rounded-lg p-4">
+                                <div className="bg-white rounded-lg p-3">
                                     <p className="text-xs text-gray-600 mb-1">Weight</p>
-                                    <p className="text-lg font-semibold text-gray-900">{calculatorData.grams}g</p>
+                                    <p className="text-sm font-semibold text-gray-900">{calculatorData.grams}g</p>
                                 </div>
                             </div>
 
-                            <div className="bg-white rounded-lg p-4">
-                                <p className="text-xs text-gray-600 mb-2">Price Change</p>
+                            {/* Price Change */}
+                            <div className="bg-white rounded-lg p-3">
+                                <p className="text-xs text-gray-600 mb-2">Price Change (Base Gold)</p>
                                 <div className="flex items-center justify-between">
                                     <div className={`flex items-center space-x-2 ${isPositiveChange ? 'text-green-600' : 'text-red-600'
                                         }`}>
                                         {isPositiveChange ? (
-                                            <TrendingUp className="h-5 w-5" />
+                                            <TrendingUp className="h-4 w-4" />
                                         ) : (
-                                            <TrendingDown className="h-5 w-5" />
+                                            <TrendingDown className="h-4 w-4" />
                                         )}
-                                        <span className="text-lg font-bold">
+                                        <span className="text-sm font-bold">
                                             {calculatorData.difference}
                                         </span>
                                     </div>
-                                    <span className={`text-lg font-bold ${isPositiveChange ? 'text-green-600' : 'text-red-600'
+                                    <span className={`text-sm font-bold ${isPositiveChange ? 'text-green-600' : 'text-red-600'
                                         }`}>
                                         {calculatorData.percentage}
                                     </span>
                                 </div>
                             </div>
 
+                            {/* Price per gram */}
                             <div className="bg-primary-600 text-white rounded-lg p-4">
                                 <p className="text-xs opacity-90 mb-1">Price per gram ({calculatorData.carat.toUpperCase()})</p>
-                                <p className="text-2xl font-bold">
-                                    ₹{formatPrice((parseFloat(calculatorData.price) / calculatorData.grams).toString())}
+                                <p className="text-xl font-bold">
+                                    ₹{formatPrice(parseFloat(calculatorData.price) / calculatorData.grams)}
                                 </p>
                             </div>
                         </div>
@@ -244,7 +378,7 @@ export default function GoldCalculator() {
             {/* Disclaimer */}
             <div className="mt-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
                 <p className="text-xs text-yellow-800">
-                    <strong>Note:</strong> Prices are indicative and may vary. Actual prices may include making charges, GST, and other applicable taxes. Please verify with local jewelers before making any purchase decisions.
+                    <strong>Note:</strong> Prices are indicative and may vary. Making charges vary by jeweler and design complexity (typically 6-15% or fixed per gram). GST is 3% on gold + making charges. Please verify with local jewelers before making any purchase decisions.
                 </p>
             </div>
         </div>

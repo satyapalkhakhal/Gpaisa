@@ -43,19 +43,56 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
 
     return {
         title: `Gold Rate in ${cityName} Today - 24K, 22K, 18K Live Prices | gpaisa.in`,
-        description: `Check today's gold rate in ${cityName}. Live 24K, 22K, and 18K gold prices per gram, 10 grams, and tola. Updated in real-time with historical data and gold calculator.`,
+        description: `Check today's gold rate in ${cityName}. Live 24K, 22K, 18K, and 916 gold prices per gram, 10 grams. Updated in real-time with historical data and gold calculator.`,
         keywords: [
+            // Primary keywords
             `gold rate in ${cityName}`,
-            `${cityName} gold price`,
-            `24k gold rate ${cityName}`,
-            `22k gold rate ${cityName}`,
-            `gold price today ${cityName}`,
+            `gold price in ${cityName}`,
+            `today gold rate in ${cityName}`,
+            `gold price today in ${cityName}`,
+            `gold rate today in ${cityName}`,
+            `todays gold rate in ${cityName}`,
+            `gold rate in ${cityName} today`,
+            `gold rate ${cityName}`,
+            `gold price today`,
+
+            // Carat-specific keywords - 22 carat
+            `22 carat`,
+            `22 carat gold rate in ${cityName}`,
+            `22 carat gold price in ${cityName}`,
+            `22 karat gold rate in ${cityName}`,
+            `22 karat gold price in ${cityName}`,
+
+            // Carat-specific keywords - 24 carat
+            `24 carat`,
+            `24 carat gold rate in ${cityName}`,
+            `24 carat gold price in ${cityName}`,
+            `24 karat gold rate in ${cityName}`,
+            `24 karat gold price in ${cityName}`,
+
+            // Carat-specific keywords - 18 carat
+            `18 carat`,
+            `18ct`,
+            `18k`,
+            `18 carat gold rate in ${cityName}`,
+            `18K gold rate in ${cityName}`,
+            `18 karat gold rate in ${cityName}`,
+            `18 karat gold price in ${cityName}`,
+
+            // 916 gold (22K purity)
+            `916 gold rate in ${cityName}`,
+            `916 gold price in ${cityName}`,
+
+            // Additional variations
             `${cityName} gold rate per gram`,
-            `${cityName} gold rate 10 gram`
+            `${cityName} gold rate 10 gram`,
+            `${cityName} gold price per gram`,
+            `live gold rate ${cityName}`,
+            `current gold rate ${cityName}`
         ],
         openGraph: {
-            title: `Gold Rate in ${cityName} Today - Live Prices`,
-            description: `Check today's gold rate in ${cityName}. Live 24K, 22K, and 18K gold prices updated in real-time.`,
+            title: `Gold Rate in ${cityName} Today - 24K, 22K, 18K, 916 Live Prices`,
+            description: `Check today's gold rate in ${cityName}. Live 24K, 22K, 18K, and 916 gold prices updated in real-time with gold calculator.`,
             type: 'website',
         },
         alternates: {
