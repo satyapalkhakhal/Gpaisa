@@ -4,7 +4,7 @@ import { MarketIndex, Stock, GoldRate, Commodity, AgriculturePrice, Article, Cha
 export const marketIndices: MarketIndex[] = [
     {
         name: 'Sensex',
-        symbol: 'BSE:SENSEX',
+        symbol: 'SENSEX:INDEXBOM',
         value: 72240.26,
         change: 234.12,
         changePercent: 0.32,
@@ -12,15 +12,15 @@ export const marketIndices: MarketIndex[] = [
     },
     {
         name: 'Nifty 50',
-        symbol: 'NSE:NIFTY',
+        symbol: 'NIFTY_50:INDEXNSE',
         value: 21731.40,
         change: -45.30,
         changePercent: -0.21,
         lastUpdated: new Date().toISOString(),
     },
     {
-        name: 'Bank Nifty',
-        symbol: 'NSE:BANKNIFTY',
+        name: 'Nifty Bank',
+        symbol: 'NIFTY_BANK:INDEXNSE',
         value: 46892.15,
         change: 156.80,
         changePercent: 0.33,
@@ -28,7 +28,7 @@ export const marketIndices: MarketIndex[] = [
     },
     {
         name: 'USD/INR',
-        symbol: 'USDINR',
+        symbol: 'USD-INR',
         value: 83.12,
         change: 0.15,
         changePercent: 0.18,
