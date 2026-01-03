@@ -7,7 +7,7 @@ interface PriceCardProps {
     changePercent?: number;
     subtitle?: string;
     icon?: React.ReactNode;
-    variant?: 'default' | 'gold' | 'success' | 'danger';
+    variant?: 'default' | 'gold' | 'silver' | 'success' | 'danger';
 }
 
 export default function PriceCard({
@@ -24,6 +24,7 @@ export default function PriceCard({
     const variantStyles = {
         default: 'bg-white border-gray-200',
         gold: 'bg-gradient-to-br from-primary-50 to-primary-100 border-primary-200',
+        silver: 'bg-gradient-to-br from-gray-50 to-gray-200 border-gray-300',
         success: 'bg-gradient-to-br from-success-50 to-success-100 border-success-200',
         danger: 'bg-gradient-to-br from-danger-50 to-danger-100 border-danger-200',
     };

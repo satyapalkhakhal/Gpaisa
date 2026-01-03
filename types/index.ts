@@ -108,3 +108,40 @@ export interface ChartDataPoint {
     time: string;
     value: number;
 }
+
+// Silver Types
+export interface SilverCity {
+    city: string;
+    slug: string;
+    symbol: string;
+}
+
+export interface SilverHistoryItem {
+    date: string;
+    price: string;
+    differenceAmount: string;
+    differencePercentage: string;
+}
+
+export interface SilverHistoryResponse {
+    success: boolean;
+    data: {
+        gram: number;
+        history: SilverHistoryItem[];
+    };
+}
+
+export interface SilverCalculatorData {
+    silver: {
+        today: number;
+        yesterday: number;
+        differenceAmount: number;
+        differencePercentage: number;
+        date: string;
+    }
+}
+
+export interface SilverCalculatorResponse {
+    success: boolean;
+    data: SilverCalculatorData;
+}

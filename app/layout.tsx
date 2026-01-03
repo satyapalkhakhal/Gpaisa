@@ -6,6 +6,7 @@ import MarketTicker from "@/components/MarketTicker";
 import Script from "next/script";
 
 export const metadata: Metadata = {
+    metadataBase: new URL('https://gpaisa.in'),
     title: "gpaisa.in - Live Market Updates, Gold Rates & Financial News",
     description: "Get real-time stock market updates, gold & silver rates, commodity prices, agriculture market data, and personal finance tips. Your trusted Indian financial portal.",
     keywords: "stock market, gold rates, silver price, sensex, nifty, commodity prices, agriculture prices, personal finance, investment tips",

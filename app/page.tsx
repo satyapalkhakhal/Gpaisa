@@ -1,8 +1,9 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { articles, marketIndices, commodities } from '@/lib/mockData';
+import { articles } from '@/lib/mockData';
 import { TrendingUp, ArrowRight, ChevronRight, Zap, RefreshCw } from 'lucide-react';
 import DynamicGoldRates from '@/components/DynamicGoldRates';
+import DynamicSilverRates from '@/components/DynamicSilverRates';
 import LastUpdatedTime from '@/components/LastUpdatedTime';
 import { fetchArticlesByCategorySlug, fetchLatestArticles } from '@/lib/supabaseApi';
 
@@ -230,15 +231,15 @@ export default async function HomePage() {
                     <div className="lg:col-span-4 space-y-8">
 
                         {/* GOLD RATE WIDGET (Hero style) */}
-                        <div className="bg-white rounded shadow-sm border border-yellow-400 overflow-hidden">
-                            <div className="bg-yellow-500 px-4 py-3 flex justify-between items-center">
+                        <div className="bg-white rounded shadow-sm border border-primary-100 overflow-hidden">
+                            <div className="bg-primary-600 px-4 py-3 flex justify-between items-center">
                                 <h3 className="font-bold text-white uppercase text-sm tracking-wide">Gold Rate Today</h3>
-                                <span className="bg-white text-yellow-700 text-[10px] font-bold px-2 py-0.5 rounded">LIVE</span>
+                                <span className="bg-white text-primary-700 text-[10px] font-bold px-2 py-0.5 rounded">LIVE</span>
                             </div>
                             <div className="p-4">
                                 <div className="mb-4">
                                     <label className="text-xs font-bold text-gray-500 uppercase mb-1 block">Select City</label>
-                                    <select className="w-full text-sm border-gray-300 rounded focus:ring-yellow-500 focus:border-yellow-500">
+                                    <select className="w-full text-sm border-gray-300 rounded focus:ring-primary-500 focus:border-primary-500">
                                         <option>India (Composite)</option>
                                         <option>Delhi</option>
                                         <option>Mumbai</option>
@@ -261,18 +262,12 @@ export default async function HomePage() {
                                 <h3 className="font-bold text-gray-700 uppercase text-sm tracking-wide">Silver Rates</h3>
                             </div>
                             <div className="p-4">
-                                <div className="flex justify-between items-end mb-1">
-                                    <span className="text-sm font-medium text-gray-600">Silver (1 Kg)</span>
-                                    <span className="text-xl font-bold text-gray-900">₹{(commodities[1].price * 1000).toLocaleString('en-IN')}</span>
+                                <DynamicSilverRates simpleView={true} displayWeight={1000} />
+                                <div className="bg-gray-50 px-4 py-2 border-t border-gray-100 text-center mt-3 -mx-4 -mb-4">
+                                    <Link href="/silver-rate" className="text-xs font-bold text-gray-600 uppercase hover:underline">
+                                        Check detailed rates &raquo;
+                                    </Link>
                                 </div>
-                                <div className="text-right mb-3">
-                                    <span className={`text-xs font-bold ${commodities[1].changePercent >= 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                        {commodities[1].changePercent >= 0 ? '+' : ''}{commodities[1].changePercent}% Today
-                                    </span>
-                                </div>
-                                <Link href="/commodities" className="block w-full text-center bg-gray-600 text-white text-xs font-bold py-2 rounded hover:bg-gray-700 transition">
-                                    VIEW HISTORY
-                                </Link>
                             </div>
                         </div>
 

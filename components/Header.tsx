@@ -8,6 +8,7 @@ import { Menu, X } from 'lucide-react';
 const navigation = [
     { name: 'Markets', href: '/markets' },
     { name: 'Gold Rate', href: '/gold-rate' },
+    { name: 'Silver Rate', href: '/silver-rate' },
     { name: 'Commodities', href: '/commodities' },
     { name: 'Agriculture', href: '/agriculture' },
     { name: 'Personal Finance', href: '/finance' },
