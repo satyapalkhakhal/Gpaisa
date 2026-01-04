@@ -21,6 +21,7 @@ export interface Article {
     status: string;
     published_at: string;
     publishedAt?: string;
+    updated_at?: string;
     author: string;
     read_time: string;
     views?: number;

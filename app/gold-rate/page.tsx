@@ -19,50 +19,16 @@ const CITIES: IndianCity[] = [
 
 export const metadata: Metadata = {
     title: 'Gold Rate Today in India - City Wise 24K, 22K, 18K, 916 Prices | gpaisa.in',
-    description: 'Check today\'s gold rate in all major Indian cities. Live 24K, 22K, 18K, and 916 gold prices for Delhi, Mumbai, Chennai, Bangalore, Hyderabad, and more. Updated in real-time with gold calculator.',
-    keywords: [
-        // General keywords
-        'gold rate today',
-        'gold price India',
-        'city wise gold rate',
-        'gold rate in India',
-        'today gold rate',
-        'gold price today',
-
-        // Carat-specific
-        '24k gold rate',
-        '22k gold rate',
-        '18k gold rate',
-        '24 carat gold rate',
-        '22 carat gold rate',
-        '18 carat gold rate',
-        '18ct gold rate',
-        '916 gold rate',
-
-        // Weight-specific
-        'gold rate per gram',
-        'gold rate 10 gram',
-        'gold price per gram',
-
-        // City-specific (major cities)
-        'gold rate in Delhi',
-        'gold rate in Mumbai',
-        'gold rate in Chennai',
-        'gold rate in Bangalore',
-        'gold rate in Hyderabad',
-        'gold rate in Kolkata',
-        'gold rate in Pune',
-        'gold rate in Ahmedabad',
-
-        // Additional
-        'live gold rate',
-        'current gold rate',
-        'gold calculator'
-    ],
+    description: 'Check today\'s gold rate in all major Indian cities. Live 24K, 22K and 18K gold prices with daily updates and calculator.',
     openGraph: {
         title: 'Gold Rate Today in India - City Wise 24K, 22K, 18K, 916 Prices',
-        description: 'Check today\'s gold rate in all major Indian cities. Live prices updated in real-time with gold calculator.',
+        description: 'Check today\'s gold rate in all major Indian cities. Live 24K, 22K and 18K gold prices with daily updates and calculator.',
         type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Gold Rate Today in India - Live Prices',
+        description: 'Check today\'s gold rate in all major Indian cities. Live prices with daily updates.',
     },
     alternates: {
         canonical: '/gold-rate'
@@ -70,8 +36,119 @@ export const metadata: Metadata = {
 };
 
 export default function GoldRatePage() {
+    // JSON-LD Structured Data
+    const webPageSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        name: 'Gold Rate Today in India - City Wise Prices',
+        description: 'Check today\'s gold rate in all major Indian cities. Live 24K, 22K, 18K, and 916 gold prices updated in real-time.',
+        url: 'https://gpaisa.in/gold-rate',
+        inLanguage: 'en-IN',
+        publisher: {
+            '@type': 'Organization',
+            name: 'gpaisa.in',
+            logo: {
+                '@type': 'ImageObject',
+                url: 'https://gpaisa.in/icon-512.png',
+            },
+        },
+    };
+
+    const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://gpaisa.in',
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'Gold Rate',
+                item: 'https://gpaisa.in/gold-rate',
+            },
+        ],
+    };
+
+    const productSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Product',
+        name: '24K Gold Rate in India',
+        description: 'Live gold rates for 24K, 22K, and 18K gold across major Indian cities',
+        brand: {
+            '@type': 'Brand',
+            name: 'Gold',
+        },
+        offers: {
+            '@type': 'AggregateOffer',
+            priceCurrency: 'INR',
+            lowPrice: '6000',
+            highPrice: '8000',
+            offerCount: '10',
+        },
+    };
+
+    const faqSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: [
+            {
+                '@type': 'Question',
+                name: 'What is the gold rate today in India?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Gold rates in India vary by city and purity. Check our live gold rate table above for current 24K, 22K, and 18K gold prices in your city.',
+                },
+            },
+            {
+                '@type': 'Question',
+                name: 'Why do gold rates differ across cities?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Gold prices differ across Indian cities due to local taxes, transportation costs, demand-supply dynamics, and making charges. Metropolitan cities may have different rates compared to smaller cities.',
+                },
+            },
+            {
+                '@type': 'Question',
+                name: 'What is the difference between 24K, 22K, and 18K gold?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: '24K gold is 99.9% pure and ideal for investment. 22K gold (91.67% pure) is most popular for jewelry in India. 18K gold (75% pure) is used for modern and designer jewelry.',
+                },
+            },
+            {
+                '@type': 'Question',
+                name: 'When is the best time to buy gold?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'While gold is traditionally purchased during festivals like Dhanteras and Akshaya Tritiya, the best time to buy gold is when prices are favorable. Monitor daily gold rates and historical trends to make informed decisions.',
+                },
+            },
+        ],
+    };
+
     return (
         <div className="bg-gray-50 py-12">
+            {/* JSON-LD Structured Data */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 {/* Page Header */}
                 <header className="mb-12 text-center">

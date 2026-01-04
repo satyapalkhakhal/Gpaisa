@@ -6,47 +6,16 @@ import { MapPin, TrendingUp, Calculator } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: 'Silver Rate Today in India - Live Silver Price Per Gram/Kg | gpaisa.in',
-    description: 'Check today\'s silver rate in India. Live silver price per gram and per kg. View city-wise silver rates for Mumbai, Delhi, Chennai, Bangalore and more. Updated in real-time with silver calculator.',
-    keywords: [
-        // General keywords
-        'silver rate today',
-        'silver price India',
-        'silver rate in India',
-        'today silver rate',
-        'silver price today',
-        'todays silver rate',
-
-        // Weight-specific
-        'silver rate per kg',
-        'silver rate per gram',
-        'silver price per kg',
-        'silver price per gram',
-        '1 kg silver rate',
-        '10 gram silver rate',
-
-        // Purity-specific
-        '999 silver rate',
-        'pure silver rate',
-        'fine silver rate',
-
-        // City-specific (major cities)
-        'silver rate in Delhi',
-        'silver rate in Mumbai',
-        'silver rate in Chennai',
-        'silver rate in Bangalore',
-        'silver rate in Hyderabad',
-        'silver rate in Kolkata',
-
-        // Additional
-        'live silver price',
-        'current silver rate',
-        'silver calculator',
-        'city wise silver rate'
-    ],
+    description: 'Today\'s silver rate in India with live prices per gram and per kg. Check city-wise rates with historical trends and calculator.',
     openGraph: {
         title: 'Silver Rate Today in India - Live Prices Per Gram/Kg',
-        description: 'Check today\'s silver rate in India. Live silver price per gram and per kg with silver calculator.',
+        description: 'Today\'s silver rate in India with live prices per gram and per kg. Check city-wise rates with historical trends and calculator.',
         type: 'website',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Silver Rate Today in India',
+        description: 'Today\'s silver rate in India with live prices per gram and per kg.',
     },
     alternates: {
         canonical: '/silver-rate'

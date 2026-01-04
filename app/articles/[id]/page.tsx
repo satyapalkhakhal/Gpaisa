@@ -7,6 +7,33 @@ import ArticleCard from '@/components/ArticleCard';
 
 export const revalidate = 600; // Revalidate every 10 minutes
 
+// Helper function to generate keywords from article content
+function generateKeywords(article: any): string[] {
+    const baseKeywords = [
+        'financial news',
+        'India finance',
+        'gpaisa',
+        'market news',
+        'investment news',
+    ];
+
+    // Extract category-based keywords
+    const categoryKeywords: string[] = [];
+    if (article.category) {
+        const category = typeof article.category === 'string' ? article.category : article.category.name;
+        categoryKeywords.push(category, `${category} news`, `${category} India`);
+    }
+
+    // Extract keywords from title (simple word extraction)
+    const titleWords = article.title
+        .toLowerCase()
+        .split(/\s+/)
+        .filter((word: string) => word.length > 4)
+        .slice(0, 5);
+
+    return [...baseKeywords, ...categoryKeywords, ...titleWords];
+}
+
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
     const { id } = await params;
     const article = await fetchArticleById(id);
@@ -17,12 +44,41 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
         };
     }
 
+    const keywords = generateKeywords(article);
+    const publishedTime = new Date(article.published_at || article.publishedAt || Date.now()).toISOString();
+    const modifiedTime = new Date(article.updated_at || publishedTime).toISOString();
+
     return {
         title: `${article.title} | gpaisa.in`,
-        description: article.excerpt,
+        description: article.excerpt || article.title,
+        keywords: keywords.join(', '),
+        authors: [{ name: article.author || 'Gpaisa Desk' }],
         openGraph: {
+            title: article.title,
+            description: article.excerpt || article.title,
+            type: 'article',
+            publishedTime,
+            modifiedTime,
+            authors: [article.author || 'Gpaisa Desk'],
+            images: article.featured_image_url ? [
+                {
+                    url: article.featured_image_url,
+                    width: 1200,
+                    height: 630,
+                    alt: article.title,
+                }
+            ] : [],
+            siteName: 'gpaisa.in',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: article.title,
+            description: article.excerpt || article.title,
             images: article.featured_image_url ? [article.featured_image_url] : [],
-        }
+        },
+        alternates: {
+            canonical: `/articles/${id}`,
+        },
     };
 }
 
@@ -47,8 +103,72 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
         .filter(a => a.id !== article.id)
         .slice(0, 3);
 
+    // Prepare JSON-LD structured data
+    const publishedDate = new Date(article.published_at || article.publishedAt || Date.now()).toISOString();
+    const modifiedDate = new Date(article.updated_at || publishedDate).toISOString();
+
+    const articleSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'NewsArticle',
+        headline: article.title,
+        description: article.excerpt || article.title,
+        image: article.featured_image_url || 'https://gpaisa.in/icon-512.png',
+        datePublished: publishedDate,
+        dateModified: modifiedDate,
+        author: {
+            '@type': 'Person',
+            name: article.author || 'Gpaisa Desk',
+        },
+        publisher: {
+            '@type': 'Organization',
+            name: 'gpaisa.in',
+            logo: {
+                '@type': 'ImageObject',
+                url: 'https://gpaisa.in/icon-512.png',
+            },
+        },
+        mainEntityOfPage: {
+            '@type': 'WebPage',
+            '@id': `https://gpaisa.in/articles/${id}`,
+        },
+    };
+
+    const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            {
+                '@type': 'ListItem',
+                position: 1,
+                name: 'Home',
+                item: 'https://gpaisa.in',
+            },
+            {
+                '@type': 'ListItem',
+                position: 2,
+                name: 'News',
+                item: 'https://gpaisa.in/news',
+            },
+            {
+                '@type': 'ListItem',
+                position: 3,
+                name: article.title,
+                item: `https://gpaisa.in/articles/${id}`,
+            },
+        ],
+    };
+
     return (
         <div className="bg-gray-50 py-8 font-sans">
+            {/* JSON-LD Structured Data */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+            />
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
@@ -70,12 +190,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                                 {article.title}
                             </h1>
 
-                            <div className="flex items-center text-sm text-gray-500 mb-6 pb-6 border-b border-gray-100">
-                                <span className="flex items-center mr-6">
+                            <div className="flex items-center text-sm text-gray-500 mb-6 pb-6 border-b border-gray-100 flex-wrap gap-4">
+                                <span className="flex items-center">
                                     <User className="w-4 h-4 mr-2" />
                                     {article.author || 'Gpaisa Desk'}
                                 </span>
-                                <span className="flex items-center mr-6">
+                                <span className="flex items-center">
                                     <Calendar className="w-4 h-4 mr-2" />
                                     {new Date(article.published_at || article.publishedAt || Date.now()).toLocaleDateString('en-IN', {
                                         day: 'numeric', month: 'long', year: 'numeric'
@@ -85,6 +205,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                                     <Clock className="w-4 h-4 mr-2" />
                                     {article.read_time || '3 min read'}
                                 </span>
+                                {article.updated_at && article.updated_at !== article.published_at && (
+                                    <span className="flex items-center text-xs bg-green-50 text-green-700 px-2 py-1 rounded">
+                                        Updated: {new Date(article.updated_at).toLocaleDateString('en-IN', {
+                                            day: 'numeric', month: 'short', year: 'numeric'
+                                        })}
+                                    </span>
+                                )}
                             </div>
 
                             {/* Featured Image */}

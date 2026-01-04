@@ -101,6 +101,7 @@ export interface Article {
     tags?: string[];
     featured_image_url?: string;
     published_at?: string;
+    updated_at?: string;
 }
 
 // Chart Data Types

@@ -257,8 +257,8 @@ export default function GoldCalculator() {
                             <button
                                 onClick={() => setUseManualRate(!useManualRate)}
                                 className={`px-4 py-2 rounded-lg font-medium transition-all ${useManualRate
-                                        ? 'bg-primary-600 text-white'
-                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                    ? 'bg-primary-600 text-white'
+                                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                     }`}
                             >
                                 {useManualRate ? 'Manual Rate' : 'Live Rate'}
@@ -268,7 +268,7 @@ export default function GoldCalculator() {
                         {useManualRate && (
                             <div className="space-y-3 bg-blue-50 p-4 rounded-lg border border-blue-200">
                                 <p className="text-xs text-blue-800 mb-3">
-                                    <strong>Enter custom rates per gram:</strong> Input your local jeweler's rates for accurate calculations.
+                                    <strong>Enter custom rates per gram:</strong> Input your local jeweler&apos;s rates for accurate calculations.
                                 </p>
 
                                 {/* 24K Rate Input */}
