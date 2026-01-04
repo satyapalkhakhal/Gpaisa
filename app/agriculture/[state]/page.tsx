@@ -11,12 +11,9 @@ import {
 } from '@/lib/agriApi';
 import LastUpdatedTime from '@/components/LastUpdatedTime';
 
-export async function generateStaticParams() {
-    const states = await getStates();
-    return states.map(state => ({
-        state: formatStateForUrl(state)
-    }));
-}
+// Force dynamic rendering to avoid build-time API failures
+export const dynamic = 'force-dynamic';
+export const revalidate = 3600; // Revalidate every hour
 
 export async function generateMetadata({ params }: { params: Promise<{ state: string }> }): Promise<Metadata> {
     const { state: urlState } = await params;
@@ -24,16 +21,18 @@ export async function generateMetadata({ params }: { params: Promise<{ state: st
 
     return {
         title: `${stateName} Mandi Prices - Agriculture Commodity Rates by District | Gpaisa`,
-        description: `Check today's mandi prices for all crops in ${stateName}. District-wise agricultural commodity rates, wholesale market prices updated daily.`,
-        keywords: [`${stateName} mandi prices`, `${stateName} agriculture`, `${stateName} crop rates`, 'mandi prices'],
+        description: `Today's mandi prices for crops in ${stateName}. District-wise agricultural commodity rates updated daily.`,
         openGraph: {
             title: `${stateName} Mandi Prices - Live Agriculture Rates`,
             description: `Real-time mandi prices for crops across ${stateName} districts`
+        },
+        twitter: {
+            card: 'summary',
+            title: `${stateName} Mandi Prices`,
+            description: `Today's mandi prices for crops in ${stateName}.`
         }
     };
 }
-
-export const revalidate = 3600;
 
 export default async function StatePage({ params }: { params: Promise<{ state: string }> }) {
     const { state: urlState } = await params;
