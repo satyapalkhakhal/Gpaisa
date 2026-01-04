@@ -5,11 +5,11 @@ import { Building2, TrendingUp } from 'lucide-react';
 import { getMandisByDistrict, fetchMandiPrices, formatStateForUrl, formatStateFromUrl } from '@/lib/agriApi';
 import LastUpdatedTime from '@/components/LastUpdatedTime';
 
-export async function generateStaticParams() {
-    // Generate params for a limited set for build performance
-    // In production, you might want to generate all or use ISR
-    return [];
-}
+// Force dynamic rendering to avoid build-time API failures
+export const dynamic = 'force-dynamic';
+export const revalidate = 86400;
+export const dynamicParams = true;
+
 
 export async function generateMetadata({ params }: { params: Promise<{ state: string; district: string; mandi: string }> }): Promise<Metadata> {
     const { state: urlState, district: urlDistrict, mandi: urlMandi } = await params;
@@ -19,17 +19,13 @@ export async function generateMetadata({ params }: { params: Promise<{ state: st
 
     return {
         title: `${mandiName} Mandi Prices - ${districtName}, ${stateName} | Gpaisa`,
-        description: `Live mandi prices from ${mandiName} market in ${districtName}, ${stateName}. Today's wholesale agricultural commodity rates updated daily.`,
-        keywords: [`${mandiName} mandi prices`, `${districtName} agriculture`, `${stateName} crop rates`],
+        description: `Today's mandi prices from ${mandiName} market in ${districtName}, ${stateName}. Wholesale agricultural commodity rates updated daily.`,
         openGraph: {
             title: `${mandiName} Mandi Prices - ${districtName}, ${stateName}`,
             description: `Live agricultural commodity prices from ${mandiName} market`
         }
     };
 }
-
-export const revalidate = 86400;
-export const dynamicParams = true; // Allow dynamic params for ISR
 
 export default async function MandiPage({ params }: { params: Promise<{ state: string; district: string; mandi: string }> }) {
     const { state: urlState, district: urlDistrict, mandi: urlMandi } = await params;

@@ -12,22 +12,9 @@ import {
 } from '@/lib/agriApi';
 import LastUpdatedTime from '@/components/LastUpdatedTime';
 
-export async function generateStaticParams() {
-    const states = await getStates();
-    const params: { state: string; district: string }[] = [];
-
-    for (const state of states.slice(0, 10)) { // Limit for build performance
-        const districts = await getDistrictsByState(state);
-        for (const district of districts) {
-            params.push({
-                state: formatStateForUrl(state),
-                district: district.toLowerCase().replace(/\s+/g, '-')
-            });
-        }
-    }
-
-    return params;
-}
+// Force dynamic rendering to avoid build-time API failures
+export const dynamic = 'force-dynamic';
+export const revalidate = 3600;
 
 export async function generateMetadata({ params }: { params: Promise<{ state: string; district: string }> }): Promise<Metadata> {
     const { state: urlState, district: urlDistrict } = await params;
@@ -39,16 +26,13 @@ export async function generateMetadata({ params }: { params: Promise<{ state: st
 
     return {
         title: `${districtName} Mandi Prices ${stateName} - Agriculture Rates by Market | Gpaisa`,
-        description: `Check today's mandi prices in ${districtName}, ${stateName}. Market-wise agricultural commodity rates, crop prices updated daily from government sources.`,
-        keywords: [`${districtName} mandi prices`, `${districtName} agriculture`, `${stateName} ${districtName} crop rates`],
+        description: `Today's mandi prices in ${districtName}, ${stateName}. Market-wise agricultural commodity rates updated daily.`,
         openGraph: {
             title: `${districtName} Mandi Prices - ${stateName}`,
             description: `Live mandi prices for crops in ${districtName}, ${stateName}`
         }
     };
 }
-
-export const revalidate = 3600;
 
 export default async function DistrictPage({ params }: { params: Promise<{ state: string; district: string }> }) {
     const { state: urlState, district: urlDistrict } = await params;
