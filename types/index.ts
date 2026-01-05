@@ -90,6 +90,7 @@ export interface AgriculturePrice {
 // Article Types
 export interface Article {
     id: string;
+    slug: string;
     title: string;
     excerpt: string;
     category: 'investments' | 'tax-saving' | 'loans' | 'basics' | 'news' | string;

@@ -24,7 +24,7 @@ export default function ArticleCard({ article }: ArticleCardProps) {
     };
 
     return (
-        <Link href={`/articles/${article.id}`}>
+        <Link href={`/articles/${article.slug}`}>
             <div className="card group cursor-pointer h-full flex flex-col">
                 <div className="flex items-center justify-between mb-3">
                     <span className={`text-xs font-semibold px-3 py-1 rounded-full ${categoryColors[article.category as keyof typeof categoryColors] || 'bg-gray-100 text-gray-800'}`}>

@@ -18,7 +18,7 @@ export const metadata: Metadata = {
         description: 'Today\'s silver rate in India with live prices per gram and per kg.',
     },
     alternates: {
-        canonical: '/silver-rate'
+        canonical: 'https://gpaisa.in/silver-rate'
     }
 };
 

@@ -10,6 +10,9 @@ import { fetchArticlesByCategorySlug, fetchLatestArticles } from '@/lib/supabase
 export const metadata: Metadata = {
     title: 'Gpaisa - Gold Rates, Silver Price, Fuel Price, Currency & Business News',
     description: 'India\'s leading financial portal for live gold rates, silver prices, petrol/diesel prices, currency exchange rates, and business news.',
+    alternates: {
+        canonical: 'https://gpaisa.in'
+    }
 };
 
 export const revalidate = 0; // Instant revalidation for debugging
@@ -38,7 +41,7 @@ const SectionHeading = ({ title, color = 'blue' }: { title: string, color?: stri
 
 const NewsListItem = ({ article }: { article: any }) => (
     <div className="group mb-4 pb-4 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0">
-        <Link href={`/articles/${article.id}`} className="flex gap-3">
+        <Link href={`/articles/${article.slug}`} className="flex gap-3">
             <div className="w-20 h-16 bg-gray-200 flex-shrink-0 rounded overflow-hidden">
                 {article.featured_image_url ? (
                     <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover" />
@@ -94,7 +97,7 @@ export default async function HomePage() {
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-8 pb-8 border-b border-gray-200">
                             {/* Big Story */}
                             <div className="md:col-span-7">
-                                <Link href={`/articles/${featuredStory.id}`} className="group block h-full">
+                                <Link href={`/articles/${featuredStory.slug}`} className="group block h-full">
                                     <div className="aspect-video bg-gray-200 w-full rounded mb-3 overflow-hidden">
                                         {featuredStory.featured_image_url ? (
                                             <img
@@ -145,7 +148,7 @@ export default async function HomePage() {
                             <SectionHeading title="Business News" color="gray" />
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {businessNews.map(article => (
-                                    <Link key={article.id} href={`/articles/${article.id}`} className="group block">
+                                    <Link key={article.id} href={`/articles/${article.slug}`} className="group block">
                                         <div className="h-40 bg-gray-100 rounded mb-3 overflow-hidden">
                                             {article.featured_image_url ? (
                                                 <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover" />
@@ -177,7 +180,7 @@ export default async function HomePage() {
                                         </div>
                                         <div>
                                             <h3 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-purple-700 mb-1 line-clamp-2">
-                                                <Link href={`/articles/${article.id}`}>{article.title}</Link>
+                                                <Link href={`/articles/${article.slug}`}>{article.title}</Link>
                                             </h3>
                                             <p className="text-xs text-gray-500 line-clamp-2 mb-1">
                                                 {article.excerpt}
@@ -202,7 +205,7 @@ export default async function HomePage() {
                                     <ul className="space-y-3">
                                         {financeNews.map(a => (
                                             <li key={a.id}>
-                                                <Link href={`/articles/${a.id}`} className="text-sm text-gray-700 hover:text-green-700 font-medium block truncate">
+                                                <Link href={`/articles/${a.slug}`} className="text-sm text-gray-700 hover:text-green-700 font-medium block truncate">
                                                     • {a.title}
                                                 </Link>
                                             </li>
@@ -214,7 +217,7 @@ export default async function HomePage() {
                                     <ul className="space-y-3">
                                         {financeNews.slice().reverse().map(a => (
                                             <li key={a.id}>
-                                                <Link href={`/articles/${a.id}`} className="text-sm text-gray-700 hover:text-blue-700 font-medium block truncate">
+                                                <Link href={`/articles/${a.slug}`} className="text-sm text-gray-700 hover:text-blue-700 font-medium block truncate">
                                                     • {a.title}
                                                 </Link>
                                             </li>

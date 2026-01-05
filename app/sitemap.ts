@@ -90,7 +90,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     try {
         const articles = await fetchLatestArticles(100); // Fetch up to 100 latest articles
         articlePages = articles.map((article) => ({
-            url: `${baseUrl}/articles/${article.id}`,
+            url: `${baseUrl}/articles/${article.slug}`,
             lastModified: new Date(article.updated_at || article.published_at || article.publishedAt || Date.now()),
             changeFrequency: 'weekly' as const,
             priority: 0.6,

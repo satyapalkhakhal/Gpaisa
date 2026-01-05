@@ -83,6 +83,7 @@ export const agriculturePrices: AgriculturePrice[] = [
 export const articles: Article[] = [
     {
         id: '1',
+        slug: '10-best-tax-saving-investment-options-for-2026',
         title: '10 Best Tax Saving Investment Options for 2026',
         excerpt: 'Discover the top tax-saving investment schemes under Section 80C that can help you save up to ₹1.5 lakh in taxes while building wealth.',
         category: 'tax-saving',
@@ -93,6 +94,7 @@ export const articles: Article[] = [
     },
     {
         id: '2',
+        slug: 'gold-vs-fixed-deposits-which-is-better-in-2026',
         title: 'Gold vs. Fixed Deposits: Which is Better in 2026?',
         excerpt: 'A comprehensive comparison of gold investments and fixed deposits to help you make informed decisions about your savings.',
         category: 'investments',
@@ -103,6 +105,7 @@ export const articles: Article[] = [
     },
     {
         id: '3',
+        slug: 'home-loan-interest-rates-complete-guide-2026',
         title: 'Home Loan Interest Rates: Complete Guide 2026',
         excerpt: 'Everything you need to know about home loan interest rates, eligibility, and how to get the best deals from top banks.',
         category: 'loans',
@@ -113,6 +116,7 @@ export const articles: Article[] = [
     },
     {
         id: '4',
+        slug: 'understanding-mutual-funds-a-beginners-guide',
         title: 'Understanding Mutual Funds: A Beginner\'s Guide',
         excerpt: 'Learn the basics of mutual fund investing, types of funds, and how to start your investment journey with as little as ₹500.',
         category: 'basics',
@@ -123,6 +127,7 @@ export const articles: Article[] = [
     },
     {
         id: '5',
+        slug: 'rbi-monetary-policy-impact-on-your-investments',
         title: 'RBI Monetary Policy: Impact on Your Investments',
         excerpt: 'Analysis of the latest RBI monetary policy decisions and their implications for your savings and investment portfolio.',
         category: 'news',
@@ -133,6 +138,7 @@ export const articles: Article[] = [
     },
     {
         id: '6',
+        slug: 'ppf-vs-nps-which-retirement-plan-is-right-for-you',
         title: 'PPF vs. NPS: Which Retirement Plan is Right for You?',
         excerpt: 'Compare Public Provident Fund and National Pension System to choose the best retirement savings option for your goals.',
         category: 'investments',

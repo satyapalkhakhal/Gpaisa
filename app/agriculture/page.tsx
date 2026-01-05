@@ -15,6 +15,9 @@ export const metadata: Metadata = {
         description: 'Real-time mandi prices for crops across all states and districts in India',
         type: 'website',
     },
+    alternates: {
+        canonical: 'https://gpaisa.in/agriculture'
+    }
 };
 
 export const revalidate = 86400; // Revalidate every 24 hours

@@ -19,7 +19,7 @@ export const metadata: Metadata = {
         type: 'website',
     },
     alternates: {
-        canonical: '/commodities'
+        canonical: 'https://gpaisa.in/commodities'
     }
 };
 

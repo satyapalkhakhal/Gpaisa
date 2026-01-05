@@ -55,7 +55,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
             description: `Check today's gold rate in ${cityName} for 24K, 22K and 18K. Live prices with daily updates.`,
         },
         alternates: {
-            canonical: `/gold-rate/${params.city.toLowerCase()}`
+            canonical: `https://gpaisa.in/gold-rate/${params.city.toLowerCase()}`
         }
     };
 }

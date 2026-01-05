@@ -13,6 +13,7 @@ export interface Category {
 
 export interface Article {
     id: string;
+    slug: string;
     title: string;
     excerpt: string;
     content: string;
@@ -180,6 +181,34 @@ export async function fetchArticleById(id: string): Promise<Article | null> {
         return articles.length > 0 ? articles[0] : null;
     } catch (error) {
         console.log('Error fetching article:', error);
+        return null;
+    }
+}
+
+/**
+ * Get article by slug (SEO-friendly URLs)
+ */
+export async function fetchArticleBySlug(slug: string): Promise<Article | null> {
+    try {
+        const url = `${SUPABASE_URL}/rest/v1/articles?slug=eq.${slug}&status=eq.published`;
+
+        const response = await fetch(url, {
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            next: { revalidate: 600 }
+        });
+
+        if (!response.ok) {
+            return null;
+        }
+
+        const articles = await response.json();
+        return articles.length > 0 ? articles[0] : null;
+    } catch (error) {
+        console.log('Error fetching article by slug:', error);
         return null;
     }
 }

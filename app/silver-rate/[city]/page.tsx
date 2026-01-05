@@ -42,7 +42,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
             description: `Today's silver price in ${cityName} with live rate updates and historical trends.`,
         },
         alternates: {
-            canonical: `/silver-rate/${params.city}`
+            canonical: `https://gpaisa.in/silver-rate/${params.city}`
         }
     };
 }

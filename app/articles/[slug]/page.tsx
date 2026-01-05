@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { fetchArticleById, fetchLatestArticles, fetchArticlesByCategory } from '@/lib/supabaseApi';
+import { fetchArticleBySlug, fetchLatestArticles, fetchArticlesByCategory } from '@/lib/supabaseApi';
 import { Calendar, Clock, User, Tag, ChevronRight } from 'lucide-react';
 import ArticleCard from '@/components/ArticleCard';
 
@@ -34,9 +34,9 @@ function generateKeywords(article: any): string[] {
     return [...baseKeywords, ...categoryKeywords, ...titleWords];
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
-    const { id } = await params;
-    const article = await fetchArticleById(id);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const article = await fetchArticleBySlug(slug);
 
     if (!article) {
         return {
@@ -77,14 +77,14 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
             images: article.featured_image_url ? [article.featured_image_url] : [],
         },
         alternates: {
-            canonical: `/articles/${id}`,
+            canonical: `https://gpaisa.in/articles/${article.slug}`,
         },
     };
 }
 
-export default async function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
-    const { id } = await params;
-    const article = await fetchArticleById(id);
+export default async function ArticlePage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
+    const article = await fetchArticleBySlug(slug);
 
     if (!article) {
         notFound();
@@ -129,7 +129,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
         },
         mainEntityOfPage: {
             '@type': 'WebPage',
-            '@id': `https://gpaisa.in/articles/${id}`,
+            '@id': `https://gpaisa.in/articles/${article.slug}`,
         },
     };
 
@@ -153,7 +153,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                 '@type': 'ListItem',
                 position: 3,
                 name: article.title,
-                item: `https://gpaisa.in/articles/${id}`,
+                item: `https://gpaisa.in/articles/${article.slug}`,
             },
         ],
     };
@@ -250,7 +250,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                             </h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                                 {filteredSimilarNews.map(news => (
-                                    <Link key={news.id} href={`/articles/${news.id}`} className="group block bg-white rounded shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
+                                    <Link key={news.id} href={`/articles/${news.slug}`} className="group block bg-white rounded shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
                                         <div className="h-40 bg-gray-200 overflow-hidden">
                                             {news.featured_image_url ? (
                                                 <img src={news.featured_image_url} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform" />
@@ -272,7 +272,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                         </div>
                     </div>
 
-                    {/* === RIGHT COLUMN (SIDEBAR) === */}
+                    {/* === RIGHT COLUMN (SIDEBAR) */}
                     <div className="lg:col-span-4">
                         <div className="sticky top-8 space-y-8">
 
@@ -284,7 +284,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                                 </div>
                                 <div className="space-y-4">
                                     {topStories.map((story, i) => (
-                                        <Link key={story.id} href={`/articles/${story.id}`} className="flex gap-3 group">
+                                        <Link key={story.id} href={`/articles/${story.slug}`} className="flex gap-3 group">
                                             <span className="text-2xl font-bold text-gray-200 group-hover:text-primary-200 font-display -mt-1 w-6 text-center shrink-0">
                                                 {i + 1}
                                             </span>

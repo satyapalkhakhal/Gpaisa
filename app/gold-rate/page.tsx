@@ -31,7 +31,7 @@ export const metadata: Metadata = {
         description: 'Check today\'s gold rate in all major Indian cities. Live prices with daily updates.',
     },
     alternates: {
-        canonical: '/gold-rate'
+        canonical: 'https://gpaisa.in/gold-rate'
     }
 };
 
