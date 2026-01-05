@@ -185,34 +185,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                 <span className="text-gray-900 truncate">{article.title}</span>
                             </nav>
 
-                            {/* Title & Metadata */}
-                            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                            {/* Title */}
+                            <h1 className="text-xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-6 leading-tight">
                                 {article.title}
                             </h1>
-
-                            <div className="flex items-center text-sm text-gray-500 mb-6 pb-6 border-b border-gray-100 flex-wrap gap-2 sm:gap-4">
-                                <span className="flex items-center">
-                                    <User className="w-4 h-4 mr-2" />
-                                    {article.author || 'Gpaisa Desk'}
-                                </span>
-                                <span className="flex items-center">
-                                    <Calendar className="w-4 h-4 mr-2" />
-                                    {new Date(article.published_at || article.publishedAt || Date.now()).toLocaleDateString('en-IN', {
-                                        day: 'numeric', month: 'long', year: 'numeric'
-                                    })}
-                                </span>
-                                <span className="flex items-center">
-                                    <Clock className="w-4 h-4 mr-2" />
-                                    {article.read_time || '3 min read'}
-                                </span>
-                                {article.updated_at && article.updated_at !== article.published_at && (
-                                    <span className="flex items-center text-xs bg-green-50 text-green-700 px-2 py-1 rounded">
-                                        Updated: {new Date(article.updated_at).toLocaleDateString('en-IN', {
-                                            day: 'numeric', month: 'short', year: 'numeric'
-                                        })}
-                                    </span>
-                                )}
-                            </div>
 
                             {/* Featured Image */}
                             {article.featured_image_url && (
@@ -226,11 +202,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                             )}
 
                             {/* Article Content */}
-                            <div className="prose prose-sm sm:prose-base lg:prose-lg max-w-none text-gray-800">
-                                <p className="lead font-medium text-lg sm:text-xl text-gray-600 mb-6">
-                                    {article.excerpt}
-                                </p>
-
+                            <div className="article-content">
                                 {article.content ? (
                                     <div dangerouslySetInnerHTML={{ __html: article.content }} />
                                 ) : (
@@ -239,6 +211,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                         <p>{article.excerpt}</p>
                                     </div>
                                 )}
+                            </div>
+
+                            {/* Author and Date - Below Content */}
+                            <div className="mt-8 pt-6 border-t border-gray-200 flex items-center justify-between text-sm text-gray-600">
+                                <span>{article.author || 'Gpaisa Desk'}</span>
+                                <span>{new Date(article.published_at || article.publishedAt || Date.now()).toLocaleDateString('en-IN', {
+                                    day: 'numeric', month: 'long', year: 'numeric'
+                                })}</span>
                             </div>
 
                         </article>
