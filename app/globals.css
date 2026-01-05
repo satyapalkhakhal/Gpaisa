@@ -73,7 +73,7 @@
   }
 
   .article-content h1 {
-    font-size: 2.25rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: #111827;
     margin-top: 2rem;
@@ -201,15 +201,15 @@
     }
 
     .article-content h1 {
-      font-size: 1.875rem;
+      font-size: 1.125rem;
     }
 
     .article-content h2 {
-      font-size: 1.5rem;
+      font-size: 1rem;
     }
 
     .article-content h3 {
-      font-size: 1.25rem;
+      font-size: 0.95rem;
     }
   }
 }
