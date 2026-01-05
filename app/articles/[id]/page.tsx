@@ -169,28 +169,28 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
             />
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="mx-auto max-w-7xl px-3 sm:px-4 lg:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
                     {/* === LEFT COLUMN (MAIN ARTICLE) === */}
                     <div className="lg:col-span-8">
-                        <article className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+                        <article className="bg-white p-4 sm:p-6 rounded-lg shadow-sm border border-gray-100">
 
                             {/* Breadcrumbs */}
-                            <nav className="flex items-center text-sm text-gray-500 mb-6">
-                                <Link href="/" className="hover:text-primary-600">Home</Link>
-                                <ChevronRight className="w-4 h-4 mx-2" />
-                                <Link href="/news" className="hover:text-primary-600">News</Link>
-                                <ChevronRight className="w-4 h-4 mx-2" />
-                                <span className="text-gray-900 truncate max-w-[200px]">{article.title}</span>
+                            <nav className="flex items-center text-sm text-gray-500 mb-6 overflow-x-auto">
+                                <Link href="/" className="hover:text-primary-600 whitespace-nowrap">Home</Link>
+                                <ChevronRight className="w-4 h-4 mx-2 flex-shrink-0" />
+                                <Link href="/news" className="hover:text-primary-600 whitespace-nowrap">News</Link>
+                                <ChevronRight className="w-4 h-4 mx-2 flex-shrink-0" />
+                                <span className="text-gray-900 truncate">{article.title}</span>
                             </nav>
 
                             {/* Title & Metadata */}
-                            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
                                 {article.title}
                             </h1>
 
-                            <div className="flex items-center text-sm text-gray-500 mb-6 pb-6 border-b border-gray-100 flex-wrap gap-4">
+                            <div className="flex items-center text-sm text-gray-500 mb-6 pb-6 border-b border-gray-100 flex-wrap gap-2 sm:gap-4">
                                 <span className="flex items-center">
                                     <User className="w-4 h-4 mr-2" />
                                     {article.author || 'Gpaisa Desk'}
@@ -226,8 +226,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                             )}
 
                             {/* Article Content */}
-                            <div className="prose prose-lg max-w-none text-gray-800">
-                                <p className="lead font-medium text-xl text-gray-600 mb-6">
+                            <div className="prose prose-sm sm:prose-base lg:prose-lg max-w-none text-gray-800">
+                                <p className="lead font-medium text-lg sm:text-xl text-gray-600 mb-6">
                                     {article.excerpt}
                                 </p>
 
@@ -248,7 +248,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                             <h3 className="text-2xl font-bold text-gray-900 mb-6 pb-2 border-b border-gray-200">
                                 Similar News
                             </h3>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                                 {filteredSimilarNews.map(news => (
                                     <Link key={news.id} href={`/articles/${news.id}`} className="group block bg-white rounded shadow-sm border border-gray-100 overflow-hidden hover:shadow-md transition">
                                         <div className="h-40 bg-gray-200 overflow-hidden">
@@ -308,11 +308,11 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                             </div>
 
                             {/* Newsletter / Ad Placeholder */}
-                            <div className="bg-primary-50 rounded-lg p-6 text-center border border-primary-100">
+                            <div className="bg-primary-50 rounded-lg p-4 sm:p-6 text-center border border-primary-100">
                                 <h4 className="font-bold text-primary-900 mb-2">Stay Updated</h4>
                                 <p className="text-sm text-primary-700 mb-4">Get the latest financial news delivered to your inbox.</p>
-                                <input type="email" placeholder="Your email address" className="w-full text-sm p-2 rounded border border-primary-200 mb-2" />
-                                <button className="w-full bg-primary-600 text-white font-bold text-xs uppercase py-2.5 rounded hover:bg-primary-700 transition">
+                                <input type="email" placeholder="Your email" className="w-full text-sm p-2 sm:p-2.5 rounded border border-primary-200 mb-2" />
+                                <button className="w-full bg-primary-600 text-white font-bold text-xs uppercase py-2 sm:py-2.5 rounded hover:bg-primary-700 transition">
                                     Subscribe Now
                                 </button>
                             </div>
