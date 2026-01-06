@@ -13,7 +13,15 @@ export default function robots(): MetadataRoute.Robots {
                 allow: '/',
                 disallow: ['/api/', '/admin/'],
             },
+            {
+                userAgent: 'Googlebot-News',
+                allow: '/',
+                disallow: ['/api/', '/admin/'],
+            },
         ],
-        sitemap: 'https://gpaisa.in/sitemap.xml',
+        sitemap: [
+            'https://gpaisa.in/sitemap.xml',
+            'https://gpaisa.in/news-sitemap.xml',
+        ],
     };
 }
