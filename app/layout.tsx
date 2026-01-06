@@ -15,11 +15,19 @@ export const metadata: Metadata = {
     icons: {
         icon: [
             { url: '/favicon.ico', sizes: 'any' },
-            { url: '/icon-192.png', sizes: '192x192', type: 'image/png' },
-            { url: '/icon-512.png', sizes: '512x512', type: 'image/png' },
+            { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+            { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+            { url: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
+            { url: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' },
         ],
         apple: [
-            { url: '/apple-icon.png', sizes: '180x180', type: 'image/png' },
+            { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+        ],
+        other: [
+            {
+                rel: 'icon',
+                url: '/favicon.ico',
+            },
         ],
     },
     openGraph: {
@@ -27,9 +35,10 @@ export const metadata: Metadata = {
         description: "Real-time market updates, gold rates, and financial news for India",
         type: "website",
         locale: "en_IN",
+        siteName: "gpaisa.in",
         images: [
             {
-                url: '/icon-512.png',
+                url: '/android-chrome-512x512.png',
                 width: 512,
                 height: 512,
                 alt: 'gpaisa.in logo',
@@ -40,7 +49,7 @@ export const metadata: Metadata = {
         card: 'summary',
         title: 'gpaisa.in - Live Market Updates',
         description: 'Real-time stock market updates, gold rates, and financial news for India',
-        images: ['/icon-512.png'],
+        images: ['/android-chrome-512x512.png'],
     },
 };
 

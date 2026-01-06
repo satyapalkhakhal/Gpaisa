@@ -19,11 +19,64 @@ const CITIES: IndianCity[] = [
 
 export const metadata: Metadata = {
     title: 'Gold Rate Today in India - City Wise 24K, 22K, 18K, 916 Prices | gpaisa.in',
-    description: 'Check today\'s gold rate in all major Indian cities. Live 24K, 22K and 18K gold prices with daily updates and calculator.',
+    description: 'Check today\'s gold rate in all major Indian cities. Live 24K, 22K, 18K and 916 gold prices updated daily with calculator, historical data and price trends.',
+    keywords: [
+        // Primary keywords
+        'gold rate today',
+        'gold price today',
+        'today gold rate',
+        'gold rate',
+        'gold price',
+        'gold rate today in india',
+        'india gold rate',
+
+        // Purity keywords
+        '24k gold rate today',
+        '22k gold rate today',
+        '18k gold rate today',
+        '916 gold rate today',
+        '999 gold rate today',
+        '24 carat gold rate',
+        '22 carat gold rate',
+
+        // City-wise keywords
+        'gold rate delhi',
+        'gold rate mumbai',
+        'gold rate bangalore',
+        'gold rate chennai',
+        'gold rate hyderabad',
+        'gold rate kolkata',
+        'gold rate pune',
+        'gold rate ahmedabad',
+        'gold rate kerala',
+        'city wise gold rate',
+        'all india gold rate',
+
+        // Weight-based keywords
+        '1 gram gold rate',
+        '10 gram gold price',
+        '8 gram gold rate',
+        'gold rate per gram',
+
+        // Long-tail keywords
+        'live gold rate india',
+        'gold rate today live',
+        'gold price calculator',
+        'gold rate history',
+        'gold rate chart',
+        'gold rate comparison',
+
+        // Informational keywords
+        'today gold rate in india',
+        'gold price in india',
+        'indian gold rate',
+        'gold rate update'
+    ].join(', '),
     openGraph: {
-        title: 'Gold Rate Today in India - City Wise 24K, 22K, 18K, 916 Prices',
+        title: 'Gold Rate Today in India - City Wise 24K, 22K, 18K Prices',
         description: 'Check today\'s gold rate in all major Indian cities. Live 24K, 22K and 18K gold prices with daily updates and calculator.',
         type: 'website',
+        url: 'https://gpaisa.in/gold-rate',
     },
     twitter: {
         card: 'summary_large_image',

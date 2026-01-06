@@ -41,13 +41,53 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
         };
     }
 
+    // Comprehensive SEO keywords for the city
+    const keywords = [
+        // Primary keywords
+        `gold rate today ${params.city}`,
+        `gold price in ${params.city} today`,
+        `${params.city} gold rate`,
+        `today gold rate in ${params.city}`,
+
+        // Purity-specific keywords
+        `24k gold rate in ${params.city}`,
+        `22k gold rate in ${params.city}`,
+        `18k gold rate in ${params.city}`,
+        `916 gold rate ${params.city}`,
+        `999 gold rate ${params.city}`,
+
+        // Weight-specific keywords
+        `1 gram gold rate in ${params.city}`,
+        `10 gram gold price ${params.city}`,
+        `8 gram gold rate ${params.city}`,
+
+        // Long-tail keywords
+        `gold rate today in ${params.city} 22 carat`,
+        `gold rate today in ${params.city} 24 carat`,
+        `live gold rate ${params.city}`,
+        `today gold rate ${params.city} per gram`,
+
+        // Informational keywords
+        `gold price calculator ${params.city}`,
+        `gold rate history ${params.city}`,
+        `gold rate chart ${params.city}`,
+
+        // General keywords
+        'gold rate today',
+        'gold price today india',
+        'live gold rate',
+        'gold rate india'
+    ];
+
     return {
         title: `Gold Rate in ${cityName} Today - 24K, 22K, 18K Live Prices | gpaisa.in`,
-        description: `Check today's gold rate in ${cityName} for 24K, 22K and 18K. Live gold and silver prices with daily updates and charts.`,
+        description: `Check today's gold rate in ${cityName} for 24K, 22K and 18K. Live gold prices updated daily with calculator, historical data and price trends. Get accurate ${cityName} gold rates per gram.`,
+        keywords: keywords.join(', '),
         openGraph: {
             title: `Gold Rate in ${cityName} Today - 24K, 22K, 18K Live Prices`,
             description: `Check today's gold rate in ${cityName} for 24K, 22K and 18K. Live gold and silver prices with daily updates and charts.`,
             type: 'website',
+            url: `https://gpaisa.in/gold-rate/${params.city.toLowerCase()}`,
         },
         twitter: {
             card: 'summary_large_image',
