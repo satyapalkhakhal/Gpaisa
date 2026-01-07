@@ -1,6 +1,4 @@
-# gpaisa.in - Financial Information Portal
-
-A production-grade, SEO-optimized financial information website built with Next.js 15, TypeScript, and Tailwind CSS.
+# gpaisa.in - Financial Information Portal 
 
 ## 🎨 Brand Colors
 
