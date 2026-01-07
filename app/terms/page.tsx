@@ -73,7 +73,7 @@ export default function TermsPage() {
 
                             <h3 className="text-xl font-bold text-gray-900 mb-3">3.3 Trademarks</h3>
                             <p className="text-gray-700">
-                                "gpaisa.in" and related logos are trademarks of gpaisa.in. You may not use these trademarks without our prior written consent.
+                                &quot;gpaisa.in&quot; and related logos are trademarks of gpaisa.in. You may not use these trademarks without our prior written consent.
                             </p>
                         </section>
 

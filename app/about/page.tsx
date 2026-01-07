@@ -41,7 +41,7 @@ export default function AboutPage() {
                         At gpaisa.in, we are committed to empowering Indian investors and consumers with accurate, timely, and actionable financial information. Our mission is to democratize access to financial knowledge and help individuals make informed decisions about their money.
                     </p>
                     <p className="text-lg text-gray-700 leading-relaxed">
-                        We believe that everyone deserves access to reliable financial data, whether you're tracking gold prices for your next purchase, monitoring stock market trends, or seeking expert advice on personal finance.
+                        We believe that everyone deserves access to reliable financial data, whether you&apos;re tracking gold prices for your next purchase, monitoring stock market trends, or seeking expert advice on personal finance.
                     </p>
                 </div>
 
@@ -107,7 +107,7 @@ export default function AboutPage() {
                             </div>
                             <h3 className="text-xl font-bold text-gray-900 mb-2">User-Centric</h3>
                             <p className="text-gray-700">
-                                Every feature and article is designed with our users' needs in mind, making financial information accessible to all.
+                                Every feature and article is designed with our users&apos; needs in mind, making financial information accessible to all.
                             </p>
                         </div>
                     </div>
@@ -177,7 +177,7 @@ export default function AboutPage() {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Get in Touch</h2>
                     <p className="text-gray-700 mb-6">
-                        Have questions or feedback? We'd love to hear from you.
+                        Have questions or feedback? We&apos;d love to hear from you.
                     </p>
                     <Link 
                         href="/contact" 

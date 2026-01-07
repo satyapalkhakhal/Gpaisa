@@ -74,7 +74,7 @@ export default function DisclaimerPage() {
                                 <li>Verify all information from official and authoritative sources</li>
                             </ul>
                             <p className="text-gray-700">
-                                Every individual's financial situation is unique, and what may be suitable for one person may not be appropriate for another.
+                                Every individual&apos;s financial situation is unique, and what may be suitable for one person may not be appropriate for another.
                             </p>
                         </section>
 
@@ -130,7 +130,7 @@ export default function DisclaimerPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-gray-900 mb-4">5. No Guarantees or Warranties</h2>
                             <p className="text-gray-700 mb-4">
-                                gpaisa.in is provided on an "AS IS" and "AS AVAILABLE" basis. We make no representations or warranties of any kind, express or implied, including but not limited to:
+                                gpaisa.in is provided on an &quot;AS IS&quot; and &quot;AS AVAILABLE&quot; basis. We make no representations or warranties of any kind, express or implied, including but not limited to:
                             </p>
                             <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
                                 <li>Warranties of merchantability or fitness for a particular purpose</li>

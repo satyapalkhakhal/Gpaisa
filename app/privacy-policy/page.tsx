@@ -23,7 +23,7 @@ export default function PrivacyPolicyPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
                             <p className="text-gray-700 mb-4">
-                                Welcome to gpaisa.in ("we," "our," or "us"). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website{' '}
+                                Welcome to gpaisa.in (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website{' '}
                                 <a href="https://gpaisa.in" className="text-primary-600 hover:underline">https://gpaisa.in</a>.
                             </p>
                             <p className="text-gray-700">
@@ -115,7 +115,7 @@ export default function PrivacyPolicyPage() {
                             <p className="text-gray-700 mb-4">
                                 We use Google Analytics to analyze website traffic. Google Analytics uses cookies to collect information about your use of our website. For more information, visit{' '}
                                 <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-primary-600 hover:underline">
-                                    Google's Privacy Policy
+                                    Google&apos;s Privacy Policy
                                 </a>.
                             </p>
 
@@ -177,7 +177,7 @@ export default function PrivacyPolicyPage() {
                         </section>
 
                         <section className="mb-8">
-                            <h2 className="text-2xl font-bold text-gray-900 mb-4">9. Children's Privacy</h2>
+                            <h2 className="text-2xl font-bold text-gray-900 mb-4">9. Children&apos;s Privacy</h2>
                             <p className="text-gray-700">
                                 Our website is not intended for children under the age of 13. We do not knowingly collect personal information from children under 13. If you are a parent or guardian and believe your child has provided us with personal information, please contact us immediately.
                             </p>
@@ -193,7 +193,7 @@ export default function PrivacyPolicyPage() {
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-gray-900 mb-4">11. Changes to This Privacy Policy</h2>
                             <p className="text-gray-700">
-                                We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the "Last Updated" date. We encourage you to review this Privacy Policy periodically for any changes.
+                                We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new Privacy Policy on this page and updating the &quot;Last Updated&quot; date. We encourage you to review this Privacy Policy periodically for any changes.
                             </p>
                         </section>
 

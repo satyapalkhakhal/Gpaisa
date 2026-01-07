@@ -26,7 +26,7 @@ export default function ContactPage() {
                         Contact <span className="text-primary-600">Us</span>
                     </h1>
                     <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                        Have questions or feedback? We'd love to hear from you. Reach out to us through any of the channels below.
+                        Have questions or feedback? We&apos;d love to hear from you. Reach out to us through any of the channels below.
                     </p>
                 </div>
 
