@@ -35,10 +35,11 @@ export const metadata: Metadata = {
         description: "Real-time market updates, gold rates, and financial news for India",
         type: "website",
         locale: "en_IN",
+        url: "https://gpaisa.in",
         siteName: "gpaisa.in",
         images: [
             {
-                url: '/android-chrome-512x512.png',
+                url: 'https://gpaisa.in/android-chrome-512x512.png',
                 width: 512,
                 height: 512,
                 alt: 'gpaisa.in logo',
@@ -49,7 +50,7 @@ export const metadata: Metadata = {
         card: 'summary',
         title: 'gpaisa.in - Live Market Updates',
         description: 'Real-time stock market updates, gold rates, and financial news for India',
-        images: ['/android-chrome-512x512.png'],
+        images: ['https://gpaisa.in/android-chrome-512x512.png'],
     },
 };
 

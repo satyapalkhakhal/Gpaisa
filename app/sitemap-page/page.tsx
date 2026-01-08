@@ -1,0 +1,195 @@
+import Link from 'next/link';
+import { fetchLatestArticles } from '@/lib/supabaseApi';
+import { FileText, TrendingUp, Newspaper, MapPin } from 'lucide-react';
+
+const CITIES = [
+    'Delhi', 'Chennai', 'Mumbai', 'Pune', 'Hyderabad',
+    'Bangalore', 'Coimbatore', 'Kolkata', 'Ahmedabad', 'Kerala'
+];
+
+export const metadata = {
+    title: 'Sitemap - All Pages | gpaisa.in',
+    description: 'Browse all pages on gpaisa.in including gold rates, silver rates, news articles, and financial information.',
+    robots: {
+        index: true,
+        follow: true,
+    },
+};
+
+export default async function SitemapPage() {
+    // Fetch latest articles for the sitemap
+    let articles: any[] = [];
+    try {
+        articles = await fetchLatestArticles(50);
+    } catch (error) {
+        console.error('Error fetching articles for HTML sitemap:', error);
+    }
+
+    return (
+        <div className="bg-gray-50 py-12">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                {/* Header */}
+                <header className="mb-12 text-center">
+                    <h1 className="text-4xl font-display font-bold text-gray-900 mb-4">
+                        Site Map
+                    </h1>
+                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Browse all pages on gpaisa.in. Find gold rates, silver rates, market updates, and financial news.
+                    </p>
+                </header>
+
+                <div className="grid md:grid-cols-2 gap-8">
+                    {/* Main Pages */}
+                    <section className="card">
+                        <div className="flex items-center space-x-3 mb-6">
+                            <FileText className="h-6 w-6 text-primary-600" />
+                            <h2 className="text-2xl font-display font-semibold text-gray-900">
+                                Main Pages
+                            </h2>
+                        </div>
+                        <ul className="space-y-3">
+                            <li>
+                                <Link href="/" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    Home
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/news" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    News
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/markets" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    Markets
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/commodities" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    Commodities
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/finance" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    Finance
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/agriculture" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    Agriculture
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/about" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    About Us
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/contact" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    Contact
+                                </Link>
+                            </li>
+                        </ul>
+                    </section>
+
+                    {/* Gold Rate Pages */}
+                    <section className="card">
+                        <div className="flex items-center space-x-3 mb-6">
+                            <TrendingUp className="h-6 w-6 text-yellow-600" />
+                            <h2 className="text-2xl font-display font-semibold text-gray-900">
+                                Gold Rates by City
+                            </h2>
+                        </div>
+                        <ul className="space-y-3">
+                            <li>
+                                <Link href="/gold-rate" className="text-primary-600 hover:text-primary-700 hover:underline font-semibold">
+                                    All Gold Rates
+                                </Link>
+                            </li>
+                            {CITIES.map((city) => (
+                                <li key={city}>
+                                    <Link
+                                        href={`/gold-rate/${city.toLowerCase()}`}
+                                        className="text-primary-600 hover:text-primary-700 hover:underline"
+                                    >
+                                        Gold Rate in {city}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+
+                    {/* Silver Rate Pages */}
+                    <section className="card">
+                        <div className="flex items-center space-x-3 mb-6">
+                            <MapPin className="h-6 w-6 text-gray-600" />
+                            <h2 className="text-2xl font-display font-semibold text-gray-900">
+                                Silver Rates by City
+                            </h2>
+                        </div>
+                        <ul className="space-y-3">
+                            <li>
+                                <Link href="/silver-rate" className="text-primary-600 hover:text-primary-700 hover:underline font-semibold">
+                                    All Silver Rates
+                                </Link>
+                            </li>
+                            {CITIES.map((city) => (
+                                <li key={city}>
+                                    <Link
+                                        href={`/silver-rate/${city.toLowerCase()}`}
+                                        className="text-primary-600 hover:text-primary-700 hover:underline"
+                                    >
+                                        Silver Rate in {city}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+
+                    {/* Recent Articles */}
+                    <section className="card">
+                        <div className="flex items-center space-x-3 mb-6">
+                            <Newspaper className="h-6 w-6 text-primary-600" />
+                            <h2 className="text-2xl font-display font-semibold text-gray-900">
+                                Recent Articles
+                            </h2>
+                        </div>
+                        {articles.length > 0 ? (
+                            <ul className="space-y-3 max-h-96 overflow-y-auto">
+                                {articles.map((article) => (
+                                    <li key={article.id}>
+                                        <Link
+                                            href={`/articles/${article.slug}`}
+                                            className="text-primary-600 hover:text-primary-700 hover:underline line-clamp-1"
+                                        >
+                                            {article.title}
+                                        </Link>
+                                    </li>
+                                ))}
+                                <li className="pt-3 border-t">
+                                    <Link
+                                        href="/news"
+                                        className="text-primary-700 hover:text-primary-800 hover:underline font-semibold"
+                                    >
+                                        View All Articles →
+                                    </Link>
+                                </li>
+                            </ul>
+                        ) : (
+                            <p className="text-gray-600">Loading articles...</p>
+                        )}
+                    </section>
+                </div>
+
+                {/* Footer Note */}
+                <div className="mt-12 text-center text-sm text-gray-600">
+                    <p>
+                        For the XML sitemap used by search engines, visit{' '}
+                        <Link href="/sitemap.xml" className="text-primary-600 hover:underline">
+                            sitemap.xml
+                        </Link>
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+}

@@ -28,13 +28,59 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
 
     const cityName = cityData.city;
 
+    // Comprehensive SEO keywords for the city
+    const keywords = [
+        // Primary keywords
+        `silver rate today ${params.city}`,
+        `silver price in ${params.city} today`,
+        `${params.city} silver rate`,
+        `today silver rate in ${params.city}`,
+
+        // Purity-specific keywords
+        `999 silver rate in ${params.city}`,
+        `925 silver rate in ${params.city}`,
+        `sterling silver price ${params.city}`,
+        `fine silver rate ${params.city}`,
+
+        // Weight-specific keywords
+        `1 gram silver rate in ${params.city}`,
+        `1 kg silver price ${params.city}`,
+        `10 gram silver rate ${params.city}`,
+
+        // Long-tail keywords
+        `live silver rate ${params.city}`,
+        `today silver rate ${params.city} per gram`,
+        `silver rate today ${params.city} per kg`,
+
+        // Informational keywords
+        `silver price calculator ${params.city}`,
+        `silver rate history ${params.city}`,
+        `silver rate chart ${params.city}`,
+
+        // General keywords
+        'silver rate today',
+        'silver price today india',
+        'live silver rate',
+        'silver rate india'
+    ];
+
     return {
         title: `Silver Rate in ${cityName} Today - Live Price Per Gram/Kg | gpaisa.in`,
-        description: `Today's silver price in ${cityName} with live rate updates, historical trends and daily market movements.`,
+        description: `Today's silver price in ${cityName} with live rate updates, historical trends and daily market movements. Check 999 and 925 silver rates per gram and kg.`,
+        keywords: keywords.join(', '),
+        robots: {
+            index: true,
+            follow: true,
+            googleBot: {
+                index: true,
+                follow: true,
+            },
+        },
         openGraph: {
             title: `Silver Rate in ${cityName} Today - Live Prices Per Gram/Kg`,
             description: `Today's silver price in ${cityName} with live rate updates, historical trends and daily market movements.`,
             type: 'website',
+            url: `https://gpaisa.in/silver-rate/${params.city}`,
         },
         twitter: {
             card: 'summary_large_image',

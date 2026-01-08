@@ -83,6 +83,14 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
         title: `Gold Rate in ${cityName} Today - 24K, 22K, 18K Live Prices | gpaisa.in`,
         description: `Check today's gold rate in ${cityName} for 24K, 22K and 18K. Live gold prices updated daily with calculator, historical data and price trends. Get accurate ${cityName} gold rates per gram.`,
         keywords: keywords.join(', '),
+        robots: {
+            index: true,
+            follow: true,
+            googleBot: {
+                index: true,
+                follow: true,
+            },
+        },
         openGraph: {
             title: `Gold Rate in ${cityName} Today - 24K, 22K, 18K Live Prices`,
             description: `Check today's gold rate in ${cityName} for 24K, 22K and 18K. Live gold and silver prices with daily updates and charts.`,

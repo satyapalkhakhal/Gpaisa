@@ -227,6 +227,46 @@ export default async function HomePage() {
                             </div>
                         </div>
 
+                        {/* QUICK LINKS TO GOLD & SILVER RATES */}
+                        <div className="mb-8 bg-gradient-to-br from-yellow-50 to-gray-50 p-6 rounded-lg border border-yellow-200">
+                            <h2 className="text-xl font-display font-bold text-gray-900 mb-4 flex items-center">
+                                <TrendingUp className="h-5 w-5 text-yellow-600 mr-2" />
+                                Gold & Silver Rates by City
+                            </h2>
+
+                            {/* Gold Rates */}
+                            <div className="mb-4">
+                                <h3 className="text-sm font-bold text-yellow-800 mb-2 uppercase tracking-wide">Gold Rates</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                                    {['Delhi', 'Mumbai', 'Chennai', 'Bangalore', 'Hyderabad', 'Pune', 'Kolkata', 'Ahmedabad', 'Coimbatore', 'Kerala'].map((city) => (
+                                        <Link
+                                            key={city}
+                                            href={`/gold-rate/${city.toLowerCase()}`}
+                                            className="text-xs bg-white hover:bg-yellow-100 border border-yellow-200 hover:border-yellow-400 rounded px-3 py-2 text-center font-medium text-gray-700 hover:text-yellow-800 transition-colors"
+                                        >
+                                            {city}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* Silver Rates */}
+                            <div>
+                                <h3 className="text-sm font-bold text-gray-700 mb-2 uppercase tracking-wide">Silver Rates</h3>
+                                <div className="grid grid-cols-2 md:grid-cols-5 gap-2">
+                                    {['Delhi', 'Mumbai', 'Chennai', 'Bangalore', 'Hyderabad', 'Pune', 'Kolkata', 'Ahmedabad', 'Coimbatore', 'Kerala'].map((city) => (
+                                        <Link
+                                            key={city}
+                                            href={`/silver-rate/${city.toLowerCase()}`}
+                                            className="text-xs bg-white hover:bg-gray-100 border border-gray-200 hover:border-gray-400 rounded px-3 py-2 text-center font-medium text-gray-700 hover:text-gray-800 transition-colors"
+                                        >
+                                            {city}
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
 
 
