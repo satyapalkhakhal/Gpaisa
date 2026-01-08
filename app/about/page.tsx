@@ -1,0 +1,199 @@
+import { Metadata } from 'next';
+import Link from 'next/link';
+import { Users, Target, Award, TrendingUp } from 'lucide-react';
+
+export const metadata: Metadata = {
+    title: 'About Us - gpaisa.in | Your Trusted Financial Information Portal',
+    description: 'Learn about gpaisa.in - India\'s leading financial information portal providing real-time gold rates, silver prices, market updates, and expert financial insights.',
+    keywords: 'about gpaisa, financial portal India, gold rate information, market news India',
+    alternates: {
+        canonical: 'https://gpaisa.in/about',
+    },
+    openGraph: {
+        title: 'About Us - gpaisa.in',
+        description: 'India\'s trusted source for financial information, market updates, and investment insights.',
+        type: 'website',
+        url: 'https://gpaisa.in/about',
+    },
+};
+
+export default function AboutPage() {
+    return (
+        <div className="bg-gray-50 py-12">
+            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                {/* Header */}
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+                        About <span className="text-primary-600">gpaisa.in</span>
+                    </h1>
+                    <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                        Your trusted source for comprehensive financial information, market insights, and investment guidance in India.
+                    </p>
+                </div>
+
+                {/* Mission Section */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
+                    <div className="flex items-center mb-6">
+                        <Target className="w-8 h-8 text-primary-600 mr-3" />
+                        <h2 className="text-3xl font-bold text-gray-900">Our Mission</h2>
+                    </div>
+                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                        At gpaisa.in, we are committed to empowering Indian investors and consumers with accurate, timely, and actionable financial information. Our mission is to democratize access to financial knowledge and help individuals make informed decisions about their money.
+                    </p>
+                    <p className="text-lg text-gray-700 leading-relaxed">
+                        We believe that everyone deserves access to reliable financial data, whether you&apos;re tracking gold prices for your next purchase, monitoring stock market trends, or seeking expert advice on personal finance.
+                    </p>
+                </div>
+
+                {/* What We Offer */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
+                    <h2 className="text-3xl font-bold text-gray-900 mb-6">What We Offer</h2>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div className="border-l-4 border-primary-600 pl-4">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Real-Time Market Data</h3>
+                            <p className="text-gray-700">
+                                Live updates on gold rates, silver prices, stock market indices (Sensex, Nifty), and commodity prices across major Indian cities.
+                            </p>
+                        </div>
+                        <div className="border-l-4 border-primary-600 pl-4">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Expert Financial Analysis</h3>
+                            <p className="text-gray-700">
+                                In-depth market analysis, investment insights, and expert commentary to help you understand market trends and opportunities.
+                            </p>
+                        </div>
+                        <div className="border-l-4 border-primary-600 pl-4">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Personal Finance Guides</h3>
+                            <p className="text-gray-700">
+                                Comprehensive guides on tax planning, investment strategies, loans, insurance, and wealth management tailored for Indian investors.
+                            </p>
+                        </div>
+                        <div className="border-l-4 border-primary-600 pl-4">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Agricultural Market Prices</h3>
+                            <p className="text-gray-700">
+                                Up-to-date mandi prices and agricultural commodity rates to support farmers and agribusiness professionals.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Our Values */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
+                    <div className="flex items-center mb-6">
+                        <Award className="w-8 h-8 text-primary-600 mr-3" />
+                        <h2 className="text-3xl font-bold text-gray-900">Our Values</h2>
+                    </div>
+                    <div className="grid md:grid-cols-3 gap-6">
+                        <div className="text-center">
+                            <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <TrendingUp className="w-8 h-8 text-primary-600" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Accuracy</h3>
+                            <p className="text-gray-700">
+                                We verify all data from reliable sources to ensure you receive accurate and trustworthy information.
+                            </p>
+                        </div>
+                        <div className="text-center">
+                            <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Users className="w-8 h-8 text-primary-600" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Transparency</h3>
+                            <p className="text-gray-700">
+                                We maintain full transparency in our content, clearly citing sources and providing unbiased analysis.
+                            </p>
+                        </div>
+                        <div className="text-center">
+                            <div className="bg-primary-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <Target className="w-8 h-8 text-primary-600" />
+                            </div>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">User-Centric</h3>
+                            <p className="text-gray-700">
+                                Every feature and article is designed with our users&apos; needs in mind, making financial information accessible to all.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Team Section */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
+                    <div className="flex items-center mb-6">
+                        <Users className="w-8 h-8 text-primary-600 mr-3" />
+                        <h2 className="text-3xl font-bold text-gray-900">Our Team</h2>
+                    </div>
+                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                        gpaisa.in is powered by a dedicated team of financial analysts, market researchers, and content specialists with extensive experience in the Indian financial sector. Our team includes:
+                    </p>
+                    <ul className="space-y-3 text-gray-700">
+                        <li className="flex items-start">
+                            <span className="text-primary-600 mr-2">•</span>
+                            <span><strong>Financial Analysts:</strong> Experts who monitor markets and provide insightful analysis</span>
+                        </li>
+                        <li className="flex items-start">
+                            <span className="text-primary-600 mr-2">•</span>
+                            <span><strong>Content Specialists:</strong> Writers who translate complex financial concepts into easy-to-understand articles</span>
+                        </li>
+                        <li className="flex items-start">
+                            <span className="text-primary-600 mr-2">•</span>
+                            <span><strong>Data Researchers:</strong> Professionals who ensure accuracy and timeliness of all market data</span>
+                        </li>
+                        <li className="flex items-start">
+                            <span className="text-primary-600 mr-2">•</span>
+                            <span><strong>Technology Team:</strong> Developers who maintain our platform and ensure seamless user experience</span>
+                        </li>
+                    </ul>
+                </div>
+
+                {/* Why Choose Us */}
+                <div className="bg-gradient-to-r from-primary-600 to-primary-700 rounded-lg shadow-lg p-8 text-white mb-8">
+                    <h2 className="text-3xl font-bold mb-6">Why Choose gpaisa.in?</h2>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 className="text-xl font-bold mb-2">✓ Comprehensive Coverage</h3>
+                            <p className="text-primary-100">
+                                From gold rates to stock markets, we cover all aspects of Indian finance in one place.
+                            </p>
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold mb-2">✓ Real-Time Updates</h3>
+                            <p className="text-primary-100">
+                                Get the latest market data and news as it happens, keeping you ahead of the curve.
+                            </p>
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold mb-2">✓ Expert Insights</h3>
+                            <p className="text-primary-100">
+                                Benefit from professional analysis and actionable investment advice from industry experts.
+                            </p>
+                        </div>
+                        <div>
+                            <h3 className="text-xl font-bold mb-2">✓ User-Friendly Platform</h3>
+                            <p className="text-primary-100">
+                                Navigate easily on any device with our responsive, intuitive design.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Contact CTA */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Get in Touch</h2>
+                    <p className="text-gray-700 mb-6">
+                        Have questions or feedback? We&apos;d love to hear from you.
+                    </p>
+                    <Link 
+                        href="/contact" 
+                        className="inline-block bg-primary-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-primary-700 transition"
+                    >
+                        Contact Us
+                    </Link>
+                </div>
+
+                {/* Disclaimer */}
+                <div className="mt-8 bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+                    <p className="text-sm text-gray-700">
+                        <strong>Disclaimer:</strong> The information provided on gpaisa.in is for educational and informational purposes only. It should not be considered as financial advice. We recommend consulting with a qualified financial advisor before making any investment decisions. Market data and prices are subject to change and may not reflect real-time values.
+                    </p>
+                </div>
+            </div>
+        </div>
+    );
+}

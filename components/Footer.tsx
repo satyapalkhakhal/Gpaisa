@@ -32,17 +32,19 @@ export default function Footer() {
                             <li><Link href="/commodities" className="hover:text-primary-400 transition-colors">Gold & Commodities</Link></li>
                             <li><Link href="/agriculture" className="hover:text-primary-400 transition-colors">Agriculture Prices</Link></li>
                             <li><Link href="/finance" className="hover:text-primary-400 transition-colors">Personal Finance</Link></li>
+                            <li><Link href="/news" className="hover:text-primary-400 transition-colors">News</Link></li>
                         </ul>
                     </div>
 
-                    {/* Legal */}
+                    {/* Legal & Info */}
                     <div>
-                        <h4 className="text-sm font-semibold text-white mb-4">Legal</h4>
+                        <h4 className="text-sm font-semibold text-white mb-4">Legal & Info</h4>
                         <ul className="space-y-2 text-sm">
-                            <li><Link href="/privacy" className="hover:text-primary-400 transition-colors">Privacy Policy</Link></li>
+                            <li><Link href="/about" className="hover:text-primary-400 transition-colors">About Us</Link></li>
+                            <li><Link href="/contact" className="hover:text-primary-400 transition-colors">Contact Us</Link></li>
+                            <li><Link href="/privacy-policy" className="hover:text-primary-400 transition-colors">Privacy Policy</Link></li>
                             <li><Link href="/terms" className="hover:text-primary-400 transition-colors">Terms of Service</Link></li>
                             <li><Link href="/disclaimer" className="hover:text-primary-400 transition-colors">Disclaimer</Link></li>
-                            <li><Link href="/contact" className="hover:text-primary-400 transition-colors">Contact Us</Link></li>
                         </ul>
                     </div>
                 </div>
