@@ -26,7 +26,7 @@ export default function Header() {
                     <div className="flex items-center">
                         <Link href="/" className="flex items-center space-x-3">
                             <Image
-                                src="/icon-192.png"
+                                src="/android-chrome-192x192.png"
                                 alt="gpaisa.in logo"
                                 width={40}
                                 height={40}
