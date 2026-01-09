@@ -370,6 +370,48 @@ export default function SIPCalculatorClient() {
                     </div>
                 </div>
 
+                {/* Other Calculators - Below Main Calculator */}
+                <div className="mt-8 bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <h3 className="text-lg font-bold text-gray-900 mb-4">Other Calculators</h3>
+                    <div className="grid md:grid-cols-3 gap-4">
+                        <Link
+                            href="/calculator/ppf"
+                            className="block p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 hover:shadow-lg transition-all group"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="text-3xl">💰</div>
+                                <div>
+                                    <div className="font-bold text-gray-900 group-hover:text-primary-600">PPF Calculator</div>
+                                    <div className="text-sm text-gray-600">Calculate PPF returns</div>
+                                </div>
+                            </div>
+                        </Link>
+
+                        <Link
+                            href="/calculator/swp"
+                            className="block p-4 bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 hover:shadow-lg transition-all group"
+                        >
+                            <div className="flex items-center gap-3">
+                                <div className="text-3xl">💸</div>
+                                <div>
+                                    <div className="font-bold text-gray-900 group-hover:text-primary-600">SWP Calculator</div>
+                                    <div className="text-sm text-gray-600">Calculate SWP returns</div>
+                                </div>
+                            </div>
+                        </Link>
+
+                        <div className="p-4 bg-gray-50 rounded-xl border border-gray-200 opacity-60">
+                            <div className="flex items-center gap-3">
+                                <div className="text-3xl">📈</div>
+                                <div>
+                                    <div className="font-bold text-gray-700">More Calculators</div>
+                                    <div className="text-sm text-gray-500">Coming Soon</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Educational Content */}
                 <div className="mt-12 space-y-8">
                     {/* What is SIP */}

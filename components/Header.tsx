@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 
 const navigation = [
     { name: 'Markets', href: '/markets' },
@@ -11,13 +11,23 @@ const navigation = [
     { name: 'Silver Rate', href: '/silver-rate' },
     { name: 'Commodities', href: '/commodities' },
     { name: 'Agriculture', href: '/agriculture' },
-    { name: 'SIP Calculator', href: '/calculator/sip' },
+    {
+        name: 'Calculators',
+        href: '/calculator/sip',
+        dropdown: [
+            { name: 'SIP Calculator', href: '/calculator/sip', description: 'Calculate mutual fund SIP returns' },
+            { name: 'PPF Calculator', href: '/calculator/ppf', description: 'Calculate PPF maturity amount' },
+            { name: 'SWP Calculator', href: '/calculator/swp', description: 'Calculate systematic withdrawal plan' },
+            { name: 'EPF Calculator', href: '/calculator/epf', description: 'Calculate employees provident fund' },
+        ]
+    },
     { name: 'Personal Finance', href: '/finance' },
     { name: 'News', href: '/news' },
 ];
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [calculatorDropdownOpen, setCalculatorDropdownOpen] = useState(false);
 
     return (
         <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
@@ -43,13 +53,42 @@ export default function Header() {
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex md:items-center md:space-x-1">
                         {navigation.map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors duration-200"
-                            >
-                                {item.name}
-                            </Link>
+                            item.dropdown ? (
+                                <div
+                                    key={item.name}
+                                    className="relative"
+                                    onMouseEnter={() => setCalculatorDropdownOpen(true)}
+                                    onMouseLeave={() => setCalculatorDropdownOpen(false)}
+                                >
+                                    <button
+                                        className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors duration-200 flex items-center gap-1"
+                                    >
+                                        {item.name}
+                                        <ChevronDown className="w-4 h-4" />
+                                    </button>
+                                    {calculatorDropdownOpen && (
+                                        <div className="absolute left-0 mt-1 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1">
+                                            {item.dropdown.map((subItem) => (
+                                                <Link
+                                                    key={subItem.name}
+                                                    href={subItem.href}
+                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
+                                                >
+                                                    {subItem.name}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors duration-200"
+                                >
+                                    {item.name}
+                                </Link>
+                            )
                         ))}
                     </div>
 
@@ -76,14 +115,40 @@ export default function Header() {
                 <div className="md:hidden border-t border-gray-200 bg-white">
                     <div className="space-y-1 px-4 pb-3 pt-2">
                         {navigation.map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                {item.name}
-                            </Link>
+                            item.dropdown ? (
+                                <div key={item.name}>
+                                    <button
+                                        onClick={() => setCalculatorDropdownOpen(!calculatorDropdownOpen)}
+                                        className="w-full flex items-center justify-between px-3 py-2 text-base font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg"
+                                    >
+                                        {item.name}
+                                        <ChevronDown className={`w-4 h-4 transition-transform ${calculatorDropdownOpen ? 'rotate-180' : ''}`} />
+                                    </button>
+                                    {calculatorDropdownOpen && (
+                                        <div className="ml-4 mt-1 space-y-1">
+                                            {item.dropdown.map((subItem) => (
+                                                <Link
+                                                    key={subItem.name}
+                                                    href={subItem.href}
+                                                    className="block px-3 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 rounded-lg"
+                                                    onClick={() => setMobileMenuOpen(false)}
+                                                >
+                                                    {subItem.name}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg"
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    {item.name}
+                                </Link>
+                            )
                         ))}
                     </div>
                 </div>

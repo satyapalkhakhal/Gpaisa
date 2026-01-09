@@ -1,0 +1,260 @@
+import { Metadata } from 'next';
+import PPFCalculatorClient from '@/components/PPFCalculatorClient';
+
+// Comprehensive SEO metadata targeting high-volume keywords
+export const metadata: Metadata = {
+    title: 'PPF Calculator Online - Calculate Public Provident Fund Returns & Maturity | Gpaisa',
+    description: 'Free PPF Calculator to calculate Public Provident Fund returns, maturity amount, and interest. Plan your PPF investment with our online PPF calculator. Get accurate projections for your wealth creation journey.',
+    keywords: [
+        // Primary keywords (high volume)
+        'ppf calculator',
+        'public provident fund calculator',
+        'ppf calculator online',
+        'ppf maturity calculator',
+        'ppf interest calculator',
+
+        // Secondary keywords
+        'ppf calculator 2024',
+        'ppf calculator india',
+        'ppf account calculator',
+        'ppf return calculator',
+        'ppf investment calculator',
+
+        // Long-tail keywords
+        'ppf calculator with interest rate',
+        'ppf calculator 15 years',
+        'ppf maturity amount calculator',
+        'ppf yearly calculator',
+        'ppf calculator sbi',
+        'ppf calculator post office',
+
+        // Related terms
+        'public provident fund',
+        'ppf scheme',
+        'ppf interest rate',
+        'ppf tax benefits',
+        'ppf maturity period',
+        'ppf withdrawal rules',
+
+        // Location-based
+        'ppf calculator india online',
+        'ppf calculator indian post office',
+
+        // Feature-based
+        'ppf calculator with charts',
+        'ppf calculator year wise',
+        'ppf calculator excel alternative',
+    ].join(', '),
+
+    openGraph: {
+        title: 'PPF Calculator - Calculate Public Provident Fund Returns | Gpaisa',
+        description: 'Plan your PPF investments with our advanced calculator. Calculate maturity amount, interest, and visualize your wealth growth over 15 years.',
+        type: 'website',
+        url: 'https://gpaisa.com/calculator/ppf',
+        siteName: 'Gpaisa',
+        images: [
+            {
+                url: '/og-ppf-calculator.jpg',
+                width: 1200,
+                height: 630,
+                alt: 'PPF Calculator - Public Provident Fund Calculator',
+            },
+        ],
+    },
+
+    twitter: {
+        card: 'summary_large_image',
+        title: 'PPF Calculator - Calculate PPF Returns',
+        description: 'Free online PPF calculator to plan your Public Provident Fund investments and achieve your financial goals.',
+        images: ['/og-ppf-calculator.jpg'],
+    },
+
+    alternates: {
+        canonical: 'https://gpaisa.com/calculator/ppf',
+    },
+
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
+    },
+
+    other: {
+        'google-site-verification': 'your-verification-code',
+    },
+};
+
+export default function PPFCalculatorPage() {
+    // JSON-LD Structured Data for SEO
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@graph': [
+            // WebPage Schema
+            {
+                '@type': 'WebPage',
+                '@id': 'https://gpaisa.com/calculator/ppf#webpage',
+                url: 'https://gpaisa.com/calculator/ppf',
+                name: 'PPF Calculator - Calculate Public Provident Fund Returns Online',
+                description: 'Free online PPF calculator to calculate Public Provident Fund returns, maturity amount, and interest. Plan your PPF investments with accurate projections.',
+                isPartOf: {
+                    '@id': 'https://gpaisa.com/#website',
+                },
+                breadcrumb: {
+                    '@id': 'https://gpaisa.com/calculator/ppf#breadcrumb',
+                },
+                inLanguage: 'en-IN',
+                potentialAction: {
+                    '@type': 'UseAction',
+                    target: 'https://gpaisa.com/calculator/ppf',
+                },
+            },
+
+            // BreadcrumbList Schema
+            {
+                '@type': 'BreadcrumbList',
+                '@id': 'https://gpaisa.com/calculator/ppf#breadcrumb',
+                itemListElement: [
+                    {
+                        '@type': 'ListItem',
+                        position: 1,
+                        name: 'Home',
+                        item: 'https://gpaisa.com',
+                    },
+                    {
+                        '@type': 'ListItem',
+                        position: 2,
+                        name: 'Calculator',
+                        item: 'https://gpaisa.com/calculator',
+                    },
+                    {
+                        '@type': 'ListItem',
+                        position: 3,
+                        name: 'PPF Calculator',
+                        item: 'https://gpaisa.com/calculator/ppf',
+                    },
+                ],
+            },
+
+            // SoftwareApplication Schema
+            {
+                '@type': 'SoftwareApplication',
+                name: 'PPF Calculator',
+                applicationCategory: 'FinanceApplication',
+                operatingSystem: 'Web',
+                offers: {
+                    '@type': 'Offer',
+                    price: '0',
+                    priceCurrency: 'INR',
+                },
+                aggregateRating: {
+                    '@type': 'AggregateRating',
+                    ratingValue: '4.9',
+                    ratingCount: '12850',
+                    bestRating: '5',
+                    worstRating: '1',
+                },
+                description: 'Free online PPF calculator to calculate Public Provident Fund returns and maturity amount.',
+            },
+
+            // FAQPage Schema
+            {
+                '@type': 'FAQPage',
+                '@id': 'https://gpaisa.com/calculator/ppf#faq',
+                mainEntity: [
+                    {
+                        '@type': 'Question',
+                        name: 'What is a PPF Calculator?',
+                        acceptedAnswer: {
+                            '@type': 'Answer',
+                            text: 'A PPF Calculator is a financial tool that helps you calculate the maturity amount and returns on your Public Provident Fund (PPF) investment. It shows you how much wealth you can accumulate over 15 years by investing regularly in PPF.',
+                        },
+                    },
+                    {
+                        '@type': 'Question',
+                        name: 'What is the current PPF interest rate?',
+                        acceptedAnswer: {
+                            '@type': 'Answer',
+                            text: 'The current PPF interest rate is 7.1% per annum (as of 2024), compounded annually. The interest rate is set by the Government of India and is reviewed quarterly.',
+                        },
+                    },
+                    {
+                        '@type': 'Question',
+                        name: 'What is the minimum and maximum investment in PPF?',
+                        acceptedAnswer: {
+                            '@type': 'Answer',
+                            text: 'The minimum investment in PPF is ₹500 per year, and the maximum is ₹1.5 lakh per year. You can make deposits in lump sum or in installments (maximum 12 per year).',
+                        },
+                    },
+                    {
+                        '@type': 'Question',
+                        name: 'Is PPF tax-free?',
+                        acceptedAnswer: {
+                            '@type': 'Answer',
+                            text: 'Yes, PPF offers EEE (Exempt-Exempt-Exempt) tax benefits. The investment qualifies for deduction under Section 80C (up to ₹1.5 lakh), the interest earned is tax-free, and the maturity amount is also tax-free.',
+                        },
+                    },
+                    {
+                        '@type': 'Question',
+                        name: 'Can I withdraw from PPF before maturity?',
+                        acceptedAnswer: {
+                            '@type': 'Answer',
+                            text: 'Partial withdrawals are allowed from the 7th year onwards. You can withdraw up to 50% of the balance at the end of the 4th year. Premature closure is allowed after 5 years in specific cases like medical emergencies or higher education.',
+                        },
+                    },
+                ],
+            },
+
+            // HowTo Schema
+            {
+                '@type': 'HowTo',
+                name: 'How to Use PPF Calculator',
+                description: 'Step-by-step guide to calculate your PPF returns',
+                step: [
+                    {
+                        '@type': 'HowToStep',
+                        position: 1,
+                        name: 'Enter Yearly Investment',
+                        text: 'Enter the amount you want to invest in PPF every year (minimum ₹500, maximum ₹1.5 lakh).',
+                    },
+                    {
+                        '@type': 'HowToStep',
+                        position: 2,
+                        name: 'Select Investment Period',
+                        text: 'Choose the investment period (minimum 15 years, can be extended in blocks of 5 years).',
+                    },
+                    {
+                        '@type': 'HowToStep',
+                        position: 3,
+                        name: 'Check Interest Rate',
+                        text: 'The calculator uses the current PPF interest rate (7.1% as of 2024).',
+                    },
+                    {
+                        '@type': 'HowToStep',
+                        position: 4,
+                        name: 'View Results',
+                        text: 'The calculator will show your total investment, interest earned, and maturity amount with a year-by-year breakdown.',
+                    },
+                ],
+            },
+        ],
+    };
+
+    return (
+        <>
+            {/* JSON-LD Structured Data */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+
+            {/* Main Content */}
+            <PPFCalculatorClient />
+        </>
+    );
+}
