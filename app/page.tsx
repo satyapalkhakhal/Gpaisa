@@ -18,7 +18,7 @@ export const metadata: Metadata = {
 export const revalidate = 0; // Instant revalidation for debugging
 
 // Helper Components
-const SectionHeading = ({ title, color = 'blue' }: { title: string, color?: string }) => {
+const SectionHeading = ({ title, color = 'blue', href = '#' }: { title: string, color?: string, href?: string }) => {
     const colorClasses = {
         blue: 'border-blue-600 text-blue-900',
         red: 'border-red-600 text-red-900',
@@ -32,7 +32,7 @@ const SectionHeading = ({ title, color = 'blue' }: { title: string, color?: stri
             <h2 className={`text-lg font-bold uppercase border-l-4 pl-3 ${colorClasses}`}>
                 {title}
             </h2>
-            <Link href="#" className="text-xs font-semibold text-gray-500 hover:text-primary-600 flex items-center">
+            <Link href={href} className="text-xs font-semibold text-gray-500 hover:text-primary-600 flex items-center">
                 View All <ChevronRight className="w-3 h-3 ml-1" />
             </Link>
         </div>
@@ -153,7 +153,7 @@ export default async function HomePage() {
 
                         {/* BUSINESS NEWS SECTION */}
                         <div className="mb-10">
-                            <SectionHeading title="Business News" color="gray" />
+                            <SectionHeading title="Business News" color="gray" href="/category/business" />
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 {businessNews.map(article => (
                                     <Link key={article.id} href={`/articles/${article.slug}`} className="group block">
@@ -175,7 +175,7 @@ export default async function HomePage() {
 
                         {/* INTERNATIONAL NEWS */}
                         <div className="mb-10">
-                            <SectionHeading title="International News" color="gray" />
+                            <SectionHeading title="International News" color="gray" href="/category/world-affairs" />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {internationalNews.map(article => (
                                     <div key={article.id} className="flex gap-4 group">
@@ -206,7 +206,7 @@ export default async function HomePage() {
 
                         {/* SPORTS NEWS */}
                         <div className="mb-10">
-                            <SectionHeading title="Sports News" color="gray" />
+                            <SectionHeading title="Sports News" color="gray" href="/category/sports" />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {sportsNews.map(article => (
                                     <div key={article.id} className="flex gap-4 group">
@@ -237,7 +237,7 @@ export default async function HomePage() {
 
                         {/* MOVIES NEWS */}
                         <div className="mb-10">
-                            <SectionHeading title="Movies News" color="gray" />
+                            <SectionHeading title="Movies News" color="gray" href="/category/movies" />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {moviesNews.map(article => (
                                     <div key={article.id} className="flex gap-4 group">
@@ -268,7 +268,7 @@ export default async function HomePage() {
 
                         {/* EDUCATION NEWS */}
                         <div className="mb-10">
-                            <SectionHeading title="Education News" color="gray" />
+                            <SectionHeading title="Education News" color="gray" href="/category/education" />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {educationNews.map(article => (
                                     <div key={article.id} className="flex gap-4 group">
