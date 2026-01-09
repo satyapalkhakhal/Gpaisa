@@ -3,8 +3,17 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
     reactStrictMode: true,
     images: {
-        domains: ['localhost'],
-    },
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'mrvapygtxktrgilxqgqr.supabase.co',
+            },
+            {
+                protocol: 'https',
+                hostname: '**.supabase.co',
+            }
+        ],
+    }
 };
 
 export default nextConfig;

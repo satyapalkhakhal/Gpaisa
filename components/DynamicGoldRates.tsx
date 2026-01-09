@@ -86,10 +86,11 @@ export default function DynamicGoldRates({ simpleView = false }: DynamicGoldRate
         return (
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[1, 2, 3].map((i) => (
-                    <div key={i} className="card animate-pulse">
-                        <div className="h-6 bg-gray-200 rounded w-1/2 mb-4"></div>
-                        <div className="h-10 bg-gray-200 rounded mb-2"></div>
-                        <div className="h-4 bg-gray-200 rounded w-1/3"></div>
+                    <div key={i} className="card border-t-4 border-primary-600 animate-pulse bg-white">
+                        <div className="relative overflow-hidden p-4">
+                            <div className="h-6 bg-gray-200 rounded w-1/2 mb-4"></div>
+                            <div className="absolute inset-0 -translate-x-full animate-shimmer bg-gradient-to-r from-transparent via-white to-transparent"></div>
+                        </div>
                     </div>
                 ))}
             </div>

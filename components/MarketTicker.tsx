@@ -38,7 +38,14 @@ export default function MarketTicker() {
     }, []);
 
     return (
-        <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white overflow-hidden border-b border-gray-700">
+        <div className="bg-gradient-to-r from-gray-900 via-primary-900 to-gray-900 text-white overflow-hidden border-b border-primary-700 relative">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-primary-800/20 to-transparent animate-shimmer"></div>
+
+            <div className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-red-600 text-white text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1 shadow-lg border border-red-500/50">
+                <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                LIVE
+            </div>
+
             <div className="relative flex">
                 {/* First set of items */}
                 <div className="flex items-center space-x-8 px-4 py-3 ticker-scroll whitespace-nowrap">

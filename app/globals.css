@@ -31,9 +31,32 @@
   }
 
   /* Card styles */
+
+  /* BEFORE (Line 34 in globals.css) */
   .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200;
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6;
   }
+
+  /* AFTER - Add depth and elevation */
+  .card {
+    @apply bg-white rounded-xl shadow-lg border border-gray-100 p-6 hover:shadow-xl transition-all duration-300;
+  }
+
+  /* Add glass-morphism variant for premium sections */
+  .card-glass {
+    @apply bg-white/80 backdrop-blur-sm rounded-xl shadow-xl border border-white/20 p-6;
+  }
+
+  /* Add gradient backgrounds for CTA sections */
+  .card-gradient {
+    @apply bg-gradient-to-br from-primary-50 to-white rounded-xl shadow-lg border border-primary-100 p-6;
+  }
+
+  /* Subtle hover lift effect */
+  .hover-lift {
+    @apply transition-transform duration-300 hover:-translate-y-1;
+  }
+
 
   /* Button styles */
   .btn-primary {
@@ -45,6 +68,21 @@
   }
 
   /* Market ticker animation */
+
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+
+    100% {
+      transform: translateX(100%);
+    }
+  }
+
+  .animate-shimmer {
+    animation: shimmer 8s infinite;
+  }
+
   .ticker-scroll {
     animation: scroll 30s linear infinite;
   }
@@ -63,6 +101,103 @@
   .skeleton {
     @apply animate-pulse bg-gray-200 rounded;
   }
+
+  /* Smooth entrance animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  .animate-slide-in-right {
+    animation: slideInRight 0.5s ease-out forwards;
+  }
+
+  /* Pulsing effect for CTAs */
+  @keyframes pulse-glow {
+
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(30, 127, 67, 0.4);
+    }
+
+    50% {
+      box-shadow: 0 0 20px 5px rgba(30, 127, 67, 0.2);
+    }
+  }
+
+  .pulse-glow {
+    animation: pulse-glow 2s infinite;
+  }
+}
+
+@layer base {
+
+  /* Better heading styles */
+  h1 {
+    @apply text-4xl md:text-5xl lg:text-6xl font-display font-bold tracking-tight text-gray-900 leading-tight;
+  }
+
+  h2 {
+    @apply text-3xl md:text-4xl font-display font-bold text-gray-900 leading-snug;
+  }
+
+  h3 {
+    @apply text-2xl md:text-3xl font-display font-semibold text-gray-900;
+  }
+
+  /* Premium paragraph styles */
+  p {
+    @apply text-gray-700 leading-relaxed;
+  }
+
+  /* Better link styling */
+  a {
+    @apply transition-colors duration-200;
+  }
+}
+
+.badge {
+  @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide;
+}
+
+.badge-live {
+  @apply badge bg-red-600 text-white shadow-lg;
+  animation: pulse-glow 2s infinite;
+}
+
+.badge-new {
+  @apply badge bg-primary-600 text-white;
+}
+
+.badge-trending {
+  @apply badge bg-orange-500 text-white;
+}
+
+.badge-hot {
+  @apply badge bg-gradient-to-r from-red-600 to-orange-600 text-white;
 }
 
 @layer utilities {

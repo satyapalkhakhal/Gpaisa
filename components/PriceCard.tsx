@@ -30,7 +30,7 @@ export default function PriceCard({
     };
 
     return (
-        <div className={`card ${variantStyles[variant]}`}>
+        <div className={`card ${variantStyles[variant]} border-t-4 border-t-primary-600 shadow-sm hover:shadow-md transition-shadow`}>
             <div className="flex items-start justify-between mb-3">
                 <div>
                     <h3 className="text-sm font-medium text-gray-600">{title}</h3>

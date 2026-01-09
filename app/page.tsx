@@ -12,32 +12,27 @@ export const metadata: Metadata = {
     description: 'India\'s leading financial portal for live gold rates, silver prices, petrol/diesel prices, currency exchange rates, and business news.',
 };
 
-export const revalidate = 0; // Instant revalidation for debugging
+export const revalidate = 60; // Instant revalidation for debugging
 
 // Helper Components
-const SectionHeading = ({ title, color = 'blue' }: { title: string, color?: string }) => {
-    const colorClasses = {
-        blue: 'border-blue-600 text-blue-900',
-        red: 'border-red-600 text-red-900',
-        green: 'border-green-600 text-green-900',
-        orange: 'border-orange-600 text-orange-900',
-        purple: 'border-purple-600 text-purple-900',
-    }[color] || 'border-gray-800 text-gray-900';
-
+const SectionHeading = ({ title }: { title: string }) => {
     return (
-        <div className="flex items-center justify-between border-b border-gray-200 mb-4 pb-2">
-            <h2 className={`text-lg font-bold uppercase border-l-4 pl-3 ${colorClasses}`}>
+        <div className="flex items-center justify-between border-b border-gray-200 mb-6 pb-3">
+            <h2 className="text-2xl font-bold text-gray-900 border-l-4 border-primary-600 pl-4">
                 {title}
             </h2>
-            <Link href="#" className="text-xs font-semibold text-gray-500 hover:text-primary-600 flex items-center">
-                View All <ChevronRight className="w-3 h-3 ml-1" />
+            <Link href="#" className="hidden sm:flex items-center text-sm font-bold text-primary-600 hover:text-primary-700 uppercase tracking-wide">
+                View All <ChevronRight className="w-4 h-4 ml-1" />
             </Link>
         </div>
     );
 };
 
-const NewsListItem = ({ article }: { article: any }) => (
-    <div className="group mb-4 pb-4 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0">
+const NewsListItem = ({ article, index }: { article: any, index: number }) => (
+    <div
+        className="group mb-4 pb-4 border-b border-gray-100 last:border-0 last:mb-0 last:pb-0 animate-fade-in-up"
+        style={{ animationDelay: `${index * 100}ms` }}
+    >
         <Link href={`/articles/${article.id}`} className="flex gap-3">
             <div className="w-20 h-16 bg-gray-200 flex-shrink-0 rounded overflow-hidden">
                 {article.featured_image_url ? (
@@ -91,19 +86,28 @@ export default async function HomePage() {
                     <div className="lg:col-span-8">
 
                         {/* HERO SECTION */}
+                        <div className="bg-gradient-to-r from-primary-600 to-success-600 text-white py-3 px-6 rounded-xl mb-8 shadow-lg">
+                            <div className="flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-2 h-2 bg-white rounded-full animate-pulse"></span>
+                                    <span className="font-bold text-sm">LIVE MARKET UPDATES</span>
+                                </div>
+                                <span className="text-sm opacity-90">Updated: {new Date().toLocaleTimeString('en-IN')}</span>
+                            </div>
+                        </div>
                         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-8 pb-8 border-b border-gray-200">
                             {/* Big Story */}
                             <div className="md:col-span-7">
-                                <Link href={`/articles/${featuredStory.id}`} className="group block h-full">
-                                    <div className="aspect-video bg-gray-200 w-full rounded mb-3 overflow-hidden">
+                                <Link href={`/articles/${featuredStory.id}`} className="group block h-full animate-fade-in-up">
+                                    <div className="aspect-video bg-gray-200 w-full rounded-xl mb-3 overflow-hidden relative group">
+                                        <span className="badge-hot absolute top-4 left-4 z-10">
+                                            🔥 TRENDING
+                                        </span>
                                         {featuredStory.featured_image_url ? (
-                                            <img
-                                                src={featuredStory.featured_image_url}
-                                                alt={featuredStory.title}
-                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                            />
+                                            <img src={featuredStory.featured_image_url} alt={featuredStory.title}
+                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                         ) : (
-                                            <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent">
                                                 <span className="font-medium">Featured Image</span>
                                             </div>
                                         )}
@@ -133,8 +137,8 @@ export default async function HomePage() {
                                     <h3 className="font-bold text-gray-900 uppercase text-sm">Top Stories</h3>
                                 </div>
                                 <div className="space-y-0">
-                                    {topStories.slice(1).map(article => (
-                                        <NewsListItem key={article.id} article={article} />
+                                    {topStories.slice(1).map((article, index) => (
+                                        <NewsListItem key={article.id} article={article} index={index} />
                                     ))}
                                 </div>
                             </div>
@@ -144,8 +148,13 @@ export default async function HomePage() {
                         <div className="mb-10">
                             <SectionHeading title="Business News" color="gray" />
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                {businessNews.map(article => (
-                                    <Link key={article.id} href={`/articles/${article.id}`} className="group block">
+                                {businessNews.map((article, index) => (
+                                    <Link
+                                        key={article.id}
+                                        href={`/articles/${article.id}`}
+                                        className="group block animate-fade-in-up"
+                                        style={{ animationDelay: `${index * 100}ms` }}
+                                    >
                                         <div className="h-40 bg-gray-100 rounded mb-3 overflow-hidden">
                                             {article.featured_image_url ? (
                                                 <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover" />
@@ -166,8 +175,12 @@ export default async function HomePage() {
                         <div className="mb-10">
                             <SectionHeading title="International News" color="gray" />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                {internationalNews.map(article => (
-                                    <div key={article.id} className="flex gap-4 group">
+                                {internationalNews.map((article, index) => (
+                                    <div
+                                        key={article.id}
+                                        className="flex gap-4 group animate-fade-in-up"
+                                        style={{ animationDelay: `${index * 100}ms` }}
+                                    >
                                         <div className="w-24 h-20 bg-gray-200 rounded shrink-0 overflow-hidden">
                                             {article.featured_image_url ? (
                                                 <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover" />
@@ -231,10 +244,17 @@ export default async function HomePage() {
                     <div className="lg:col-span-4 space-y-8">
 
                         {/* GOLD RATE WIDGET (Hero style) */}
-                        <div className="bg-white rounded shadow-sm border border-primary-100 overflow-hidden">
-                            <div className="bg-primary-600 px-4 py-3 flex justify-between items-center">
-                                <h3 className="font-bold text-white uppercase text-sm tracking-wide">Gold Rate Today</h3>
-                                <span className="bg-white text-primary-700 text-[10px] font-bold px-2 py-0.5 rounded">LIVE</span>
+                        <div className="bg-white rounded-2xl shadow-xl border border-primary-100 overflow-hidden hover:shadow-2xl transition-shadow">
+                            <div className="bg-gradient-to-r from-primary-600 to-primary-700 px-4 py-3 flex justify-between items-center relative overflow-hidden">
+                                {/* Add shine effect */}
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+                                <h3 className="font-bold text-white uppercase text-sm tracking-wide relative z-10 flex items-center gap-2">
+                                    <span className="text-yellow-300">💰</span> Gold Rate Today
+                                </h3>
+                                <span className="bg-white text-primary-700 text-[10px] font-bold px-3 py-1 rounded-full shadow-md relative z-10 flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse"></span>
+                                    LIVE
+                                </span>
                             </div>
                             <div className="p-4">
                                 <div className="mb-4">
@@ -304,7 +324,7 @@ export default async function HomePage() {
                         {/* CURRENCY / TOOLS */}
                         <div className="border border-gray-200 rounded p-4 bg-gray-50">
                             <h4 className="font-bold text-gray-900 mb-3 text-sm uppercase">Market Tools</h4>
-                            <div className="grid grid-cols-2 gap-2">
+                            <div className="grid grid-cols-2 gap-2 mb-4">
                                 <Link href="/finance" className="bg-white border p-2 text-center rounded hover:shadow-sm">
                                     <span className="block text-xs font-bold text-gray-600">SIP Calc</span>
                                 </Link>
@@ -312,6 +332,9 @@ export default async function HomePage() {
                                     <span className="block text-xs font-bold text-gray-600">Gold Calc</span>
                                 </Link>
                             </div>
+                            <Link href="/markets" className="block text-center bg-gradient-to-r from-primary-600 to-success-600 text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all text-sm">
+                                View All Markets →
+                            </Link>
                         </div>
 
                         {/* ADS PLACEHOLDER */}

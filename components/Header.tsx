@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { Menu, X } from 'lucide-react';
 
 const navigation = [
@@ -17,9 +18,10 @@ const navigation = [
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const pathname = usePathname();
 
     return (
-        <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <header className="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-200 shadow-lg">
             <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between">
                     {/* Logo */}
@@ -33,7 +35,7 @@ export default function Header() {
                                 className="rounded-lg"
                                 priority
                             />
-                            <span className="text-2xl font-display font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
+                            <span className="text-2xl font-display font-bold bg-gradient-to-r from-primary-600 via-primary-500 to-success-600 bg-clip-text text-transparent hover:scale-105 transition-transform">
                                 Gpaisa
                             </span>
                         </Link>
@@ -41,15 +43,21 @@ export default function Header() {
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:flex md:items-center md:space-x-1">
-                        {navigation.map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className="px-4 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors duration-200"
-                            >
-                                {item.name}
-                            </Link>
-                        ))}
+                        {navigation.map((item) => {
+                            const isActive = pathname === item.href;
+                            return (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={`px-4 py-2 text-sm font-medium rounded-lg transition-colors duration-200 ${isActive
+                                        ? 'bg-primary-600 text-white'
+                                        : 'text-gray-700 hover:text-primary-600 hover:bg-primary-50'
+                                        }`}
+                                >
+                                    {item.name}
+                                </Link>
+                            );
+                        })}
                     </div>
 
                     {/* Mobile menu button */}
@@ -74,16 +82,22 @@ export default function Header() {
             {mobileMenuOpen && (
                 <div className="md:hidden border-t border-gray-200 bg-white">
                     <div className="space-y-1 px-4 pb-3 pt-2">
-                        {navigation.map((item) => (
-                            <Link
-                                key={item.name}
-                                href={item.href}
-                                className="block px-3 py-2 text-base font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg"
-                                onClick={() => setMobileMenuOpen(false)}
-                            >
-                                {item.name}
-                            </Link>
-                        ))}
+                        {navigation.map((item) => {
+                            const isActive = pathname === item.href;
+                            return (
+                                <Link
+                                    key={item.name}
+                                    href={item.href}
+                                    className={`block px-3 py-2 text-base font-medium rounded-lg ${isActive
+                                        ? 'bg-primary-600 text-white'
+                                        : 'text-gray-700 hover:bg-primary-50 hover:text-primary-600'
+                                        }`}
+                                    onClick={() => setMobileMenuOpen(false)}
+                                >
+                                    {item.name}
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
             )}

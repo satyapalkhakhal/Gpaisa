@@ -6,8 +6,16 @@ export default function Footer() {
     const currentYear = getCurrentYear();
 
     return (
-        <footer className="bg-gray-900 text-gray-300">
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+        <footer className="bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 text-gray-300 relative overflow-hidden">
+            {/* Add subtle pattern overlay */}
+            <div className="absolute inset-0 opacity-5">
+                <div className="absolute inset-0" style={{
+                    backgroundImage: 'radial-gradient(circle at 2px 2px, white 1px, transparent 0)',
+                    backgroundSize: '40px 40px'
+                }}></div>
+            </div>
+
+            <div className="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* About */}
                     <div className="col-span-1 md:col-span-2">

@@ -186,7 +186,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                             </nav>
 
                             {/* Title & Metadata */}
-                            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
+                            <h1 className="text-l sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4 leading-tight">
                                 {article.title}
                             </h1>
 
@@ -312,7 +312,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ id: st
                                 <h4 className="font-bold text-primary-900 mb-2">Stay Updated</h4>
                                 <p className="text-sm text-primary-700 mb-4">Get the latest financial news delivered to your inbox.</p>
                                 <input type="email" placeholder="Your email" className="w-full text-sm p-2 sm:p-2.5 rounded border border-primary-200 mb-2" />
-                                <button className="w-full bg-primary-600 text-white font-bold text-xs uppercase py-2 sm:py-2.5 rounded hover:bg-primary-700 transition">
+                                <button className="w-full bg-gradient-to-r from-primary-600 to-success-600 text-white font-bold text-xs uppercase py-3 rounded-xl shadow-lg hover:shadow-xl hover:scale-105 transition-all">
                                     Subscribe Now
                                 </button>
                             </div>
