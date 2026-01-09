@@ -7,9 +7,9 @@ import Script from "next/script";
 
 export const metadata: Metadata = {
     metadataBase: new URL('https://gpaisa.in'),
-    title: "gpaisa.in - Live Market Updates, Gold Rates & Financial News",
-    description: "Get real-time stock market updates, gold & silver rates, commodity prices, agriculture market data, and personal finance tips. Your trusted Indian financial portal.",
-    keywords: "stock market, gold rates, silver price, sensex, nifty, commodity prices, agriculture prices, personal finance, investment tips",
+    title: "Gpaisa - Live Market Updates, Gold Rates & Financial News",
+    description: "Track live stock markets (Sensex, Nifty), today's gold & silver rates, breaking financial news, commodity prices, and smart investment calculators (SIP, PPF, EPF, SWP). Your trusted Indian finance companion!",
+    keywords: "stock market, gold rates today, silver price, sensex live, nifty live, sip calculator, ppf calculator, epf calculator, swp calculator, commodity prices, financial news india, investment calculators, gold rate today, market news",
     authors: [{ name: "gpaisa.in" }],
     manifest: "/manifest.json",
     icons: {
