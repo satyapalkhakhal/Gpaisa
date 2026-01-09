@@ -379,7 +379,7 @@ export default function SIPCalculatorClient() {
                             A <strong>Systematic Investment Plan (SIP)</strong> is a disciplined investment approach where you invest a fixed amount regularly (monthly, quarterly, etc.) in mutual funds. Instead of timing the market, SIP allows you to invest consistently and benefit from rupee cost averaging and the power of compounding.
                         </p>
                         <p className="text-lg text-gray-700 leading-relaxed">
-                            SIP is one of the most popular investment methods in India, with over <strong>6 crore SIP accounts</strong> and monthly inflows exceeding ₹15,000 crores. It's perfect for salaried individuals, young professionals, and anyone looking to build wealth systematically.
+                            SIP is one of the most popular investment methods in India, with over <strong>6 crore SIP accounts</strong> and monthly inflows exceeding ₹15,000 crores. It&apos;s perfect for salaried individuals, young professionals, and anyone looking to build wealth systematically.
                         </p>
                     </div>
 
@@ -387,7 +387,7 @@ export default function SIPCalculatorClient() {
                     <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg p-8 border border-green-100">
                         <h2 className="text-3xl font-bold text-gray-900 mb-4">How Does Our SIP Calculator Work?</h2>
                         <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                            Our SIP calculator uses the compound interest formula to calculate your investment returns. Here's the formula:
+                            Our SIP calculator uses the compound interest formula to calculate your investment returns. Here&apos;s the formula:
                         </p>
                         <div className="bg-white rounded-xl p-6 mb-6 border border-gray-200">
                             <code className="text-lg text-gray-800">
@@ -507,7 +507,7 @@ export default function SIPCalculatorClient() {
                             <div className="border-b border-gray-200 pb-6">
                                 <h3 className="text-xl font-bold text-gray-900 mb-3">What is the expected return rate for SIP?</h3>
                                 <p className="text-gray-700 leading-relaxed">
-                                    Expected returns vary by fund type: <strong>Equity funds</strong> typically offer 12-15% returns over the long term (10+ years), <strong>Balanced/Hybrid funds</strong> offer 10-12%, and <strong>Debt funds</strong> offer 7-9%. However, past performance doesn't guarantee future returns. Always invest based on your risk appetite and financial goals.
+                                    Expected returns vary by fund type: <strong>Equity funds</strong> typically offer 12-15% returns over the long term (10+ years), <strong>Balanced/Hybrid funds</strong> offer 10-12%, and <strong>Debt funds</strong> offer 7-9%. However, past performance doesn&apos;t guarantee future returns. Always invest based on your risk appetite and financial goals.
                                 </p>
                             </div>
 
@@ -535,7 +535,7 @@ export default function SIPCalculatorClient() {
                             <div className="border-b border-gray-200 pb-6">
                                 <h3 className="text-xl font-bold text-gray-900 mb-3">What is the minimum SIP amount?</h3>
                                 <p className="text-gray-700 leading-relaxed">
-                                    Most mutual funds allow you to start a SIP with as low as <strong>₹500 per month</strong>. Some funds even offer SIPs starting at ₹100. There's no maximum limit—you can invest as much as you want. The key is to start early and stay consistent, regardless of the amount.
+                                    Most mutual funds allow you to start a SIP with as low as <strong>₹500 per month</strong>. Some funds even offer SIPs starting at ₹100. There&apos;s no maximum limit—you can invest as much as you want. The key is to start early and stay consistent, regardless of the amount.
                                 </p>
                             </div>
 
@@ -549,7 +549,7 @@ export default function SIPCalculatorClient() {
                             <div className="pb-6">
                                 <h3 className="text-xl font-bold text-gray-900 mb-3">Which is the best SIP calculator in India?</h3>
                                 <p className="text-gray-700 leading-relaxed">
-                                    Gpaisa's SIP Calculator is one of the most comprehensive and user-friendly calculators available. It offers regular SIP, step-up SIP, and lump sum calculations with visual charts, all completely free. Unlike many calculators, we provide detailed explanations, examples, and educational content to help you make informed investment decisions.
+                                    Gpaisa&apos;s SIP Calculator is one of the most comprehensive and user-friendly calculators available. It offers regular SIP, step-up SIP, and lump sum calculations with visual charts, all completely free. Unlike many calculators, we provide detailed explanations, examples, and educational content to help you make informed investment decisions.
                                 </p>
                             </div>
                         </div>
@@ -583,7 +583,7 @@ export default function SIPCalculatorClient() {
                         <div className="prose prose-lg max-w-none text-gray-700">
                             <h3 className="text-2xl font-bold text-gray-900 mt-6 mb-4">1. Start Early, Stay Consistent</h3>
                             <p>
-                                The earlier you start your SIP, the more time your money has to grow through compounding. Even a small SIP of ₹2,000/month started at age 25 can create a corpus of over ₹1 crore by age 60 (assuming 12% returns). Don't wait for the "perfect time"—start now!
+                                The earlier you start your SIP, the more time your money has to grow through compounding. Even a small SIP of ₹2,000/month started at age 25 can create a corpus of over ₹1 crore by age 60 (assuming 12% returns). Don&apos;t wait for the &quot;perfect time&quot;—start now!
                             </p>
 
                             <h3 className="text-2xl font-bold text-gray-900 mt-6 mb-4">2. Choose the Right Mutual Fund</h3>
@@ -596,14 +596,14 @@ export default function SIPCalculatorClient() {
                                 Use step-up SIP to increase your investment amount annually. If you get a 10% salary hike, increase your SIP by 10% too. This ensures your investments keep pace with your growing income and lifestyle inflation, dramatically boosting your final corpus.
                             </p>
 
-                            <h3 className="text-2xl font-bold text-gray-900 mt-6 mb-4">4. Don't Stop During Market Falls</h3>
+                            <h3 className="text-2xl font-bold text-gray-900 mt-6 mb-4">4. Don&apos;t Stop During Market Falls</h3>
                             <p>
                                 Market corrections are opportunities, not threats. When markets fall, your SIP buys more units at lower prices (rupee cost averaging). Investors who continue SIPs during downturns often see the best long-term returns. Stay invested and trust the process.
                             </p>
 
                             <h3 className="text-2xl font-bold text-gray-900 mt-6 mb-4">5. Diversify Across Fund Categories</h3>
                             <p>
-                                Don't put all your eggs in one basket. Spread your SIPs across large-cap, mid-cap, and multi-cap funds. Consider adding international funds for global exposure. Diversification reduces risk and improves overall portfolio stability.
+                                Don&apos;t put all your eggs in one basket. Spread your SIPs across large-cap, mid-cap, and multi-cap funds. Consider adding international funds for global exposure. Diversification reduces risk and improves overall portfolio stability.
                             </p>
 
                             <h3 className="text-2xl font-bold text-gray-900 mt-6 mb-4">6. Review Portfolio Annually</h3>
@@ -613,7 +613,7 @@ export default function SIPCalculatorClient() {
 
                             <h3 className="text-2xl font-bold text-gray-900 mt-6 mb-4">7. Set Clear Financial Goals</h3>
                             <p>
-                                Define specific goals for each SIP—retirement, children's education, home down payment, etc. This helps you choose the right funds, investment duration, and amount. Goal-based investing keeps you motivated and disciplined.
+                                Define specific goals for each SIP—retirement, children&apos;s education, home down payment, etc. This helps you choose the right funds, investment duration, and amount. Goal-based investing keeps you motivated and disciplined.
                             </p>
                         </div>
                     </div>
