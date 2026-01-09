@@ -65,11 +65,12 @@ const NewsListItem = ({ article }: { article: any }) => (
 
 export default async function HomePage() {
     // Fetch articles from Supabase
-    const [topNewsArticles, businessNewsArticles, worldAffairsArticles, sportsArticles, educationArticles] = await Promise.all([
+    const [topNewsArticles, businessNewsArticles, worldAffairsArticles, sportsArticles, moviesArticles, educationArticles] = await Promise.all([
         fetchArticlesByCategorySlug('news', 6),  // Latest news across all categories
         fetchArticlesByCategorySlug('business', 3),   // Business category
         fetchArticlesByCategorySlug('world-affairs', 4), // World Affairs category
         fetchArticlesByCategorySlug('sports', 4), // Sports category
+        fetchArticlesByCategorySlug('movies', 4), // Movies category
         fetchArticlesByCategorySlug('education', 4), // Education category
     ]);
 
@@ -78,6 +79,7 @@ export default async function HomePage() {
         business: businessNewsArticles.length,
         world: worldAffairsArticles.length,
         sports: sportsArticles.length,
+        movies: moviesArticles.length,
         education: educationArticles.length
     });
 
@@ -86,6 +88,7 @@ export default async function HomePage() {
     const businessNews = businessNewsArticles.length > 0 ? businessNewsArticles : articles.slice(2, 5);
     const internationalNews = worldAffairsArticles.length > 0 ? worldAffairsArticles : articles.slice().reverse().slice(0, 4);
     const sportsNews = sportsArticles.length > 0 ? sportsArticles : articles.slice(0, 4);
+    const moviesNews = moviesArticles.length > 0 ? moviesArticles : articles.slice(0, 4);
     const educationNews = educationArticles.length > 0 ? educationArticles : articles.slice(0, 4);
     const featuredStory = topStories[0] || articles[0];
 
@@ -206,6 +209,37 @@ export default async function HomePage() {
                             <SectionHeading title="Sports News" color="gray" />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 {sportsNews.map(article => (
+                                    <div key={article.id} className="flex gap-4 group">
+                                        <div className="w-24 h-20 bg-gray-200 rounded shrink-0 overflow-hidden">
+                                            {article.featured_image_url ? (
+                                                <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">IMG</div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-blue-600 mb-1 line-clamp-2">
+                                                <Link href={`/articles/${article.slug}`}>{article.title}</Link>
+                                            </h3>
+                                            <p className="text-xs text-gray-500 line-clamp-2 mb-1">
+                                                {article.excerpt}
+                                            </p>
+                                            <span className="text-xs text-gray-400">
+                                                {article.published_at
+                                                    ? new Date(article.published_at).toLocaleDateString()
+                                                    : article.publishedAt}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* MOVIES NEWS */}
+                        <div className="mb-10">
+                            <SectionHeading title="Movies News" color="gray" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {moviesNews.map(article => (
                                     <div key={article.id} className="flex gap-4 group">
                                         <div className="w-24 h-20 bg-gray-200 rounded shrink-0 overflow-hidden">
                                             {article.featured_image_url ? (
