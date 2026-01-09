@@ -11,6 +11,7 @@ const navigation = [
     { name: 'Silver Rate', href: '/silver-rate' },
     { name: 'Commodities', href: '/commodities' },
     { name: 'Agriculture', href: '/agriculture' },
+    { name: 'SIP Calculator', href: '/calculator/sip' },
     { name: 'Personal Finance', href: '/finance' },
     { name: 'News', href: '/news' },
 ];
