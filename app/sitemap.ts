@@ -71,7 +71,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // City-specific gold rate pages
     const goldRateCityPages: MetadataRoute.Sitemap = CITIES.map((city) => ({
-        url: `${baseUrl}/gold-rate/${city}`,
+        url: `${baseUrl}/gold-rate/${city.toLowerCase()}`,
         lastModified: new Date(), // City rates update daily
         changeFrequency: 'daily',
         priority: 0.8,
@@ -79,7 +79,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     // City-specific silver rate pages
     const silverRateCityPages: MetadataRoute.Sitemap = CITIES.map((city) => ({
-        url: `${baseUrl}/silver-rate/${city}`,
+        url: `${baseUrl}/silver-rate/${city.toLowerCase()}`,
         lastModified: new Date(), // City rates update daily
         changeFrequency: 'daily',
         priority: 0.7,
@@ -94,13 +94,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             .filter(article => article.slug) // Only include articles with slugs
             .map((article) => {
                 // IMPROVED: Better lastModified logic without Date.now() fallback
-                const lastModified = article.updated_at 
+                const lastModified = article.updated_at
                     ? new Date(article.updated_at)
-                    : article.published_at 
-                    ? new Date(article.published_at)
-                    : article.publishedAt
-                    ? new Date(article.publishedAt)
-                    : new Date('2026-01-01'); // Fallback to a fixed date instead of now
+                    : article.published_at
+                        ? new Date(article.published_at)
+                        : article.publishedAt
+                            ? new Date(article.publishedAt)
+                            : new Date('2026-01-01'); // Fallback to a fixed date instead of now
 
                 return {
                     url: `${baseUrl}/articles/${article.slug}`,
@@ -109,7 +109,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                     priority: 0.6,
                 };
             });
-        
+
         console.log(`Sitemap generated with ${articlePages.length} articles`);
     } catch (error) {
         console.error('Error fetching articles for sitemap:', error);
