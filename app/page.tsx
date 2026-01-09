@@ -65,23 +65,28 @@ const NewsListItem = ({ article }: { article: any }) => (
 
 export default async function HomePage() {
     // Fetch articles from Supabase
-    const [topNewsArticles, businessNewsArticles, worldAffairsArticles] = await Promise.all([
+    const [topNewsArticles, businessNewsArticles, worldAffairsArticles, sportsArticles, educationArticles] = await Promise.all([
         fetchArticlesByCategorySlug('news', 6),  // Latest news across all categories
         fetchArticlesByCategorySlug('business', 3),   // Business category
         fetchArticlesByCategorySlug('world-affairs', 4), // World Affairs category
+        fetchArticlesByCategorySlug('sports', 4), // Sports category
+        fetchArticlesByCategorySlug('education', 4), // Education category
     ]);
 
     console.log('📰 Homepage Data:', {
         topNews: topNewsArticles.length,
         business: businessNewsArticles.length,
-        world: worldAffairsArticles.length
+        world: worldAffairsArticles.length,
+        sports: sportsArticles.length,
+        education: educationArticles.length
     });
 
     // Fallback to mock data if API fails
     const topStories = topNewsArticles.length > 0 ? topNewsArticles : articles.slice(0, 6);
     const businessNews = businessNewsArticles.length > 0 ? businessNewsArticles : articles.slice(2, 5);
     const internationalNews = worldAffairsArticles.length > 0 ? worldAffairsArticles : articles.slice().reverse().slice(0, 4);
-    const financeNews = articles.slice(0, 4);
+    const sportsNews = sportsArticles.length > 0 ? sportsArticles : articles.slice(0, 4);
+    const educationNews = educationArticles.length > 0 ? educationArticles : articles.slice(0, 4);
     const featuredStory = topStories[0] || articles[0];
 
     return (
@@ -179,7 +184,7 @@ export default async function HomePage() {
                                             )}
                                         </div>
                                         <div>
-                                            <h3 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-purple-700 mb-1 line-clamp-2">
+                                            <h3 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-blue-600 mb-1 line-clamp-2">
                                                 <Link href={`/articles/${article.slug}`}>{article.title}</Link>
                                             </h3>
                                             <p className="text-xs text-gray-500 line-clamp-2 mb-1">
@@ -196,34 +201,65 @@ export default async function HomePage() {
                             </div>
                         </div>
 
-                        {/* MUTUAL FUNDS / FINANCE SECTION */}
-                        <div className="mb-8">
-                            <SectionHeading title="Personal Finance" color="green" />
+                        {/* SPORTS NEWS */}
+                        <div className="mb-10">
+                            <SectionHeading title="Sports News" color="gray" />
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="bg-green-50 p-4 rounded border border-green-100">
-                                    <h3 className="font-bold text-green-800 mb-3 border-b border-green-200 pb-2">Investment Tips</h3>
-                                    <ul className="space-y-3">
-                                        {financeNews.map(a => (
-                                            <li key={a.id}>
-                                                <Link href={`/articles/${a.slug}`} className="text-sm text-gray-700 hover:text-green-700 font-medium block truncate">
-                                                    • {a.title}
-                                                </Link>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                                <div className="bg-blue-50 p-4 rounded border border-blue-100">
-                                    <h3 className="font-bold text-blue-800 mb-3 border-b border-blue-200 pb-2">Tax Planning</h3>
-                                    <ul className="space-y-3">
-                                        {financeNews.slice().reverse().map(a => (
-                                            <li key={a.id}>
-                                                <Link href={`/articles/${a.slug}`} className="text-sm text-gray-700 hover:text-blue-700 font-medium block truncate">
-                                                    • {a.title}
-                                                </Link>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
+                                {sportsNews.map(article => (
+                                    <div key={article.id} className="flex gap-4 group">
+                                        <div className="w-24 h-20 bg-gray-200 rounded shrink-0 overflow-hidden">
+                                            {article.featured_image_url ? (
+                                                <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">IMG</div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-blue-600 mb-1 line-clamp-2">
+                                                <Link href={`/articles/${article.slug}`}>{article.title}</Link>
+                                            </h3>
+                                            <p className="text-xs text-gray-500 line-clamp-2 mb-1">
+                                                {article.excerpt}
+                                            </p>
+                                            <span className="text-xs text-gray-400">
+                                                {article.published_at
+                                                    ? new Date(article.published_at).toLocaleDateString()
+                                                    : article.publishedAt}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* EDUCATION NEWS */}
+                        <div className="mb-10">
+                            <SectionHeading title="Education News" color="gray" />
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                {educationNews.map(article => (
+                                    <div key={article.id} className="flex gap-4 group">
+                                        <div className="w-24 h-20 bg-gray-200 rounded shrink-0 overflow-hidden">
+                                            {article.featured_image_url ? (
+                                                <img src={article.featured_image_url} alt={article.title} className="w-full h-full object-cover" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-xs text-gray-400">IMG</div>
+                                            )}
+                                        </div>
+                                        <div>
+                                            <h3 className="text-sm font-bold text-gray-900 leading-snug group-hover:text-blue-600 mb-1 line-clamp-2">
+                                                <Link href={`/articles/${article.slug}`}>{article.title}</Link>
+                                            </h3>
+                                            <p className="text-xs text-gray-500 line-clamp-2 mb-1">
+                                                {article.excerpt}
+                                            </p>
+                                            <span className="text-xs text-gray-400">
+                                                {article.published_at
+                                                    ? new Date(article.published_at).toLocaleDateString()
+                                                    : article.publishedAt}
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
                             </div>
                         </div>
 
