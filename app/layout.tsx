@@ -31,7 +31,7 @@ export const metadata: Metadata = {
         ],
     },
     openGraph: {
-        title: "gpaisa.in - Your Trusted Financial Portal",
+        title: "Gpaisa - Your Trusted Financial Portal",
         description: "Real-time market updates, gold rates, and financial news for India",
         type: "website",
         locale: "en_IN",
