@@ -91,6 +91,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'weekly',
             priority: 0.9,
         },
+        {
+            url: `${baseUrl}/calculator/emi`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.9,
+        },
     ];
 
     // Bank-specific SIP calculator pages

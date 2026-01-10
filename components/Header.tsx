@@ -19,6 +19,7 @@ const navigation = [
             { name: 'PPF Calculator', href: '/calculator/ppf', description: 'Calculate PPF maturity amount' },
             { name: 'SWP Calculator', href: '/calculator/swp', description: 'Calculate systematic withdrawal plan' },
             { name: 'EPF Calculator', href: '/calculator/epf', description: 'Calculate employees provident fund' },
+            { name: 'EMI Calculator', href: '/calculator/emi', description: 'Calculate loan EMI' },
         ]
     },
     { name: 'Personal Finance', href: '/finance' },
