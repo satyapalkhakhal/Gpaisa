@@ -21,6 +21,7 @@ const navigation = [
             { name: 'EPF Calculator', href: '/calculator/epf', description: 'Calculate employees provident fund' },
             { name: 'EMI Calculator', href: '/calculator/emi', description: 'Calculate loan EMI' },
             { name: 'Home Loan Calculator', href: '/calculator/home-loan', description: 'Calculate home loan EMI' },
+            { name: 'GST Calculator', href: '/calculator/gst', description: 'Calculate GST online' },
         ]
     },
     { name: 'Personal Finance', href: '/finance' },
