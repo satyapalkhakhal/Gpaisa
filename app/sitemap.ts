@@ -97,6 +97,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'weekly',
             priority: 0.9,
         },
+        {
+            url: `${baseUrl}/calculator/home-loan`,
+            lastModified: new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.9,
+        },
     ];
 
     // Bank-specific SIP calculator pages
@@ -106,6 +112,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         'utm', 'motilal-oswal', 'mirae-asset'
     ].map((bank) => ({
         url: `${baseUrl}/calculator/${bank}-sip-calculator`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.85,
+    }));
+
+    // Bank-wise Home Loan calculator pages
+    const bankHomeLoanCalculators: MetadataRoute.Sitemap = [
+        'sbi', 'hdfc', 'icici', 'axis', 'kotak', 'pnb', 'bank-of-baroda',
+        'canara-bank', 'union-bank', 'idbi', 'yes-bank', 'indusind',
+        'idfc-first', 'bandhan', 'rbl'
+    ].map((bank) => ({
+        url: `${baseUrl}/calculator/${bank}-home-loan-calculator`,
         lastModified: new Date(),
         changeFrequency: 'weekly',
         priority: 0.85,
@@ -160,6 +178,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
         ...staticPages,
         ...bankSIPCalculators,
+        ...bankHomeLoanCalculators,
         ...goldRateCityPages,
         ...silverRateCityPages,
         ...articlePages,
