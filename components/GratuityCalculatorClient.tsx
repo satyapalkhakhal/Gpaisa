@@ -53,7 +53,7 @@ export default function GratuityCalculatorClient() {
                     </h1>
                     <p className="text-lg text-gray-600 max-w-3xl mx-auto">
                         Calculate your gratuity amount as per the Payment of Gratuity Act, 1972.
-                        Find out how much gratuity you'll receive on retirement or resignation.
+                        Find out how much gratuity you&apos;ll receive on retirement or resignation.
                     </p>
                 </div>
 
@@ -106,8 +106,8 @@ export default function GratuityCalculatorClient() {
                                 <button
                                     onClick={() => setIsCovered(true)}
                                     className={`py-3 px-4 rounded-lg font-medium transition-all ${isCovered
-                                            ? 'bg-primary-600 text-white shadow-lg'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                        ? 'bg-primary-600 text-white shadow-lg'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         }`}
                                 >
                                     Covered (÷26)
@@ -115,8 +115,8 @@ export default function GratuityCalculatorClient() {
                                 <button
                                     onClick={() => setIsCovered(false)}
                                     className={`py-3 px-4 rounded-lg font-medium transition-all ${!isCovered
-                                            ? 'bg-primary-600 text-white shadow-lg'
-                                            : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                        ? 'bg-primary-600 text-white shadow-lg'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                         }`}
                                 >
                                     Not Covered (÷30)
@@ -163,9 +163,7 @@ export default function GratuityCalculatorClient() {
 
                         <div className="mt-6 p-4 bg-green-50 border border-green-200 rounded-lg">
                             <h3 className="font-semibold text-green-900 mb-2">💰 Tax Benefit</h3>
-                            <p className="text-sm text-green-800">
-                                Gratuity up to ₹20 lakhs is completely tax-free under Income Tax Act.
-                            </p>
+                            <p className="text-sm text-amber-800">Gratuity up to ₹20 lakhs is completely tax-free under Income Tax Act.</p>
                         </div>
                     </div>
                 </div>

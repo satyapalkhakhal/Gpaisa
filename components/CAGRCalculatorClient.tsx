@@ -127,7 +127,7 @@ export default function CAGRCalculatorClient() {
                             <h3 className="font-semibold text-purple-900 mb-2">📊 What is CAGR?</h3>
                             <p className="text-sm text-purple-800">
                                 CAGR shows the rate at which an investment would have grown if it grew at a steady rate.
-                                It's useful for comparing different investments over time.
+                                It&apos;s useful for comparing different investments over time.
                             </p>
                         </div>
                     </div>
