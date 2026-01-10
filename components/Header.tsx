@@ -22,6 +22,13 @@ const navigation = [
             { name: 'EMI Calculator', href: '/calculator/emi', description: 'Calculate loan EMI' },
             { name: 'Home Loan Calculator', href: '/calculator/home-loan', description: 'Calculate home loan EMI' },
             { name: 'GST Calculator', href: '/calculator/gst', description: 'Calculate GST online' },
+            { name: 'CAGR Calculator', href: '/calculator/cagr', description: 'Calculate compound annual growth rate' },
+            { name: 'FD Calculator', href: '/calculator/fd', description: 'Calculate fixed deposit returns' },
+            { name: 'NPS Calculator', href: '/calculator/nps', description: 'Calculate NPS returns' },
+            { name: 'HRA Calculator', href: '/calculator/hra', description: 'Calculate HRA tax exemption' },
+            { name: 'Gratuity Calculator', href: '/calculator/gratuity', description: 'Calculate gratuity amount' },
+            { name: 'Simple Interest', href: '/calculator/simple-interest', description: 'Calculate simple interest' },
+            { name: 'Mutual Fund Calculator', href: '/calculator/mutual-fund', description: 'Calculate MF returns' },
         ]
     },
     { name: 'Personal Finance', href: '/finance' },
