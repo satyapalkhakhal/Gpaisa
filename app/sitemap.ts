@@ -93,6 +93,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
     ];
 
+    // Bank-specific SIP calculator pages
+    const bankSIPCalculators: MetadataRoute.Sitemap = [
+        'hdfc', 'icici', 'sbi', 'axis', 'kotak', 'lic', 'nippon',
+        'aditya-birla', 'idfc', 'dsp', 'franklin-templeton', 'tata',
+        'utm', 'motilal-oswal', 'mirae-asset'
+    ].map((bank) => ({
+        url: `${baseUrl}/calculator/${bank}-sip-calculator`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.85,
+    }));
+
     // City-specific gold rate pages
     const goldRateCityPages: MetadataRoute.Sitemap = CITIES.map((city) => ({
         url: `${baseUrl}/gold-rate/${city.toLowerCase()}`,
@@ -141,6 +153,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [
         ...staticPages,
+        ...bankSIPCalculators,
         ...goldRateCityPages,
         ...silverRateCityPages,
         ...articlePages,

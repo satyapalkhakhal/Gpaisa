@@ -2,8 +2,13 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { banks } from '@/lib/bankData';
 
-export default function SIPCalculatorClient() {
+type SIPCalculatorClientProps = {
+    bankName?: string;
+};
+
+export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientProps = {}) {
     // Calculator state
     const [monthlyInvestment, setMonthlyInvestment] = useState(5000);
     const [expectedReturn, setExpectedReturn] = useState(12);
@@ -409,6 +414,22 @@ export default function SIPCalculatorClient() {
                                 </div>
                             </div>
                         </div>
+                    </div>
+                </div>
+
+                {/* Bank-wise SIP Calculators - Table Style List */}
+                <div className="mt-8 bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+                    <h3 className="text-xl font-bold text-gray-900 mb-4 pb-3 border-b border-gray-200">Bank-wise SIP Calculators</h3>
+                    <div className="grid md:grid-cols-2 gap-x-8">
+                        {banks.map((bank) => (
+                            <Link
+                                key={bank.slug}
+                                href={`/calculator/${bank.slug}-sip-calculator`}
+                                className="block px-4 py-3 text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors border-b border-gray-100 font-medium"
+                            >
+                                {bank.name} SIP Calculator
+                            </Link>
+                        ))}
                     </div>
                 </div>
 
