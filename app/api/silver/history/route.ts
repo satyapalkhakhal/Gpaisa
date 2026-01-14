@@ -9,7 +9,11 @@ export async function GET(request: Request) {
     const data = await fetchSilverHistory(symbol, gram);
 
     if (data) {
-        return NextResponse.json(data);
+        return NextResponse.json(data, {
+            headers: {
+                'Cache-Control': 'public, s-maxage=7200, stale-while-revalidate=86400'
+            }
+        });
     }
 
     return NextResponse.json({ success: false, error: 'Failed to fetch silver history' }, { status: 500 });

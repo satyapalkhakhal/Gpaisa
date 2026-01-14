@@ -21,7 +21,11 @@ export async function GET(request: NextRequest) {
 
         const data = await fetchMandiPrices(filters);
 
-        return NextResponse.json(data);
+        return NextResponse.json(data, {
+            headers: {
+                'Cache-Control': 'public, s-maxage=7200, stale-while-revalidate=86400'
+            }
+        });
     } catch (error) {
         console.error('Error in prices API:', error);
         return NextResponse.json(

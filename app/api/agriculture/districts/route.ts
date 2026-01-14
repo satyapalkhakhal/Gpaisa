@@ -15,7 +15,11 @@ export async function GET(request: NextRequest) {
 
         const districts = getDistrictsForState(state);
 
-        return NextResponse.json({ districts });
+        return NextResponse.json({ districts }, {
+            headers: {
+                'Cache-Control': 'public, s-maxage=7200, stale-while-revalidate=604800'
+            }
+        });
     } catch (error) {
         console.error('Error in districts API:', error);
         return NextResponse.json(

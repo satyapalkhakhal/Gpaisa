@@ -11,7 +11,11 @@ export async function GET() {
             return NextResponse.json({ success: true, data: mockIndices });
         }
 
-        return NextResponse.json({ success: true, data: liveData });
+        return NextResponse.json({ success: true, data: liveData }, {
+            headers: {
+                'Cache-Control': 'public, s-maxage=7200, stale-while-revalidate=86400'
+            }
+        });
     } catch (error) {
         return NextResponse.json({ success: false, error: 'Failed to fetch indices' }, { status: 500 });
     }
