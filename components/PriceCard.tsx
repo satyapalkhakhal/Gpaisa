@@ -8,6 +8,7 @@ interface PriceCardProps {
     subtitle?: string;
     icon?: React.ReactNode;
     variant?: 'default' | 'gold' | 'silver' | 'success' | 'danger';
+    children?: React.ReactNode;
 }
 
 export default function PriceCard({
@@ -18,6 +19,7 @@ export default function PriceCard({
     subtitle,
     icon,
     variant = 'default',
+    children
 }: PriceCardProps) {
     const isPositive = change !== undefined && change >= 0;
 
@@ -62,6 +64,12 @@ export default function PriceCard({
                     </div>
                 )}
             </div>
+
+            {children && (
+                <div className="mt-3 pt-3 border-t border-black/5">
+                    {children}
+                </div>
+            )}
         </div>
     );
 }

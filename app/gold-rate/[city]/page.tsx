@@ -207,9 +207,9 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
 
                     {/* Today's Gold Rates */}
                     <section className="mb-12" aria-labelledby="current-rates-heading">
-                        <div className="flex items-center space-x-3 mb-6">
-                            <Coins className="h-7 w-7 text-primary-600" aria-hidden="true" />
-                            <h2 id="current-rates-heading" className="text-2xl font-display font-semibold text-gray-900">
+                        <div className="flex items-center space-x-2 md:space-x-3 mb-4 md:mb-6">
+                            <Coins className="h-6 w-6 md:h-7 md:w-7 text-primary-600 flex-shrink-0" aria-hidden="true" />
+                            <h2 id="current-rates-heading" className="text-xl md:text-2xl font-display font-semibold text-gray-900">
                                 Today&apos;s Gold Rates in {cityName}
                             </h2>
                         </div>

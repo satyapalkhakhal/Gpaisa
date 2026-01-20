@@ -141,15 +141,16 @@ export default function DynamicGoldRates({ simpleView = false }: DynamicGoldRate
                         changePercent={rate.changePercent}
                         subtitle="per 10 grams"
                         variant="gold"
-                    />
-                    <div className="mt-2 text-center">
-                        <p className="text-sm text-gray-600">
-                            Per 1g: <span className="font-semibold">₹{rate.pricePerGram.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                        </p>
-                        <p className="text-sm text-gray-600">
-                            Per Tola: <span className="font-semibold">₹{rate.pricePerTola.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
-                        </p>
-                    </div>
+                    >
+                        <div className="flex flex-wrap justify-between gap-y-1 text-sm text-gray-700">
+                            <p>
+                                Per 1g: <span className="font-semibold">₹{rate.pricePerGram.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                            </p>
+                            <p>
+                                Per Tola: <span className="font-semibold">₹{rate.pricePerTola.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+                            </p>
+                        </div>
+                    </PriceCard>
                 </div>
             ))}
         </div>
