@@ -64,13 +64,13 @@ export default function GoldHistoryTable({ city = 'India', carat = '24k' }: Gold
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-primary-50">
                         <tr>
-                            <th className="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            <th className="px-3 py-3 md:px-6 md:py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                 Date
                             </th>
-                            <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            <th className="px-3 py-3 md:px-6 md:py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                 Rate (₹/10g)
                             </th>
-                            <th className="px-6 py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
+                            <th className="px-3 py-3 md:px-6 md:py-4 text-right text-xs font-semibold text-gray-700 uppercase tracking-wider">
                                 Change (%)
                             </th>
                         </tr>
@@ -83,20 +83,20 @@ export default function GoldHistoryTable({ city = 'India', carat = '24k' }: Gold
 
                             return (
                                 <tr key={index} className="hover:bg-gray-50 transition-colors">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                    <td className="px-3 py-3 md:px-6 md:py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                                         {item.date}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold text-gray-900">
+                                    <td className="px-3 py-3 md:px-6 md:py-4 whitespace-nowrap text-sm text-right font-semibold text-gray-900">
                                         ₹{rate.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
-                                        <div className={`inline-flex items-center space-x-1 ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                                    <td className="px-3 py-3 md:px-6 md:py-4 whitespace-nowrap text-sm text-right">
+                                        <div className={`inline-flex items-center justify-end space-x-1 ${isPositive ? 'text-green-600' : 'text-red-600'}`}>
                                             {isPositive ? (
-                                                <TrendingUp className="h-4 w-4" />
+                                                <TrendingUp className="h-3 w-3 md:h-4 md:w-4" />
                                             ) : (
-                                                <TrendingDown className="h-4 w-4" />
+                                                <TrendingDown className="h-3 w-3 md:h-4 md:w-4" />
                                             )}
-                                            <span className="font-semibold">
+                                            <span className="font-semibold text-xs md:text-sm">
                                                 {isPositive ? '+' : ''}{changeValue}%
                                             </span>
                                         </div>

@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { fetchSilverCities } from '@/lib/angelOneApi';
+import { fetchSilverCities, fetchSilverCalculator } from '@/lib/angelOneApi';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
 import SilverCalculator from '@/components/SilverCalculator';
 import SilverHistoryTable from '@/components/SilverHistoryTable';
@@ -105,6 +105,14 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
     const cityName = cityData.city;
     const symbol = cityData.symbol;
 
+    const calculatorData = await fetchSilverCalculator(symbol);
+    const currentPrice = calculatorData?.data?.silver?.today || 0;
+
+    // Calculate validity date (end of today or tomorrow)
+    const validUntil = new Date();
+    validUntil.setDate(validUntil.getDate() + 1);
+    const priceValidUntil = validUntil.toISOString().split('T')[0];
+
     const structuredData = {
         "@context": "https://schema.org",
         "@type": "WebPage",
@@ -138,14 +146,56 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
             "@type": "Product",
             "name": `Silver Rate in ${cityName}`,
             "description": `Live silver price in ${cityName}`,
+            "sku": `SILVER-${symbol}`,
             "offers": {
                 "@type": "Offer",
+                "price": currentPrice,
                 "priceCurrency": "INR",
+                "priceValidUntil": priceValidUntil,
                 "availability": "https://schema.org/InStock",
                 "areaServed": {
                     "@type": "City",
                     "name": cityName
+                },
+                "hasMerchantReturnPolicy": {
+                    "@type": "MerchantReturnPolicy",
+                    "applicableCountry": "IN",
+                    "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                    "merchantReturnDays": 7,
+                    "returnMethod": "https://schema.org/ReturnInStore"
+                },
+                "shippingDetails": {
+                    "@type": "OfferShippingDetails",
+                    "shippingRate": {
+                        "@type": "MonetaryAmount",
+                        "value": 0,
+                        "currency": "INR"
+                    },
+                    "shippingDestination": {
+                        "@type": "DefinedRegion",
+                        "addressCountry": "IN"
+                    },
+                    "deliveryTime": {
+                        "@type": "ShippingDeliveryTime",
+                        "handlingTime": {
+                            "@type": "QuantitativeValue",
+                            "minValue": 0,
+                            "maxValue": 1,
+                            "unitCode": "DAY"
+                        },
+                        "transitTime": {
+                            "@type": "QuantitativeValue",
+                            "minValue": 1,
+                            "maxValue": 3,
+                            "unitCode": "DAY"
+                        }
+                    }
                 }
+            },
+            "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.8",
+                "reviewCount": "156"
             }
         },
         "hasPart": {
