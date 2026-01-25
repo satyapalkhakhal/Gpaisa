@@ -155,18 +155,33 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                 {
                     "@type": "Offer",
                     "name": `24K Gold Rate in ${cityName}`,
-                    "description": "99.9% pure gold rate per 10 grams"
+                    "description": "99.9% pure gold rate per 10 grams",
+                    "hasMerchantReturnPolicy": {
+                        "@type": "MerchantReturnPolicy",
+                        "applicableCountry": "IN",
+                        "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                    }
                 },
                 {
                     "@type": "Offer",
                     "name": `22K Gold Rate in ${cityName}`,
-                    "description": "91.67% pure gold rate per 10 grams"
+                    "description": "91.67% pure gold rate per 10 grams",
+                    "hasMerchantReturnPolicy": {
+                        "@type": "MerchantReturnPolicy",
+                        "applicableCountry": "IN",
+                        "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                    }
                 },
                 {
                     "@type": "Offer",
                     "name": `18K Gold Rate in ${cityName}`,
-                    "description": "75% pure gold rate per 10 grams"
-                }
+                    "description": "75% pure gold rate per 10 grams",
+                    "hasMerchantReturnPolicy": {
+                        "@type": "MerchantReturnPolicy",
+                        "applicableCountry": "IN",
+                        "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                    }
+                },
             ]
         }
     };

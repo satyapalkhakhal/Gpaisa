@@ -148,10 +148,15 @@ export default function PPFCalculatorPage() {
                 applicationCategory: 'FinanceApplication',
                 operatingSystem: 'Web',
                 offers: {
-                    '@type': 'Offer',
-                    price: '0',
-                    priceCurrency: 'INR',
+                '@type': 'Offer',
+                price: '0',
+                priceCurrency: 'INR',
+                hasMerchantReturnPolicy: {
+                    '@type': 'MerchantReturnPolicy',
+                    applicableCountry: 'IN',
+                    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
                 },
+            },
                 aggregateRating: {
                     '@type': 'AggregateRating',
                     ratingValue: '4.9',

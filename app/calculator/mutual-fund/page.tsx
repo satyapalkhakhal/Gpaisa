@@ -27,6 +27,11 @@ export default function MutualFundCalculatorPage() {
             '@type': 'Offer',
             price: '0',
             priceCurrency: 'INR',
+            hasMerchantReturnPolicy: {
+                '@type': 'MerchantReturnPolicy',
+                applicableCountry: 'IN',
+                returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+            },
         },
     };
 

@@ -64,10 +64,15 @@ export default function EMICalculatorPage() {
                 applicationCategory: 'FinanceApplication',
                 operatingSystem: 'Web',
                 offers: {
-                    '@type': 'Offer',
-                    price: '0',
-                    priceCurrency: 'INR',
+                '@type': 'Offer',
+                price: '0',
+                priceCurrency: 'INR',
+                hasMerchantReturnPolicy: {
+                    '@type': 'MerchantReturnPolicy',
+                    applicableCountry: 'IN',
+                    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
                 },
+            },
                 description: 'Calculate EMI for home loan, car loan, personal loan with amortization schedule',
             },
             {

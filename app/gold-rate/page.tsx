@@ -141,6 +141,11 @@ export default function GoldRatePage() {
             lowPrice: '6000',
             highPrice: '8000',
             offerCount: '10',
+            hasMerchantReturnPolicy: {
+                '@type': 'MerchantReturnPolicy',
+                applicableCountry: 'IN',
+                returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+            },
         },
     };
 

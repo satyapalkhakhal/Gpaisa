@@ -55,7 +55,12 @@ export default async function SilverRatePage() {
             "offers": {
                 "@type": "AggregateOffer",
                 "priceCurrency": "INR",
-                "availability": "https://schema.org/InStock"
+                "availability": "https://schema.org/InStock",
+                "hasMerchantReturnPolicy": {
+                    "@type": "MerchantReturnPolicy",
+                    "applicableCountry": "IN",
+                    "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
+                }
             }
         }
     };
