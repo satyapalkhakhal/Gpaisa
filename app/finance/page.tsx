@@ -23,7 +23,7 @@ function transformArticle(article: SupabaseArticle): Article {
         ...article,
         readTime: article.read_time,
         publishedAt: article.published_at || article.publishedAt || new Date().toISOString(),
-        category: article.category?.slug || 'news',
+        category: typeof article.category === 'string' ? article.category.toLowerCase() : 'news',
     };
 }
 

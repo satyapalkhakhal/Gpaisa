@@ -6,8 +6,12 @@ import { ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 15;
 
-const CATEGORIES = {
+const CATEGORIES: Record<string, { name: string; description: string }> = {
     'business': { name: 'Business News', description: 'Latest business news, market updates, and corporate developments' },
+    'technology': { name: 'Technology News', description: 'Latest tech news, gadgets, AI, and software development' },
+    'travel': { name: 'Travel News', description: 'Travel guides, destinations, and tourism updates' },
+    'finance': { name: 'Finance News', description: 'Financial news, investment tips, and economic analysis' },
+    'ipo': { name: 'IPO News', description: 'Latest IPO launches, GMP, and listing updates' },
     'world-affairs': { name: 'International News', description: 'Global news and international affairs coverage' },
     'sports': { name: 'Sports News', description: 'Latest sports news, scores, and updates' },
     'movies': { name: 'Movies News', description: 'Latest movie news, reviews, and entertainment updates' },
