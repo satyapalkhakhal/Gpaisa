@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { fetchArticleBySlug, fetchLatestArticles, fetchArticlesByCategory, Article } from '@/lib/supabaseApi';
 import { ChevronRight, Clock, User, Calendar, ArrowLeft, Share2, Bookmark } from 'lucide-react';
 
-export const revalidate = 600; // Revalidate every 10 minutes
+export const dynamic = 'force-dynamic';
 
 // Helper function to generate keywords from article content
 function generateKeywords(article: Article): string[] {

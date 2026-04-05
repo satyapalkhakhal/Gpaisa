@@ -8,7 +8,7 @@ import {
     Article
 } from '@/lib/supabaseApi';
 
-export const revalidate = 300;
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
     title: 'Latest Financial News & Market Updates | gpaisa.in',

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     }
 };
 
-export const revalidate = 300; // 5 min revalidation
+export const dynamic = 'force-dynamic'; // Always server-render for fresh data
 
 // ─── Helper Components ───────────────────────────────────────────────
 

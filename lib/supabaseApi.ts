@@ -2,6 +2,14 @@
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
+// Debug: Log env var availability (safe - only logs existence, not values)
+if (!SUPABASE_URL) {
+    console.error('[SUPABASE] ❌ NEXT_PUBLIC_SUPABASE_URL is not set!');
+}
+if (!SUPABASE_ANON_KEY) {
+    console.error('[SUPABASE] ❌ NEXT_PUBLIC_SUPABASE_ANON_KEY is not set!');
+}
+
 export interface Article {
     id: string;
     title: string;
@@ -39,33 +47,49 @@ function normalizeArticle(a: any): Article {
     };
 }
 
-/**
- * Fetch all articles ordered by published_at desc
- */
-export async function fetchAllArticles(limit: number = 50): Promise<Article[]> {
-    try {
-        const url = `${SUPABASE_URL}/rest/v1/articles?select=*&order=published_at.desc&limit=${limit}`;
+// Reusable fetch helper with proper error logging
+async function supabaseFetch(endpoint: string, tag?: string): Promise<any[]> {
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+        console.error(`[SUPABASE] Cannot fetch "${tag || endpoint}" - missing env vars. URL=${!!SUPABASE_URL}, KEY=${!!SUPABASE_ANON_KEY}`);
+        return [];
+    }
 
+    const url = `${SUPABASE_URL}/rest/v1/${endpoint}`;
+
+    try {
         const response = await fetch(url, {
             headers: {
                 'apikey': SUPABASE_ANON_KEY,
                 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                 'Content-Type': 'application/json'
             },
-            next: { revalidate: 600 }
+            cache: 'no-store' // Force fresh data on every request - no stale cache
         });
 
         if (!response.ok) {
-            console.log('Failed to fetch all articles:', response.status);
+            const errorText = await response.text().catch(() => 'unknown');
+            console.error(`[SUPABASE] ❌ ${tag || endpoint} failed: HTTP ${response.status} - ${errorText}`);
             return [];
         }
 
-        const articles = await response.json();
-        return articles.map(normalizeArticle);
+        const data = await response.json();
+        console.log(`[SUPABASE] ✅ ${tag || endpoint}: got ${Array.isArray(data) ? data.length : 1} results`);
+        return Array.isArray(data) ? data : [data];
     } catch (error) {
-        console.log('Error fetching all articles:', error);
+        console.error(`[SUPABASE] ❌ ${tag || endpoint} threw:`, error);
         return [];
     }
+}
+
+/**
+ * Fetch all articles ordered by published_at desc
+ */
+export async function fetchAllArticles(limit: number = 50): Promise<Article[]> {
+    const articles = await supabaseFetch(
+        `articles?select=*&order=published_at.desc&limit=${limit}`,
+        'fetchAllArticles'
+    );
+    return articles.map(normalizeArticle);
 }
 
 /**
@@ -82,29 +106,11 @@ export async function fetchArticlesByCategory(
     category: string,
     limit: number = 10
 ): Promise<Article[]> {
-    try {
-        const url = `${SUPABASE_URL}/rest/v1/articles?select=*&category=ilike.${encodeURIComponent(category)}&order=published_at.desc&limit=${limit}`;
-
-        const response = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            next: { revalidate: 600 }
-        });
-
-        if (!response.ok) {
-            console.log('Failed to fetch articles by category:', response.status);
-            return [];
-        }
-
-        const articles = await response.json();
-        return articles.map(normalizeArticle);
-    } catch (error) {
-        console.log('Error fetching articles by category:', error);
-        return [];
-    }
+    const articles = await supabaseFetch(
+        `articles?select=*&category=ilike.${encodeURIComponent(category)}&order=published_at.desc&limit=${limit}`,
+        `fetchByCategory(${category})`
+    );
+    return articles.map(normalizeArticle);
 }
 
 /**
@@ -146,187 +152,75 @@ export async function fetchArticlesByCategorySlug(
  * Fetch featured articles
  */
 export async function fetchFeaturedArticles(limit: number = 5): Promise<Article[]> {
-    try {
-        const url = `${SUPABASE_URL}/rest/v1/articles?select=*&is_featured=eq.true&order=published_at.desc&limit=${limit}`;
-
-        const response = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            next: { revalidate: 600 }
-        });
-
-        if (!response.ok) return [];
-        const articles = await response.json();
-        return articles.map(normalizeArticle);
-    } catch (error) {
-        console.log('Error fetching featured articles:', error);
-        return [];
-    }
+    const articles = await supabaseFetch(
+        `articles?select=*&is_featured=eq.true&order=published_at.desc&limit=${limit}`,
+        'fetchFeatured'
+    );
+    return articles.map(normalizeArticle);
 }
 
 /**
  * Fetch trending articles
  */
 export async function fetchTrendingArticles(limit: number = 5): Promise<Article[]> {
-    try {
-        const url = `${SUPABASE_URL}/rest/v1/articles?select=*&is_trending=eq.true&order=published_at.desc&limit=${limit}`;
-
-        const response = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            next: { revalidate: 600 }
-        });
-
-        if (!response.ok) return [];
-        const articles = await response.json();
-        return articles.map(normalizeArticle);
-    } catch (error) {
-        console.log('Error fetching trending articles:', error);
-        return [];
-    }
+    const articles = await supabaseFetch(
+        `articles?select=*&is_trending=eq.true&order=published_at.desc&limit=${limit}`,
+        'fetchTrending'
+    );
+    return articles.map(normalizeArticle);
 }
 
 /**
  * Fetch editors pick articles
  */
 export async function fetchEditorsPickArticles(limit: number = 5): Promise<Article[]> {
-    try {
-        const url = `${SUPABASE_URL}/rest/v1/articles?select=*&is_editors_pick=eq.true&order=published_at.desc&limit=${limit}`;
-
-        const response = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            next: { revalidate: 600 }
-        });
-
-        if (!response.ok) return [];
-        const articles = await response.json();
-        return articles.map(normalizeArticle);
-    } catch (error) {
-        console.log('Error fetching editors pick articles:', error);
-        return [];
-    }
+    const articles = await supabaseFetch(
+        `articles?select=*&is_editors_pick=eq.true&order=published_at.desc&limit=${limit}`,
+        'fetchEditorsPick'
+    );
+    return articles.map(normalizeArticle);
 }
 
 /**
  * Fetch Gold News - articles whose content contains "gold" keyword
  */
 export async function fetchGoldNews(limit: number = 6): Promise<Article[]> {
-    try {
-        const url = `${SUPABASE_URL}/rest/v1/articles?select=*&or=(content.ilike.*gold*,title.ilike.*gold*)&order=published_at.desc&limit=${limit}`;
-
-        const response = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            next: { revalidate: 600 }
-        });
-
-        if (!response.ok) {
-            console.log('Failed to fetch gold news:', response.status);
-            return [];
-        }
-
-        const articles = await response.json();
-        return articles.map(normalizeArticle);
-    } catch (error) {
-        console.log('Error fetching gold news:', error);
-        return [];
-    }
+    const articles = await supabaseFetch(
+        `articles?select=*&or=(content.ilike.*gold*,title.ilike.*gold*)&order=published_at.desc&limit=${limit}`,
+        'fetchGoldNews'
+    );
+    return articles.map(normalizeArticle);
 }
 
 /**
  * Fetch Silver News - articles whose content contains "silver" keyword
  */
 export async function fetchSilverNews(limit: number = 6): Promise<Article[]> {
-    try {
-        const url = `${SUPABASE_URL}/rest/v1/articles?select=*&or=(content.ilike.*silver*,title.ilike.*silver*)&order=published_at.desc&limit=${limit}`;
-
-        const response = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            next: { revalidate: 600 }
-        });
-
-        if (!response.ok) {
-            console.log('Failed to fetch silver news:', response.status);
-            return [];
-        }
-
-        const articles = await response.json();
-        return articles.map(normalizeArticle);
-    } catch (error) {
-        console.log('Error fetching silver news:', error);
-        return [];
-    }
+    const articles = await supabaseFetch(
+        `articles?select=*&or=(content.ilike.*silver*,title.ilike.*silver*)&order=published_at.desc&limit=${limit}`,
+        'fetchSilverNews'
+    );
+    return articles.map(normalizeArticle);
 }
 
 /**
  * Get article by slug (SEO-friendly URLs)
  */
 export async function fetchArticleBySlug(slug: string): Promise<Article | null> {
-    try {
-        const url = `${SUPABASE_URL}/rest/v1/articles?select=*&slug=eq.${encodeURIComponent(slug)}`;
-
-        const response = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            next: { revalidate: 600 }
-        });
-
-        if (!response.ok) {
-            return null;
-        }
-
-        const articles = await response.json();
-        return articles.length > 0 ? normalizeArticle(articles[0]) : null;
-    } catch (error) {
-        console.log('Error fetching article by slug:', error);
-        return null;
-    }
+    const articles = await supabaseFetch(
+        `articles?select=*&slug=eq.${encodeURIComponent(slug)}`,
+        `fetchBySlug(${slug})`
+    );
+    return articles.length > 0 ? normalizeArticle(articles[0]) : null;
 }
 
 /**
  * Get article by ID
  */
 export async function fetchArticleById(id: string): Promise<Article | null> {
-    try {
-        const url = `${SUPABASE_URL}/rest/v1/articles?select=*&id=eq.${id}`;
-
-        const response = await fetch(url, {
-            headers: {
-                'apikey': SUPABASE_ANON_KEY,
-                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json'
-            },
-            next: { revalidate: 600 }
-        });
-
-        if (!response.ok) {
-            return null;
-        }
-
-        const articles = await response.json();
-        return articles.length > 0 ? normalizeArticle(articles[0]) : null;
-    } catch (error) {
-        console.log('Error fetching article:', error);
-        return null;
-    }
+    const articles = await supabaseFetch(
+        `articles?select=*&id=eq.${id}`,
+        `fetchById(${id})`
+    );
+    return articles.length > 0 ? normalizeArticle(articles[0]) : null;
 }
