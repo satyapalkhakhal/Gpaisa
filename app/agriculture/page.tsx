@@ -7,11 +7,11 @@ import LastUpdatedTime from '@/components/LastUpdatedTime';
 import AgricultureFilters from '@/components/AgricultureFilters';
 
 export const metadata: Metadata = {
-    title: 'Agriculture Mandi Prices India - Live Crop Rates by State & District | Gpaisa',
+    title: 'Kisan Mandi Prices India - Live Crop Rates by State & District | Gpaisa',
     description: 'Check today\'s mandi prices for all crops across India. State-wise, district-wise, and mandi-wise agriculture commodity rates updated daily from government sources.',
     keywords: ['mandi prices', 'agriculture prices', 'crop rates', 'farmer prices', 'wholesale market prices', 'India agriculture'],
     openGraph: {
-        title: 'Live Agriculture Mandi Prices - India',
+        title: 'Live Kisan Mandi Prices - India',
         description: 'Real-time mandi prices for crops across all states and districts in India',
         type: 'website',
     },
@@ -33,7 +33,7 @@ export default async function AgriculturePage() {
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center space-x-4 mb-4">
                         <Wheat className="w-12 h-12" />
-                        <h1 className="text-4xl md:text-5xl font-bold">Agriculture Mandi Prices</h1>
+                        <h1 className="text-4xl md:text-5xl font-bold">Kisan Mandi Prices</h1>
                     </div>
                     <p className="text-xl text-green-100 max-w-3xl">
                         Access real-time mandi prices for agricultural commodities across India.
