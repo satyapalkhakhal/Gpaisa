@@ -4,40 +4,43 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
-
-const navigation = [
-    { name: 'Markets', href: '/markets' },
-    { name: 'Gold Rate', href: '/gold-rate' },
-    { name: 'Silver Rate', href: '/silver-rate' },
-    { name: 'Commodities', href: '/commodities' },
-    { name: 'Agriculture', href: '/agriculture' },
-    {
-        name: 'Calculators',
-        href: '/calculator/sip',
-        dropdown: [
-            { name: 'SIP Calculator', href: '/calculator/sip', description: 'Calculate mutual fund SIP returns' },
-            { name: 'PPF Calculator', href: '/calculator/ppf', description: 'Calculate PPF maturity amount' },
-            { name: 'SWP Calculator', href: '/calculator/swp', description: 'Calculate systematic withdrawal plan' },
-            { name: 'EPF Calculator', href: '/calculator/epf', description: 'Calculate employees provident fund' },
-            { name: 'EMI Calculator', href: '/calculator/emi', description: 'Calculate loan EMI' },
-            { name: 'Home Loan Calculator', href: '/calculator/home-loan', description: 'Calculate home loan EMI' },
-            { name: 'GST Calculator', href: '/calculator/gst', description: 'Calculate GST online' },
-            { name: 'CAGR Calculator', href: '/calculator/cagr', description: 'Calculate compound annual growth rate' },
-            { name: 'FD Calculator', href: '/calculator/fd', description: 'Calculate fixed deposit returns' },
-            { name: 'NPS Calculator', href: '/calculator/nps', description: 'Calculate NPS returns' },
-            { name: 'HRA Calculator', href: '/calculator/hra', description: 'Calculate HRA tax exemption' },
-            { name: 'Gratuity Calculator', href: '/calculator/gratuity', description: 'Calculate gratuity amount' },
-            { name: 'Simple Interest', href: '/calculator/simple-interest', description: 'Calculate simple interest' },
-            { name: 'Mutual Fund Calculator', href: '/calculator/mutual-fund', description: 'Calculate MF returns' },
-        ]
-    },
-    { name: 'Personal Finance', href: '/finance' },
-    { name: 'News', href: '/news' },
-];
+import { useLanguage } from '@/lib/i18n';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [calculatorDropdownOpen, setCalculatorDropdownOpen] = useState(false);
+    const { t } = useLanguage();
+
+    const navigation = [
+        { name: t('nav', 'markets'), href: '/markets' },
+        { name: t('nav', 'goldRate'), href: '/gold-rate' },
+        { name: t('nav', 'silverRate'), href: '/silver-rate' },
+        { name: t('nav', 'commodities'), href: '/commodities' },
+        { name: t('nav', 'agriculture'), href: '/agriculture' },
+        {
+            name: t('nav', 'calculators'),
+            href: '/calculator/sip',
+            dropdown: [
+                { name: t('calculators', 'sipCalculator'), href: '/calculator/sip' },
+                { name: t('calculators', 'ppfCalculator'), href: '/calculator/ppf' },
+                { name: t('calculators', 'swpCalculator'), href: '/calculator/swp' },
+                { name: t('calculators', 'epfCalculator'), href: '/calculator/epf' },
+                { name: t('calculators', 'emiCalculator'), href: '/calculator/emi' },
+                { name: t('calculators', 'homeLoanCalculator'), href: '/calculator/home-loan' },
+                { name: t('calculators', 'gstCalculator'), href: '/calculator/gst' },
+                { name: t('calculators', 'cagrCalculator'), href: '/calculator/cagr' },
+                { name: t('calculators', 'fdCalculator'), href: '/calculator/fd' },
+                { name: t('calculators', 'npsCalculator'), href: '/calculator/nps' },
+                { name: t('calculators', 'hraCalculator'), href: '/calculator/hra' },
+                { name: t('calculators', 'gratuityCalculator'), href: '/calculator/gratuity' },
+                { name: t('calculators', 'simpleInterest'), href: '/calculator/simple-interest' },
+                { name: t('calculators', 'mutualFundCalculator'), href: '/calculator/mutual-fund' },
+            ]
+        },
+        { name: t('nav', 'personalFinance'), href: '/finance' },
+        { name: t('nav', 'news'), href: '/news' },
+    ];
 
     return (
         <header className="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
@@ -80,7 +83,7 @@ export default function Header() {
                                         <div className="absolute left-0 mt-1 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-1">
                                             {item.dropdown.map((subItem) => (
                                                 <Link
-                                                    key={subItem.name}
+                                                    key={subItem.href}
                                                     href={subItem.href}
                                                     className="block px-4 py-2 text-sm text-gray-700 hover:bg-primary-50 hover:text-primary-600 transition-colors"
                                                 >
@@ -100,16 +103,22 @@ export default function Header() {
                                 </Link>
                             )
                         ))}
+
+                        {/* Language Switcher - Desktop */}
+                        <div className="ml-2">
+                            <LanguageSwitcher />
+                        </div>
                     </div>
 
-                    {/* Mobile menu button */}
-                    <div className="flex md:hidden">
+                    {/* Mobile: Language + Menu button */}
+                    <div className="flex md:hidden items-center gap-2">
+                        <LanguageSwitcher />
                         <button
                             type="button"
                             className="inline-flex items-center justify-center rounded-lg p-2 text-gray-700 hover:bg-gray-100"
                             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
                         >
-                            <span className="sr-only">Open main menu</span>
+                            <span className="sr-only">{t('common', 'openMenu')}</span>
                             {mobileMenuOpen ? (
                                 <X className="h-6 w-6" aria-hidden="true" />
                             ) : (
@@ -138,7 +147,7 @@ export default function Header() {
                                         <div className="ml-4 mt-1 space-y-1">
                                             {item.dropdown.map((subItem) => (
                                                 <Link
-                                                    key={subItem.name}
+                                                    key={subItem.href}
                                                     href={subItem.href}
                                                     className="block px-3 py-2 text-sm text-gray-600 hover:bg-primary-50 hover:text-primary-600 rounded-lg"
                                                     onClick={() => setMobileMenuOpen(false)}

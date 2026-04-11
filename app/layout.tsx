@@ -3,6 +3,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import MarketTicker from "@/components/MarketTicker";
+import { LanguageProvider } from "@/lib/i18n";
 import Script from "next/script";
 
 export const metadata: Metadata = {
@@ -84,12 +85,14 @@ export default function RootLayout({
                 </Script>
             </head>
             <body className="flex flex-col min-h-screen">
-                <Header />
-                <MarketTicker />
-                <main className="flex-grow">
-                    {children}
-                </main>
-                <Footer />
+                <LanguageProvider>
+                    <Header />
+                    <MarketTicker />
+                    <main className="flex-grow">
+                        {children}
+                    </main>
+                    <Footer />
+                </LanguageProvider>
             </body>
         </html>
     );
