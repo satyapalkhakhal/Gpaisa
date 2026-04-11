@@ -20,16 +20,16 @@ export async function generateMetadata({ params }: { params: Promise<{ state: st
     const stateName = formatStateFromUrl(urlState);
 
     return {
-        title: `${stateName} Mandi Prices - Agriculture Commodity Rates by District | Gpaisa`,
-        description: `Today's mandi prices for crops in ${stateName}. District-wise agricultural commodity rates updated daily.`,
+        title: `${stateName} Kisan Mandi Prices - Rate of Wheat Today & Crop Rates | Gpaisa`,
+        description: `Check rate of wheat today in ${stateName} kisan mandis. District-wise agricultural commodity rates updated daily.`,
         openGraph: {
-            title: `${stateName} Mandi Prices - Live Agriculture Rates`,
-            description: `Real-time mandi prices for crops across ${stateName} districts`
+            title: `${stateName} Kisan Mandi Prices - Crop Rates Today`,
+            description: `Real-time kisan mandi prices and rate of wheat today across ${stateName} districts`
         },
         twitter: {
             card: 'summary',
-            title: `${stateName} Mandi Prices`,
-            description: `Today's mandi prices for crops in ${stateName}.`
+            title: `${stateName} Kisan Mandi Prices`,
+            description: `Check rate of wheat today and all crop prices in ${stateName} kisan mandis.`
         }
     };
 }
@@ -66,8 +66,8 @@ export default async function StatePage({ params }: { params: Promise<{ state: s
                     <div className="flex items-center space-x-4">
                         <MapPin className="w-10 h-10 text-green-600" />
                         <div>
-                            <h1 className="text-4xl font-bold text-gray-900">{stateName} Mandi Prices</h1>
-                            <p className="text-gray-600 mt-1">Agriculture commodity prices across {stateName} districts</p>
+                            <h1 className="text-4xl font-bold text-gray-900">{stateName} Kisan Mandi Prices</h1>
+                            <p className="text-gray-600 mt-1">Rate of wheat today & all crop prices across {stateName} districts</p>
                         </div>
                     </div>
                 </div>
@@ -165,17 +165,17 @@ export default async function StatePage({ params }: { params: Promise<{ state: s
 
                 {/* State Overview - SEO Content */}
                 <section className="bg-white rounded-lg shadow-sm p-8 mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">About {stateName} Agriculture Markets</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Rate of Wheat Today &amp; Kisan Mandi Prices in {stateName}</h2>
                     <div className="prose prose-lg max-w-none text-gray-700">
                         <p>
-                            {stateName} has {districts.length} major agricultural districts with active mandi systems.
-                            The state&apos;s agricultural markets facilitate the trade of various crops including
+                            Want to check the rate of wheat today in {stateName}? {stateName} has {districts.length} major agricultural districts
+                            with active kisan mandi systems. The state&apos;s kisan mandis facilitate the trade of various crops including
                             {topCrops.slice(0, 3).join(', ')} and many others. Farmers and traders can access
-                            real-time pricing information to make informed trading decisions.
+                            today&apos;s crop rates and the latest wheat rate to make informed trading decisions.
                         </p>
                         <p className="mt-4">
-                            Browse by district below to find specific mandi prices in your region, or view the latest
-                            commodity prices across all {stateName} markets in the table below.
+                            Browse by district below to find specific kisan mandi prices in your region, or view today&apos;s
+                            commodity rates across all {stateName} markets in the table above.
                         </p>
                     </div>
                 </section>

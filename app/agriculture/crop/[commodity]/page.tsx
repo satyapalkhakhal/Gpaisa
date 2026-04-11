@@ -20,12 +20,12 @@ export async function generateMetadata({ params }: { params: Promise<{ commodity
         .join(' ');
 
     return {
-        title: `${commodityName} Prices in India - Mandi Rates by State | Gpaisa`,
-        description: `Check today's ${commodityName} prices across all states and mandis in India. Latest wholesale market rates for ${commodityName} updated daily.`,
-        keywords: [`${commodityName} prices`, `${commodityName} mandi rates`, `${commodityName} wholesale price`, 'crop prices India'],
+        title: `Rate of ${commodityName} Today - ${commodityName} Kisan Mandi Prices India | Gpaisa`,
+        description: `Check rate of ${commodityName} today across all states and mandis in India. Latest wholesale kisan mandi rates for ${commodityName} updated daily.`,
+        keywords: [`rate of ${commodityName} today`, `${commodityName} price today`, `${commodityName} mandi rates`, `${commodityName} wholesale price`, 'kisan mandi', 'crop rates today'],
         openGraph: {
-            title: `${commodityName} Prices - India Mandi Rates`,
-            description: `Live ${commodityName} prices across Indian states`
+            title: `Rate of ${commodityName} Today - Kisan Mandi Prices India`,
+            description: `Live rate of ${commodityName} today across Indian kisan mandis`
         }
     };
 }
@@ -71,8 +71,8 @@ export default async function CommodityPage({ params }: { params: Promise<{ comm
                     <div className="flex items-center space-x-4">
                         <TrendingUp className="w-10 h-10 text-green-600" />
                         <div>
-                            <h1 className="text-4xl font-bold text-gray-900">{commodityName} Prices in India</h1>
-                            <p className="text-gray-600 mt-1">Latest mandi rates across all states</p>
+                            <h1 className="text-4xl font-bold text-gray-900">Rate of {commodityName} Today in India</h1>
+                            <p className="text-gray-600 mt-1">Latest kisan mandi rates across all states</p>
                         </div>
                     </div>
                 </div>
@@ -128,7 +128,7 @@ export default async function CommodityPage({ params }: { params: Promise<{ comm
                 {/* Price Table */}
                 <section className="mb-12">
                     <h2 className="text-3xl font-bold text-gray-900 mb-6">
-                        Latest {commodityName} Prices by Market
+                        Today&apos;s {commodityName} Rate by Market
                     </h2>
 
                     {commodityPrices.records.length > 0 ? (
@@ -190,13 +190,14 @@ export default async function CommodityPage({ params }: { params: Promise<{ comm
                 {/* SEO Content */}
                 <section className="bg-white rounded-lg p-6">
                     <h2 className="text-xl font-bold text-gray-900 mb-3">
-                        About {commodityName} Trading in India
+                        Rate of {commodityName} Today – Kisan Mandi Prices
                     </h2>
                     <p className="text-gray-700">
-                        {commodityName} is traded across {states.length} states in India with active markets in major
-                        agricultural regions. The prices shown above are sourced from Agricultural Produce Market Committees
-                        (APMCs) and updated daily. Farmers and traders can use this data to make informed decisions about
-                        when and where to trade {commodityName}.
+                        Looking for the rate of {commodityName} today? {commodityName} is traded across {states.length} states in India
+                        with active kisan mandis in major agricultural regions. The prices shown above reflect today&apos;s
+                        {commodityName} rate sourced from Agricultural Produce Market Committees (APMCs) and updated daily.
+                        Farmers and traders can use this data to check the latest {commodityName} rate today and make informed
+                        decisions about when and where to trade {commodityName}.
                     </p>
                 </section>
 

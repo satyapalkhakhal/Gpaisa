@@ -8,11 +8,11 @@ import AgricultureFilters from '@/components/AgricultureFilters';
 
 export const metadata: Metadata = {
     title: 'Kisan Mandi Prices India - Live Crop Rates by State & District | Gpaisa',
-    description: 'Check today\'s mandi prices for all crops across India. State-wise, district-wise, and mandi-wise agriculture commodity rates updated daily from government sources.',
-    keywords: ['mandi prices', 'agriculture prices', 'crop rates', 'farmer prices', 'wholesale market prices', 'India agriculture'],
+    description: 'Check rate of wheat today and all crop mandi prices across India. State-wise, district-wise kisan mandi rates updated daily from government sources.',
+    keywords: ['mandi prices', 'rate of wheat today', 'kisan mandi', 'crop rates today', 'wheat rate today', 'agriculture prices', 'farmer prices', 'wholesale market prices', 'India agriculture'],
     openGraph: {
         title: 'Live Kisan Mandi Prices - India',
-        description: 'Real-time mandi prices for crops across all states and districts in India',
+        description: 'Check rate of wheat today & real-time kisan mandi prices for crops across all states and districts in India',
         type: 'website',
     },
     alternates: {
@@ -36,7 +36,7 @@ export default async function AgriculturePage() {
                         <h1 className="text-4xl md:text-5xl font-bold">Kisan Mandi Prices</h1>
                     </div>
                     <p className="text-xl text-green-100 max-w-3xl">
-                        Access real-time mandi prices for agricultural commodities across India.
+                        Check rate of wheat today and access real-time kisan mandi prices for all agricultural commodities across India.
                         Updated daily from official government sources.
                     </p>
                 </div>
@@ -152,15 +152,17 @@ export default async function AgriculturePage() {
 
                 {/* SEO Content */}
                 <section className="bg-white rounded-lg shadow-sm p-8 mb-12">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-4">About Mandi Prices in India</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-4">Rate of Wheat Today &amp; Kisan Mandi Prices in India</h2>
                     <div className="prose prose-lg max-w-none text-gray-700 space-y-4">
                         <p>
-                            Mandi prices, also known as Agricultural Produce Market Committee (APMC) rates, represent the wholesale prices
-                            at which farmers and traders buy and sell agricultural commodities across India. Our platform provides comprehensive
-                            mandi price information for all major crops including wheat, rice, onion, potato, cotton, and more.
+                            Looking for the rate of wheat today? Our kisan mandi platform provides live wholesale prices
+                            for wheat, rice, onion, potato, cotton, and all major agricultural commodities across India.
+                            Mandi prices (APMC rates) represent the wholesale rates at which farmers and traders buy and
+                            sell crops in government-regulated markets.
                         </p>
                         <p>
-                            Browse by state to find mandi prices in your region, or search by commodity to compare prices across different
+                            Whether you want to check today&apos;s wheat rate, rice price, or any other crop rate today,
+                            simply browse by state or search by commodity to compare kisan mandi prices across different
                             states and districts. All data is sourced from the Government of India&apos;s Open Data Portal and updated daily.
                         </p>
                     </div>
