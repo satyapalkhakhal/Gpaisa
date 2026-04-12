@@ -16,6 +16,8 @@ export const metadata = {
     },
 };
 
+export const revalidate = 86400; // Cache for 1 day (ISR)
+
 export default async function SitemapPage() {
     // Fetch latest articles for the sitemap
     let articles: any[] = [];

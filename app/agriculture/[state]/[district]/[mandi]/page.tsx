@@ -6,7 +6,7 @@ import { getMandisByDistrict, fetchMandiPrices, formatStateForUrl, formatStateFr
 import LastUpdatedTime from '@/components/LastUpdatedTime';
 
 // Force dynamic rendering to avoid build-time API failures
-export const dynamic = 'force-dynamic';
+// Cache for 1 day (ISR)
 export const revalidate = 86400;
 export const dynamicParams = true;
 

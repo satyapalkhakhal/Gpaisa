@@ -18,6 +18,8 @@ const CATEGORIES: Record<string, { name: string; description: string }> = {
     'education': { name: 'Education News', description: 'Education news, exam updates, and academic developments' },
 };
 
+export const revalidate = 86400; // Cache for 1 day (ISR)
+
 export async function generateMetadata({ params, searchParams }: {
     params: Promise<{ slug: string }>,
     searchParams: Promise<{ page?: string }>

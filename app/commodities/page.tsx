@@ -23,6 +23,8 @@ export const metadata: Metadata = {
     }
 };
 
+export const dynamic = 'force-static'; // Static page with client-side data fetching
+
 export default function CommoditiesPage() {
     // Generate JSON-LD structured data for gold rates
     const structuredData = {

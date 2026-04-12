@@ -9,6 +9,8 @@ export const metadata: Metadata = {
     },
 };
 
+export const dynamic = 'force-static'; // Fully static page, cached permanently
+
 export default function TermsPage() {
     return (
         <div className="bg-gray-50 py-12">

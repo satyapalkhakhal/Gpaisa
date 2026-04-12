@@ -32,6 +32,8 @@ export const metadata: Metadata = {
     }
 };
 
+export const dynamic = 'force-static'; // Static page with client-side data fetching
+
 export default function GoldRatePage() {
     const webPageSchema = {
         '@context': 'https://schema.org',

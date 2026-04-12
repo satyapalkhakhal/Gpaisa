@@ -15,6 +15,8 @@ export async function generateStaticParams() {
     }));
 }
 
+export const revalidate = 86400; // Cache for 1 day (ISR)
+
 export async function generateMetadata(props: { params: Promise<{ city: string }> }): Promise<Metadata> {
     const params = await props.params;
     const cities = await fetchSilverCities();

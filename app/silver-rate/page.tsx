@@ -22,6 +22,8 @@ export const metadata: Metadata = {
     }
 };
 
+export const revalidate = 86400; // Cache for 1 day (ISR)
+
 export default async function SilverRatePage() {
     const cities = await fetchSilverCities();
 

@@ -29,6 +29,8 @@ export async function generateStaticParams() {
     }));
 }
 
+export const revalidate = 86400; // Cache for 1 day (ISR)
+
 // Generate metadata for each city
 export async function generateMetadata(props: { params: Promise<{ city: string }> }): Promise<Metadata> {
     const params = await props.params;

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     }
 };
 
-export const dynamic = 'force-dynamic'; // Always server-render for fresh data
+export const revalidate = 86400; // Cache for 1 day (ISR)
 
 // ─── Helper Components ───────────────────────────────────────────────
 

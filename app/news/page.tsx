@@ -8,7 +8,7 @@ import {
     Article
 } from '@/lib/supabaseApi';
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 86400; // Cache for 1 day (ISR)
 
 export const metadata: Metadata = {
     title: 'Latest Financial News & Market Updates | gpaisa.in',
