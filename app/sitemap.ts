@@ -56,6 +56,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.8,
         },
         {
+            url: `${baseUrl}/gold-vs-silver`,
+            lastModified: new Date(), // Blog page
+            changeFrequency: 'weekly',
+            priority: 0.85,
+        },
+        {
             url: `${baseUrl}/finance`,
             lastModified: new Date('2026-01-01'), // Finance section - less frequent updates
             changeFrequency: 'weekly',
