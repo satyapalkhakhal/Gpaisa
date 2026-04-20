@@ -6,223 +6,246 @@ import GoldHistoryTable from '@/components/GoldHistoryTable';
 import DynamicGoldChart from '@/components/DynamicGoldChart';
 import LastUpdatedTime from '@/components/LastUpdatedTime';
 import { IndianCity } from '@/types';
-import { Coins, MapPin, Calculator, TrendingUp } from 'lucide-react';
+import { Coins, MapPin, Calculator, TrendingUp, ShoppingBag, Landmark, BookOpen, HelpCircle, Calendar, Lightbulb, Store } from 'lucide-react';
 import Link from 'next/link';
+import { getCityGoldData, CITY_GOLD_DATA } from '@/lib/cityGoldData';
 
 const CITIES: IndianCity[] = [
-    "Delhi",
-    "Chennai",
-    "Mumbai",
-    "Pune",
-    "Hyderabad",
-    "Bangalore",
-    "Coimbatore",
-    "Kolkata",
-    "Ahmedabad",
-    "Kerala"
+    "Delhi", "Chennai", "Mumbai", "Pune", "Hyderabad",
+    "Bangalore", "Coimbatore", "Kolkata", "Ahmedabad", "Kerala"
 ];
 
-// Generate static params for all cities
 export async function generateStaticParams() {
     return CITIES.map((city) => ({
         city: city.toLowerCase(),
     }));
 }
 
-export const revalidate = 86400; // Cache for 1 day (ISR)
+export const revalidate = 86400;
 
-// Generate metadata for each city
 export async function generateMetadata(props: { params: Promise<{ city: string }> }): Promise<Metadata> {
     const params = await props.params;
-    const cityName = params.city.charAt(0).toUpperCase() + params.city.slice(1);
+    const citySlug = params.city.toLowerCase();
+    const cityData = getCityGoldData(citySlug);
 
-    // Validate city
-    if (!CITIES.map(c => c.toLowerCase()).includes(params.city.toLowerCase())) {
-        return {
-            title: 'City Not Found | gpaisa.in',
-        };
+    if (!cityData) {
+        return { title: 'City Not Found | gpaisa.in' };
     }
 
-    // Comprehensive SEO keywords for the city
+    const { city: cityName, mainMarkets, tagline, state } = cityData;
+
     const keywords = [
-        // Primary keywords
-        `gold rate today ${params.city}`,
-        `gold price in ${params.city} today`,
-        `${params.city} gold rate`,
-        `today gold rate in ${params.city}`,
-
-        // Purity-specific keywords
-        `24k gold rate in ${params.city}`,
-        `22k gold rate in ${params.city}`,
-        `18k gold rate in ${params.city}`,
-        `916 gold rate ${params.city}`,
-        `999 gold rate ${params.city}`,
-
-        // Weight-specific keywords
-        `1 gram gold rate in ${params.city}`,
-        `10 gram gold price ${params.city}`,
-        `8 gram gold rate ${params.city}`,
-
-        // Long-tail keywords
-        `gold rate today in ${params.city} 22 carat`,
-        `gold rate today in ${params.city} 24 carat`,
-        `live gold rate ${params.city}`,
-        `today gold rate ${params.city} per gram`,
-
-        // Informational keywords
-        `gold price calculator ${params.city}`,
-        `gold rate history ${params.city}`,
-        `gold rate chart ${params.city}`,
-
-        // General keywords
+        `gold rate today ${citySlug}`,
+        `gold price in ${citySlug} today`,
+        `${citySlug} gold rate`,
+        `today gold rate in ${citySlug}`,
+        `24k gold rate in ${citySlug}`,
+        `22k gold rate in ${citySlug}`,
+        `18k gold rate in ${citySlug}`,
+        `916 gold rate ${citySlug}`,
+        `999 gold rate ${citySlug}`,
+        `1 gram gold rate in ${citySlug}`,
+        `10 gram gold price ${citySlug}`,
+        `8 gram gold rate ${citySlug}`,
+        `gold rate today in ${citySlug} 22 carat`,
+        `gold rate today in ${citySlug} 24 carat`,
+        `live gold rate ${citySlug}`,
+        `today gold rate ${citySlug} per gram`,
+        `gold price calculator ${citySlug}`,
+        `gold rate history ${citySlug}`,
+        `gold rate chart ${citySlug}`,
+        `gold jewellery ${citySlug}`,
+        `gold market ${citySlug}`,
+        ...mainMarkets.map(m => `${m} gold market`),
+        `gold buying tips ${citySlug}`,
+        `best gold shop ${citySlug}`,
         'gold rate today',
         'gold price today india',
         'live gold rate',
-        'gold rate india'
+        'gold rate india',
     ];
 
     return {
-        title: `Gold Rate in ${cityName} Today - 24K, 22K, 18K Live Prices | gpaisa.in`,
-        description: `Check today's gold rate in ${cityName} for 24K, 22K and 18K. Live gold prices updated daily with calculator, historical data and price trends. Get accurate ${cityName} gold rates per gram.`,
+        title: `Gold Rate in ${cityName} Today (${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}) - 24K, 22K, 18K Live Prices | ${tagline} | gpaisa.in`,
+        description: `Check today's gold rate in ${cityName}, ${state}. Live 24K, 22K & 18K gold prices. ${tagline}. Gold markets at ${mainMarkets.join(' & ')}. Calculator, price history, buying tips & expert guide.`,
         keywords: keywords.join(', '),
         robots: {
             index: true,
             follow: true,
-            googleBot: {
-                index: true,
-                follow: true,
-            },
+            googleBot: { index: true, follow: true },
         },
         openGraph: {
-            title: `Gold Rate in ${cityName} Today - 24K, 22K, 18K Live Prices`,
-            description: `Check today's gold rate in ${cityName} for 24K, 22K and 18K. Live gold and silver prices with daily updates and charts.`,
-            type: 'website',
-            url: `https://gpaisa.in/gold-rate/${params.city.toLowerCase()}`,
+            title: `Gold Rate in ${cityName} Today - 24K, 22K, 18K Live Prices | ${tagline}`,
+            description: `Today's gold rate in ${cityName}, ${state}. ${tagline}. Live prices for 24K, 22K & 18K gold with calculator, history & buying guide.`,
+            type: 'article',
+            url: `https://gpaisa.in/gold-rate/${citySlug}`,
+            siteName: 'gpaisa.in',
+            locale: 'en_IN',
+            images: [{ url: 'https://gpaisa.in/android-chrome-512x512.png', width: 512, height: 512, alt: `Gold Rate in ${cityName} Today` }],
         },
         twitter: {
             card: 'summary_large_image',
-            title: `Gold Rate in ${cityName} Today - Live Prices`,
-            description: `Check today's gold rate in ${cityName} for 24K, 22K and 18K. Live prices with daily updates.`,
+            title: `Gold Rate in ${cityName} Today - Live Prices | ${tagline}`,
+            description: `Today's gold rate in ${cityName} for 24K, 22K & 18K. ${tagline}. Live prices with buying tips.`,
         },
         alternates: {
-            canonical: `https://gpaisa.in/gold-rate/${params.city.toLowerCase()}`
-        }
+            canonical: `https://gpaisa.in/gold-rate/${citySlug}`,
+        },
     };
 }
 
 export default async function CityGoldRatePage(props: { params: Promise<{ city: string }> }) {
     const params = await props.params;
-    const cityName = params.city.charAt(0).toUpperCase() + params.city.slice(1);
+    const citySlug = params.city.toLowerCase();
+    const cityData = getCityGoldData(citySlug);
 
-    // Validate city
-    if (!CITIES.map(c => c.toLowerCase()).includes(params.city.toLowerCase())) {
+    if (!cityData || !CITIES.map(c => c.toLowerCase()).includes(citySlug)) {
         notFound();
     }
 
-    // JSON-LD structured data for local SEO
-    const structuredData = {
+    const {
+        city: cityName, state, mainMarkets, tagline, heroDescription,
+        uniqueDescription, goldCulture, keyHighlights, buyingTips,
+        popularAreas, faq, priceFactors, investmentInsight, festivalsImpact,
+    } = cityData;
+
+    // ─── Structured Data ─────────────────────────────────────────────────
+    const webPageSchema = {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        "name": `Gold Rate in ${cityName}`,
-        "description": `Current gold rates for ${cityName} including 24K, 22K, and 18K gold prices`,
-        "url": `https://gpaisa.in/gold-rate/${params.city.toLowerCase()}`,
-        "breadcrumb": {
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-                {
-                    "@type": "ListItem",
-                    "position": 1,
-                    "name": "Home",
-                    "item": "https://gpaisa.in"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 2,
-                    "name": "Gold Rates",
-                    "item": "https://gpaisa.in/commodities"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 3,
-                    "name": cityName,
-                    "item": `https://gpaisa.in/gold-rate/${params.city.toLowerCase()}`
-                }
-            ]
+        name: `Gold Rate in ${cityName} Today`,
+        description: `Current gold rates for ${cityName}, ${state} including 24K, 22K, and 18K gold prices. ${tagline}.`,
+        url: `https://gpaisa.in/gold-rate/${citySlug}`,
+        inLanguage: 'en-IN',
+        isPartOf: { "@type": "WebSite", name: "gpaisa.in", url: "https://gpaisa.in" },
+        publisher: {
+            "@type": "Organization",
+            name: "gpaisa.in",
+            url: "https://gpaisa.in",
+            logo: { "@type": "ImageObject", url: "https://gpaisa.in/android-chrome-512x512.png" },
         },
-        "mainEntity": {
-            "@type": "ItemList",
-            "name": `Gold Rates in ${cityName}`,
-            "description": `Current gold rates for different purities in ${cityName}`,
-            "itemListElement": [
-                {
-                    "@type": "Offer",
-                    "name": `24K Gold Rate in ${cityName}`,
-                    "description": "99.9% pure gold rate per 10 grams",
-                    "hasMerchantReturnPolicy": {
-                        "@type": "MerchantReturnPolicy",
-                        "applicableCountry": "IN",
-                        "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
-                    }
-                },
-                {
-                    "@type": "Offer",
-                    "name": `22K Gold Rate in ${cityName}`,
-                    "description": "91.67% pure gold rate per 10 grams",
-                    "hasMerchantReturnPolicy": {
-                        "@type": "MerchantReturnPolicy",
-                        "applicableCountry": "IN",
-                        "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
-                    }
-                },
-                {
-                    "@type": "Offer",
-                    "name": `18K Gold Rate in ${cityName}`,
-                    "description": "75% pure gold rate per 10 grams",
-                    "hasMerchantReturnPolicy": {
-                        "@type": "MerchantReturnPolicy",
-                        "applicableCountry": "IN",
-                        "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
-                    }
-                },
-            ]
-        }
+        dateModified: new Date().toISOString(),
+        about: {
+            "@type": "Thing",
+            name: `Gold Market in ${cityName}`,
+            description: uniqueDescription,
+        },
+    };
+
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://gpaisa.in" },
+            { "@type": "ListItem", position: 2, name: "Gold Rates", item: "https://gpaisa.in/gold-rate" },
+            { "@type": "ListItem", position: 3, name: cityName, item: `https://gpaisa.in/gold-rate/${citySlug}` },
+        ],
+    };
+
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faq.map(f => ({
+            "@type": "Question",
+            name: f.question,
+            acceptedAnswer: { "@type": "Answer", text: f.answer },
+        })),
+    };
+
+    const localBusinessSchema = {
+        "@context": "https://schema.org",
+        "@type": "LocalBusiness",
+        name: `Gold Market - ${mainMarkets[0]}, ${cityName}`,
+        description: `Gold jewellery market in ${cityName}, ${state}. ${tagline}.`,
+        address: {
+            "@type": "PostalAddress",
+            addressLocality: cityName,
+            addressRegion: state,
+            addressCountry: "IN",
+        },
+    };
+
+    const articleSchema = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: `Gold Rate in ${cityName} Today — ${tagline}`,
+        description: heroDescription,
+        author: { "@type": "Organization", name: "gpaisa.in", url: "https://gpaisa.in" },
+        publisher: {
+            "@type": "Organization",
+            name: "gpaisa.in",
+            logo: { "@type": "ImageObject", url: "https://gpaisa.in/android-chrome-512x512.png" },
+        },
+        datePublished: "2026-04-20",
+        dateModified: new Date().toISOString(),
+        mainEntityOfPage: { "@type": "WebPage", "@id": `https://gpaisa.in/gold-rate/${citySlug}` },
+        inLanguage: "en-IN",
     };
 
     return (
         <>
-            {/* JSON-LD Structured Data */}
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-            />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
 
-            <div className="bg-gray-50 py-12">
+            <div className="bg-gray-50 py-8 sm:py-12">
                 <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    {/* Breadcrumb */}
+
+                    {/* ── Breadcrumb ─────────────────────────────────────────── */}
                     <nav className="mb-6" aria-label="Breadcrumb">
                         <ol className="flex items-center space-x-2 text-sm text-gray-600">
                             <li><Link href="/" className="hover:text-primary-600">Home</Link></li>
                             <li>/</li>
-                            <li><Link href="/commodities" className="hover:text-primary-600">Gold Rates</Link></li>
+                            <li><Link href="/gold-rate" className="hover:text-primary-600">Gold Rates</Link></li>
                             <li>/</li>
                             <li className="text-gray-900 font-medium">{cityName}</li>
                         </ol>
                     </nav>
 
-                    {/* Page Header */}
-                    <header className="mb-8">
-                        <div className="flex items-center space-x-3 mb-3">
-                            <MapPin className="h-10 w-10 text-primary-600" />
-                            <h1 className="text-4xl font-display font-bold text-gray-900">
-                                Gold Rate in {cityName} Today
-                            </h1>
+                    {/* ── Hero Header ────────────────────────────────────────── */}
+                    <header className="mb-10">
+                        <div className="flex items-start gap-3 mb-3">
+                            <MapPin className="h-9 w-9 sm:h-10 sm:w-10 text-primary-600 flex-shrink-0 mt-1" />
+                            <div>
+                                <h1 className="text-3xl sm:text-4xl font-display font-bold text-gray-900">
+                                    Gold Rate in {cityName} Today
+                                </h1>
+                                <p className="text-sm sm:text-base text-primary-700 font-semibold mt-1">{tagline}</p>
+                            </div>
                         </div>
-                        <p className="text-lg text-gray-600">
-                            Live 24K, 22K, and 18K gold prices in {cityName}. Updated in real-time with historical data and price calculator.
+                        <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-4xl">
+                            {heroDescription}
                         </p>
+                        {/* Key markets badge */}
+                        <div className="flex flex-wrap gap-2 mt-4">
+                            {mainMarkets.map(market => (
+                                <span key={market} className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full border border-amber-200">
+                                    <Store className="h-3.5 w-3.5" /> {market}
+                                </span>
+                            ))}
+                            <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-700 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full border border-gray-200">
+                                📍 {state}
+                            </span>
+                        </div>
                     </header>
 
-                    {/* Today's Gold Rates */}
+                    {/* ── Key Highlights Cards ──────────────────────────────── */}
+                    <section className="mb-10" aria-labelledby="highlights-heading">
+                        <h2 id="highlights-heading" className="sr-only">Key Highlights of {cityName} Gold Market</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            {keyHighlights.map((h, i) => (
+                                <div key={i} className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+                                    <div className="text-2xl mb-2">{h.icon}</div>
+                                    <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-1">{h.label}</h3>
+                                    <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{h.detail}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* ── Today's Gold Rates ─────────────────────────────────── */}
                     <section className="mb-12" aria-labelledby="current-rates-heading">
                         <div className="flex items-center space-x-2 md:space-x-3 mb-4 md:mb-6">
                             <Coins className="h-6 w-6 md:h-7 md:w-7 text-primary-600 flex-shrink-0" aria-hidden="true" />
@@ -233,7 +256,7 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                         <DynamicGoldRates />
                     </section>
 
-                    {/* Gold Calculator */}
+                    {/* ── Gold Calculator ────────────────────────────────────── */}
                     <section className="mb-12" aria-labelledby="calculator-heading">
                         <div className="flex items-center space-x-3 mb-6">
                             <Calculator className="h-7 w-7 text-primary-600" aria-hidden="true" />
@@ -244,7 +267,7 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                         <GoldCalculator />
                     </section>
 
-                    {/* Gold Rate History */}
+                    {/* ── Gold Rate History ──────────────────────────────────── */}
                     <section className="mb-12" aria-labelledby="history-heading">
                         <div className="flex items-center space-x-3 mb-6">
                             <TrendingUp className="h-7 w-7 text-primary-600" aria-hidden="true" />
@@ -255,98 +278,219 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                         <GoldHistoryTable city={cityName} carat="24k" />
                     </section>
 
-                    {/* Gold Price Trend Chart */}
+                    {/* ── Gold Price Trend Chart ─────────────────────────────── */}
                     <section className="mb-12" aria-labelledby="chart-heading">
                         <DynamicGoldChart carat="24k" city={cityName} />
                     </section>
 
-                    {/* SEO Content */}
-                    <article className="mb-12 card">
-                        <h2 className="text-2xl font-display font-bold text-gray-900 mb-4">
-                            About Gold Rates in {cityName}
-                        </h2>
+                    {/* ═══════════════════════════════════════════════════════════
+                         UNIQUE CITY CONTENT — E-E-A-T SECTIONS
+                         ═══════════════════════════════════════════════════════════ */}
+
+                    {/* ── About the Gold Market ─────────────────────────────── */}
+                    <article className="mb-10 card" id="about-gold-market">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <Landmark className="h-7 w-7 text-primary-600" />
+                            <h2 className="text-2xl font-display font-bold text-gray-900">
+                                About the Gold Market in {cityName}
+                            </h2>
+                        </div>
                         <div className="prose prose-gray max-w-none">
-                            <p className="text-gray-700 mb-4">
-                                The gold rate in {cityName} varies daily based on international market trends, currency exchange rates,
-                                and local demand-supply dynamics. Our platform provides real-time updates on 24K, 22K, and 18K gold prices
-                                to help you make informed decisions.
-                            </p>
-
-                            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3">
-                                Factors Affecting Gold Prices in {cityName}
-                            </h3>
-                            <ul className="list-disc list-inside text-gray-700 space-y-2 mb-4">
-                                <li>International gold prices and global market trends</li>
-                                <li>Currency exchange rates (USD to INR)</li>
-                                <li>Local demand during festivals and wedding seasons</li>
-                                <li>Import duties and GST (Goods and Services Tax)</li>
-                                <li>Making charges and jeweler margins</li>
-                            </ul>
-
-                            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3">
-                                Gold Purity Explained
-                            </h3>
-                            <div className="space-y-3 text-gray-700">
-                                <p>
-                                    <strong className="text-gray-900">24K Gold (99.9% pure):</strong> The purest form of gold,
-                                    ideal for investment purposes. Softer and more expensive than other purities.
-                                </p>
-                                <p>
-                                    <strong className="text-gray-900">22K Gold (91.67% pure):</strong> Most popular for jewelry
-                                    in India. Offers a good balance between purity and durability.
-                                </p>
-                                <p>
-                                    <strong className="text-gray-900">18K Gold (75% pure):</strong> Commonly used for modern
-                                    and designer jewelry. More durable due to higher alloy content.
-                                </p>
-                            </div>
-
-                            <h3 className="text-xl font-semibold text-gray-900 mt-6 mb-3">
-                                How to Buy Gold in {cityName}
-                            </h3>
-                            <p className="text-gray-700 mb-4">
-                                When purchasing gold in {cityName}, always verify the current market rate, check for hallmark
-                                certification (BIS), ask for detailed invoices including making charges and GST, and compare
-                                prices from multiple jewelers. Our gold calculator helps you estimate the total cost including
-                                all charges.
-                            </p>
+                            <p className="text-gray-700 leading-relaxed text-base">{uniqueDescription}</p>
                         </div>
                     </article>
 
-                    {/* Other Cities */}
-                    <section className="mb-12">
-                        <h2 className="text-2xl font-display font-semibold text-gray-900 mb-6">
-                            Gold Rates in Other Cities
-                        </h2>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                            {CITIES.filter(c => c !== cityName).map((city) => (
-                                <Link
-                                    key={city}
-                                    href={`/gold-rate/${city.toLowerCase()}`}
-                                    className="card hover:shadow-lg transition-shadow text-center"
-                                >
-                                    <MapPin className="h-6 w-6 text-primary-600 mx-auto mb-2" />
-                                    <p className="font-medium text-gray-900">{city}</p>
-                                    <p className="text-xs text-gray-600">View Rates →</p>
-                                </Link>
+                    {/* ── Gold Culture & Heritage ───────────────────────────── */}
+                    <article className="mb-10 card" id="gold-culture">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <BookOpen className="h-7 w-7 text-primary-600" />
+                            <h2 className="text-2xl font-display font-bold text-gray-900">
+                                Gold Culture & Heritage in {cityName}
+                            </h2>
+                        </div>
+                        <div className="prose prose-gray max-w-none">
+                            <p className="text-gray-700 leading-relaxed text-base">{goldCulture}</p>
+                        </div>
+                    </article>
+
+                    {/* ── Popular Gold Markets / Areas ──────────────────────── */}
+                    <section className="mb-10 card" id="popular-markets" aria-labelledby="popular-markets-heading">
+                        <div className="flex items-center space-x-3 mb-5">
+                            <ShoppingBag className="h-7 w-7 text-primary-600" />
+                            <h2 id="popular-markets-heading" className="text-2xl font-display font-bold text-gray-900">
+                                Best Gold Markets & Shopping Areas in {cityName}
+                            </h2>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {popularAreas.map((area, i) => (
+                                <div key={i} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                                    <h3 className="font-bold text-gray-900 text-base mb-1.5 flex items-center gap-2">
+                                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary-100 text-primary-700 text-xs font-bold">{i + 1}</span>
+                                        {area.name}
+                                    </h3>
+                                    <p className="text-gray-600 text-sm leading-relaxed">{area.specialty}</p>
+                                </div>
                             ))}
                         </div>
                     </section>
 
-                    {/* Disclaimer */}
-                    <aside className="card bg-yellow-50 border-yellow-200">
-                        <h3 className="text-lg font-display font-semibold text-gray-900 mb-3">Important Note</h3>
-                        <p className="text-sm text-gray-700">
-                            The gold rates displayed are indicative and may vary slightly from actual market prices.
-                            Prices shown do not include making charges, GST, or other applicable taxes. Always verify
-                            the current rate with your local jeweler before making a purchase. We update our rates regularly
-                            to ensure accuracy.
+                    {/* ── Buying Tips ────────────────────────────────────────── */}
+                    <section className="mb-10 card" id="buying-tips" aria-labelledby="buying-tips-heading">
+                        <div className="flex items-center space-x-3 mb-5">
+                            <Lightbulb className="h-7 w-7 text-amber-500" />
+                            <h2 id="buying-tips-heading" className="text-2xl font-display font-bold text-gray-900">
+                                Gold Buying Tips for {cityName}
+                            </h2>
+                        </div>
+                        <p className="text-gray-600 text-sm mb-4">Expert guidance to help you get the best deal when buying gold in {cityName}.</p>
+                        <ol className="space-y-3">
+                            {buyingTips.map((tip, i) => (
+                                <li key={i} className="flex gap-3 text-gray-700 text-sm sm:text-base leading-relaxed">
+                                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold mt-0.5">{i + 1}</span>
+                                    <span>{tip}</span>
+                                </li>
+                            ))}
+                        </ol>
+                    </section>
+
+                    {/* ── Factors Affecting Price ────────────────────────────── */}
+                    <section className="mb-10 card" id="price-factors" aria-labelledby="price-factors-heading">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <TrendingUp className="h-7 w-7 text-primary-600" />
+                            <h2 id="price-factors-heading" className="text-2xl font-display font-bold text-gray-900">
+                                Factors Affecting Gold Prices in {cityName}
+                            </h2>
+                        </div>
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            {priceFactors.map((factor, i) => (
+                                <li key={i} className="flex items-start gap-2 text-gray-700 text-sm sm:text-base">
+                                    <span className="text-primary-500 mt-1 flex-shrink-0">●</span>
+                                    <span>{factor}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </section>
+
+                    {/* ── Investment Insight ─────────────────────────────────── */}
+                    <section className="mb-10 card bg-gradient-to-br from-amber-50 to-white border-amber-200" id="investment-insight" aria-labelledby="investment-heading">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <Lightbulb className="h-7 w-7 text-amber-600" />
+                            <h2 id="investment-heading" className="text-2xl font-display font-bold text-gray-900">
+                                Gold Investment Outlook in {cityName}
+                            </h2>
+                        </div>
+                        <p className="text-gray-700 leading-relaxed text-base">{investmentInsight}</p>
+                    </section>
+
+                    {/* ── Festivals & Seasonal Impact ────────────────────────── */}
+                    <section className="mb-10 card" id="festivals-impact" aria-labelledby="festivals-heading">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <Calendar className="h-7 w-7 text-primary-600" />
+                            <h2 id="festivals-heading" className="text-2xl font-display font-bold text-gray-900">
+                                Festival & Seasonal Gold Demand in {cityName}
+                            </h2>
+                        </div>
+                        <p className="text-gray-700 leading-relaxed text-base">{festivalsImpact}</p>
+                    </section>
+
+                    {/* ── Gold Purity Explained ──────────────────────────────── */}
+                    <section className="mb-10 card" id="purity-guide" aria-labelledby="purity-heading">
+                        <div className="flex items-center space-x-3 mb-4">
+                            <Coins className="h-7 w-7 text-primary-600" />
+                            <h2 id="purity-heading" className="text-2xl font-display font-bold text-gray-900">
+                                Gold Purity Guide — 24K vs 22K vs 18K
+                            </h2>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div className="bg-amber-50 rounded-xl p-4 border border-amber-100">
+                                <h3 className="font-bold text-gray-900 text-base mb-2">24K Gold (99.9% pure)</h3>
+                                <p className="text-gray-600 text-sm leading-relaxed">
+                                    The purest form of gold, ideal for investment. Too soft for daily-wear jewellery.
+                                    Available as bars and coins from certified dealers in {cityName}.
+                                </p>
+                            </div>
+                            <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-100">
+                                <h3 className="font-bold text-gray-900 text-base mb-2">22K Gold (91.67% pure)</h3>
+                                <p className="text-gray-600 text-sm leading-relaxed">
+                                    The most popular purity for jewellery in India. Also called 916 gold.
+                                    Perfect balance of purity and durability for everyday wear.
+                                </p>
+                            </div>
+                            <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
+                                <h3 className="font-bold text-gray-900 text-base mb-2">18K Gold (75% pure)</h3>
+                                <p className="text-gray-600 text-sm leading-relaxed">
+                                    Used for modern designer jewellery. More durable due to higher alloy content.
+                                    Popular for contemporary and western-style designs in {cityName}.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    {/* ── FAQ Section ────────────────────────────────────────── */}
+                    <section className="mb-10 card" id="faq" aria-labelledby="faq-heading">
+                        <div className="flex items-center space-x-3 mb-5">
+                            <HelpCircle className="h-7 w-7 text-primary-600" />
+                            <h2 id="faq-heading" className="text-2xl font-display font-bold text-gray-900">
+                                Frequently Asked Questions — Gold in {cityName}
+                            </h2>
+                        </div>
+                        <div className="space-y-5">
+                            {faq.map((item, i) => (
+                                <details key={i} className="group bg-gray-50 rounded-xl border border-gray-100 overflow-hidden" open={i === 0}>
+                                    <summary className="cursor-pointer p-4 sm:p-5 font-semibold text-gray-900 text-sm sm:text-base flex items-start gap-3 list-none [&::-webkit-details-marker]:hidden">
+                                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-bold mt-0.5">Q</span>
+                                        <span className="flex-1">{item.question}</span>
+                                        <span className="flex-shrink-0 text-gray-400 group-open:rotate-180 transition-transform text-lg">▼</span>
+                                    </summary>
+                                    <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-0">
+                                        <p className="text-gray-600 text-sm sm:text-base leading-relaxed pl-9">{item.answer}</p>
+                                    </div>
+                                </details>
+                            ))}
+                        </div>
+                    </section>
+
+                    {/* ── Other Cities ───────────────────────────────────────── */}
+                    <section className="mb-10" aria-labelledby="other-cities-heading">
+                        <h2 id="other-cities-heading" className="text-2xl font-display font-semibold text-gray-900 mb-6">
+                            Gold Rates in Other Cities
+                        </h2>
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                            {CITIES.filter(c => c.toLowerCase() !== citySlug).map((c) => {
+                                const otherCity = getCityGoldData(c.toLowerCase());
+                                return (
+                                    <Link key={c} href={`/gold-rate/${c.toLowerCase()}`}
+                                        className="card hover:shadow-lg transition-shadow text-center group">
+                                        <MapPin className="h-6 w-6 text-primary-600 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                                        <p className="font-medium text-gray-900">{c}</p>
+                                        {otherCity && (
+                                            <p className="text-xs text-gray-500 mt-1 line-clamp-1">{otherCity.mainMarkets[0]}</p>
+                                        )}
+                                        <p className="text-xs text-primary-600 mt-1 font-medium">View Rates →</p>
+                                    </Link>
+                                );
+                            })}
+                        </div>
+                    </section>
+
+                    {/* ── Disclaimer ─────────────────────────────────────────── */}
+                    <aside className="card bg-yellow-50 border-yellow-200 mb-8">
+                        <h3 className="text-lg font-display font-semibold text-gray-900 mb-3">Important Disclaimer</h3>
+                        <p className="text-sm text-gray-700 leading-relaxed">
+                            The gold rates displayed for {cityName} are indicative and sourced from market data aggregators.
+                            Actual prices may vary slightly at individual jewellery stores due to making charges, GST (3%),
+                            and dealer-specific margins. Always verify the current rate, check for BIS hallmark (HUID number),
+                            and ask for a detailed invoice before making a purchase. The information provided here is for
+                            educational purposes and does not constitute financial or investment advice.
                         </p>
                     </aside>
 
-                    {/* Last Updated */}
-                    <footer className="mt-8 text-center">
+                    {/* ── Last Updated ───────────────────────────────────────── */}
+                    <footer className="text-center">
                         <LastUpdatedTime />
+                        <p className="text-xs text-gray-400 mt-2">
+                            Written by the gpaisa.in editorial team · {cityName} gold market expert guide
+                        </p>
                     </footer>
                 </div>
             </div>

@@ -6,7 +6,8 @@ import SilverCalculator from '@/components/SilverCalculator';
 import SilverHistoryTable from '@/components/SilverHistoryTable';
 import LastUpdatedTime from '@/components/LastUpdatedTime';
 import Link from 'next/link';
-import { MapPin, Coins, Calculator, TrendingUp } from 'lucide-react';
+import { MapPin, Coins, Calculator, TrendingUp, ShoppingBag, Landmark, BookOpen, HelpCircle, Calendar, Lightbulb, Store } from 'lucide-react';
+import { getCitySilverData } from '@/lib/citySilverData';
 
 export async function generateStaticParams() {
     const cities = await fetchSilverCities();
@@ -15,222 +16,217 @@ export async function generateStaticParams() {
     }));
 }
 
-export const revalidate = 86400; // Cache for 1 day (ISR)
+export const revalidate = 86400;
 
 export async function generateMetadata(props: { params: Promise<{ city: string }> }): Promise<Metadata> {
     const params = await props.params;
     const cities = await fetchSilverCities();
-    const cityData = cities.find(c => c.slug === params.city);
+    const cityObj = cities.find(c => c.slug === params.city);
 
-    if (!cityData) {
-        return {
-            title: 'City Not Found | gpaisa.in',
-        };
+    if (!cityObj) {
+        return { title: 'City Not Found | gpaisa.in' };
     }
 
-    const cityName = cityData.city;
+    const cityName = cityObj.city;
+    const citySlug = params.city;
+    const silverInfo = getCitySilverData(citySlug);
+    const tagline = silverInfo?.tagline || '';
+    const mainMarkets = silverInfo?.mainMarkets || [];
+    const state = silverInfo?.state || 'India';
 
-    // Comprehensive SEO keywords for the city
     const keywords = [
-        // Primary keywords
-        `silver rate today ${params.city}`,
-        `silver price in ${params.city} today`,
-        `${params.city} silver rate`,
-        `today silver rate in ${params.city}`,
-
-        // Purity-specific keywords
-        `999 silver rate in ${params.city}`,
-        `925 silver rate in ${params.city}`,
-        `sterling silver price ${params.city}`,
-        `fine silver rate ${params.city}`,
-
-        // Weight-specific keywords
-        `1 gram silver rate in ${params.city}`,
-        `1 kg silver price ${params.city}`,
-        `10 gram silver rate ${params.city}`,
-
-        // Long-tail keywords
-        `live silver rate ${params.city}`,
-        `today silver rate ${params.city} per gram`,
-        `silver rate today ${params.city} per kg`,
-
-        // Informational keywords
-        `silver price calculator ${params.city}`,
-        `silver rate history ${params.city}`,
-        `silver rate chart ${params.city}`,
-
-        // General keywords
+        `silver rate today ${citySlug}`,
+        `silver price in ${citySlug} today`,
+        `${citySlug} silver rate`,
+        `today silver rate in ${citySlug}`,
+        `999 silver rate in ${citySlug}`,
+        `925 silver rate in ${citySlug}`,
+        `sterling silver price ${citySlug}`,
+        `fine silver rate ${citySlug}`,
+        `1 gram silver rate in ${citySlug}`,
+        `1 kg silver price ${citySlug}`,
+        `10 gram silver rate ${citySlug}`,
+        `live silver rate ${citySlug}`,
+        `today silver rate ${citySlug} per gram`,
+        `silver rate today ${citySlug} per kg`,
+        `silver price calculator ${citySlug}`,
+        `silver rate history ${citySlug}`,
+        `silver rate chart ${citySlug}`,
+        `silver jewellery ${citySlug}`,
+        `silver market ${citySlug}`,
+        ...mainMarkets.map(m => `${m} silver market`),
+        `silver buying tips ${citySlug}`,
         'silver rate today',
         'silver price today india',
         'live silver rate',
-        'silver rate india'
+        'silver rate india',
     ];
 
     return {
-        title: `Silver Rate in ${cityName} Today - Live Price Per Gram/Kg | gpaisa.in`,
-        description: `Today's silver price in ${cityName} with live rate updates, historical trends and daily market movements. Check 999 and 925 silver rates per gram and kg.`,
+        title: `Silver Rate in ${cityName} Today (${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}) - Live Price Per Gram/Kg${tagline ? ` | ${tagline}` : ''} | gpaisa.in`,
+        description: `Check today's silver rate in ${cityName}, ${state}. Live 999 & 925 silver prices per gram and kg.${tagline ? ` ${tagline}.` : ''} ${mainMarkets.length ? `Silver markets at ${mainMarkets.join(' & ')}.` : ''} Calculator, history & buying guide.`,
         keywords: keywords.join(', '),
         robots: {
             index: true,
             follow: true,
-            googleBot: {
-                index: true,
-                follow: true,
-            },
+            googleBot: { index: true, follow: true },
         },
         openGraph: {
-            title: `Silver Rate in ${cityName} Today - Live Prices Per Gram/Kg`,
-            description: `Today's silver price in ${cityName} with live rate updates, historical trends and daily market movements.`,
-            type: 'website',
-            url: `https://gpaisa.in/silver-rate/${params.city}`,
+            title: `Silver Rate in ${cityName} Today - Live Prices${tagline ? ` | ${tagline}` : ''}`,
+            description: `Today's silver price in ${cityName}, ${state}. Live rate updates, historical trends & buying guide.`,
+            type: 'article',
+            url: `https://gpaisa.in/silver-rate/${citySlug}`,
+            siteName: 'gpaisa.in',
+            locale: 'en_IN',
+            images: [{ url: 'https://gpaisa.in/android-chrome-512x512.png', width: 512, height: 512, alt: `Silver Rate in ${cityName} Today` }],
         },
         twitter: {
             card: 'summary_large_image',
-            title: `Silver Rate in ${cityName} Today`,
+            title: `Silver Rate in ${cityName} Today${tagline ? ` | ${tagline}` : ''}`,
             description: `Today's silver price in ${cityName} with live rate updates and historical trends.`,
         },
         alternates: {
-            canonical: `https://gpaisa.in/silver-rate/${params.city}`
-        }
+            canonical: `https://gpaisa.in/silver-rate/${citySlug}`,
+        },
     };
 }
 
 export default async function CitySilverRatePage(props: { params: Promise<{ city: string }> }) {
     const params = await props.params;
     const cities = await fetchSilverCities();
-    const cityData = cities.find(c => c.slug === params.city);
+    const cityObj = cities.find(c => c.slug === params.city);
 
-    if (!cityData) {
+    if (!cityObj) {
         notFound();
     }
 
-    const cityName = cityData.city;
-    const symbol = cityData.symbol;
+    const cityName = cityObj.city;
+    const symbol = cityObj.symbol;
+    const citySlug = params.city;
+    const silverInfo = getCitySilverData(citySlug);
 
     const calculatorData = await fetchSilverCalculator(symbol);
     const currentPrice = calculatorData?.data?.silver?.today || 0;
 
-    // Calculate validity date (end of today or tomorrow)
     const validUntil = new Date();
     validUntil.setDate(validUntil.getDate() + 1);
     const priceValidUntil = validUntil.toISOString().split('T')[0];
 
-    const structuredData = {
+    // ─── Structured Data ─────────────────────────────────────────────────
+    const webPageSchema = {
         "@context": "https://schema.org",
         "@type": "WebPage",
-        "name": `Silver Rate in ${cityName}`,
-        "description": `Current silver rates for ${cityName} per gram and kg`,
-        "url": `https://gpaisa.in/silver-rate/${params.city}`,
-        "breadcrumb": {
-            "@type": "BreadcrumbList",
-            "itemListElement": [
-                {
-                    "@type": "ListItem",
-                    "position": 1,
-                    "name": "Home",
-                    "item": "https://gpaisa.in"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 2,
-                    "name": "Silver Rates",
-                    "item": "https://gpaisa.in/silver-rate"
-                },
-                {
-                    "@type": "ListItem",
-                    "position": 3,
-                    "name": cityName,
-                    "item": `https://gpaisa.in/silver-rate/${params.city}`
-                }
-            ]
+        name: `Silver Rate in ${cityName} Today`,
+        description: `Current silver rates for ${cityName}${silverInfo ? `. ${silverInfo.tagline}` : ''}.`,
+        url: `https://gpaisa.in/silver-rate/${citySlug}`,
+        inLanguage: 'en-IN',
+        isPartOf: { "@type": "WebSite", name: "gpaisa.in", url: "https://gpaisa.in" },
+        publisher: {
+            "@type": "Organization",
+            name: "gpaisa.in",
+            url: "https://gpaisa.in",
+            logo: { "@type": "ImageObject", url: "https://gpaisa.in/android-chrome-512x512.png" },
         },
-        "mainEntity": {
-            "@type": "Product",
-            "name": `Silver Rate in ${cityName}`,
-            "description": `Live silver price in ${cityName}`,
-            "sku": `SILVER-${symbol}`,
-            "offers": {
-                "@type": "Offer",
-                "price": currentPrice,
-                "priceCurrency": "INR",
-                "priceValidUntil": priceValidUntil,
-                "availability": "https://schema.org/InStock",
-                "areaServed": {
-                    "@type": "City",
-                    "name": cityName
-                },
-                "hasMerchantReturnPolicy": {
-                    "@type": "MerchantReturnPolicy",
-                    "applicableCountry": "IN",
-                    "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-                    "merchantReturnDays": 7,
-                    "returnMethod": "https://schema.org/ReturnInStore"
-                },
-                "shippingDetails": {
-                    "@type": "OfferShippingDetails",
-                    "shippingRate": {
-                        "@type": "MonetaryAmount",
-                        "value": 0,
-                        "currency": "INR"
-                    },
-                    "shippingDestination": {
-                        "@type": "DefinedRegion",
-                        "addressCountry": "IN"
-                    },
-                    "deliveryTime": {
-                        "@type": "ShippingDeliveryTime",
-                        "handlingTime": {
-                            "@type": "QuantitativeValue",
-                            "minValue": 0,
-                            "maxValue": 1,
-                            "unitCode": "DAY"
-                        },
-                        "transitTime": {
-                            "@type": "QuantitativeValue",
-                            "minValue": 1,
-                            "maxValue": 3,
-                            "unitCode": "DAY"
-                        }
-                    }
-                }
+        dateModified: new Date().toISOString(),
+    };
+
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://gpaisa.in" },
+            { "@type": "ListItem", position: 2, name: "Silver Rates", item: "https://gpaisa.in/silver-rate" },
+            { "@type": "ListItem", position: 3, name: cityName, item: `https://gpaisa.in/silver-rate/${citySlug}` },
+        ],
+    };
+
+    const productSchema = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        name: `Silver Rate in ${cityName}`,
+        description: `Live silver price in ${cityName}`,
+        sku: `SILVER-${symbol}`,
+        offers: {
+            "@type": "Offer",
+            price: currentPrice,
+            priceCurrency: "INR",
+            priceValidUntil: priceValidUntil,
+            availability: "https://schema.org/InStock",
+            areaServed: { "@type": "City", name: cityName },
+            hasMerchantReturnPolicy: {
+                "@type": "MerchantReturnPolicy",
+                applicableCountry: "IN",
+                returnPolicyCategory: "https://schema.org/MerchantReturnFiniteReturnWindow",
+                merchantReturnDays: 7,
+                returnMethod: "https://schema.org/ReturnInStore",
             },
-            "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.8",
-                "reviewCount": "156"
-            }
-        },
-        "hasPart": {
-            "@type": "FAQPage",
-            "mainEntity": [
-                {
-                    "@type": "Question",
-                    "name": `What is the silver rate in ${cityName} today?`,
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": `Check the latest live silver rates in ${cityName} on gpaisa.in. We provide up-to-date prices per gram and per kg.`
-                    }
+            shippingDetails: {
+                "@type": "OfferShippingDetails",
+                shippingRate: { "@type": "MonetaryAmount", value: 0, currency: "INR" },
+                shippingDestination: { "@type": "DefinedRegion", addressCountry: "IN" },
+                deliveryTime: {
+                    "@type": "ShippingDeliveryTime",
+                    handlingTime: { "@type": "QuantitativeValue", minValue: 0, maxValue: 1, unitCode: "DAY" },
+                    transitTime: { "@type": "QuantitativeValue", minValue: 1, maxValue: 3, unitCode: "DAY" },
                 },
-                {
-                    "@type": "Question",
-                    "name": `How is silver purity measured in ${cityName}?`,
-                    "acceptedAnswer": {
-                        "@type": "Answer",
-                        "text": "Silver purity is measured in percentage, with 999 (99.9%) being fine silver. In jewelry, 925 (Sterling Silver) is the standard."
-                    }
-                }
-            ]
-        }
+            },
+        },
+        aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", reviewCount: "156" },
+    };
+
+    const faqSchemaItems = silverInfo
+        ? silverInfo.faq.map(f => ({
+            "@type": "Question" as const,
+            name: f.question,
+            acceptedAnswer: { "@type": "Answer" as const, text: f.answer },
+        }))
+        : [
+            {
+                "@type": "Question" as const,
+                name: `What is the silver rate in ${cityName} today?`,
+                acceptedAnswer: { "@type": "Answer" as const, text: `Check the latest live silver rates in ${cityName} on gpaisa.in. We provide up-to-date prices per gram and per kg.` },
+            },
+            {
+                "@type": "Question" as const,
+                name: `How is silver purity measured in ${cityName}?`,
+                acceptedAnswer: { "@type": "Answer" as const, text: 'Silver purity is measured in percentage, with 999 (99.9%) being fine silver. In jewelry, 925 (Sterling Silver) is the standard.' },
+            },
+        ];
+
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        mainEntity: faqSchemaItems,
+    };
+
+    const articleSchema = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        headline: `Silver Rate in ${cityName} Today${silverInfo ? ` — ${silverInfo.tagline}` : ''}`,
+        description: silverInfo?.heroDescription || `Live silver prices in ${cityName} with calculator and history.`,
+        author: { "@type": "Organization", name: "gpaisa.in", url: "https://gpaisa.in" },
+        publisher: {
+            "@type": "Organization",
+            name: "gpaisa.in",
+            logo: { "@type": "ImageObject", url: "https://gpaisa.in/android-chrome-512x512.png" },
+        },
+        datePublished: "2026-04-20",
+        dateModified: new Date().toISOString(),
+        mainEntityOfPage: { "@type": "WebPage", "@id": `https://gpaisa.in/silver-rate/${citySlug}` },
+        inLanguage: "en-IN",
     };
 
     return (
-        <div className="bg-gray-50 py-12">
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-            />
+        <div className="bg-gray-50 py-8 sm:py-12">
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                {/* Breadcrumb */}
+
+                {/* ── Breadcrumb ─────────────────────────────────────────── */}
                 <nav className="mb-6" aria-label="Breadcrumb">
                     <ol className="flex items-center space-x-2 text-sm text-gray-600">
                         <li><Link href="/" className="hover:text-primary-600">Home</Link></li>
@@ -241,94 +237,300 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
                     </ol>
                 </nav>
 
-                {/* Page Header */}
-                <header className="mb-8">
-                    <div className="flex items-center space-x-3 mb-3">
-                        <MapPin className="h-10 w-10 text-gray-600" />
-                        <h1 className="text-4xl font-display font-bold text-gray-900">
-                            Silver Rate in {cityName} Today
-                        </h1>
+                {/* ── Hero Header ────────────────────────────────────────── */}
+                <header className="mb-10">
+                    <div className="flex items-start gap-3 mb-3">
+                        <MapPin className="h-9 w-9 sm:h-10 sm:w-10 text-gray-500 flex-shrink-0 mt-1" />
+                        <div>
+                            <h1 className="text-3xl sm:text-4xl font-display font-bold text-gray-900">
+                                Silver Rate in {cityName} Today
+                            </h1>
+                            {silverInfo && (
+                                <p className="text-sm sm:text-base text-gray-600 font-semibold mt-1">{silverInfo.tagline}</p>
+                            )}
+                        </div>
                     </div>
-                    <p className="text-lg text-gray-600">
-                        Live silver prices in {cityName}. Updated in real-time with historical data and price calculator.
+                    <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-4xl">
+                        {silverInfo?.heroDescription || `Live silver prices in ${cityName}. Updated in real-time with historical data and price calculator.`}
                     </p>
+                    {/* Key markets badge */}
+                    {silverInfo && (
+                        <div className="flex flex-wrap gap-2 mt-4">
+                            {silverInfo.mainMarkets.map(market => (
+                                <span key={market} className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-700 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full border border-gray-200">
+                                    <Store className="h-3.5 w-3.5" /> {market}
+                                </span>
+                            ))}
+                            <span className="inline-flex items-center gap-1.5 bg-slate-100 text-slate-700 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full border border-slate-200">
+                                📍 {silverInfo.state}
+                            </span>
+                        </div>
+                    )}
                 </header>
 
-                {/* Today's Silver Rates */}
-                <section className="mb-12">
-                    <div className="flex items-center space-x-3 mb-6">
-                        <Coins className="h-7 w-7 text-gray-600" />
-                        <h2 className="text-2xl font-display font-semibold text-gray-900">
+                {/* ── Key Highlights Cards ──────────────────────────────── */}
+                {silverInfo && (
+                    <section className="mb-10" aria-labelledby="highlights-heading">
+                        <h2 id="highlights-heading" className="sr-only">Key Highlights of {cityName} Silver Market</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            {silverInfo.keyHighlights.map((h, i) => (
+                                <div key={i} className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow">
+                                    <div className="text-2xl mb-2">{h.icon}</div>
+                                    <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-1">{h.label}</h3>
+                                    <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{h.detail}</p>
+                                </div>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* ── Today's Silver Rates ─────────────────────────────── */}
+                <section className="mb-12" aria-labelledby="current-rates-heading">
+                    <div className="flex items-center space-x-2 md:space-x-3 mb-4 md:mb-6">
+                        <Coins className="h-6 w-6 md:h-7 md:w-7 text-gray-500 flex-shrink-0" aria-hidden="true" />
+                        <h2 id="current-rates-heading" className="text-xl md:text-2xl font-display font-semibold text-gray-900">
                             Today&apos;s Silver Rates in {cityName}
                         </h2>
                     </div>
                     <DynamicSilverRates symbol={symbol} city={cityName} />
                 </section>
 
-                {/* Silver Calculator */}
-                <section className="mb-12">
+                {/* ── Silver Calculator ──────────────────────────────────── */}
+                <section className="mb-12" aria-labelledby="calculator-heading">
                     <div className="flex items-center space-x-3 mb-6">
-                        <Calculator className="h-7 w-7 text-gray-600" />
-                        <h2 className="text-2xl font-display font-semibold text-gray-900">
+                        <Calculator className="h-7 w-7 text-gray-500" aria-hidden="true" />
+                        <h2 id="calculator-heading" className="text-2xl font-display font-semibold text-gray-900">
                             Silver Price Calculator for {cityName}
                         </h2>
                     </div>
-                    {/* Reuse Generic Silver Calculator but auto-select city */}
-                    <SilverCalculator initialCitySlug={cityData.slug} />
+                    <SilverCalculator initialCitySlug={cityObj.slug} />
                 </section>
 
-                {/* Silver Rate History */}
-                <section className="mb-12">
+                {/* ── Silver Rate History ────────────────────────────────── */}
+                <section className="mb-12" aria-labelledby="history-heading">
                     <div className="flex items-center space-x-3 mb-6">
-                        <TrendingUp className="h-7 w-7 text-gray-600" />
-                        <h2 className="text-2xl font-display font-semibold text-gray-900">
+                        <TrendingUp className="h-7 w-7 text-gray-500" aria-hidden="true" />
+                        <h2 id="history-heading" className="text-2xl font-display font-semibold text-gray-900">
                             Silver Rate History in {cityName}
                         </h2>
                     </div>
                     <SilverHistoryTable symbol={symbol} />
                 </section>
 
-                {/* SEO Content */}
-                <article className="card mb-12">
-                    <h2 className="text-2xl font-display font-bold text-gray-900 mb-4">
-                        Buying Silver in {cityName}
-                    </h2>
-                    <div className="prose prose-gray max-w-none text-gray-700 space-y-4">
-                        <p>
-                            Like other parts of India, {cityName} has a thriving market for silver. It is bought for both jewelry and investment purposes.
-                            When buying silver in {cityName}, ensure you are paying the correct market price and always ask for a bill.
-                        </p>
-                        <h3 className="text-xl font-semibold text-gray-900 mt-6">Things to Check Before Buying</h3>
-                        <ul className="list-disc list-inside space-y-2">
-                            <li><strong>Purity:</strong> Ensure the silver is of the claimed purity (e.g. 999 for fine silver).</li>
-                            <li><strong>Making Charges:</strong> For jewelry, making charges can add significantly to the cost.</li>
-                            <li><strong>Buy-back Policy:</strong> Ask the jeweler about their buy-back terms.</li>
-                        </ul>
-                    </div>
-                </article>
+                {/* ═══════════════════════════════════════════════════════════
+                     UNIQUE CITY CONTENT — E-E-A-T SECTIONS
+                     ═══════════════════════════════════════════════════════════ */}
 
-                {/* Other Cities */}
-                <section className="mb-12">
-                    <h2 className="text-2xl font-display font-semibold text-gray-900 mb-6">
-                        Silver Rates in Other Cities
-                    </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                        {cities.filter(c => c.slug !== params.city).map((city) => (
-                            <Link
-                                key={city.slug}
-                                href={`/silver-rate/${city.slug}`}
-                                className="card hover:shadow-lg transition-shadow text-center"
-                            >
-                                <MapPin className="h-6 w-6 text-gray-600 mx-auto mb-2" />
-                                <p className="font-medium text-gray-900">{city.city}</p>
-                                <p className="text-xs text-gray-600">View Rates →</p>
-                            </Link>
-                        ))}
+                {silverInfo && (
+                    <>
+                        {/* ── About the Silver Market ──────────────────────── */}
+                        <article className="mb-10 card" id="about-silver-market">
+                            <div className="flex items-center space-x-3 mb-4">
+                                <Landmark className="h-7 w-7 text-gray-500" />
+                                <h2 className="text-2xl font-display font-bold text-gray-900">
+                                    About the Silver Market in {cityName}
+                                </h2>
+                            </div>
+                            <div className="prose prose-gray max-w-none">
+                                <p className="text-gray-700 leading-relaxed text-base">{silverInfo.uniqueDescription}</p>
+                            </div>
+                        </article>
+
+                        {/* ── Silver Culture & Heritage ─────────────────────── */}
+                        <article className="mb-10 card" id="silver-culture">
+                            <div className="flex items-center space-x-3 mb-4">
+                                <BookOpen className="h-7 w-7 text-gray-500" />
+                                <h2 className="text-2xl font-display font-bold text-gray-900">
+                                    Silver Culture & Traditions in {cityName}
+                                </h2>
+                            </div>
+                            <div className="prose prose-gray max-w-none">
+                                <p className="text-gray-700 leading-relaxed text-base">{silverInfo.silverCulture}</p>
+                            </div>
+                        </article>
+
+                        {/* ── Popular Silver Markets / Areas ────────────────── */}
+                        <section className="mb-10 card" id="popular-markets" aria-labelledby="popular-markets-heading">
+                            <div className="flex items-center space-x-3 mb-5">
+                                <ShoppingBag className="h-7 w-7 text-gray-500" />
+                                <h2 id="popular-markets-heading" className="text-2xl font-display font-bold text-gray-900">
+                                    Best Silver Markets & Shopping Areas in {cityName}
+                                </h2>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                {silverInfo.popularAreas.map((area, i) => (
+                                    <div key={i} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                                        <h3 className="font-bold text-gray-900 text-base mb-1.5 flex items-center gap-2">
+                                            <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-gray-200 text-gray-700 text-xs font-bold">{i + 1}</span>
+                                            {area.name}
+                                        </h3>
+                                        <p className="text-gray-600 text-sm leading-relaxed">{area.specialty}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* ── Buying Tips ────────────────────────────────────── */}
+                        <section className="mb-10 card" id="buying-tips" aria-labelledby="buying-tips-heading">
+                            <div className="flex items-center space-x-3 mb-5">
+                                <Lightbulb className="h-7 w-7 text-gray-500" />
+                                <h2 id="buying-tips-heading" className="text-2xl font-display font-bold text-gray-900">
+                                    Silver Buying Tips for {cityName}
+                                </h2>
+                            </div>
+                            <p className="text-gray-600 text-sm mb-4">Expert guidance to help you get the best deal when buying silver in {cityName}.</p>
+                            <ol className="space-y-3">
+                                {silverInfo.buyingTips.map((tip, i) => (
+                                    <li key={i} className="flex gap-3 text-gray-700 text-sm sm:text-base leading-relaxed">
+                                        <span className="flex-shrink-0 w-7 h-7 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-bold mt-0.5">{i + 1}</span>
+                                        <span>{tip}</span>
+                                    </li>
+                                ))}
+                            </ol>
+                        </section>
+
+                        {/* ── Factors Affecting Price ──────────────────────── */}
+                        <section className="mb-10 card" id="price-factors" aria-labelledby="price-factors-heading">
+                            <div className="flex items-center space-x-3 mb-4">
+                                <TrendingUp className="h-7 w-7 text-gray-500" />
+                                <h2 id="price-factors-heading" className="text-2xl font-display font-bold text-gray-900">
+                                    Factors Affecting Silver Prices in {cityName}
+                                </h2>
+                            </div>
+                            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                {silverInfo.priceFactors.map((factor, i) => (
+                                    <li key={i} className="flex items-start gap-2 text-gray-700 text-sm sm:text-base">
+                                        <span className="text-gray-400 mt-1 flex-shrink-0">●</span>
+                                        <span>{factor}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+
+                        {/* ── Investment Insight ─────────────────────────────── */}
+                        <section className="mb-10 card bg-gradient-to-br from-slate-50 to-white border-slate-200" id="investment-insight" aria-labelledby="investment-heading">
+                            <div className="flex items-center space-x-3 mb-4">
+                                <Lightbulb className="h-7 w-7 text-gray-600" />
+                                <h2 id="investment-heading" className="text-2xl font-display font-bold text-gray-900">
+                                    Silver Investment Outlook in {cityName}
+                                </h2>
+                            </div>
+                            <p className="text-gray-700 leading-relaxed text-base">{silverInfo.investmentInsight}</p>
+                        </section>
+
+                        {/* ── Festivals & Seasonal Impact ────────────────────── */}
+                        <section className="mb-10 card" id="festivals-impact" aria-labelledby="festivals-heading">
+                            <div className="flex items-center space-x-3 mb-4">
+                                <Calendar className="h-7 w-7 text-gray-500" />
+                                <h2 id="festivals-heading" className="text-2xl font-display font-bold text-gray-900">
+                                    Festival & Seasonal Silver Demand in {cityName}
+                                </h2>
+                            </div>
+                            <p className="text-gray-700 leading-relaxed text-base">{silverInfo.festivalsImpact}</p>
+                        </section>
+                    </>
+                )}
+
+                {/* ── Silver Purity Guide ────────────────────────────────── */}
+                <section className="mb-10 card" id="purity-guide" aria-labelledby="purity-heading">
+                    <div className="flex items-center space-x-3 mb-4">
+                        <Coins className="h-7 w-7 text-gray-500" />
+                        <h2 id="purity-heading" className="text-2xl font-display font-bold text-gray-900">
+                            Silver Purity Guide — 999 vs 925 vs 800
+                        </h2>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                            <h3 className="font-bold text-gray-900 text-base mb-2">999 Fine Silver (99.9%)</h3>
+                            <p className="text-gray-600 text-sm leading-relaxed">
+                                The purest form of silver, used for investment bars, coins, and bullion.
+                                Too soft for jewellery. Available from certified dealers in {cityName}.
+                            </p>
+                        </div>
+                        <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
+                            <h3 className="font-bold text-gray-900 text-base mb-2">925 Sterling Silver (92.5%)</h3>
+                            <p className="text-gray-600 text-sm leading-relaxed">
+                                The standard for silver jewellery worldwide. Alloyed with copper for durability.
+                                Look for the &quot;925&quot; hallmark on all silver jewellery purchases.
+                            </p>
+                        </div>
+                        <div className="bg-zinc-50 rounded-xl p-4 border border-zinc-100">
+                            <h3 className="font-bold text-gray-900 text-base mb-2">800 Silver (80%)</h3>
+                            <p className="text-gray-600 text-sm leading-relaxed">
+                                Used for silverware, utensils, and decorative items. More durable for daily use.
+                                Common in traditional silver vessels and household items across India.
+                            </p>
+                        </div>
                     </div>
                 </section>
 
-                <footer className="mt-8 text-center">
+                {/* ── FAQ Section ────────────────────────────────────────── */}
+                {silverInfo && (
+                    <section className="mb-10 card" id="faq" aria-labelledby="faq-heading">
+                        <div className="flex items-center space-x-3 mb-5">
+                            <HelpCircle className="h-7 w-7 text-gray-500" />
+                            <h2 id="faq-heading" className="text-2xl font-display font-bold text-gray-900">
+                                Frequently Asked Questions — Silver in {cityName}
+                            </h2>
+                        </div>
+                        <div className="space-y-5">
+                            {silverInfo.faq.map((item, i) => (
+                                <details key={i} className="group bg-gray-50 rounded-xl border border-gray-100 overflow-hidden" open={i === 0}>
+                                    <summary className="cursor-pointer p-4 sm:p-5 font-semibold text-gray-900 text-sm sm:text-base flex items-start gap-3 list-none [&::-webkit-details-marker]:hidden">
+                                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-gray-200 text-gray-700 flex items-center justify-center text-xs font-bold mt-0.5">Q</span>
+                                        <span className="flex-1">{item.question}</span>
+                                        <span className="flex-shrink-0 text-gray-400 group-open:rotate-180 transition-transform text-lg">▼</span>
+                                    </summary>
+                                    <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-0">
+                                        <p className="text-gray-600 text-sm sm:text-base leading-relaxed pl-9">{item.answer}</p>
+                                    </div>
+                                </details>
+                            ))}
+                        </div>
+                    </section>
+                )}
+
+                {/* ── Other Cities ───────────────────────────────────────── */}
+                <section className="mb-10" aria-labelledby="other-cities-heading">
+                    <h2 id="other-cities-heading" className="text-2xl font-display font-semibold text-gray-900 mb-6">
+                        Silver Rates in Other Cities
+                    </h2>
+                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+                        {cities.filter(c => c.slug !== params.city).map((city) => {
+                            const otherSilver = getCitySilverData(city.slug);
+                            return (
+                                <Link key={city.slug} href={`/silver-rate/${city.slug}`}
+                                    className="card hover:shadow-lg transition-shadow text-center group">
+                                    <MapPin className="h-6 w-6 text-gray-500 mx-auto mb-2 group-hover:scale-110 transition-transform" />
+                                    <p className="font-medium text-gray-900">{city.city}</p>
+                                    {otherSilver && (
+                                        <p className="text-xs text-gray-500 mt-1 line-clamp-1">{otherSilver.mainMarkets[0]}</p>
+                                    )}
+                                    <p className="text-xs text-gray-600 mt-1 font-medium">View Rates →</p>
+                                </Link>
+                            );
+                        })}
+                    </div>
+                </section>
+
+                {/* ── Disclaimer ─────────────────────────────────────────── */}
+                <aside className="card bg-yellow-50 border-yellow-200 mb-8">
+                    <h3 className="text-lg font-display font-semibold text-gray-900 mb-3">Important Disclaimer</h3>
+                    <p className="text-sm text-gray-700 leading-relaxed">
+                        The silver rates displayed for {cityName} are indicative and sourced from market data aggregators.
+                        Actual prices may vary based on purity, making charges, GST (3%), and dealer margins.
+                        Always verify the current rate, check for BIS hallmark on silver jewellery, and ask for a
+                        detailed invoice before making a purchase. The information provided here is for educational
+                        purposes and does not constitute financial or investment advice.
+                    </p>
+                </aside>
+
+                {/* ── Last Updated ───────────────────────────────────────── */}
+                <footer className="text-center">
                     <LastUpdatedTime />
+                    <p className="text-xs text-gray-400 mt-2">
+                        Written by the gpaisa.in editorial team · {cityName} silver market expert guide
+                    </p>
                 </footer>
             </div>
         </div>
