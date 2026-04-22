@@ -42,8 +42,8 @@ const nextConfig = {
                 ],
             },
             {
-                // Static pages (about, terms, privacy, contact, disclaimer) - cache for 7 days
-                source: '/:path(about|terms|privacy-policy|contact|disclaimer)',
+                // Static pages (about, terms, privacy, contact, disclaimer, gold-vs-silver) - cache for 7 days
+                source: '/:path(about|terms|privacy-policy|contact|disclaimer|gold-vs-silver)',
                 headers: [
                     {
                         key: 'Cache-Control',
