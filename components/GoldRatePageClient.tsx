@@ -1,9 +1,11 @@
 'use client';
 
-import { MapPin, TrendingUp, Calculator, Globe, BarChart3, ArrowRight, Scale } from 'lucide-react';
+import { MapPin, TrendingUp, Calculator, Globe, BarChart3, ArrowRight, Scale, Calendar } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import DynamicGoldRates from '@/components/DynamicGoldRates';
+import GoldHistoryTable from '@/components/GoldHistoryTable';
+import DynamicGoldChart from '@/components/DynamicGoldChart';
 import { useLanguage } from '@/lib/i18n';
 
 const CITIES = ["Delhi", "Chennai", "Mumbai", "Pune", "Hyderabad", "Bangalore", "Coimbatore", "Kolkata", "Ahmedabad", "Kerala"];
@@ -58,6 +60,34 @@ export default function GoldRatePageClient() {
                     {t('gold', 'allIndiaGoldRates')}
                 </h2>
                 <DynamicGoldRates />
+            </section>
+
+            {/* 📅 Gold Rate History - Last 10 Days */}
+            <section className="mb-16" aria-labelledby="gold-history-heading">
+                <div className="flex items-center justify-center space-x-3 mb-6">
+                    <Calendar className="h-7 w-7 text-primary-600" aria-hidden="true" />
+                    <h2 id="gold-history-heading" className="text-2xl md:text-3xl font-display font-bold text-gray-900">
+                        Gold Rate History in India (24K) — Last 10 Days
+                    </h2>
+                </div>
+                <p className="text-center text-gray-600 mb-6 max-w-2xl mx-auto">
+                    Track the daily movement of 24 Karat gold prices across India. Historical data helps identify trends and pick the right time to buy or invest.
+                </p>
+                <GoldHistoryTable city="India" carat="24k" />
+            </section>
+
+            {/* 📈 Gold Price Trend Chart */}
+            <section className="mb-16" aria-labelledby="gold-chart-heading">
+                <div className="flex items-center justify-center space-x-3 mb-6">
+                    <BarChart3 className="h-7 w-7 text-primary-600" aria-hidden="true" />
+                    <h2 id="gold-chart-heading" className="text-2xl md:text-3xl font-display font-bold text-gray-900">
+                        Gold Price Trend Chart (24K)
+                    </h2>
+                </div>
+                <p className="text-center text-gray-600 mb-6 max-w-2xl mx-auto">
+                    Visual representation of gold price movement over recent days. Use this chart to identify buying opportunities and understand market direction.
+                </p>
+                <DynamicGoldChart carat="24k" city="India" />
             </section>
 
             {/* 🌍 What Affects Gold Prices in India? */}

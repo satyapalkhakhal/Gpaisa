@@ -1,9 +1,10 @@
 import { Metadata } from 'next';
 import { fetchSilverCities } from '@/lib/angelOneApi';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
+import SilverHistoryTable from '@/components/SilverHistoryTable';
 import Link from 'next/link';
 import Image from 'next/image';
-import { MapPin, TrendingUp, Calculator, Globe, BarChart3, ArrowRight, Scale } from 'lucide-react';
+import { MapPin, TrendingUp, Calculator, Globe, BarChart3, ArrowRight, Scale, Calendar } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: 'Silver Rate Today in India - Live Silver Price Per Gram/Kg | gpaisa.in',
@@ -174,6 +175,20 @@ export default async function SilverRatePage() {
                         Current Silver Rates
                     </h2>
                     <DynamicSilverRates />
+                </section>
+
+                {/* 📅 Silver Rate History - Last 10 Days */}
+                <section className="mb-16" aria-labelledby="silver-history-heading">
+                    <div className="flex items-center justify-center space-x-3 mb-6">
+                        <Calendar className="h-7 w-7 text-gray-600" aria-hidden="true" />
+                        <h2 id="silver-history-heading" className="text-2xl md:text-3xl font-display font-bold text-gray-900">
+                            Silver Rate History in India — Last 10 Days
+                        </h2>
+                    </div>
+                    <p className="text-center text-gray-600 mb-6 max-w-2xl mx-auto">
+                        Track the daily movement of silver prices across India. Historical price data helps identify trends and find the right time to buy silver or invest.
+                    </p>
+                    <SilverHistoryTable symbol="XAG" gram={10} />
                 </section>
 
                 {/* 🌍 What Affects Silver Prices in India? */}
