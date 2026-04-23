@@ -117,6 +117,21 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
                 </div>
             </div>
 
+            {/* H1 + Hook Section */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+                SIP Calculator India (2026) – Calculate Returns & Plan Investments
+              </h1>
+
+              <p className="text-lg text-gray-700">
+                Estimate your SIP returns instantly and plan your wealth growth using our advanced calculator.
+              </p>
+
+              <p className="text-md font-semibold text-primary-600 mt-1">
+                ₹5,000/month → ₹11.6 lakh in 10 years (12% return)
+              </p>
+            </div>
+
             {/* Main Calculator Section */}
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="grid lg:grid-cols-2 gap-8">
@@ -373,6 +388,27 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
                             </ul>
                         </div>
                     </div>
+
+                        {/* Monetization Block */}
+                        <div className="bg-green-50 rounded-2xl p-6 border border-green-200">
+                          <h3 className="text-lg font-bold text-gray-900 mb-2">
+                            💡 Ready to Start Your SIP?
+                          </h3>
+
+                          <p className="text-gray-700 mb-3">
+                            Based on your calculation, you can start investing with trusted platforms:
+                          </p>
+
+                          <ul className="text-sm text-gray-700 space-y-1 mb-4">
+                            <li>✔ Zerodha Coin – Direct mutual funds</li>
+                            <li>✔ Groww – Beginner friendly</li>
+                            <li>✔ Paytm Money – Easy onboarding</li>
+                          </ul>
+
+                          <button className="bg-primary-600 text-white px-5 py-2 rounded-lg font-semibold">
+                            Start Investing Now
+                          </button>
+                        </div>
                 </div>
 
                 {/* Other Calculators - Below Main Calculator */}
@@ -439,7 +475,7 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
                     <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
                         <h2 className="text-3xl font-bold text-gray-900 mb-4">What is SIP (Systematic Investment Plan)?</h2>
                         <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                            A <strong>Systematic Investment Plan (SIP)</strong> is a disciplined investment approach where you invest a fixed amount regularly (monthly, quarterly, etc.) in mutual funds. Instead of timing the market, SIP allows you to invest consistently and benefit from rupee cost averaging and the power of compounding.
+                            For most Indian investors, SIP is one of the most practical ways to build long-term wealth without needing to time the market.
                         </p>
                         <p className="text-lg text-gray-700 leading-relaxed">
                             SIP is one of the most popular investment methods in India, with over <strong>6 crore SIP accounts</strong> and monthly inflows exceeding ₹15,000 crores. It&apos;s perfect for salaried individuals, young professionals, and anyone looking to build wealth systematically.
@@ -489,6 +525,23 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
                         </div>
                     </div>
 
+                    {/* SIP Reality Check */}
+                    <div className="bg-red-50 rounded-2xl p-6 border border-red-200">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-3">
+                        SIP Reality Check (Important)
+                      </h2>
+
+                      <ul className="text-gray-700 space-y-2">
+                        <li>• Returns are market-linked (not guaranteed)</li>
+                        <li>• Short-term losses are possible</li>
+                        <li>• 1–3 year performance can be volatile</li>
+                      </ul>
+
+                      <p className="mt-3 font-semibold text-gray-800">
+                        👉 SIP works best when you stay invested for 7–10+ years.
+                      </p>
+                    </div>
+
                     {/* Benefits of SIP */}
                     <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
                         <h2 className="text-3xl font-bold text-gray-900 mb-6">Benefits of SIP Investment</h2>
@@ -526,6 +579,18 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
                         </div>
                     </div>
 
+                    {/* Expert Insight */}
+                    <div className="bg-yellow-50 rounded-2xl p-6 border border-yellow-200">
+                      <p className="text-gray-800 font-medium">
+                        <strong>Expert Insight:</strong> Most investors don&apos;t lose money because SIP fails—
+                        they lose because they stop investing during market downturns.
+                      </p>
+
+                      <p className="mt-2 text-gray-700">
+                        👉 Continuing SIP during market dips often leads to better long-term returns.
+                      </p>
+                    </div>
+
                     {/* Types of SIP */}
                     <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg p-8 border border-green-100">
                         <h2 className="text-3xl font-bold text-gray-900 mb-6">Types of SIP Calculators</h2>
@@ -547,6 +612,23 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
                                 <p className="text-gray-700">Adjust your SIP for inflation to maintain purchasing power. Helps you plan for real returns after accounting for inflation.</p>
                             </div>
                         </div>
+                    </div>
+
+                    {/* SIP vs FD vs Gold Comparison */}
+                    <div className="bg-white rounded-2xl shadow-lg p-8 border border-gray-100">
+                      <h2 className="text-2xl font-bold text-gray-900 mb-4">
+                        SIP vs FD vs Gold
+                      </h2>
+
+                      <ul className="text-gray-700 space-y-2">
+                        <li>• SIP → Growth (10–14%)</li>
+                        <li>• FD → Stable returns (5–7%)</li>
+                        <li>• Gold → Inflation hedge</li>
+                      </ul>
+
+                      <p className="mt-3 text-gray-800">
+                        👉 Smart investors often combine SIP + Gold for balanced portfolios.
+                      </p>
                     </div>
 
                     {/* FAQs */}
