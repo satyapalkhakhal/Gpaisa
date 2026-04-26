@@ -10,6 +10,8 @@ import { Coins, MapPin, Calculator, TrendingUp, ShoppingBag, Landmark, BookOpen,
 import Link from 'next/link';
 import { getCityGoldData, CITY_GOLD_DATA } from '@/lib/cityGoldData';
 import { getTodayIST } from '@/lib/dateUtils';
+import GoldPriceHistoryChart from '@/components/GoldPriceHistoryChart';
+import GoldNewsSection from '@/components/GoldNewsSection';
 
 const CITIES: IndianCity[] = [
     "Delhi", "Chennai", "Mumbai", "Pune", "Hyderabad",
@@ -285,6 +287,9 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                         <DynamicGoldChart carat="24k" city={cityName} />
                     </section>
 
+                    {/* ── Historical Gold Prices — 62 Years ─────────────────── */}
+                    <GoldPriceHistoryChart cityName={cityName} />
+
                     {/* ═══════════════════════════════════════════════════════════
                          UNIQUE CITY CONTENT — E-E-A-T SECTIONS
                          ═══════════════════════════════════════════════════════════ */}
@@ -474,6 +479,9 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                             })}
                         </div>
                     </section>
+
+                    {/* ── Gold News ─────────────────────────────────────────── */}
+                    <GoldNewsSection />
 
                     {/* ── Disclaimer ─────────────────────────────────────────── */}
                     <aside className="card bg-yellow-50 border-yellow-200 mb-8">

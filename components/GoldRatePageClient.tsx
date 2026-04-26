@@ -6,9 +6,10 @@ import Image from 'next/image';
 import DynamicGoldRates from '@/components/DynamicGoldRates';
 import GoldHistoryTable from '@/components/GoldHistoryTable';
 import DynamicGoldChart from '@/components/DynamicGoldChart';
+import GoldPriceHistoryChart from '@/components/GoldPriceHistoryChart';
+import CityGoldRatesTable from '@/components/CityGoldRatesTable';
+import GoldNewsSection from '@/components/GoldNewsSection';
 import { useLanguage } from '@/lib/i18n';
-
-const CITIES = ["Delhi", "Chennai", "Mumbai", "Pune", "Hyderabad", "Bangalore", "Coimbatore", "Kolkata", "Ahmedabad", "Kerala"];
 
 export default function GoldRatePageClient({ todayDate }: { todayDate: string }) {
     const { t } = useLanguage();
@@ -89,6 +90,9 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
                 </p>
                 <DynamicGoldChart carat="24k" city="India" />
             </section>
+
+            {/* 📈 Historical Gold Prices — 62 Years of Data */}
+            <GoldPriceHistoryChart />
 
             {/* 🌍 What Affects Gold Prices in India? */}
             <section className="mb-16">
@@ -203,32 +207,8 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
                 </div>
             </section>
 
-            {/* City-wise Gold Rates */}
-            <section className="mb-16">
-                <div className="text-center mb-8">
-                    <h2 className="text-3xl font-display font-bold text-gray-900 mb-3">
-                        {t('gold', 'cityWiseGoldRates')}
-                    </h2>
-                    <p className="text-gray-600">
-                        {t('gold', 'cityWiseSubtitle')}
-                    </p>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {CITIES.map((city) => (
-                        <Link key={city} href={`/gold-rate/${city.toLowerCase()}`} className="card hover:shadow-xl transition-all duration-300 hover:scale-105 group">
-                            <div className="flex items-center space-x-4">
-                                <div className="bg-primary-100 p-3 rounded-full group-hover:bg-primary-600 transition-colors">
-                                    <MapPin className="h-6 w-6 text-primary-600 group-hover:text-white" />
-                                </div>
-                                <div className="flex-1">
-                                    <h3 className="text-lg font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">{city}</h3>
-                                    <p className="text-sm text-gray-600">{t('gold', 'viewLiveGoldRates')}</p>
-                                </div>
-                            </div>
-                        </Link>
-                    ))}
-                </div>
-            </section>
+            {/* City-wise Gold Rates — Live Table */}
+            <CityGoldRatesTable />
 
             {/* Features */}
             <section className="mb-16">
@@ -380,6 +360,9 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
                     ))}
                 </div>
             </section>
+
+            {/* 🪙 Gold News */}
+            <GoldNewsSection />
 
             {/* CTA */}
             <div className="text-center card bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200">

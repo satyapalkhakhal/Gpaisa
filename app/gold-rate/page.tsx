@@ -21,7 +21,10 @@ export async function generateMetadata(): Promise<Metadata> {
             'today gold rate in india', 'gold price in india', 'indian gold rate', 'gold rate update',
             'gold vs silver', 'gold vs silver price today', 'gold investment india 2026',
             'gold market trend', 'what affects gold prices', 'gold rate forecast',
-            'gold rate prediction', 'gold price trend india'
+            'gold rate prediction', 'gold price trend india',
+            'gold price history india', 'gold rate 1964 to 2026', 'historical gold prices india',
+            'gold CAGR india', 'gold returns 10 years', 'gold returns 20 years',
+            'gold price last 50 years india', 'gold price last 10 years india'
         ].join(', '),
         openGraph: {
             title: `Gold Rate Today in India — ${todayDate} | 24K, 22K, 18K Prices`,
@@ -133,6 +136,30 @@ export default function GoldRatePage() {
         inLanguage: 'en-IN',
     };
 
+    // Dataset schema for historical gold price data (EEAT boost)
+    const datasetSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Dataset',
+        name: 'Gold Price History India (1964–2026)',
+        description: 'Annual 24K gold prices per 10 grams in India from 1964 to 2026, sourced from RBI Handbook of Statistics, IBJA, and MCX historical records.',
+        url: 'https://gpaisa.in/gold-rate#gold-price-history',
+        license: 'https://creativecommons.org/licenses/by/4.0/',
+        creator: {
+            '@type': 'Organization',
+            name: 'gpaisa.in',
+            url: 'https://gpaisa.in',
+        },
+        temporalCoverage: '1964/2026',
+        variableMeasured: 'Gold price in INR per 10 grams (24K)',
+        measurementTechnique: 'Annual average spot price from IBJA and RBI archives',
+        distribution: {
+            '@type': 'DataDownload',
+            encodingFormat: 'text/csv',
+            contentUrl: 'https://gpaisa.in/gold_prices_india_1964_2026.csv',
+        },
+        keywords: ['gold price history india', 'gold rate 1964 to 2026', 'historical gold prices', 'gold CAGR india', 'gold investment returns'],
+    };
+
     return (
         <div className="bg-gray-50 py-12">
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
@@ -140,6 +167,7 @@ export default function GoldRatePage() {
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }} />
             <GoldRatePageClient todayDate={todayDate} />
         </div>
     );
