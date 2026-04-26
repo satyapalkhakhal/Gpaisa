@@ -17,21 +17,21 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
     return (
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {/* Page Header */}
-            <header className="mb-12 text-center">
-                <h1 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
+            <header className="mb-8 sm:mb-12 text-center">
+                <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-display font-bold text-gray-900 mb-3 sm:mb-4">
                     Gold Rate Today in India — {todayDate}
                 </h1>
-                <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                <p className="text-base sm:text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
                     {t('gold', 'goldRateSubtitle')}
                 </p>
             </header>
 
             {/* 📊 Gold Rate Today in India - SEO Authority Section */}
-            <section className="mb-16">
-                <div className="card bg-white rounded-2xl shadow-lg overflow-hidden">
+            <section className="mb-10 sm:mb-16">
+                <div className="card bg-white rounded-2xl shadow-lg overflow-hidden p-0">
                     <div className="md:flex">
-                        <div className="md:w-1/2 p-8 md:p-10">
-                            <h2 className="text-3xl font-display font-bold text-gray-900 mb-5 flex items-center gap-2">
+                        <div className="md:w-1/2 p-5 sm:p-8 md:p-10">
+                            <h2 className="text-xl sm:text-2xl md:text-3xl font-display font-bold text-gray-900 mb-4 sm:mb-5 flex items-center gap-2">
                                 📊 Gold Rate Today in India
                             </h2>
                             <p className="text-gray-700 leading-relaxed mb-4">
@@ -56,22 +56,22 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
             </section>
 
             {/* National Gold Rates */}
-            <section className="mb-16">
-                <h2 className="text-2xl font-display font-semibold text-gray-900 mb-6 text-center">
+            <section className="mb-10 sm:mb-16">
+                <h2 className="text-xl sm:text-2xl font-display font-semibold text-gray-900 mb-4 sm:mb-6 text-center">
                     {t('gold', 'allIndiaGoldRates')}
                 </h2>
                 <DynamicGoldRates />
             </section>
 
             {/* 📅 Gold Rate History - Last 10 Days */}
-            <section className="mb-16" aria-labelledby="gold-history-heading">
-                <div className="flex items-center justify-center space-x-3 mb-6">
-                    <Calendar className="h-7 w-7 text-primary-600" aria-hidden="true" />
-                    <h2 id="gold-history-heading" className="text-2xl md:text-3xl font-display font-bold text-gray-900">
+            <section className="mb-10 sm:mb-16" aria-labelledby="gold-history-heading">
+                <div className="flex items-start sm:items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                    <Calendar className="h-6 w-6 sm:h-7 sm:w-7 text-primary-600 flex-shrink-0 mt-0.5 sm:mt-0" aria-hidden="true" />
+                    <h2 id="gold-history-heading" className="text-lg sm:text-2xl md:text-3xl font-display font-bold text-gray-900">
                         Gold Rate History in India (24K) — Last 10 Days
                     </h2>
                 </div>
-                <p className="text-center text-gray-600 mb-6 max-w-2xl mx-auto">
+                <p className="text-center text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 max-w-2xl mx-auto">
                     Track the daily movement of 24 Karat gold prices across India. Historical data helps identify trends and pick the right time to buy or invest.
                 </p>
                 <GoldHistoryTable city="India" carat="24k" />
@@ -81,14 +81,14 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
             <GoldNewsSection />
 
             {/* 📈 Gold Price Trend Chart */}
-            <section className="mb-16" aria-labelledby="gold-chart-heading">
-                <div className="flex items-center justify-center space-x-3 mb-6">
-                    <BarChart3 className="h-7 w-7 text-primary-600" aria-hidden="true" />
-                    <h2 id="gold-chart-heading" className="text-2xl md:text-3xl font-display font-bold text-gray-900">
+            <section className="mb-10 sm:mb-16" aria-labelledby="gold-chart-heading">
+                <div className="flex items-start sm:items-center justify-center gap-2 sm:gap-3 mb-4 sm:mb-6">
+                    <BarChart3 className="h-6 w-6 sm:h-7 sm:w-7 text-primary-600 flex-shrink-0 mt-0.5 sm:mt-0" aria-hidden="true" />
+                    <h2 id="gold-chart-heading" className="text-lg sm:text-2xl md:text-3xl font-display font-bold text-gray-900">
                         Gold Price Trend Chart (24K)
                     </h2>
                 </div>
-                <p className="text-center text-gray-600 mb-6 max-w-2xl mx-auto">
+                <p className="text-center text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 max-w-2xl mx-auto">
                     Visual representation of gold price movement over recent days. Use this chart to identify buying opportunities and understand market direction.
                 </p>
                 <DynamicGoldChart carat="24k" city="India" />
@@ -98,13 +98,13 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
             <GoldPriceHistoryChart />
 
             {/* 🌍 What Affects Gold Prices in India? */}
-            <section className="mb-16">
-                <div className="card bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-8 md:p-10">
-                    <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-6 flex items-center gap-2">
-                        <Globe className="h-7 w-7 text-amber-600" />
+            <section className="mb-10 sm:mb-16">
+                <div className="card bg-gradient-to-br from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-4 sm:p-6 md:p-10">
+                    <h2 className="text-lg sm:text-2xl md:text-3xl font-display font-bold text-gray-900 mb-4 sm:mb-6 flex items-start sm:items-center gap-2">
+                        <Globe className="h-6 w-6 sm:h-7 sm:w-7 text-amber-600 flex-shrink-0 mt-0.5 sm:mt-0" />
                         What Affects Gold Prices in India?
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                         {[
                             { icon: '🌐', title: 'International Gold Prices', desc: 'Global benchmark prices on COMEX and London markets directly influence Indian gold rates.' },
                             { icon: '💱', title: 'USD to INR Exchange Rate', desc: 'A weaker rupee makes imported gold more expensive, pushing domestic prices higher.' },
@@ -124,17 +124,17 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
             </section>
 
             {/* 📈 Current Gold Market Trend */}
-            <section className="mb-16">
-                <div className="card bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-8 md:p-10">
-                    <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-5 flex items-center gap-2">
-                        <BarChart3 className="h-7 w-7 text-emerald-600" />
+            <section className="mb-10 sm:mb-16">
+                <div className="card bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-4 sm:p-6 md:p-10">
+                    <h2 className="text-lg sm:text-2xl md:text-3xl font-display font-bold text-gray-900 mb-4 sm:mb-5 flex items-start sm:items-center gap-2">
+                        <BarChart3 className="h-6 w-6 sm:h-7 sm:w-7 text-emerald-600 flex-shrink-0 mt-0.5 sm:mt-0" />
                         Current Gold Market Trend
                     </h2>
                     <div className="space-y-4">
-                        <p className="text-gray-700 leading-relaxed text-lg">
+                        <p className="text-gray-700 leading-relaxed text-sm sm:text-base md:text-lg">
                             Gold prices have shown strong upward movement in recent months, supported by global uncertainty and weakening currency trends. However, short-term volatility remains high, making it important for buyers to track trends rather than react to daily changes.
                         </p>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4 mt-4 sm:mt-6">
                             <div className="bg-white/80 rounded-xl p-5 text-center border border-emerald-100">
                                 <p className="text-sm text-gray-500 mb-1">Trend Direction</p>
                                 <p className="text-xl font-bold text-emerald-600 flex items-center justify-center gap-1">
@@ -155,10 +155,10 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
             </section>
 
             {/* ⚖️ Gold vs Silver Comparison */}
-            <section className="mb-16">
-                <div className="card bg-gradient-to-r from-amber-50 via-white to-gray-100 border border-gray-200 rounded-2xl p-8 md:p-10">
-                    <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-5 flex items-center gap-2">
-                        <Scale className="h-7 w-7 text-amber-600" />
+            <section className="mb-10 sm:mb-16">
+                <div className="card bg-gradient-to-r from-amber-50 via-white to-gray-100 border border-gray-200 rounded-2xl p-4 sm:p-6 md:p-10">
+                    <h2 className="text-lg sm:text-2xl md:text-3xl font-display font-bold text-gray-900 mb-4 sm:mb-5 flex items-start sm:items-center gap-2">
+                        <Scale className="h-6 w-6 sm:h-7 sm:w-7 text-amber-600 flex-shrink-0 mt-0.5 sm:mt-0" />
                         Gold vs Silver: Quick Comparison
                     </h2>
                     <p className="text-gray-700 mb-6 leading-relaxed">
@@ -214,11 +214,11 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
             <CityGoldRatesTable />
 
             {/* Features */}
-            <section className="mb-16">
-                <h2 className="text-2xl font-display font-semibold text-gray-900 mb-8 text-center">
+            <section className="mb-10 sm:mb-16">
+                <h2 className="text-xl sm:text-2xl font-display font-semibold text-gray-900 mb-6 sm:mb-8 text-center">
                     {t('gold', 'whyChoose')}
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
                     <div className="card text-center">
                         <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                             <TrendingUp className="h-8 w-8 text-green-600" />
@@ -264,15 +264,15 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
             </article>
 
             {/* Investment Guide - Additional Authority Content */}
-            <article className="card mb-12 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
-                <h2 className="text-2xl font-display font-bold text-gray-900 mb-4 flex items-center gap-2">
+            <article className="card mb-8 sm:mb-12 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+                <h2 className="text-lg sm:text-2xl font-display font-bold text-gray-900 mb-3 sm:mb-4 flex items-center gap-2">
                     💡 Gold Investment Guide for 2026
                 </h2>
                 <div className="prose prose-gray max-w-none text-gray-700 space-y-4">
                     <p>
                         Whether you&apos;re buying gold for jewellery, investment, or hedging against inflation, understanding the different ways to invest in gold is essential for maximizing returns.
                     </p>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4">
                         <div className="bg-white/80 rounded-xl p-5 border border-blue-100">
                             <h3 className="text-lg font-semibold text-gray-900 mb-2">Physical Gold</h3>
                             <p className="text-sm text-gray-600">
@@ -367,15 +367,15 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
 
             {/* CTA */}
             <div className="text-center card bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200">
-                <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">
+                <h3 className="text-xl sm:text-2xl font-display font-bold text-gray-900 mb-3">
                     {t('gold', 'stayUpdated')}
                 </h3>
-                <p className="text-gray-700 mb-6">{t('gold', 'stayUpdatedDesc')}</p>
-                <div className="flex flex-wrap justify-center gap-4">
-                    <Link href="/commodities" className="inline-block bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
+                <p className="text-sm sm:text-base text-gray-700 mb-4 sm:mb-6">{t('gold', 'stayUpdatedDesc')}</p>
+                <div className="flex flex-col sm:flex-row flex-wrap justify-center gap-3 sm:gap-4">
+                    <Link href="/commodities" className="inline-block bg-primary-600 text-white px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors text-sm sm:text-base">
                         {t('gold', 'viewAllCommodityPrices')}
                     </Link>
-                    <Link href="/gold-vs-silver" className="inline-block bg-amber-500 text-white px-8 py-3 rounded-lg font-semibold hover:bg-amber-600 transition-colors">
+                    <Link href="/gold-vs-silver" className="inline-block bg-amber-500 text-white px-5 sm:px-8 py-2.5 sm:py-3 rounded-lg font-semibold hover:bg-amber-600 transition-colors text-sm sm:text-base">
                         Gold vs Silver Analysis →
                     </Link>
                 </div>

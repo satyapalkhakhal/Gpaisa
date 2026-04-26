@@ -5,8 +5,15 @@
 @tailwind utilities;
 
 @layer base {
+  /* Prevent horizontal overflow site-wide */
+  html {
+    overflow-x: hidden;
+  }
+
   body {
     @apply bg-gray-50 text-gray-900 font-sans antialiased;
+    overflow-x: hidden;
+    -webkit-text-size-adjust: 100%;
   }
 
   h1,
@@ -32,16 +39,16 @@
 
   /* Card styles */
   .card {
-    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-6 hover:shadow-md transition-shadow duration-200;
+    @apply bg-white rounded-lg shadow-sm border border-gray-200 p-4 sm:p-6 hover:shadow-md transition-shadow duration-200;
   }
 
   /* Button styles */
   .btn-primary {
-    @apply bg-primary-500 text-white px-6 py-2.5 rounded-lg font-medium hover:bg-primary-600 transition-colors duration-200;
+    @apply bg-primary-500 text-white px-5 sm:px-6 py-2.5 rounded-lg font-medium hover:bg-primary-600 transition-colors duration-200;
   }
 
   .btn-secondary {
-    @apply bg-gray-100 text-gray-700 px-6 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200;
+    @apply bg-gray-100 text-gray-700 px-5 sm:px-6 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200;
   }
 
   /* Market ticker animation */
@@ -62,6 +69,43 @@
   /* Loading skeleton */
   .skeleton {
     @apply animate-pulse bg-gray-200 rounded;
+  }
+
+  /* Mobile menu slide animation */
+  .mobile-menu-enter {
+    animation: slideDown 0.25s ease-out forwards;
+  }
+
+  .mobile-menu-exit {
+    animation: slideUp 0.2s ease-in forwards;
+  }
+
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      max-height: 0;
+      transform: translateY(-8px);
+    }
+
+    to {
+      opacity: 1;
+      max-height: 100vh;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 1;
+      max-height: 100vh;
+      transform: translateY(0);
+    }
+
+    to {
+      opacity: 0;
+      max-height: 0;
+      transform: translateY(-8px);
+    }
   }
 
   /* Article Content Styles */
