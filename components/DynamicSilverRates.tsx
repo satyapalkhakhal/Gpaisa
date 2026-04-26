@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import PriceCard from './PriceCard';
 import Link from 'next/link';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 interface DynamicSilverRatesProps {
     symbol?: string; // Default 'XAG'
@@ -11,10 +11,30 @@ interface DynamicSilverRatesProps {
     displayWeight?: number; // Weight in grams to display in simple view
 }
 
+/** Format a number as Indian currency without decimals */
+function formatINR(value: number): string {
+    return '₹' + Math.round(value).toLocaleString('en-IN');
+}
+
+/** Format timestamp as "DD MMM YYYY, HH:MM AM/PM IST" */
+function formatTimestamp(date: Date): string {
+    const day = date.toLocaleString('en-IN', { day: 'numeric', timeZone: 'Asia/Kolkata' });
+    const month = date.toLocaleString('en-IN', { month: 'short', timeZone: 'Asia/Kolkata' });
+    const year = date.toLocaleString('en-IN', { year: 'numeric', timeZone: 'Asia/Kolkata' });
+    const time = date.toLocaleString('en-IN', {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true,
+        timeZone: 'Asia/Kolkata',
+    });
+    return `${day} ${month} ${year}, ${time} IST`;
+}
+
 export default function DynamicSilverRates({ symbol = 'XAG', city = 'National', simpleView = false, displayWeight = 1 }: DynamicSilverRatesProps) {
     const [rateData, setRateData] = useState<{ price: number; change: number; changePercent: number } | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
     useEffect(() => {
         const fetchRate = async () => {
@@ -50,6 +70,7 @@ export default function DynamicSilverRates({ symbol = 'XAG', city = 'National', 
 
                 if (data) {
                     setRateData(data);
+                    setLastUpdated(new Date());
                 } else {
                     setError('Failed to fetch silver rates');
                 }
@@ -64,20 +85,33 @@ export default function DynamicSilverRates({ symbol = 'XAG', city = 'National', 
         fetchRate();
     }, [symbol]);
 
+    // ── Loading skeleton ──────────────────────────────────────────────────
     if (loading) {
+        if (simpleView) {
+            return <div className="animate-pulse h-10 bg-gray-100 rounded"></div>;
+        }
         return (
-            <div className={simpleView ? "animate-pulse h-10 bg-gray-100 rounded" : "animate-pulse card h-48 bg-gray-100"}></div>
+            <div className="card bg-white overflow-hidden">
+                <div className="animate-pulse">
+                    <div className="h-5 bg-gray-200 rounded w-48 mb-4 ml-auto"></div>
+                    <div className="h-12 bg-gray-200 rounded mb-2"></div>
+                    <div className="h-14 bg-gray-100 rounded mb-2"></div>
+                </div>
+            </div>
         );
     }
 
+    // ── Error state ───────────────────────────────────────────────────────
     if (error || !rateData) {
-        return simpleView ? <span className="text-red-500 text-xs">Error</span> : (
+        if (simpleView) return <span className="text-red-500 text-xs">Error</span>;
+        return (
             <div className="card bg-red-50 border-red-200">
                 <p className="text-red-600 text-center">Unavailable</p>
             </div>
         );
     }
 
+    // ── Simple view (used in sidebar / homepage widgets) ──────────────────
     if (simpleView) {
         const isPositive = rateData.changePercent >= 0;
         const price = rateData.price * displayWeight;
@@ -99,25 +133,110 @@ export default function DynamicSilverRates({ symbol = 'XAG', city = 'National', 
         );
     }
 
+    // ── Full table view ──────────────────────────────────────────────────
+    const WEIGHT_COLUMNS = [
+        { label: '1 Gram', multiplier: 1 },
+        { label: '10 Grams', multiplier: 10 },
+        { label: '100 Grams', multiplier: 100 },
+        { label: '1 Kg', multiplier: 1000 },
+    ];
+
+    const isPositive = rateData.changePercent >= 0;
+    const cityLabel = city === 'National' ? 'India' : city;
+
     return (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <PriceCard
-                title={`Silver Rate (${city})`}
-                value={`₹${rateData.price.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-                change={rateData.change}
-                changePercent={rateData.changePercent}
-                subtitle="per 1 gram"
-                variant="silver"
-            />
-            {/* We could add 1kg card here by calculating */}
-            <PriceCard
-                title={`Silver Rate (${city})`}
-                value={`₹${(rateData.price * 1000).toLocaleString('en-IN', { minimumFractionDigits: 0, maximumFractionDigits: 0 })}`}
-                change={rateData.change * 1000}
-                changePercent={rateData.changePercent}
-                subtitle="per 1 kg"
-                variant="silver"
-            />
+        <div>
+            {/* Last updated timestamp */}
+            {lastUpdated && (
+                <p className="text-right text-xs text-gray-500 mb-2">
+                    Last updated: {formatTimestamp(lastUpdated)}
+                </p>
+            )}
+
+            {/* Silver rate table */}
+            <div className="card bg-white overflow-hidden p-0">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-sm border-collapse">
+                        <thead>
+                            <tr className="bg-gradient-to-r from-slate-600 to-gray-500 text-white">
+                                <th className="px-4 py-3 text-left font-semibold text-sm whitespace-nowrap">
+                                    Silver Rate ({cityLabel})
+                                </th>
+                                {WEIGHT_COLUMNS.map((col) => (
+                                    <th key={col.label} className="px-4 py-3 text-right font-semibold text-sm whitespace-nowrap">
+                                        {col.label}
+                                    </th>
+                                ))}
+                                <th className="px-4 py-3 text-right font-semibold text-sm whitespace-nowrap">
+                                    Daily Change
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {/* 999 Fine Silver row */}
+                            <tr className="bg-white border-b border-gray-100 hover:bg-slate-50/50 transition-colors">
+                                <td className="px-4 py-4 font-bold text-gray-900 whitespace-nowrap">
+                                    <span className="inline-flex items-center gap-2">
+                                        <span className="w-2.5 h-2.5 rounded-full bg-slate-400 flex-shrink-0"></span>
+                                        999 Fine Silver
+                                    </span>
+                                    <span className="block text-xs text-gray-500 font-normal mt-0.5 ml-[18px]">
+                                        99.9% Pure
+                                    </span>
+                                </td>
+                                {WEIGHT_COLUMNS.map((col) => (
+                                    <td key={col.label} className="px-4 py-4 text-right font-semibold text-gray-900 whitespace-nowrap tabular-nums">
+                                        {formatINR(rateData.price * col.multiplier)}
+                                    </td>
+                                ))}
+                                <td className="px-4 py-4 text-right whitespace-nowrap">
+                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${isPositive ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                                        {isPositive ? (
+                                            <TrendingUp className="h-3 w-3" />
+                                        ) : (
+                                            <TrendingDown className="h-3 w-3" />
+                                        )}
+                                        {isPositive ? '+' : ''}{rateData.changePercent.toFixed(2)}%
+                                    </span>
+                                </td>
+                            </tr>
+                            {/* 925 Sterling Silver row */}
+                            <tr className="bg-gray-50/50 hover:bg-slate-50/50 transition-colors">
+                                <td className="px-4 py-4 font-bold text-gray-900 whitespace-nowrap">
+                                    <span className="inline-flex items-center gap-2">
+                                        <span className="w-2.5 h-2.5 rounded-full bg-gray-400 flex-shrink-0"></span>
+                                        925 Sterling Silver
+                                    </span>
+                                    <span className="block text-xs text-gray-500 font-normal mt-0.5 ml-[18px]">
+                                        92.5% Pure (Jewellery)
+                                    </span>
+                                </td>
+                                {WEIGHT_COLUMNS.map((col) => (
+                                    <td key={col.label} className="px-4 py-4 text-right font-semibold text-gray-900 whitespace-nowrap tabular-nums">
+                                        {formatINR(rateData.price * 0.925 * col.multiplier)}
+                                    </td>
+                                ))}
+                                <td className="px-4 py-4 text-right whitespace-nowrap">
+                                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold ${isPositive ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                                        {isPositive ? (
+                                            <TrendingUp className="h-3 w-3" />
+                                        ) : (
+                                            <TrendingDown className="h-3 w-3" />
+                                        )}
+                                        {isPositive ? '+' : ''}{rateData.changePercent.toFixed(2)}%
+                                    </span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Disclaimer */}
+            <p className="text-xs text-gray-400 mt-3 leading-relaxed">
+                * Rates shown are indicative and exclude GST (3%) and TCS (1% on purchases above ₹2 lakh).
+                Contact your local jeweller for final buyable rates.
+            </p>
         </div>
     );
 }
