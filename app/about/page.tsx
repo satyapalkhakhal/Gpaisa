@@ -175,6 +175,46 @@ export default function AboutPage() {
                     </div>
                 </div>
 
+                {/* Data Sources & Transparency */}
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
+                    <div className="flex items-center mb-6">
+                        <TrendingUp className="w-8 h-8 text-primary-600 mr-3" />
+                        <h2 className="text-3xl font-bold text-gray-900">Data Sources &amp; Transparency</h2>
+                    </div>
+                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
+                        gpaisa.in was established to provide transparent, real-time commodity prices to Indian retail investors. We believe every buyer — whether purchasing gold jewellery or making a financial investment — deserves access to accurate, up-to-date market data without paywalls or jargon.
+                    </p>
+                    <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                        Our commitment to data accuracy is backed by sourcing from India&apos;s most trusted market institutions:
+                    </p>
+                    <div className="grid md:grid-cols-2 gap-6">
+                        <div className="border-l-4 border-amber-500 pl-4">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Gold &amp; Silver Rates</h3>
+                            <p className="text-gray-700">
+                                Sourced from <strong>MCX (Multi Commodity Exchange)</strong> and <strong>IBJA (India Bullion and Jewellers Association)</strong> data feeds, updated every market hour on weekdays. International prices are benchmarked against <strong>LBMA (London Bullion Market Association)</strong>.
+                            </p>
+                        </div>
+                        <div className="border-l-4 border-blue-500 pl-4">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Market Indices</h3>
+                            <p className="text-gray-700">
+                                Sensex, Nifty 50, Nifty Bank, and currency rates are sourced from <strong>BSE</strong>, <strong>NSE</strong>, and public market data providers, refreshed every 60 seconds during trading hours.
+                            </p>
+                        </div>
+                        <div className="border-l-4 border-green-500 pl-4">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Agricultural Prices</h3>
+                            <p className="text-gray-700">
+                                Mandi prices are sourced from <strong>Agmarknet</strong> (Government of India) and verified against regional agricultural market committee data.
+                            </p>
+                        </div>
+                        <div className="border-l-4 border-purple-500 pl-4">
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Editorial Standards</h3>
+                            <p className="text-gray-700">
+                                All articles and guides are written by domain experts and reviewed for accuracy. We clearly distinguish between informational content and investment advice, and always recommend consulting a SEBI-registered advisor.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
                 {/* Contact CTA */}
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
                     <h2 className="text-2xl font-bold text-gray-900 mb-4">Get in Touch</h2>

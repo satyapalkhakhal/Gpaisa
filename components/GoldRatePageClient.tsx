@@ -318,6 +318,69 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
                 </div>
             </article>
 
+            {/* 📋 About Our Data */}
+            <aside className="card mb-12 bg-amber-50/50 border-amber-200">
+                <div className="flex items-start gap-3">
+                    <span className="text-xl mt-0.5">📋</span>
+                    <div>
+                        <h3 className="text-base font-semibold text-gray-900 mb-2">About Our Data</h3>
+                        <p className="text-sm text-gray-700 leading-relaxed">
+                            Gold rates on gpaisa.in are sourced from MCX (Multi Commodity Exchange) and IBJA (India Bullion and Jewellers Association) data feeds, updated every market hour on weekdays. Rates reflect the spot price and may vary from retail jeweller prices due to making charges and local taxes.
+                        </p>
+                    </div>
+                </div>
+            </aside>
+
+            {/* ❓ Frequently Asked Questions */}
+            <section className="card mb-12" id="faq" aria-labelledby="faq-heading">
+                <h2 id="faq-heading" className="text-2xl font-display font-bold text-gray-900 mb-6 flex items-center gap-2">
+                    ❓ Frequently Asked Questions
+                </h2>
+                <div className="space-y-4">
+                    {[
+                        {
+                            q: 'Why is gold rate different in Delhi vs Mumbai?',
+                            a: 'Gold prices vary by city due to local state taxes, transportation costs, and jeweller association rates. The base price (MCX) is the same nationally, but making charges and local levies differ.'
+                        },
+                        {
+                            q: 'What is 916 gold?',
+                            a: '916 gold means 91.6% purity — this is 22 Karat gold. The number 916 comes from 22/24 × 1000 = 916.6. It is the most common purity used in Indian jewellery.'
+                        },
+                        {
+                            q: 'How is GST charged on gold purchases?',
+                            a: 'GST on gold is 3% on the value of gold plus making charges. An additional 5% GST applies on making charges separately.'
+                        },
+                        {
+                            q: 'What is the best time to buy gold in India?',
+                            a: 'Historically, gold prices dip slightly after major festivals like Dhanteras and Akshaya Tritiya when demand falls. However, tracking global USD/gold trends matters more than seasonal patterns for investment buying.'
+                        },
+                        {
+                            q: 'What is the difference between 24K and 22K gold?',
+                            a: '24K gold is 99.9% pure and is used for coins and bars — not jewellery as it is too soft. 22K gold is 91.6% pure, alloyed with copper or silver for hardness, and is the standard for Indian jewellery.'
+                        },
+                        {
+                            q: 'Where do gold rates in India come from?',
+                            a: 'Indian gold rates are benchmarked to the London Bullion Market Association (LBMA) international price, converted to INR using the USD/INR rate, then adjusted for import duty (15%) and GST.'
+                        },
+                        {
+                            q: 'Is it better to buy physical gold, Gold ETF, or Sovereign Gold Bond?',
+                            a: 'For long-term investors, SGBs are best — they offer 2.5% annual interest plus gold price appreciation with no capital gains tax on maturity. Gold ETFs suit liquidity-focused investors. Physical gold is best for jewellery or gifting purposes.'
+                        },
+                    ].map((item, i) => (
+                        <details key={i} className="group bg-gray-50 rounded-xl border border-gray-100 overflow-hidden" open={i === 0}>
+                            <summary className="cursor-pointer p-4 sm:p-5 font-semibold text-gray-900 text-sm sm:text-base flex items-start gap-3 list-none [&::-webkit-details-marker]:hidden">
+                                <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-bold mt-0.5">Q</span>
+                                <span className="flex-1">{item.q}</span>
+                                <span className="flex-shrink-0 text-gray-400 group-open:rotate-180 transition-transform text-lg">▼</span>
+                            </summary>
+                            <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-0">
+                                <p className="text-gray-600 text-sm sm:text-base leading-relaxed pl-9">{item.a}</p>
+                            </div>
+                        </details>
+                    ))}
+                </div>
+            </section>
+
             {/* CTA */}
             <div className="text-center card bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200">
                 <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">

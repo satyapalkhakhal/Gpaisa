@@ -1,13 +1,11 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { marketIndices } from '@/lib/mockData';
 import { MarketIndex } from '@/types';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
 export default function MarketTicker() {
-    // Initialize with mock data for SSR match, then fetch live data on client
-    const [indices, setIndices] = useState<MarketIndex[]>(marketIndices);
+    const [indices, setIndices] = useState<MarketIndex[]>([]);
     const [isLive, setIsLive] = useState(false);
 
     useEffect(() => {
@@ -28,7 +26,7 @@ export default function MarketTicker() {
 
         fetchIndices();
 
-        // Refresh every minute
+        // Refresh every 60 seconds
         const interval = setInterval(fetchIndices, 60000);
 
         return () => {
@@ -36,6 +34,12 @@ export default function MarketTicker() {
             clearInterval(interval);
         };
     }, []);
+
+    // Don't render the ticker at all if we have no live data
+    // This prevents showing stale mock data which damages credibility
+    if (!isLive || indices.length === 0) {
+        return null;
+    }
 
     return (
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 text-white overflow-hidden border-b border-gray-700">
@@ -50,7 +54,7 @@ export default function MarketTicker() {
                                 {index.change >= 0 ? <TrendingUp className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
                                 {index.change >= 0 ? '+' : ''}{index.change.toFixed(2)} ({index.changePercent >= 0 ? '+' : ''}{index.changePercent.toFixed(2)}%)
                             </span>
-                            {isLive && index.lastUpdated && (
+                            {index.lastUpdated && (
                                 <span className="text-[10px] text-gray-500 hidden md:inline">
                                     • {new Date(index.lastUpdated).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
                                 </span>
@@ -70,7 +74,7 @@ export default function MarketTicker() {
                                 {index.change >= 0 ? <TrendingUp className="h-3 w-3 mr-1" /> : <TrendingDown className="h-3 w-3 mr-1" />}
                                 {index.change >= 0 ? '+' : ''}{index.change.toFixed(2)} ({index.changePercent >= 0 ? '+' : ''}{index.changePercent.toFixed(2)}%)
                             </span>
-                            {isLive && index.lastUpdated && (
+                            {index.lastUpdated && (
                                 <span className="text-[10px] text-gray-500 hidden md:inline">
                                     • {new Date(index.lastUpdated).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })}
                                 </span>

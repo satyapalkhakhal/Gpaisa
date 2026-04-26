@@ -1,22 +1,22 @@
 import { NextResponse } from 'next/server';
 import { fetchMarketIndices } from '@/lib/indicesApi';
-import { marketIndices as mockIndices } from '@/lib/mockData';
 
 export async function GET() {
     try {
         const liveData = await fetchMarketIndices();
 
-        // Fallback to mock data if live data is empty (e.g. scraping failed)
+        // Return empty array if live data is unavailable — the ticker will hide itself
         if (!liveData || liveData.length === 0) {
-            return NextResponse.json({ success: true, data: mockIndices });
+            return NextResponse.json({ success: true, data: [] });
         }
 
         return NextResponse.json({ success: true, data: liveData }, {
             headers: {
-                'Cache-Control': 'public, s-maxage=7200, stale-while-revalidate=86400'
+                'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=120'
             }
         });
     } catch (error) {
-        return NextResponse.json({ success: false, error: 'Failed to fetch indices' }, { status: 500 });
+        // Return empty data instead of stale mock data — ticker hides gracefully
+        return NextResponse.json({ success: true, data: [] });
     }
 }
