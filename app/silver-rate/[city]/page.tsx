@@ -9,6 +9,8 @@ import Link from 'next/link';
 import { MapPin, Coins, Calculator, TrendingUp, ShoppingBag, Landmark, BookOpen, HelpCircle, Calendar, Lightbulb, Store } from 'lucide-react';
 import { getCitySilverData } from '@/lib/citySilverData';
 import { getTodayIST } from '@/lib/dateUtils';
+import SilverPriceHistoryChart from '@/components/SilverPriceHistoryChart';
+import SilverNewsSection from '@/components/SilverNewsSection';
 
 export async function generateStaticParams() {
     const cities = await fetchSilverCities();
@@ -319,6 +321,9 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
                     <SilverHistoryTable symbol={symbol} />
                 </section>
 
+                {/* ── Historical Silver Price Chart ─────────────────── */}
+                <SilverPriceHistoryChart cityName={cityName} />
+
                 {/* ═══════════════════════════════════════════════════════════
                      UNIQUE CITY CONTENT — E-E-A-T SECTIONS
                      ═══════════════════════════════════════════════════════════ */}
@@ -492,26 +497,33 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
                     </section>
                 )}
 
+                {/* ── Silver News ───────────────────────────────────────── */}
+                <SilverNewsSection />
+
                 {/* ── Other Cities ───────────────────────────────────────── */}
-                <section className="mb-10" aria-labelledby="other-cities-heading">
-                    <h2 id="other-cities-heading" className="text-2xl font-display font-semibold text-gray-900 mb-6">
+                <section className="mb-10 card" aria-labelledby="other-cities-heading">
+                    <h2 id="other-cities-heading" className="text-xl font-display font-semibold text-gray-900 mb-4">
                         Silver Rates in Other Cities
                     </h2>
-                    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                        {cities.filter(c => c.slug !== params.city).map((city) => {
-                            const otherSilver = getCitySilverData(city.slug);
-                            return (
-                                <Link key={city.slug} href={`/silver-rate/${city.slug}`}
-                                    className="card hover:shadow-lg transition-shadow text-center group">
-                                    <MapPin className="h-6 w-6 text-gray-500 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                                    <p className="font-medium text-gray-900">{city.city}</p>
-                                    {otherSilver && (
-                                        <p className="text-xs text-gray-500 mt-1 line-clamp-1">{otherSilver.mainMarkets[0]}</p>
-                                    )}
-                                    <p className="text-xs text-gray-600 mt-1 font-medium">View Rates →</p>
-                                </Link>
-                            );
-                        })}
+                    <div className="overflow-x-auto">
+                        <table className="w-full text-sm text-left">
+                            <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
+                                <tr>
+                                    <th className="px-4 py-3">City</th>
+                                    <th className="px-4 py-3 text-right">View Rates</th>
+                                </tr>
+                            </thead>
+                            <tbody className="divide-y divide-gray-100">
+                                {cities.filter(c => c.slug !== params.city).slice(0, 10).map((city) => (
+                                    <tr key={city.slug} className="hover:bg-gray-50">
+                                        <td className="px-4 py-3 font-medium text-gray-900">{city.city}</td>
+                                        <td className="px-4 py-3 text-right">
+                                            <Link href={`/silver-rate/${city.slug}`} className="text-primary-600 hover:underline">View Rate →</Link>
+                                        </td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
                 </section>
 

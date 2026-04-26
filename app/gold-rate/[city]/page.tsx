@@ -282,6 +282,9 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                         <GoldHistoryTable city={cityName} carat="24k" />
                     </section>
 
+                    {/* ── Gold News ─────────────────────────────────────────── */}
+                    <GoldNewsSection />
+
                     {/* ── Gold Price Trend Chart ─────────────────────────────── */}
                     <section className="mb-12" aria-labelledby="chart-heading">
                         <DynamicGoldChart carat="24k" city={cityName} />
@@ -457,31 +460,32 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                         </div>
                     </section>
 
-                    {/* ── Other Cities ───────────────────────────────────────── */}
-                    <section className="mb-10" aria-labelledby="other-cities-heading">
-                        <h2 id="other-cities-heading" className="text-2xl font-display font-semibold text-gray-900 mb-6">
+                    {/* ── Other Cities ─────────────────────────────────────── */}
+                    <section className="mb-10 card" aria-labelledby="other-cities-heading">
+                        <h2 id="other-cities-heading" className="text-xl font-display font-semibold text-gray-900 mb-4">
                             Gold Rates in Other Cities
                         </h2>
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-                            {CITIES.filter(c => c.toLowerCase() !== citySlug).map((c) => {
-                                const otherCity = getCityGoldData(c.toLowerCase());
-                                return (
-                                    <Link key={c} href={`/gold-rate/${c.toLowerCase()}`}
-                                        className="card hover:shadow-lg transition-shadow text-center group">
-                                        <MapPin className="h-6 w-6 text-primary-600 mx-auto mb-2 group-hover:scale-110 transition-transform" />
-                                        <p className="font-medium text-gray-900">{c}</p>
-                                        {otherCity && (
-                                            <p className="text-xs text-gray-500 mt-1 line-clamp-1">{otherCity.mainMarkets[0]}</p>
-                                        )}
-                                        <p className="text-xs text-primary-600 mt-1 font-medium">View Rates →</p>
-                                    </Link>
-                                );
-                            })}
+                        <div className="overflow-x-auto">
+                            <table className="w-full text-sm text-left">
+                                <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
+                                    <tr>
+                                        <th className="px-4 py-3">City</th>
+                                        <th className="px-4 py-3 text-right">View Rates</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-100">
+                                    {CITIES.filter(c => c.toLowerCase() !== citySlug).map((c) => (
+                                        <tr key={c} className="hover:bg-gray-50">
+                                            <td className="px-4 py-3 font-medium text-gray-900">{c}</td>
+                                            <td className="px-4 py-3 text-right">
+                                                <Link href={`/gold-rate/${c.toLowerCase()}`} className="text-primary-600 hover:underline">View Rate →</Link>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
                     </section>
-
-                    {/* ── Gold News ─────────────────────────────────────────── */}
-                    <GoldNewsSection />
 
                     {/* ── Disclaimer ─────────────────────────────────────────── */}
                     <aside className="card bg-yellow-50 border-yellow-200 mb-8">

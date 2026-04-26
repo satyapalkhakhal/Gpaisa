@@ -2,6 +2,9 @@ import { Metadata } from 'next';
 import { fetchSilverCities } from '@/lib/angelOneApi';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
 import SilverHistoryTable from '@/components/SilverHistoryTable';
+import SilverPriceHistoryChart from '@/components/SilverPriceHistoryChart';
+import SilverNewsSection from '@/components/SilverNewsSection';
+import CitySilverRatesTable from '@/components/CitySilverRatesTable';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin, TrendingUp, Calculator, Globe, BarChart3, ArrowRight, Scale, Calendar } from 'lucide-react';
@@ -196,6 +199,12 @@ export default async function SilverRatePage() {
                     <SilverHistoryTable symbol="XAG" gram={10} />
                 </section>
 
+                {/* 🪙 Silver News */}
+                <SilverNewsSection />
+
+                {/* 📈 Historical Silver Prices — 45 Years of Data */}
+                <SilverPriceHistoryChart />
+
                 {/* 🌍 What Affects Silver Prices in India? */}
                 <section className="mb-16">
                     <div className="card bg-gradient-to-br from-gray-50 to-slate-100 border border-gray-200 rounded-2xl p-8 md:p-10">
@@ -310,39 +319,8 @@ export default async function SilverRatePage() {
                     </div>
                 </section>
 
-                {/* City List */}
-                <section className="mb-16">
-                    <div className="text-center mb-8">
-                        <h2 className="text-3xl font-display font-bold text-gray-900 mb-3">
-                            City-Wise Silver Rates
-                        </h2>
-                        <p className="text-gray-600">
-                            Select your city to view detailed silver rates
-                        </p>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {cities.map((city) => (
-                            <Link
-                                key={city.slug}
-                                href={`/silver-rate/${city.slug}`}
-                                className="card hover:shadow-xl transition-all duration-300 hover:scale-105 group"
-                            >
-                                <div className="flex items-center space-x-4">
-                                    <div className="bg-gray-100 p-3 rounded-full group-hover:bg-primary-600 transition-colors">
-                                        <MapPin className="h-6 w-6 text-gray-600 group-hover:text-white" />
-                                    </div>
-                                    <div className="flex-1">
-                                        <h3 className="text-lg font-semibold text-gray-900 group-hover:text-primary-600 transition-colors">
-                                            {city.city}
-                                        </h3>
-                                        <p className="text-sm text-gray-600">View live rates →</p>
-                                    </div>
-                                </div>
-                            </Link>
-                        ))}
-                    </div>
-                </section>
+                {/* City-Wise Silver Rates — Live Table */}
+                <CitySilverRatesTable />
 
                 {/* Features Section */}
                 <section className="mb-16">

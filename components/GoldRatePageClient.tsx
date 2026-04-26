@@ -77,6 +77,9 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
                 <GoldHistoryTable city="India" carat="24k" />
             </section>
 
+            {/* 🪙 Gold News */}
+            <GoldNewsSection />
+
             {/* 📈 Gold Price Trend Chart */}
             <section className="mb-16" aria-labelledby="gold-chart-heading">
                 <div className="flex items-center justify-center space-x-3 mb-6">
@@ -361,8 +364,6 @@ export default function GoldRatePageClient({ todayDate }: { todayDate: string })
                 </div>
             </section>
 
-            {/* 🪙 Gold News */}
-            <GoldNewsSection />
 
             {/* CTA */}
             <div className="text-center card bg-gradient-to-r from-primary-50 to-primary-100 border-primary-200">
