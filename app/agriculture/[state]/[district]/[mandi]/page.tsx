@@ -23,6 +23,10 @@ export async function generateMetadata({ params }: { params: Promise<{ state: st
         openGraph: {
             title: `${mandiName} Mandi Prices - ${districtName}, ${stateName}`,
             description: `Live agricultural commodity prices from ${mandiName} market`
+        },
+        robots: {
+            index: false,
+            follow: false
         }
     };
 }

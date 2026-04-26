@@ -68,12 +68,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.7,
         },
         {
-            url: `${baseUrl}/agriculture`,
-            lastModified: new Date(), // Agriculture updates daily
-            changeFrequency: 'daily',
-            priority: 0.7,
-        },
-        {
             url: `${baseUrl}/calculator/sip`,
             lastModified: new Date(),
             changeFrequency: 'daily',

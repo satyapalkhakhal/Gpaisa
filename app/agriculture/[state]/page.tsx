@@ -30,6 +30,10 @@ export async function generateMetadata({ params }: { params: Promise<{ state: st
             card: 'summary',
             title: `${stateName} Kisan Mandi Prices`,
             description: `Check rate of wheat today and all crop prices in ${stateName} kisan mandis.`
+        },
+        robots: {
+            index: false,
+            follow: false
         }
     };
 }

@@ -14,6 +14,10 @@ export const metadata: Metadata = {
     },
     alternates: {
         canonical: 'https://gpaisa.in/agriculture'
+    },
+    robots: {
+        index: false,
+        follow: false
     }
 };
 

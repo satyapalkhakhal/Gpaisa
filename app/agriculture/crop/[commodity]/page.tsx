@@ -26,6 +26,10 @@ export async function generateMetadata({ params }: { params: Promise<{ commodity
         openGraph: {
             title: `Rate of ${commodityName} Today - Kisan Mandi Prices India`,
             description: `Live rate of ${commodityName} today across Indian kisan mandis`
+        },
+        robots: {
+            index: false,
+            follow: false
         }
     };
 }
