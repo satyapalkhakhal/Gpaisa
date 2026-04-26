@@ -10,7 +10,7 @@ import { useLanguage } from '@/lib/i18n';
 
 const CITIES = ["Delhi", "Chennai", "Mumbai", "Pune", "Hyderabad", "Bangalore", "Coimbatore", "Kolkata", "Ahmedabad", "Kerala"];
 
-export default function GoldRatePageClient() {
+export default function GoldRatePageClient({ todayDate }: { todayDate: string }) {
     const { t } = useLanguage();
 
     return (
@@ -18,7 +18,7 @@ export default function GoldRatePageClient() {
             {/* Page Header */}
             <header className="mb-12 text-center">
                 <h1 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
-                    {t('gold', 'goldRateTodayIndia')}
+                    Gold Rate Today in India — {todayDate}
                 </h1>
                 <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                     {t('gold', 'goldRateSubtitle')}

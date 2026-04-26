@@ -5,55 +5,60 @@ import SilverHistoryTable from '@/components/SilverHistoryTable';
 import Link from 'next/link';
 import Image from 'next/image';
 import { MapPin, TrendingUp, Calculator, Globe, BarChart3, ArrowRight, Scale, Calendar } from 'lucide-react';
+import { getTodayIST } from '@/lib/dateUtils';
 
-export const metadata: Metadata = {
-    title: 'Silver Rate Today in India - Live Silver Price Per Gram/Kg | gpaisa.in',
-    description: 'Today\'s silver rate in India with live prices per gram and per kg. Check city-wise rates with historical trends, calculator, market analysis, and silver vs gold comparison.',
-    keywords: [
-        'silver rate today', 'silver price today', 'today silver rate', 'silver rate', 'silver price',
-        'silver rate today in india', 'india silver rate', 'silver rate per gram',
-        'silver rate per kg', 'silver price per kg today', 'silver rate city wise',
-        'silver rate delhi', 'silver rate mumbai', 'silver rate bangalore', 'silver rate chennai',
-        'silver rate hyderabad', 'silver rate kolkata', 'silver rate pune',
-        'live silver rate india', 'silver rate today live', 'silver price calculator',
-        'silver rate history', 'silver rate chart', 'silver rate comparison',
-        'silver vs gold', 'silver vs gold price today', 'silver investment india 2026',
-        'silver market trend', 'what affects silver prices', 'silver rate forecast',
-        'silver industrial demand', 'silver rate prediction'
-    ].join(', '),
-    openGraph: {
-        title: 'Silver Rate Today in India - Live Prices Per Gram/Kg',
-        description: 'Today\'s silver rate in India with live prices per gram and per kg. Check city-wise rates with historical trends, market analysis, and silver vs gold comparison.',
-        type: 'website',
-        url: 'https://gpaisa.in/silver-rate',
-        siteName: 'gpaisa.in',
-        locale: 'en_IN',
-        images: [
-            {
-                url: 'https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg',
-                width: 1200,
-                height: 630,
-                alt: 'Silver Rate Today in India - Live Silver Prices and Market Trends',
-            },
-        ],
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: 'Silver Rate Today in India - Live Prices & Market Trends',
-        description: 'Today\'s silver rate in India with live prices per gram and per kg. Market trends and silver vs gold comparison.',
-        images: ['https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg'],
-    },
-    alternates: {
-        canonical: 'https://gpaisa.in/silver-rate'
-    },
-    robots: {
-        index: true,
-        follow: true,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-        'max-video-preview': -1,
-    },
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const todayDate = getTodayIST();
+
+    return {
+        title: `Silver Rate Today in India — ${todayDate} | Live Price Per Gram/Kg | gpaisa.in`,
+        description: `Check today's silver rate in India on ${todayDate}. Live silver prices per gram and per kg. City-wise rates with historical trends, calculator, market analysis, and silver vs gold comparison.`,
+        keywords: [
+            'silver rate today', 'silver price today', 'today silver rate', 'silver rate', 'silver price',
+            'silver rate today in india', 'india silver rate', 'silver rate per gram',
+            'silver rate per kg', 'silver price per kg today', 'silver rate city wise',
+            'silver rate delhi', 'silver rate mumbai', 'silver rate bangalore', 'silver rate chennai',
+            'silver rate hyderabad', 'silver rate kolkata', 'silver rate pune',
+            'live silver rate india', 'silver rate today live', 'silver price calculator',
+            'silver rate history', 'silver rate chart', 'silver rate comparison',
+            'silver vs gold', 'silver vs gold price today', 'silver investment india 2026',
+            'silver market trend', 'what affects silver prices', 'silver rate forecast',
+            'silver industrial demand', 'silver rate prediction'
+        ].join(', '),
+        openGraph: {
+            title: `Silver Rate Today in India — ${todayDate} | Live Prices Per Gram/Kg`,
+            description: `Check today's silver rate in India on ${todayDate}. Live prices per gram and per kg. City-wise rates with historical trends, market analysis, and silver vs gold comparison.`,
+            type: 'website',
+            url: 'https://gpaisa.in/silver-rate',
+            siteName: 'gpaisa.in',
+            locale: 'en_IN',
+            images: [
+                {
+                    url: 'https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg',
+                    width: 1200,
+                    height: 630,
+                    alt: 'Silver Rate Today in India - Live Silver Prices and Market Trends',
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `Silver Rate Today in India — ${todayDate} | Live Prices`,
+            description: `Check today's silver rate in India on ${todayDate}. Live prices per gram and per kg. Market trends and silver vs gold comparison.`,
+            images: ['https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg'],
+        },
+        alternates: {
+            canonical: 'https://gpaisa.in/silver-rate'
+        },
+        robots: {
+            index: true,
+            follow: true,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+            'max-video-preview': -1,
+        },
+    };
+}
 
 export const revalidate = 86400; // Cache for 1 day (ISR)
 
@@ -133,7 +138,7 @@ export default async function SilverRatePage() {
                 {/* Header */}
                 <header className="mb-12 text-center">
                     <h1 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
-                        Silver Rate Today in India
+                        Silver Rate Today in India — {getTodayIST()}
                     </h1>
                     <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                         Check live silver rates across major Indian cities. Updated in real-time with prices per gram and per kg.

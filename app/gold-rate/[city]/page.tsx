@@ -9,6 +9,7 @@ import { IndianCity } from '@/types';
 import { Coins, MapPin, Calculator, TrendingUp, ShoppingBag, Landmark, BookOpen, HelpCircle, Calendar, Lightbulb, Store } from 'lucide-react';
 import Link from 'next/link';
 import { getCityGoldData, CITY_GOLD_DATA } from '@/lib/cityGoldData';
+import { getTodayIST } from '@/lib/dateUtils';
 
 const CITIES: IndianCity[] = [
     "Delhi", "Chennai", "Mumbai", "Pune", "Hyderabad",
@@ -33,6 +34,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
     }
 
     const { city: cityName, mainMarkets, tagline, state } = cityData;
+    const todayDate = getTodayIST();
 
     const keywords = [
         `gold rate today ${citySlug}`,
@@ -66,8 +68,8 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
     ];
 
     return {
-        title: `Gold Rate in ${cityName} Today (${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}) - 24K, 22K, 18K Live Prices | ${tagline} | gpaisa.in`,
-        description: `Check today's gold rate in ${cityName}, ${state}. Live 24K, 22K & 18K gold prices. ${tagline}. Gold markets at ${mainMarkets.join(' & ')}. Calculator, price history, buying tips & expert guide.`,
+        title: `Gold Rate in ${cityName} Today — ${todayDate} | 24K, 22K, 18K Live Prices | ${tagline} | gpaisa.in`,
+        description: `Check today's gold rate in ${cityName}, ${state} on ${todayDate}. Live 24K, 22K & 18K gold prices. ${tagline}. Gold markets at ${mainMarkets.join(' & ')}. Calculator, price history, buying tips & expert guide.`,
         keywords: keywords.join(', '),
         robots: {
             index: true,
@@ -210,7 +212,7 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                             <MapPin className="h-9 w-9 sm:h-10 sm:w-10 text-primary-600 flex-shrink-0 mt-1" />
                             <div>
                                 <h1 className="text-3xl sm:text-4xl font-display font-bold text-gray-900">
-                                    Gold Rate in {cityName} Today
+                                    Gold Rate in {cityName} Today — {getTodayIST()}
                                 </h1>
                                 <p className="text-sm sm:text-base text-primary-700 font-semibold mt-1">{tagline}</p>
                             </div>

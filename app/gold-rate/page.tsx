@@ -1,66 +1,73 @@
 import { Metadata } from 'next';
 import GoldRatePageClient from '@/components/GoldRatePageClient';
+import { getTodayIST } from '@/lib/dateUtils';
 
-export const metadata: Metadata = {
-    title: 'Gold Rate Today in India - City Wise 24K, 22K, 18K, 916 Prices | gpaisa.in',
-    description: 'Check today\'s gold rate in all major Indian cities. Live 24K, 22K, 18K and 916 gold prices updated daily with calculator, historical data, price trends, and gold vs silver comparison.',
-    keywords: [
-        'gold rate today', 'gold price today', 'today gold rate', 'gold rate', 'gold price',
-        'gold rate today in india', 'india gold rate', '24k gold rate today', '22k gold rate today',
-        '18k gold rate today', '916 gold rate today', '24 carat gold rate', '22 carat gold rate',
-        'gold rate delhi', 'gold rate mumbai', 'gold rate bangalore', 'gold rate chennai',
-        'gold rate hyderabad', 'gold rate kolkata', 'gold rate pune', 'gold rate ahmedabad',
-        'gold rate kerala', 'city wise gold rate', 'all india gold rate',
-        '1 gram gold rate', '10 gram gold price', '8 gram gold rate', 'gold rate per gram',
-        'live gold rate india', 'gold rate today live', 'gold price calculator',
-        'gold rate history', 'gold rate chart', 'gold rate comparison',
-        'today gold rate in india', 'gold price in india', 'indian gold rate', 'gold rate update',
-        'gold vs silver', 'gold vs silver price today', 'gold investment india 2026',
-        'gold market trend', 'what affects gold prices', 'gold rate forecast',
-        'gold rate prediction', 'gold price trend india'
-    ].join(', '),
-    openGraph: {
-        title: 'Gold Rate Today in India - City Wise 24K, 22K, 18K Prices',
-        description: 'Check today\'s gold rate in all major Indian cities. Live 24K, 22K and 18K gold prices with daily updates, market trends, and gold vs silver comparison.',
-        type: 'website',
-        url: 'https://gpaisa.in/gold-rate',
-        siteName: 'gpaisa.in',
-        locale: 'en_IN',
-        images: [
-            {
-                url: 'https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg',
-                width: 1200,
-                height: 630,
-                alt: 'Gold Rate Today in India - Live Gold Prices and Market Trends',
-            },
-        ],
-    },
-    twitter: {
-        card: 'summary_large_image',
-        title: 'Gold Rate Today in India - Live Prices & Market Trends',
-        description: 'Check today\'s gold rate in all major Indian cities. Live prices with daily updates, market analysis, and gold vs silver comparison.',
-        images: ['https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg'],
-    },
-    alternates: {
-        canonical: 'https://gpaisa.in/gold-rate'
-    },
-    robots: {
-        index: true,
-        follow: true,
-        'max-image-preview': 'large',
-        'max-snippet': -1,
-        'max-video-preview': -1,
-    },
-};
+export async function generateMetadata(): Promise<Metadata> {
+    const todayDate = getTodayIST();
+
+    return {
+        title: `Gold Rate Today in India — ${todayDate} | gpaisa.in`,
+        description: `Check today's gold rate in India on ${todayDate}. Live 24K, 22K, 18K and 916 gold prices updated daily with calculator, historical data, price trends, and gold vs silver comparison.`,
+        keywords: [
+            'gold rate today', 'gold price today', 'today gold rate', 'gold rate', 'gold price',
+            'gold rate today in india', 'india gold rate', '24k gold rate today', '22k gold rate today',
+            '18k gold rate today', '916 gold rate today', '24 carat gold rate', '22 carat gold rate',
+            'gold rate delhi', 'gold rate mumbai', 'gold rate bangalore', 'gold rate chennai',
+            'gold rate hyderabad', 'gold rate kolkata', 'gold rate pune', 'gold rate ahmedabad',
+            'gold rate kerala', 'city wise gold rate', 'all india gold rate',
+            '1 gram gold rate', '10 gram gold price', '8 gram gold rate', 'gold rate per gram',
+            'live gold rate india', 'gold rate today live', 'gold price calculator',
+            'gold rate history', 'gold rate chart', 'gold rate comparison',
+            'today gold rate in india', 'gold price in india', 'indian gold rate', 'gold rate update',
+            'gold vs silver', 'gold vs silver price today', 'gold investment india 2026',
+            'gold market trend', 'what affects gold prices', 'gold rate forecast',
+            'gold rate prediction', 'gold price trend india'
+        ].join(', '),
+        openGraph: {
+            title: `Gold Rate Today in India — ${todayDate} | 24K, 22K, 18K Prices`,
+            description: `Check today's gold rate in India on ${todayDate}. Live 24K, 22K and 18K gold prices with daily updates, market trends, and gold vs silver comparison.`,
+            type: 'website',
+            url: 'https://gpaisa.in/gold-rate',
+            siteName: 'gpaisa.in',
+            locale: 'en_IN',
+            images: [
+                {
+                    url: 'https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg',
+                    width: 1200,
+                    height: 630,
+                    alt: 'Gold Rate Today in India - Live Gold Prices and Market Trends',
+                },
+            ],
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: `Gold Rate Today in India — ${todayDate} | Live Prices`,
+            description: `Check today's gold rate in India on ${todayDate}. Live prices with daily updates, market analysis, and gold vs silver comparison.`,
+            images: ['https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg'],
+        },
+        alternates: {
+            canonical: 'https://gpaisa.in/gold-rate'
+        },
+        robots: {
+            index: true,
+            follow: true,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+            'max-video-preview': -1,
+        },
+    };
+}
 
 export const revalidate = 86400; // Cache for 1 day (ISR) - static content is cached
 
 export default function GoldRatePage() {
+    const todayDate = getTodayIST();
+
     const webPageSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebPage',
-        name: 'Gold Rate Today in India - City Wise Prices',
-        description: 'Check today\'s gold rate in all major Indian cities. Live 24K, 22K, 18K, and 916 gold prices updated in real-time with market trends and analysis.',
+        name: `Gold Rate Today in India — ${todayDate}`,
+        description: `Check today's gold rate in all major Indian cities on ${todayDate}. Live 24K, 22K, 18K, and 916 gold prices updated in real-time with market trends and analysis.`,
         url: 'https://gpaisa.in/gold-rate',
         inLanguage: 'en-IN',
         dateModified: new Date().toISOString().split('T')[0],
@@ -110,7 +117,7 @@ export default function GoldRatePage() {
     const articleSchema = {
         '@context': 'https://schema.org',
         '@type': 'Article',
-        headline: 'Gold Rate Today in India - Market Analysis & Investment Guide 2026',
+        headline: `Gold Rate Today in India — ${todayDate} | Market Analysis & Investment Guide 2026`,
         description: 'Comprehensive guide to gold prices in India covering market trends, what affects gold prices, city-wise rates, and investment comparison with silver.',
         image: 'https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg',
         author: { '@type': 'Organization', name: 'gpaisa.in', url: 'https://gpaisa.in' },
@@ -132,7 +139,7 @@ export default function GoldRatePage() {
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
-            <GoldRatePageClient />
+            <GoldRatePageClient todayDate={todayDate} />
         </div>
     );
 }

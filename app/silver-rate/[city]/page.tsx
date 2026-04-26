@@ -8,6 +8,7 @@ import LastUpdatedTime from '@/components/LastUpdatedTime';
 import Link from 'next/link';
 import { MapPin, Coins, Calculator, TrendingUp, ShoppingBag, Landmark, BookOpen, HelpCircle, Calendar, Lightbulb, Store } from 'lucide-react';
 import { getCitySilverData } from '@/lib/citySilverData';
+import { getTodayIST } from '@/lib/dateUtils';
 
 export async function generateStaticParams() {
     const cities = await fetchSilverCities();
@@ -33,6 +34,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
     const tagline = silverInfo?.tagline || '';
     const mainMarkets = silverInfo?.mainMarkets || [];
     const state = silverInfo?.state || 'India';
+    const todayDate = getTodayIST();
 
     const keywords = [
         `silver rate today ${citySlug}`,
@@ -63,8 +65,8 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
     ];
 
     return {
-        title: `Silver Rate in ${cityName} Today (${new Date().toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}) - Live Price Per Gram/Kg${tagline ? ` | ${tagline}` : ''} | gpaisa.in`,
-        description: `Check today's silver rate in ${cityName}, ${state}. Live 999 & 925 silver prices per gram and kg.${tagline ? ` ${tagline}.` : ''} ${mainMarkets.length ? `Silver markets at ${mainMarkets.join(' & ')}.` : ''} Calculator, history & buying guide.`,
+        title: `Silver Rate in ${cityName} Today — ${todayDate} | Live Price Per Gram/Kg${tagline ? ` | ${tagline}` : ''} | gpaisa.in`,
+        description: `Check today's silver rate in ${cityName}, ${state} on ${todayDate}. Live 999 & 925 silver prices per gram and kg.${tagline ? ` ${tagline}.` : ''} ${mainMarkets.length ? `Silver markets at ${mainMarkets.join(' & ')}.` : ''} Calculator, history & buying guide.`,
         keywords: keywords.join(', '),
         robots: {
             index: true,
@@ -243,7 +245,7 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
                         <MapPin className="h-9 w-9 sm:h-10 sm:w-10 text-gray-500 flex-shrink-0 mt-1" />
                         <div>
                             <h1 className="text-3xl sm:text-4xl font-display font-bold text-gray-900">
-                                Silver Rate in {cityName} Today
+                                Silver Rate in {cityName} Today — {getTodayIST()}
                             </h1>
                             {silverInfo && (
                                 <p className="text-sm sm:text-base text-gray-600 font-semibold mt-1">{silverInfo.tagline}</p>
