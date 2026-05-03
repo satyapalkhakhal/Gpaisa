@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import { TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, Clock, RefreshCw } from 'lucide-react';
 
 interface GoldHistoryItem {
@@ -235,19 +236,19 @@ export default function GoldDashboard() {
 
                     {/* CTA Buttons */}
                     <div className="flex flex-col sm:flex-row gap-3">
-                        <a
+                        <Link
                             href="/gold-rate"
                             className="flex-1 inline-flex items-center justify-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-500 hover:from-amber-600 hover:to-yellow-600 text-white font-bold text-sm px-5 py-3 rounded-xl shadow-lg shadow-amber-200/50 transition-all duration-300 hover:shadow-xl hover:shadow-amber-300/50"
                         >
                             Check Full Gold Rate
                             <ArrowUpRight className="w-4 h-4" />
-                        </a>
-                        <a
+                        </Link>
+                        <Link
                             href="/gold-vs-silver"
                             className="flex-1 inline-flex items-center justify-center gap-2 bg-white hover:bg-gray-50 text-gray-800 font-bold text-sm px-5 py-3 rounded-xl border border-gray-200 shadow-sm transition-all duration-300 hover:border-gray-300"
                         >
                             Compare Gold vs Silver
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </section>
