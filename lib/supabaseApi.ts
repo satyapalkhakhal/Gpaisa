@@ -86,7 +86,7 @@ async function supabaseFetch(endpoint: string, tag?: string): Promise<any[]> {
  */
 export async function fetchAllArticles(limit: number = 50): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&category=in.(business,finance)&order=published_at.desc&limit=${limit}`,
         'fetchAllArticles'
     );
     return articles.map(normalizeArticle);
@@ -153,7 +153,7 @@ export async function fetchArticlesByCategorySlug(
  */
 export async function fetchFeaturedArticles(limit: number = 5): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&is_featured=eq.true&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&category=in.(business,finance)&is_featured=eq.true&order=published_at.desc&limit=${limit}`,
         'fetchFeatured'
     );
     return articles.map(normalizeArticle);
@@ -164,7 +164,7 @@ export async function fetchFeaturedArticles(limit: number = 5): Promise<Article[
  */
 export async function fetchTrendingArticles(limit: number = 5): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&is_trending=eq.true&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&category=in.(business,finance)&is_trending=eq.true&order=published_at.desc&limit=${limit}`,
         'fetchTrending'
     );
     return articles.map(normalizeArticle);
