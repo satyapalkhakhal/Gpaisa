@@ -31,7 +31,7 @@ export default function Footer() {
                     <div>
                         <h4 className="text-sm font-semibold text-white mb-4">{t('footer', 'quickLinks')}</h4>
                         <ul className="space-y-2 text-sm">
-                            <li><Link href="/markets" className="hover:text-primary-400 transition-colors">{t('nav', 'markets')}</Link></li>
+                            {/* Markets temporarily hidden */}
                             <li><Link href="/commodities" className="hover:text-primary-400 transition-colors">{t('footer', 'goldCommodities')}</Link></li>
                             {/* Agriculture temporarily hidden */}
                             <li><Link href="/finance" className="hover:text-primary-400 transition-colors">{t('nav', 'personalFinance')}</Link></li>

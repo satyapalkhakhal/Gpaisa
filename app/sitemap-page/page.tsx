@@ -60,11 +60,7 @@ export default async function SitemapPage() {
                                     News
                                 </Link>
                             </li>
-                            <li>
-                                <Link href="/markets" className="text-primary-600 hover:text-primary-700 hover:underline">
-                                    Markets
-                                </Link>
-                            </li>
+                            {/* Markets temporarily hidden */}
                             <li>
                                 <Link href="/commodities" className="text-primary-600 hover:text-primary-700 hover:underline">
                                     Commodities

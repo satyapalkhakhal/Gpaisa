@@ -43,7 +43,7 @@ function formatDateShort(dateStr: string): string {
             return d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' });
         }
         return dateStr;
-    } catch {
+    } catch (_e) {
         return dateStr;
     }
 }

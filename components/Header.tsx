@@ -15,7 +15,8 @@ export default function Header() {
     const { t } = useLanguage();
 
     const navigation = [
-        { name: t('nav', 'markets'), href: '/markets' },
+        // Markets temporarily hidden
+        // { name: t('nav', 'markets'), href: '/markets' },
         { name: t('nav', 'goldRate'), href: '/gold-rate' },
         { name: t('nav', 'silverRate'), href: '/silver-rate' },
         { name: t('nav', 'commodities'), href: '/commodities' },

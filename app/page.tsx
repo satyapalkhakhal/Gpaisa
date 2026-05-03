@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { ChevronRight, Calculator, CreditCard, FileText, Shield, ArrowRight } from 'lucide-react';
+import { ChevronRight, Calculator, Shield, ArrowRight } from 'lucide-react';
 import GoldDashboard from '@/components/GoldDashboard';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
 import {
