@@ -75,11 +75,7 @@ export default async function SitemapPage() {
                                     Finance
                                 </Link>
                             </li>
-                            <li>
-                                <Link href="/agriculture" className="text-primary-600 hover:text-primary-700 hover:underline">
-                                    Agriculture
-                                </Link>
-                            </li>
+                            {/* Agriculture temporarily hidden */}
                             <li>
                                 <Link href="/about" className="text-primary-600 hover:text-primary-700 hover:underline">
                                     About Us

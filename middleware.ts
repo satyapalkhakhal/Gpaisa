@@ -4,6 +4,26 @@ import type { NextRequest } from 'next/server';
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
 
+    // ── Agriculture pages: return 410 Gone ──
+    // Temporarily hidden — will be re-enabled in the future.
+    // 410 tells search engines the content has been intentionally removed.
+    if (pathname.startsWith('/agriculture') || pathname.startsWith('/api/agriculture')) {
+        return new NextResponse(
+            JSON.stringify({
+                error: 'Gone',
+                message: 'This page is no longer available.',
+                statusCode: 410,
+            }),
+            {
+                status: 410,
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-Robots-Tag': 'noindex',
+                },
+            }
+        );
+    }
+
     // Check if it's an old article ID URL (numeric only)
     const articleIdMatch = pathname.match(/^\/articles\/(\d+)$/);
 
@@ -46,7 +66,12 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
 }
 
-// Only run middleware on article routes
+// Run middleware on article routes AND agriculture routes
 export const config = {
-    matcher: '/articles/:path*',
+    matcher: [
+        '/articles/:path*',
+        '/agriculture',
+        '/agriculture/:path*',
+        '/api/agriculture/:path*',
+    ],
 };

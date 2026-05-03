@@ -33,7 +33,7 @@ export default function Footer() {
                         <ul className="space-y-2 text-sm">
                             <li><Link href="/markets" className="hover:text-primary-400 transition-colors">{t('nav', 'markets')}</Link></li>
                             <li><Link href="/commodities" className="hover:text-primary-400 transition-colors">{t('footer', 'goldCommodities')}</Link></li>
-                            <li><Link href="/agriculture" className="hover:text-primary-400 transition-colors">{t('footer', 'agriculturePrices')}</Link></li>
+                            {/* Agriculture temporarily hidden */}
                             <li><Link href="/finance" className="hover:text-primary-400 transition-colors">{t('nav', 'personalFinance')}</Link></li>
                             <li><Link href="/news" className="hover:text-primary-400 transition-colors">{t('nav', 'news')}</Link></li>
                         </ul>

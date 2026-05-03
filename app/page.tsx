@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import { TrendingUp, ArrowRight, ChevronRight, Zap, Flame, Star, Clock, Sparkles } from 'lucide-react';
+import { TrendingUp, ArrowRight, ChevronRight, Zap, Flame, Star, Clock } from 'lucide-react';
 import DynamicGoldRates from '@/components/DynamicGoldRates';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
 import {
@@ -172,8 +172,7 @@ export default async function HomePage() {
         featuredArticles,
         trendingArticles,
         businessArticles,
-        technologyArticles,
-        travelArticles,
+        // Technology and Travel temporarily hidden
         goldNews,
         silverNews,
     ] = await Promise.all([
@@ -181,8 +180,8 @@ export default async function HomePage() {
         fetchFeaturedArticles(5),
         fetchTrendingArticles(8),
         fetchArticlesByCategory('BUSINESS', 6),
-        fetchArticlesByCategory('TECHNOLOGY', 6),
-        fetchArticlesByCategory('TRAVEL', 4),
+        // fetchArticlesByCategory('TECHNOLOGY', 6),
+        // fetchArticlesByCategory('TRAVEL', 4),
         fetchGoldNews(6),
         fetchSilverNews(6),
     ]);
@@ -264,22 +263,7 @@ export default async function HomePage() {
                             </div>
                         )}
 
-                        {/* ── TECHNOLOGY NEWS ── */}
-                        {technologyArticles.length > 0 && (
-                            <div className="mb-10">
-                                <SectionHeader
-                                    title="Technology"
-                                    icon={<Sparkles className="w-4 h-4 text-purple-500" />}
-                                    accentColor="from-purple-600 to-purple-700"
-                                    href="/category/technology"
-                                />
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                    {technologyArticles.slice(0, 4).map(article => (
-                                        <ArticleRowCard key={article.id} article={article} />
-                                    ))}
-                                </div>
-                            </div>
-                        )}
+                        {/* Technology and Travel sections temporarily hidden */}
 
                         {/* ── GOLD NEWS SECTION ── */}
                         {goldNews.length > 0 && (
@@ -344,22 +328,6 @@ export default async function HomePage() {
                                                 </div>
                                             </div>
                                         </Link>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
-
-                        {/* ── TRAVEL ── */}
-                        {travelArticles.length > 0 && (
-                            <div className="mb-10">
-                                <SectionHeader
-                                    title="Travel"
-                                    accentColor="from-emerald-500 to-green-600"
-                                    href="/category/travel"
-                                />
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                                    {travelArticles.map(article => (
-                                        <ArticleRowCard key={article.id} article={article} />
                                     ))}
                                 </div>
                             </div>
