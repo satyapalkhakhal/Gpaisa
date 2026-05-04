@@ -32,12 +32,13 @@ const formatTooltipValue = (value: number) =>
     maximumFractionDigits: 0,
   }).format(value);
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const CustomTooltip = ({ active, payload, label }: any) => {
+type TooltipPayloadItem = { dataKey: string; value: number };
+
+const CustomTooltip = ({ active, payload, label }: { active?: boolean; payload?: TooltipPayloadItem[]; label?: string }) => {
   if (!active || !payload?.length) return null;
 
-  const invested = payload.find((p: { dataKey: string }) => p.dataKey === 'invested')?.value ?? 0;
-  const totalValue = payload.find((p: { dataKey: string }) => p.dataKey === 'totalValue')?.value ?? 0;
+  const invested = payload.find((p) => p.dataKey === 'invested')?.value ?? 0;
+  const totalValue = payload.find((p) => p.dataKey === 'totalValue')?.value ?? 0;
   const returns = totalValue - invested;
 
   return (
