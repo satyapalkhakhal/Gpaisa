@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef } from 'react';
+import { useCallback, useId } from 'react';
 
 type Props = {
   label: string;
@@ -15,21 +15,30 @@ type Props = {
   formatDisplay?: (v: number) => string;
 };
 
-const colorMap = {
+const colorTokens = {
   blue: {
-    track: 'accent-blue-600',
-    badge: 'bg-blue-600 text-white',
-    ring: 'focus:ring-blue-500',
+    gradient: 'from-blue-500 to-blue-600',
+    badge: 'bg-blue-50 text-blue-700 ring-blue-200',
+    thumbBorder: '#2563EB',
+    trackActive: '#2563EB',
+    glow: 'shadow-blue-200',
+    labelDot: 'bg-blue-500',
   },
   emerald: {
-    track: 'accent-emerald-600',
-    badge: 'bg-emerald-600 text-white',
-    ring: 'focus:ring-emerald-500',
+    gradient: 'from-emerald-500 to-emerald-600',
+    badge: 'bg-emerald-50 text-emerald-700 ring-emerald-200',
+    thumbBorder: '#059669',
+    trackActive: '#059669',
+    glow: 'shadow-emerald-200',
+    labelDot: 'bg-emerald-500',
   },
   amber: {
-    track: 'accent-amber-500',
-    badge: 'bg-amber-500 text-white',
-    ring: 'focus:ring-amber-500',
+    gradient: 'from-amber-400 to-amber-500',
+    badge: 'bg-amber-50 text-amber-700 ring-amber-200',
+    thumbBorder: '#D97706',
+    trackActive: '#D97706',
+    glow: 'shadow-amber-200',
+    labelDot: 'bg-amber-500',
   },
 };
 
@@ -45,72 +54,76 @@ export default function SIPSlider({
   onChange,
   formatDisplay,
 }: Props) {
-  const inputRef = useRef<HTMLInputElement>(null);
-  const colors = colorMap[color];
+  const id = useId();
+  const tokens = colorTokens[color];
   const pct = ((value - min) / (max - min)) * 100;
-  const displayValue = formatDisplay ? formatDisplay(value) : `${prefix}${value.toLocaleString('en-IN')}${suffix}`;
+  const displayValue = formatDisplay
+    ? formatDisplay(value)
+    : `${prefix}${value.toLocaleString('en-IN')}${suffix}`;
 
-  const handleSliderChange = useCallback(
+  const handleChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       onChange(Number(e.target.value));
     },
     [onChange]
   );
 
-  const handleInputChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const raw = e.target.value.replace(/[^0-9.]/g, '');
-      const num = parseFloat(raw);
-      if (!isNaN(num)) {
-        onChange(Math.min(max, Math.max(min, num)));
-      }
-    },
-    [onChange, min, max]
-  );
-
   return (
-    <div className="space-y-2">
-      {/* Label + Value */}
-      <div className="flex items-center justify-between">
-        <label className="text-sm font-semibold text-gray-700">{label}</label>
-        <span className={`text-sm font-bold px-3 py-1 rounded-full ${colors.badge}`}>
+    <div className="group">
+      {/* Label + Value Badge */}
+      <div className="flex items-center justify-between mb-3">
+        <label
+          htmlFor={id}
+          className="flex items-center gap-2 text-sm font-semibold text-gray-700"
+        >
+          <span className={`w-1.5 h-1.5 rounded-full ${tokens.labelDot}`} />
+          {label}
+        </label>
+        <span
+          className={`text-sm font-bold px-3 py-1 rounded-full ring-1 transition-all duration-300 ${tokens.badge}`}
+        >
           {displayValue}
         </span>
       </div>
 
-      {/* Slider */}
-      <div className="relative pt-1">
+      {/* Slider Track */}
+      <div className="relative h-10 flex items-center">
+        <div className="absolute inset-x-0 h-[6px] bg-gray-100 rounded-full overflow-hidden">
+          <div
+            className={`h-full bg-gradient-to-r ${tokens.gradient} rounded-full transition-[width] duration-100 ease-out`}
+            style={{ width: `${pct}%` }}
+          />
+        </div>
         <input
-          ref={inputRef}
+          id={id}
           type="range"
           min={min}
           max={max}
           step={step}
           value={value}
-          onChange={handleSliderChange}
-          className={`w-full h-2 bg-gray-200 rounded-full appearance-none cursor-pointer ${colors.track} slider-thumb`}
-          style={{
-            background: `linear-gradient(to right, ${
-              color === 'blue' ? '#2563EB' : color === 'emerald' ? '#059669' : '#F59E0B'
-            } 0%, ${
-              color === 'blue' ? '#2563EB' : color === 'emerald' ? '#059669' : '#F59E0B'
-            } ${pct}%, #E5E7EB ${pct}%, #E5E7EB 100%)`,
-          }}
+          onChange={handleChange}
+          className="sip-slider absolute inset-x-0 w-full h-[6px] appearance-none bg-transparent cursor-pointer z-10"
+          style={
+            {
+              '--thumb-border': tokens.thumbBorder,
+            } as React.CSSProperties
+          }
         />
-        <div className="flex justify-between text-[10px] text-gray-400 mt-1 px-0.5">
-          <span>{prefix}{min.toLocaleString('en-IN')}{suffix}</span>
-          <span>{prefix}{max.toLocaleString('en-IN')}{suffix}</span>
-        </div>
       </div>
 
-      {/* Manual Input */}
-      <input
-        type="text"
-        value={value}
-        onChange={handleInputChange}
-        className={`w-full px-3 py-2 text-sm border border-gray-200 rounded-lg bg-gray-50 focus:bg-white focus:outline-none focus:ring-2 ${colors.ring} focus:border-transparent transition-all`}
-        inputMode="decimal"
-      />
+      {/* Min / Max labels */}
+      <div className="flex justify-between text-[10px] text-gray-400 mt-0.5 px-0.5 select-none">
+        <span>
+          {prefix}
+          {min.toLocaleString('en-IN')}
+          {suffix}
+        </span>
+        <span>
+          {prefix}
+          {max.toLocaleString('en-IN')}
+          {suffix}
+        </span>
+      </div>
     </div>
   );
 }
