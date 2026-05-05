@@ -378,10 +378,10 @@ export default async function HomePage() {
                         </div>
 
 
-                        {/* ── AD SPACE ── */}
+                        {/* ── AD SPACE ──
                         <div className="bg-gray-100 h-64 flex items-center justify-center border border-dashed border-gray-300 rounded-xl">
                             <span className="text-gray-400 text-sm font-medium">Ad Space</span>
-                        </div>
+                        </div> */}
 
                     </div>
                 </div>
