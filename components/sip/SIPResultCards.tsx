@@ -63,70 +63,67 @@ export default function SIPResultCards({
 
   return (
     <div className="space-y-4">
-      {/* Result Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      {/* Result Cards — stacked on mobile, 3-col on md+ */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {/* Invested */}
-        <div className="relative overflow-hidden bg-white rounded-2xl border border-gray-200/80 p-5 shadow-sm hover:shadow-lg transition-all duration-300 group">
+        <div className="relative overflow-hidden bg-white rounded-2xl border border-gray-200/80 p-4 md:p-5 shadow-sm">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600" />
-          <div className="absolute -top-8 -right-8 w-20 h-20 bg-blue-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="relative">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-9 h-9 rounded-xl bg-blue-50 flex items-center justify-center text-base shadow-sm">
-                💰
-              </span>
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+          <div className="flex items-center gap-3">
+            <span className="w-10 h-10 rounded-xl bg-blue-50 flex items-center justify-center text-lg flex-shrink-0">
+              💰
+            </span>
+            <div className="flex-1 min-w-0">
+              <span className="text-[13px] font-semibold text-gray-500 uppercase tracking-wider block">
                 Invested Amount
               </span>
+              <AnimatedNumber
+                value={totalInvestment}
+                className="block text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight mt-0.5"
+              />
             </div>
-            <AnimatedNumber
-              value={totalInvestment}
-              className="block text-2xl sm:text-[1.65rem] font-extrabold text-gray-900 tracking-tight"
-            />
           </div>
         </div>
 
         {/* Returns */}
-        <div className="relative overflow-hidden bg-white rounded-2xl border border-emerald-200/80 p-5 shadow-sm hover:shadow-lg transition-all duration-300 group">
+        <div className="relative overflow-hidden bg-white rounded-2xl border border-emerald-200/80 p-4 md:p-5 shadow-sm">
           <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-400 to-emerald-600" />
-          <div className="absolute -top-8 -right-8 w-20 h-20 bg-emerald-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="relative">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-9 h-9 rounded-xl bg-emerald-50 flex items-center justify-center text-base shadow-sm">
-                📈
-              </span>
-              <span className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+          <div className="flex items-center gap-3">
+            <span className="w-10 h-10 rounded-xl bg-emerald-50 flex items-center justify-center text-lg flex-shrink-0">
+              📈
+            </span>
+            <div className="flex-1 min-w-0">
+              <span className="text-[13px] font-semibold text-gray-500 uppercase tracking-wider block">
                 Est. Returns
               </span>
+              <AnimatedNumber
+                value={estimatedReturns}
+                className="block text-xl md:text-2xl font-extrabold text-emerald-600 tracking-tight mt-0.5"
+              />
             </div>
-            <AnimatedNumber
-              value={estimatedReturns}
-              className="block text-2xl sm:text-[1.65rem] font-extrabold text-emerald-600 tracking-tight"
-            />
           </div>
         </div>
 
         {/* Total */}
-        <div className="relative overflow-hidden bg-gradient-to-br from-primary-50/80 via-white to-emerald-50/80 rounded-2xl border-2 border-primary-300/60 p-5 shadow-md hover:shadow-xl transition-all duration-300 group">
+        <div className="relative overflow-hidden bg-gradient-to-br from-primary-50/80 via-white to-emerald-50/80 rounded-2xl border-2 border-primary-300/60 p-4 md:p-5 shadow-md">
           <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-primary-500 to-emerald-500" />
-          <div className="absolute -bottom-10 -right-10 w-28 h-28 bg-primary-100/30 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          <div className="relative">
-            <div className="flex items-center gap-2 mb-3">
-              <span className="w-9 h-9 rounded-xl bg-primary-100 flex items-center justify-center text-base shadow-sm">
-                🏆
-              </span>
+          <div className="flex items-center gap-3">
+            <span className="w-10 h-10 rounded-xl bg-primary-100 flex items-center justify-center text-lg flex-shrink-0">
+              🏆
+            </span>
+            <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold text-primary-700 uppercase tracking-wider">
+                <span className="text-[13px] font-semibold text-primary-700 uppercase tracking-wider">
                   Total Value
                 </span>
-                <span className="text-[10px] font-bold text-primary-600 bg-primary-100 px-1.5 py-0.5 rounded-md">
+                <span className="text-[11px] font-bold text-primary-600 bg-primary-100 px-1.5 py-0.5 rounded-md">
                   {multiplier}×
                 </span>
               </div>
+              <AnimatedNumber
+                value={totalValue}
+                className="block text-xl md:text-2xl font-extrabold text-gray-900 tracking-tight mt-0.5"
+              />
             </div>
-            <AnimatedNumber
-              value={totalValue}
-              className="block text-2xl sm:text-[1.65rem] font-extrabold text-gray-900 tracking-tight"
-            />
           </div>
         </div>
       </div>

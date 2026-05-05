@@ -54,36 +54,36 @@ export default function SIPBreakdownTable({
   return (
     <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
       {/* Header */}
-      <div className="px-5 sm:px-6 pt-5 pb-3 flex items-center justify-between">
+      <div className="px-4 md:px-6 pt-4 md:pt-5 pb-2 md:pb-3 flex items-center justify-between">
         <div>
-          <h3 className="text-base sm:text-lg font-bold text-gray-900">
+          <h3 className="text-base md:text-lg font-bold text-gray-900">
             Year-wise Breakdown
           </h3>
           <p className="text-xs text-gray-500 mt-0.5">
-            Detailed view of your investment growth each year
+            Investment growth each year
           </p>
         </div>
-        <span className="text-[10px] font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-md uppercase tracking-wider">
+        <span className="text-[11px] font-bold text-gray-500 bg-gray-100 px-2 py-1 rounded-md uppercase tracking-wider">
           {timePeriod} {timePeriod === 1 ? 'Year' : 'Years'}
         </span>
       </div>
 
-      {/* Table */}
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[480px] text-sm">
+      {/* Table — mobile scroll container */}
+      <div className="sip-scroll-container">
+        <table className="w-full min-w-[340px] text-sm">
           <thead>
             <tr className="bg-gray-50/80">
-              <th className="text-left py-3 px-4 sm:px-5 font-semibold text-gray-500 text-xs uppercase tracking-wider">
+              <th className="text-left py-2.5 px-3 md:px-5 font-semibold text-gray-500 text-xs uppercase tracking-wider">
                 Year
               </th>
-              <th className="text-right py-3 px-4 sm:px-5 font-semibold text-gray-500 text-xs uppercase tracking-wider">
-                Total Invested
+              <th className="text-right py-2.5 px-3 md:px-5 font-semibold text-gray-500 text-xs uppercase tracking-wider">
+                Invested
               </th>
-              <th className="text-right py-3 px-4 sm:px-5 font-semibold text-gray-500 text-xs uppercase tracking-wider">
-                Interest Earned
+              <th className="text-right py-2.5 px-3 md:px-5 font-semibold text-gray-500 text-xs uppercase tracking-wider">
+                Interest
               </th>
-              <th className="text-right py-3 px-4 sm:px-5 font-semibold text-gray-500 text-xs uppercase tracking-wider">
-                Total Value
+              <th className="text-right py-2.5 px-3 md:px-5 font-semibold text-gray-500 text-xs uppercase tracking-wider">
+                Total
               </th>
             </tr>
           </thead>
@@ -91,29 +91,26 @@ export default function SIPBreakdownTable({
             {visibleRows.map((row, idx) => (
               <tr
                 key={row.year}
-                className={`border-t border-gray-100 hover:bg-primary-50/30 transition-colors ${
+                className={`border-t border-gray-100 transition-colors ${
                   idx === visibleRows.length - 1 && !isExpanded && hasMore
                     ? 'opacity-60'
                     : ''
                 }`}
               >
-                <td className="py-3.5 px-4 sm:px-5">
-                  <span className="inline-flex items-center gap-2">
+                <td className="py-3 px-3 md:px-5">
+                  <span className="inline-flex items-center gap-1.5">
                     <span className="w-6 h-6 bg-gray-100 rounded-md flex items-center justify-center text-[11px] font-bold text-gray-600">
                       {row.year}
                     </span>
-                    <span className="text-xs text-gray-400 hidden sm:inline">
-                      Year
-                    </span>
                   </span>
                 </td>
-                <td className="py-3.5 px-4 sm:px-5 text-right text-gray-700 font-medium tabular-nums">
+                <td className="py-3 px-3 md:px-5 text-right text-gray-700 font-medium tabular-nums text-[13px] md:text-sm">
                   {fmt(row.invested)}
                 </td>
-                <td className="py-3.5 px-4 sm:px-5 text-right font-semibold text-emerald-600 tabular-nums">
+                <td className="py-3 px-3 md:px-5 text-right font-semibold text-emerald-600 tabular-nums text-[13px] md:text-sm">
                   {fmt(row.interest)}
                 </td>
-                <td className="py-3.5 px-4 sm:px-5 text-right font-bold text-gray-900 tabular-nums">
+                <td className="py-3 px-3 md:px-5 text-right font-bold text-gray-900 tabular-nums text-[13px] md:text-sm">
                   {fmt(row.totalValue)}
                 </td>
               </tr>
@@ -122,12 +119,12 @@ export default function SIPBreakdownTable({
         </table>
       </div>
 
-      {/* Show More / Less */}
+      {/* Show More / Less — 44px min touch target */}
       {hasMore && (
         <div className="border-t border-gray-100">
           <button
             onClick={() => setIsExpanded(!isExpanded)}
-            className="w-full py-3 text-sm font-semibold text-primary-600 hover:text-primary-700 hover:bg-primary-50/50 transition-colors flex items-center justify-center gap-1.5"
+            className="sip-touch-target w-full py-3.5 min-h-[44px] text-sm font-semibold text-primary-600 active:bg-primary-50/80 transition-colors flex items-center justify-center gap-1.5"
           >
             {isExpanded ? (
               <>
