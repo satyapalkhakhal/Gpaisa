@@ -25,7 +25,7 @@ export default function DisclaimerPage() {
                         <div>
                             <h1 className="text-4xl font-bold text-gray-900">Disclaimer</h1>
                             <p className="text-gray-600 mt-1">
-                                <strong>Last Updated:</strong> January 7, 2026
+                                <strong>Last Updated:</strong> May 10, 2026
                             </p>
                         </div>
                     </div>
