@@ -121,9 +121,24 @@ export default function AboutPage() {
                         <Users className="w-8 h-8 text-primary-600 mr-3" />
                         <h2 className="text-3xl font-bold text-gray-900">Our Team</h2>
                     </div>
-                    <p className="text-lg text-gray-700 leading-relaxed mb-4">
-                        gpaisa.in is powered by a dedicated team of financial analysts, market researchers, and content specialists with extensive experience in the Indian financial sector. Our team includes:
+                    <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                        gpaisa.in is powered by a dedicated team of financial analysts, market researchers, and content specialists focused on making financial information accessible and easy to understand for Indian users.
                     </p>
+
+                    {/* Founder / Author */}
+                    <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6">
+                        <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                            Satyapal Khakhal
+                        </h3>
+
+                        <p className="text-primary-600 font-semibold mb-3">
+                            Founder & Financial Content Author
+                        </p>
+
+                        <p className="text-gray-700 leading-relaxed">
+                            Satyapal Khakhal is the founder of gpaisa.in and writes about personal finance, gold prices, investment trends, credit cards, and financial tools for Indian readers. His focus is on simplifying complex financial topics into practical, easy-to-understand insights backed by real market data and research.
+                        </p>
+                    </div>
                     <ul className="space-y-3 text-gray-700">
                         <li className="flex items-start">
                             <span className="text-primary-600 mr-2">•</span>
@@ -221,8 +236,8 @@ export default function AboutPage() {
                     <p className="text-gray-700 mb-6">
                         Have questions or feedback? We&apos;d love to hear from you.
                     </p>
-                    <Link 
-                        href="/contact" 
+                    <Link
+                        href="/contact"
                         className="inline-block bg-primary-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-primary-700 transition"
                     >
                         Contact Us
