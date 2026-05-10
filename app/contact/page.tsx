@@ -40,8 +40,8 @@ export default function ContactPage() {
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">Email Us</h3>
                         <p className="text-gray-600 mb-3">Send us an email anytime</p>
-                        <a 
-                            href="mailto:contact@gpaisa.in" 
+                        <a
+                            href="mailto:contact@gpaisa.in"
                             className="text-primary-600 hover:text-primary-700 font-semibold"
                         >
                             contact@gpaisa.in
@@ -54,11 +54,11 @@ export default function ContactPage() {
                         </div>
                         <h3 className="text-xl font-bold text-gray-900 mb-2">Call Us</h3>
                         <p className="text-gray-600 mb-3">Mon-Fri, 9 AM - 6 PM IST</p>
-                        <a 
-                            href="tel:+911234567890" 
+                        <a
+                            href="tel:+911234567890"
                             className="text-primary-600 hover:text-primary-700 font-semibold"
                         >
-                            +91 123 456 7890
+                            +91 9833554532
                         </a>
                     </div>
 
