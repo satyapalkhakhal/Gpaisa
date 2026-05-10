@@ -18,24 +18,27 @@ type Props = {
 const colorTokens = {
   blue: {
     gradient: 'from-blue-500 to-blue-600',
-    valueBg: 'bg-blue-50',
-    valueText: 'text-blue-700',
-    valueRing: 'ring-blue-200/60',
-    thumbBorder: '#2563EB',
+    valueBg: 'bg-emerald-50/80',
+    valueText: 'text-emerald-600',
+    valueRing: 'ring-emerald-200/50',
+    thumbBorder: '#00d09c',
+    trackActive: '#00d09c',
   },
   emerald: {
     gradient: 'from-emerald-500 to-emerald-600',
-    valueBg: 'bg-emerald-50',
-    valueText: 'text-emerald-700',
-    valueRing: 'ring-emerald-200/60',
-    thumbBorder: '#059669',
+    valueBg: 'bg-emerald-50/80',
+    valueText: 'text-emerald-600',
+    valueRing: 'ring-emerald-200/50',
+    thumbBorder: '#00d09c',
+    trackActive: '#00d09c',
   },
   amber: {
-    gradient: 'from-amber-400 to-amber-500',
-    valueBg: 'bg-amber-50',
-    valueText: 'text-amber-700',
-    valueRing: 'ring-amber-200/60',
-    thumbBorder: '#D97706',
+    gradient: 'from-emerald-400 to-emerald-500',
+    valueBg: 'bg-emerald-50/80',
+    valueText: 'text-emerald-600',
+    valueRing: 'ring-emerald-200/50',
+    thumbBorder: '#00d09c',
+    trackActive: '#00d09c',
   },
 };
 
@@ -67,27 +70,27 @@ export default function SIPSlider({
 
   return (
     <div className="sip-touch-target">
-      {/* Label — own row on top */}
-      <label
-        htmlFor={id}
-        className="block text-[13px] font-semibold text-gray-500 mb-1.5"
-      >
-        {label}
-      </label>
-
-      {/* Value — prominent, displayed above slider */}
-      <div
-        className={`inline-block text-lg font-bold px-3 py-1.5 rounded-lg ring-1 mb-3 ${tokens.valueBg} ${tokens.valueText} ${tokens.valueRing}`}
-      >
-        {displayValue}
+      {/* Groww-style: Label left, Value right — same row */}
+      <div className="flex items-center justify-between mb-2">
+        <label
+          htmlFor={id}
+          className="text-sm text-gray-700"
+        >
+          {label}
+        </label>
+        <div
+          className={`text-base font-bold px-3 py-1 rounded-md ring-1 ${tokens.valueBg} ${tokens.valueText} ${tokens.valueRing}`}
+        >
+          {displayValue}
+        </div>
       </div>
 
-      {/* Slider Track — min 48px touch area */}
-      <div className="relative h-12 flex items-center">
-        <div className="absolute inset-x-0 h-2 bg-gray-100 rounded-full overflow-hidden">
+      {/* Slim slider track — Groww style */}
+      <div className="relative h-10 flex items-center">
+        <div className="absolute inset-x-0 h-[3px] bg-gray-200 rounded-full overflow-hidden">
           <div
-            className={`h-full bg-gradient-to-r ${tokens.gradient} rounded-full transition-[width] duration-100 ease-out`}
-            style={{ width: `${pct}%` }}
+            className="h-full rounded-full transition-[width] duration-100 ease-out"
+            style={{ width: `${pct}%`, backgroundColor: tokens.trackActive }}
           />
         </div>
         <input
@@ -98,7 +101,7 @@ export default function SIPSlider({
           step={step}
           value={value}
           onChange={handleChange}
-          className="sip-slider absolute inset-x-0 w-full h-2 appearance-none bg-transparent cursor-pointer z-10"
+          className="sip-slider absolute inset-x-0 w-full h-[3px] appearance-none bg-transparent cursor-pointer z-10"
           style={
             {
               '--thumb-border': tokens.thumbBorder,
@@ -108,7 +111,7 @@ export default function SIPSlider({
       </div>
 
       {/* Min / Max labels */}
-      <div className="flex justify-between text-xs text-gray-400 mt-0.5 px-0.5 select-none">
+      <div className="flex justify-between text-[11px] text-gray-400 mt-0 px-0.5 select-none">
         <span>
           {prefix}
           {min.toLocaleString('en-IN')}

@@ -12,7 +12,7 @@ import SIPEducationalContent from '@/components/sip/SIPEducationalContent';
 const SIPChart = dynamic(() => import('@/components/sip/SIPChart'), {
   ssr: false,
   loading: () => (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 sip-chart-container flex items-center justify-center">
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sip-chart-container flex items-center justify-center">
       <div className="flex flex-col items-center gap-3">
         <div className="w-10 h-10 border-3 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
         <div className="text-gray-400 text-sm">Loading chart...</div>
@@ -85,10 +85,10 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
     }
   }, [monthlyInvestment, expectedReturn, timePeriod, stepUpPercentage, calculatorType, lumpSumAmount]);
 
-  const typeButtons: { key: typeof calculatorType; label: string; icon: string; desc: string }[] = [
-    { key: 'regular', label: 'Regular SIP', icon: '📊', desc: 'Fixed monthly' },
-    { key: 'stepup', label: 'Step-Up SIP', icon: '🚀', desc: 'Growing yearly' },
-    { key: 'lumpsum', label: 'Lump Sum', icon: '💰', desc: 'One-time invest' },
+  const typeButtons: { key: typeof calculatorType; label: string }[] = [
+    { key: 'regular', label: 'SIP' },
+    { key: 'stepup', label: 'Step-Up SIP' },
+    { key: 'lumpsum', label: 'Lumpsum' },
   ];
 
   const insights = [
@@ -110,87 +110,67 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-white">
 
-      {/* Breadcrumb */}
-      <div className="bg-white/80 backdrop-blur-sm border-b border-gray-100">
-        <div className="max-w-6xl mx-auto px-4 py-2.5 md:py-3">
-          <nav className="flex text-sm" aria-label="Breadcrumb">
-            <ol className="inline-flex items-center space-x-1.5 text-xs md:text-sm">
+      {/* Breadcrumb — Groww style: subtle, small */}
+      <div className="border-b border-gray-100">
+        <div className="max-w-6xl mx-auto px-4 py-2">
+          <nav className="flex text-xs" aria-label="Breadcrumb">
+            <ol className="inline-flex items-center space-x-1 text-xs">
               <li><Link href="/" className="text-gray-400 active:text-primary-600 transition-colors">Home</Link></li>
               <li className="flex items-center">
-                <svg className="w-3.5 h-3.5 text-gray-300 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                <svg className="w-3 h-3 text-gray-300 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
                 <Link href="/calculator" className="text-gray-400 active:text-primary-600 transition-colors">Calculator</Link>
               </li>
               <li className="flex items-center">
-                <svg className="w-3.5 h-3.5 text-gray-300 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
-                <span className="text-gray-900 font-semibold">SIP Calculator</span>
+                <svg className="w-3 h-3 text-gray-300 mx-1" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+                <span className="text-gray-700 font-medium">SIP Calculator</span>
               </li>
             </ol>
           </nav>
         </div>
       </div>
 
-      {/* ===== SECTION 1: Title / Hero ===== */}
-      <div className="max-w-6xl mx-auto px-4 pt-5 md:pt-8 pb-1">
-        <div className="flex items-start gap-3 mb-2">
-          <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-primary-500 to-emerald-500 flex items-center justify-center text-white text-lg md:text-xl shadow-lg shadow-primary-200 flex-shrink-0">
-            📊
-          </div>
-          <div>
-            <h1 className="text-xl md:text-2xl lg:text-4xl font-bold text-gray-900 leading-tight">
-              {bankName ? `${bankName} SIP Calculator` : 'SIP Calculator India (2026)'}
-            </h1>
-            <p className="text-sm md:text-base text-gray-500 mt-1 max-w-2xl">
-              Plan your systematic investments and visualise wealth growth with the power of compounding.
-            </p>
-          </div>
-        </div>
-        {/* Live example pill */}
-        <div className="mt-3 inline-flex items-center gap-2 bg-emerald-50 text-emerald-700 text-xs md:text-sm font-semibold px-3 md:px-4 py-1.5 md:py-2 rounded-full ring-1 ring-emerald-200">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500" />
-          </span>
-          ₹10,000/month → ₹23.2 lakh in 10 years (12% return)
-        </div>
+      {/* ===== SECTION 1: Title — Groww style: clean, left-aligned ===== */}
+      <div className="max-w-6xl mx-auto px-4 pt-5 md:pt-8 pb-2">
+        <h1 className="text-lg md:text-2xl lg:text-3xl font-bold text-gray-900">
+          {bankName ? `${bankName} SIP Calculator` : 'SIP Calculator'}
+        </h1>
+        <p className="text-xs md:text-sm text-gray-500 mt-1 max-w-2xl">
+          Plan your systematic investments and visualise wealth growth with the power of compounding.
+        </p>
       </div>
 
       {/* ===== MAIN CALCULATOR AREA ===== */}
-      <div className="max-w-6xl mx-auto px-4 py-5 md:py-6">
+      <div className="max-w-6xl mx-auto px-4 py-4 md:py-6">
 
         {/* Desktop: 2-col split | Mobile: single column stack */}
         <div className="lg:grid lg:grid-cols-5 lg:gap-6">
 
-          {/* --- LEFT COLUMN: Inputs (desktop only sticks) --- */}
-          <div className="lg:col-span-2 mb-5 lg:mb-0">
-            <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100 lg:sticky lg:top-4">
-              <h2 className="text-base md:text-lg font-bold text-gray-900 mb-4 md:mb-5">
-                Calculate Your SIP Returns
-              </h2>
+          {/* --- LEFT COLUMN: Inputs --- */}
+          <div className="lg:col-span-2 mb-4 lg:mb-0">
+            <div className="bg-white rounded-xl shadow-sm p-4 md:p-6 border border-gray-100 lg:sticky lg:top-4">
 
-              {/* ===== SECTION: Calculator Type Selector ===== */}
+              {/* ===== Calculator Type Tabs — Groww style: underline tabs ===== */}
               <div className="mb-5 md:mb-6">
-                <div className="grid grid-cols-3 gap-1.5 bg-gray-50 p-1.5 rounded-xl border border-gray-100">
+                <div className="flex border-b border-gray-200">
                   {typeButtons.map((t) => (
                     <button
                       key={t.key}
                       onClick={() => setCalculatorType(t.key)}
-                      className={`sip-touch-target relative px-2 py-3 min-h-[56px] rounded-lg text-center transition-all duration-200 ${
+                      className={`sip-touch-target relative px-4 py-2.5 text-sm font-medium transition-colors duration-200 ${
                         calculatorType === t.key
-                          ? 'bg-white text-gray-900 shadow-md ring-1 ring-gray-200/60'
-                          : 'text-gray-500 active:bg-gray-100/80'
+                          ? 'text-primary-600 border-b-2 border-primary-600'
+                          : 'text-gray-500 hover:text-gray-700'
                       }`}
                     >
-                      <span className="block text-lg mb-0.5">{t.icon}</span>
-                      <span className="block text-[11px] font-bold leading-tight">{t.label}</span>
-                      <span className="block text-[9px] text-gray-400 mt-0.5 leading-tight">{t.desc}</span>
+                      {t.label}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* ===== SECTION 2: Sliders ===== */}
+              {/* ===== Sliders — Groww style spacing ===== */}
               <div className="space-y-5 md:space-y-6">
                 {calculatorType === 'lumpsum' ? (
                   <SIPSlider
@@ -206,7 +186,7 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
                   />
                 ) : (
                   <SIPSlider
-                    label="Monthly Investment"
+                    label="Monthly investment"
                     value={monthlyInvestment}
                     min={500}
                     max={100000}
@@ -214,12 +194,12 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
                     prefix="₹"
                     color="blue"
                     onChange={setMonthlyInvestment}
-                    formatDisplay={(v) => `${formatCurrency(v)}/mo`}
+                    formatDisplay={(v) => formatCurrency(v)}
                   />
                 )}
 
                 <SIPSlider
-                  label="Expected Return (% p.a.)"
+                  label="Expected return rate (p.a)"
                   value={expectedReturn}
                   min={1}
                   max={20}
@@ -227,24 +207,24 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
                   suffix="%"
                   color="emerald"
                   onChange={setExpectedReturn}
-                  formatDisplay={(v) => `${v}% p.a.`}
+                  formatDisplay={(v) => `${v}%`}
                 />
 
                 <SIPSlider
-                  label="Investment Duration"
+                  label="Time period"
                   value={timePeriod}
                   min={1}
                   max={30}
                   step={1}
-                  suffix=" yrs"
+                  suffix="Yr"
                   color="amber"
                   onChange={setTimePeriod}
-                  formatDisplay={(v) => `${v} year${v > 1 ? 's' : ''}`}
+                  formatDisplay={(v) => `${v}Yr`}
                 />
 
                 {calculatorType === 'stepup' && (
                   <SIPSlider
-                    label="Annual Step-Up (%)"
+                    label="Annual step-up"
                     value={stepUpPercentage}
                     min={0}
                     max={20}
@@ -252,7 +232,7 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
                     suffix="%"
                     color="emerald"
                     onChange={setStepUpPercentage}
-                    formatDisplay={(v) => `${v}% yearly`}
+                    formatDisplay={(v) => `${v}%`}
                   />
                 )}
               </div>
@@ -274,17 +254,17 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
             </div>
           </div>
 
-          {/* --- RIGHT COLUMN: Results, Chart, Table (full-width on mobile) --- */}
-          <div className="lg:col-span-3 space-y-4 md:space-y-6">
+          {/* --- RIGHT COLUMN: Results, Chart, Table --- */}
+          <div className="lg:col-span-3 space-y-4 md:space-y-5">
 
-            {/* ===== SECTION 3: Result Cards ===== */}
+            {/* ===== Result Cards — Groww style ===== */}
             <SIPResultCards
               totalInvestment={totalInvestment}
               estimatedReturns={estimatedReturns}
               totalValue={totalValue}
             />
 
-            {/* ===== SECTION 4: Chart ===== */}
+            {/* ===== Chart ===== */}
             {calculatorType !== 'lumpsum' && (
               <SIPChart
                 monthlyInvestment={monthlyInvestment}
@@ -293,7 +273,7 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
               />
             )}
 
-            {/* ===== SECTION 5: Breakdown Table ===== */}
+            {/* ===== Breakdown Table ===== */}
             {calculatorType !== 'lumpsum' && (
               <SIPBreakdownTable
                 monthlyInvestment={monthlyInvestment}
@@ -302,8 +282,8 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
               />
             )}
 
-            {/* ===== SECTION 6: Insights (mobile only — shown below results) ===== */}
-            <div className="lg:hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+            {/* ===== Insights (mobile only) ===== */}
+            <div className="lg:hidden bg-white rounded-xl shadow-sm border border-gray-100 p-4">
               <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.12em] mb-3">
                 💡 Quick Insights
               </h4>
@@ -318,53 +298,38 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
             </div>
 
             {/* Formula Section */}
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
               <div className="px-4 md:px-6 pt-4 md:pt-5 pb-2 md:pb-3">
-                <h3 className="text-base md:text-lg font-bold text-gray-900">SIP Formula</h3>
+                <h3 className="text-sm md:text-base font-bold text-gray-900">SIP Formula</h3>
                 <p className="text-xs text-gray-500 mt-0.5">The math behind your returns</p>
               </div>
               <div className="px-4 md:px-6 pb-4 md:pb-5">
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                  <code className="text-base md:text-lg text-gray-800 font-mono font-semibold">
+                <div className="bg-gray-50 rounded-lg p-3.5 border border-gray-100">
+                  <code className="text-sm md:text-base text-gray-800 font-mono font-semibold">
                     M = P × [(1 + i)<sup>n</sup> – 1] / i × (1 + i)
                   </code>
                 </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 md:gap-3 mt-4">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-2 md:gap-3 mt-3">
                   {[
                     { var: 'M', desc: 'Maturity amount', color: 'bg-primary-50 text-primary-700 border-primary-200' },
                     { var: 'P', desc: 'Monthly SIP', color: 'bg-blue-50 text-blue-700 border-blue-200' },
                     { var: 'i', desc: 'Monthly return', color: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
                     { var: 'n', desc: 'Total months', color: 'bg-amber-50 text-amber-700 border-amber-200' },
                   ].map((item) => (
-                    <div key={item.var} className={`rounded-lg border p-2.5 md:p-3 ${item.color}`}>
-                      <div className="text-lg font-bold font-mono">{item.var}</div>
-                      <div className="text-[11px] opacity-80 mt-0.5">{item.desc}</div>
+                    <div key={item.var} className={`rounded-lg border p-2 md:p-3 ${item.color}`}>
+                      <div className="text-base font-bold font-mono">{item.var}</div>
+                      <div className="text-[10px] opacity-80 mt-0.5">{item.desc}</div>
                     </div>
                   ))}
                 </div>
               </div>
             </div>
 
-            {/* CTA Buttons */}
-            <div className="bg-gradient-to-br from-primary-50 via-white to-emerald-50 rounded-2xl p-4 md:p-6 border border-primary-200/60 shadow-sm">
-              <div className="flex items-center gap-3 mb-3">
-                <span className="text-2xl">💡</span>
-                <div>
-                  <h3 className="text-base font-bold text-gray-900">Ready to Start Your SIP?</h3>
-                  <p className="text-sm text-gray-600">
-                    Grow your wealth to <strong className="text-primary-700">{formatCurrency(totalValue)}</strong> with trusted platforms.
-                  </p>
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 mt-4">
-                <button className="sip-touch-target flex-1 bg-primary-600 text-white px-5 py-3.5 min-h-[48px] rounded-xl font-semibold text-sm active:bg-primary-700 transition-all shadow-md active:scale-[0.98] flex items-center justify-center gap-2">
-                  Explore Mutual Funds
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
-                </button>
-                <button className="sip-touch-target flex-1 bg-white text-primary-600 px-5 py-3.5 min-h-[48px] rounded-xl font-semibold text-sm border-2 border-primary-200 active:bg-primary-50 active:border-primary-300 transition-all active:scale-[0.98]">
-                  Start SIP Investment
-                </button>
-              </div>
+            {/* CTA — Groww style: single prominent green button */}
+            <div className="px-1">
+              <button className="sip-touch-target w-full bg-primary-600 text-white px-5 py-3.5 min-h-[48px] rounded-lg font-semibold text-sm active:bg-primary-700 transition-all shadow-sm active:scale-[0.98] flex items-center justify-center gap-2 uppercase tracking-wide">
+                Invest in Mutual Funds
+              </button>
             </div>
           </div>
         </div>

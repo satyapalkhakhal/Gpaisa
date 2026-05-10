@@ -257,55 +257,55 @@
     }
   }
 
-  /* ===== SIP Calculator — Mobile-First Styles ===== */
+  /* ===== SIP Calculator — Groww-style Mobile-First Styles ===== */
 
-  /* Slider Thumb — WebKit (mobile-first: 28px) */
+  /* Slider Thumb — WebKit (mobile-first: 22px, Groww green) */
   .sip-slider::-webkit-slider-thumb {
     -webkit-appearance: none;
     appearance: none;
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: white;
-    border: 3px solid var(--thumb-border, #2563EB);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 0 0 4px rgba(37, 99, 235, 0.08);
+    border: 3px solid var(--thumb-border, #00d09c);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 0 0 3px rgba(0, 208, 156, 0.08);
     cursor: pointer;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
     -webkit-tap-highlight-color: transparent;
   }
 
   .sip-slider::-webkit-slider-runnable-track {
-    height: 8px;
-    border-radius: 4px;
+    height: 3px;
+    border-radius: 2px;
     background: transparent;
   }
 
-  /* Slider Thumb — Firefox (mobile-first: 28px) */
+  /* Slider Thumb — Firefox (mobile-first: 22px) */
   .sip-slider::-moz-range-thumb {
-    width: 28px;
-    height: 28px;
+    width: 22px;
+    height: 22px;
     border-radius: 50%;
     background: white;
-    border: 3px solid var(--thumb-border, #2563EB);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15), 0 0 0 4px rgba(37, 99, 235, 0.08);
+    border: 3px solid var(--thumb-border, #00d09c);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.12), 0 0 0 3px rgba(0, 208, 156, 0.08);
     cursor: pointer;
   }
 
   .sip-slider::-moz-range-track {
-    height: 8px;
-    border-radius: 4px;
+    height: 3px;
+    border-radius: 2px;
     background: transparent;
   }
 
-  /* Desktop: slightly smaller thumb, enable hover effects */
+  /* Desktop: slightly smaller thumb */
   @media (min-width: 768px) {
     .sip-slider::-webkit-slider-thumb {
-      width: 22px;
-      height: 22px;
+      width: 18px;
+      height: 18px;
     }
     .sip-slider::-moz-range-thumb {
-      width: 22px;
-      height: 22px;
+      width: 18px;
+      height: 18px;
     }
   }
 
@@ -313,7 +313,7 @@
   @media (hover: hover) {
     .sip-slider::-webkit-slider-thumb:hover {
       transform: scale(1.15);
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18), 0 0 0 6px rgba(37, 99, 235, 0.12);
+      box-shadow: 0 1px 6px rgba(0, 0, 0, 0.15), 0 0 0 5px rgba(0, 208, 156, 0.12);
     }
     .sip-slider::-webkit-slider-thumb:active {
       transform: scale(1.05);
@@ -325,7 +325,7 @@
     outline: none;
   }
   .sip-slider:focus::-webkit-slider-thumb {
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15), 0 0 0 6px rgba(37, 99, 235, 0.15);
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 0 0 5px rgba(0, 208, 156, 0.15);
   }
 
   /* Touch-friendly: remove tap highlight across all SIP interactive elements */
