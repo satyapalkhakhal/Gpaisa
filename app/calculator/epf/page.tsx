@@ -25,12 +25,12 @@ export const metadata: Metadata = {
         title: 'EPF Calculator - Calculate Employees Provident Fund Returns | Gpaisa',
         description: 'Plan your retirement with our EPF calculator. Calculate maturity amount, pension, and visualize your EPF growth.',
         type: 'website',
-        url: 'https://gpaisa.com/calculator/epf',
+        url: 'https://gpaisa.in/calculator/epf',
         siteName: 'Gpaisa',
     },
 
     alternates: {
-        canonical: 'https://gpaisa.com/calculator/epf',
+        canonical: 'https://gpaisa.in/calculator/epf',
     },
 
     robots: {
@@ -45,32 +45,32 @@ export default function EPFCalculatorPage() {
         '@graph': [
             {
                 '@type': 'WebPage',
-                '@id': 'https://gpaisa.com/calculator/epf#webpage',
-                url: 'https://gpaisa.com/calculator/epf',
+                '@id': 'https://gpaisa.in/calculator/epf#webpage',
+                url: 'https://gpaisa.in/calculator/epf',
                 name: 'EPF Calculator - Calculate Employees Provident Fund Returns Online',
                 description: 'Free online EPF calculator to calculate Employees Provident Fund maturity amount and pension.',
             },
             {
                 '@type': 'BreadcrumbList',
-                '@id': 'https://gpaisa.com/calculator/epf#breadcrumb',
+                '@id': 'https://gpaisa.in/calculator/epf#breadcrumb',
                 itemListElement: [
                     {
                         '@type': 'ListItem',
                         position: 1,
                         name: 'Home',
-                        item: 'https://gpaisa.com',
+                        item: 'https://gpaisa.in',
                     },
                     {
                         '@type': 'ListItem',
                         position: 2,
                         name: 'Calculator',
-                        item: 'https://gpaisa.com/calculator',
+                        item: 'https://gpaisa.in/calculator',
                     },
                     {
                         '@type': 'ListItem',
                         position: 3,
                         name: 'EPF Calculator',
-                        item: 'https://gpaisa.com/calculator/epf',
+                        item: 'https://gpaisa.in/calculator/epf',
                     },
                 ],
             },

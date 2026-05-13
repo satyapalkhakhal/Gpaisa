@@ -51,7 +51,7 @@ export const metadata: Metadata = {
         title: 'SIP Calculator - Calculate Your Mutual Fund Returns | Gpaisa',
         description: 'Plan your investments with our advanced SIP Calculator. Calculate returns, set financial goals, and visualize your wealth growth with step-up SIP options.',
         type: 'website',
-        url: 'https://gpaisa.com/calculator/sip',
+        url: 'https://gpaisa.in/calculator/sip',
         siteName: 'Gpaisa',
         images: [
             {
@@ -71,7 +71,7 @@ export const metadata: Metadata = {
     },
 
     alternates: {
-        canonical: 'https://gpaisa.com/calculator/sip',
+        canonical: 'https://gpaisa.in/calculator/sip',
     },
 
     robots: {
@@ -99,45 +99,45 @@ export default function SIPCalculatorPage() {
             // WebPage Schema
             {
                 '@type': 'WebPage',
-                '@id': 'https://gpaisa.com/calculator/sip#webpage',
-                url: 'https://gpaisa.com/calculator/sip',
+                '@id': 'https://gpaisa.in/calculator/sip#webpage',
+                url: 'https://gpaisa.in/calculator/sip',
                 name: 'SIP Calculator - Calculate Mutual Fund SIP Returns Online',
                 description: 'Free online SIP calculator to calculate systematic investment plan returns. Plan your mutual fund investments with step-up SIP, lump sum, and goal-based calculators.',
                 isPartOf: {
-                    '@id': 'https://gpaisa.com/#website',
+                    '@id': 'https://gpaisa.in/#website',
                 },
                 breadcrumb: {
-                    '@id': 'https://gpaisa.com/calculator/sip#breadcrumb',
+                    '@id': 'https://gpaisa.in/calculator/sip#breadcrumb',
                 },
                 inLanguage: 'en-IN',
                 potentialAction: {
                     '@type': 'UseAction',
-                    target: 'https://gpaisa.com/calculator/sip',
+                    target: 'https://gpaisa.in/calculator/sip',
                 },
             },
 
             // BreadcrumbList Schema
             {
                 '@type': 'BreadcrumbList',
-                '@id': 'https://gpaisa.com/calculator/sip#breadcrumb',
+                '@id': 'https://gpaisa.in/calculator/sip#breadcrumb',
                 itemListElement: [
                     {
                         '@type': 'ListItem',
                         position: 1,
                         name: 'Home',
-                        item: 'https://gpaisa.com',
+                        item: 'https://gpaisa.in',
                     },
                     {
                         '@type': 'ListItem',
                         position: 2,
                         name: 'Calculator',
-                        item: 'https://gpaisa.com/calculator',
+                        item: 'https://gpaisa.in/calculator',
                     },
                     {
                         '@type': 'ListItem',
                         position: 3,
                         name: 'SIP Calculator',
-                        item: 'https://gpaisa.com/calculator/sip',
+                        item: 'https://gpaisa.in/calculator/sip',
                     },
                 ],
             },
@@ -149,15 +149,15 @@ export default function SIPCalculatorPage() {
                 applicationCategory: 'FinanceApplication',
                 operatingSystem: 'Web',
                 offers: {
-                '@type': 'Offer',
-                price: '0',
-                priceCurrency: 'INR',
-                hasMerchantReturnPolicy: {
-                    '@type': 'MerchantReturnPolicy',
-                    applicableCountry: 'IN',
-                    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+                    '@type': 'Offer',
+                    price: '0',
+                    priceCurrency: 'INR',
+                    hasMerchantReturnPolicy: {
+                        '@type': 'MerchantReturnPolicy',
+                        applicableCountry: 'IN',
+                        returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+                    },
                 },
-            },
                 aggregateRating: {
                     '@type': 'AggregateRating',
                     ratingValue: '4.8',
@@ -171,7 +171,7 @@ export default function SIPCalculatorPage() {
             // FAQPage Schema
             {
                 '@type': 'FAQPage',
-                '@id': 'https://gpaisa.com/calculator/sip#faq',
+                '@id': 'https://gpaisa.in/calculator/sip#faq',
                 mainEntity: [
                     {
                         '@type': 'Question',

@@ -1,7 +1,7 @@
 # SIP Calculator SEO Implementation Guide
 
 ## 🎯 Overview
-This document outlines the comprehensive SEO implementation for the SIP Calculator page on Gpaisa.com, designed to rank for high-volume keywords and attract organic traffic from Google Search and Google Discover.
+This document outlines the comprehensive SEO implementation for the SIP Calculator page on gpaisa.in, designed to rank for high-volume keywords and attract organic traffic from Google Search and Google Discover.
 
 ## 📊 Target Keywords & Search Volume
 
@@ -118,7 +118,7 @@ Home > Finance > SIP Calculator
 og:title: SIP Calculator - Calculate Your Mutual Fund Returns | Gpaisa
 og:description: Plan your investments with our advanced SIP Calculator...
 og:type: website
-og:url: https://gpaisa.com/sip-calculator
+og:url: https://gpaisa.in/sip-calculator
 og:image: /og-sip-calculator.jpg (1200x630px)
 ```
 
@@ -129,7 +129,7 @@ og:image: /og-sip-calculator.jpg (1200x630px)
 
 #### Canonical URL
 ```
-https://gpaisa.com/sip-calculator
+https://gpaisa.in/sip-calculator
 ```
 
 #### Robots Meta
@@ -324,7 +324,7 @@ https://gpaisa.com/sip-calculator
 ## 📞 Support & Feedback
 
 For questions or suggestions about the SIP Calculator:
-- Email: support@gpaisa.com
+- Email: support@gpaisa.in
 - Feedback form: /contact
 - Social media: @gpaisa
 

@@ -36,10 +36,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                     title: `${bank.name} SIP Calculator`,
                     description: bank.description,
                     type: 'website',
-                    url: `https://gpaisa.com/calculator/${slug[0]}`,
+                    url: `https://gpaisa.in/calculator/${slug[0]}`,
                 },
                 alternates: {
-                    canonical: `https://gpaisa.com/calculator/${slug[0]}`,
+                    canonical: `https://gpaisa.in/calculator/${slug[0]}`,
                 },
             };
         }
@@ -59,10 +59,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                     title: `${bank.name} Home Loan Calculator`,
                     description: bank.description,
                     type: 'website',
-                    url: `https://gpaisa.com/calculator/${slug[0]}`,
+                    url: `https://gpaisa.in/calculator/${slug[0]}`,
                 },
                 alternates: {
-                    canonical: `https://gpaisa.com/calculator/${slug[0]}`,
+                    canonical: `https://gpaisa.in/calculator/${slug[0]}`,
                 },
             };
         }

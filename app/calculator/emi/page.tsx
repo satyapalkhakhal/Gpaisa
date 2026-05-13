@@ -9,10 +9,10 @@ export const metadata: Metadata = {
         title: 'EMI Calculator - Calculate Loan EMI Online',
         description: 'Calculate your loan EMI instantly with our free EMI calculator. Get detailed amortization schedule for home loan, car loan, and personal loan.',
         type: 'website',
-        url: 'https://gpaisa.com/calculator/emi',
+        url: 'https://gpaisa.in/calculator/emi',
     },
     alternates: {
-        canonical: 'https://gpaisa.com/calculator/emi',
+        canonical: 'https://gpaisa.in/calculator/emi',
     },
     robots: {
         index: true,
@@ -26,35 +26,35 @@ export default function EMICalculatorPage() {
         '@graph': [
             {
                 '@type': 'WebPage',
-                '@id': 'https://gpaisa.com/calculator/emi#webpage',
-                url: 'https://gpaisa.com/calculator/emi',
+                '@id': 'https://gpaisa.in/calculator/emi#webpage',
+                url: 'https://gpaisa.in/calculator/emi',
                 name: 'EMI Calculator - Calculate Loan EMI Online',
                 description: 'Free EMI Calculator to calculate monthly loan payments for home loan, car loan, personal loan. Get instant EMI calculation with amortization schedule.',
                 isPartOf: {
-                    '@id': 'https://gpaisa.com/#website',
+                    '@id': 'https://gpaisa.in/#website',
                 },
             },
             {
                 '@type': 'BreadcrumbList',
-                '@id': 'https://gpaisa.com/calculator/emi#breadcrumb',
+                '@id': 'https://gpaisa.in/calculator/emi#breadcrumb',
                 itemListElement: [
                     {
                         '@type': 'ListItem',
                         position: 1,
                         name: 'Home',
-                        item: 'https://gpaisa.com',
+                        item: 'https://gpaisa.in',
                     },
                     {
                         '@type': 'ListItem',
                         position: 2,
                         name: 'Calculator',
-                        item: 'https://gpaisa.com/calculator',
+                        item: 'https://gpaisa.in/calculator',
                     },
                     {
                         '@type': 'ListItem',
                         position: 3,
                         name: 'EMI Calculator',
-                        item: 'https://gpaisa.com/calculator/emi',
+                        item: 'https://gpaisa.in/calculator/emi',
                     },
                 ],
             },
@@ -64,15 +64,15 @@ export default function EMICalculatorPage() {
                 applicationCategory: 'FinanceApplication',
                 operatingSystem: 'Web',
                 offers: {
-                '@type': 'Offer',
-                price: '0',
-                priceCurrency: 'INR',
-                hasMerchantReturnPolicy: {
-                    '@type': 'MerchantReturnPolicy',
-                    applicableCountry: 'IN',
-                    returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+                    '@type': 'Offer',
+                    price: '0',
+                    priceCurrency: 'INR',
+                    hasMerchantReturnPolicy: {
+                        '@type': 'MerchantReturnPolicy',
+                        applicableCountry: 'IN',
+                        returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+                    },
                 },
-            },
                 description: 'Calculate EMI for home loan, car loan, personal loan with amortization schedule',
             },
             {
