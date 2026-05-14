@@ -3,6 +3,16 @@ import type { NextRequest } from 'next/server';
 
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
+    const host = request.headers.get('host') || '';
+
+    // ── Non-www → www 301 redirect ──
+    // Ensures all traffic uses the canonical www domain for SEO consistency.
+    if (host === 'gpaisa.in' || host === 'gpaisa.in:443') {
+        const url = request.nextUrl.clone();
+        url.host = 'www.gpaisa.in';
+        url.port = '';
+        return NextResponse.redirect(url, { status: 301 });
+    }
 
     // ── Agriculture pages: return 410 Gone ──
     // Temporarily hidden — will be re-enabled in the future.
@@ -66,12 +76,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
 }
 
-// Run middleware on article routes AND agriculture routes
+// Run middleware on all routes for www redirect,
+// plus specific paths for article/agriculture logic
 export const config = {
     matcher: [
-        '/articles/:path*',
-        '/agriculture',
-        '/agriculture/:path*',
-        '/api/agriculture/:path*',
+        /*
+         * Match all request paths except:
+         * - _next/static (static files)
+         * - _next/image (image optimization)
+         * - favicon.ico, icons, and other static assets
+         */
+        '/((?!_next/static|_next/image|favicon\\.ico|icon-.*\\.png|android-chrome-.*\\.png|apple-touch-icon\\.png|manifest\\.json|BingSiteAuth\\.xml).*)',
     ],
 };
+

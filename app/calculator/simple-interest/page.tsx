@@ -9,10 +9,10 @@ export const metadata: Metadata = {
         title: 'Simple Interest Calculator - Calculate SI Online | Gpaisa',
         description: 'Calculate simple interest on loans and deposits instantly. Free SI calculator.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/simple-interest',
+        url: 'https://www.gpaisa.in/calculator/simple-interest',
     },
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/simple-interest',
+        canonical: 'https://www.gpaisa.in/calculator/simple-interest',
     },
 };
 

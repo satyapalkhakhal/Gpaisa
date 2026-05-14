@@ -6,13 +6,13 @@ export const metadata: Metadata = {
     description: 'Contact gpaisa.in for inquiries, feedback, or support. We\'re here to help with your financial information needs.',
     keywords: 'contact gpaisa, financial portal contact, customer support',
     alternates: {
-        canonical: 'https://gpaisa.in/contact',
+        canonical: 'https://www.gpaisa.in/contact',
     },
     openGraph: {
         title: 'Contact Us - gpaisa.in',
         description: 'Get in touch with gpaisa.in team for support and inquiries.',
         type: 'website',
-        url: 'https://gpaisa.in/contact',
+        url: 'https://www.gpaisa.in/contact',
     },
 };
 

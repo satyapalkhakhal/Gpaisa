@@ -9,10 +9,10 @@ export const metadata: Metadata = {
         title: 'Mutual Fund Calculator - Calculate SIP & Lumpsum Returns | Gpaisa',
         description: 'Calculate mutual fund returns for SIP and lumpsum investments. Free MF calculator.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/mutual-fund',
+        url: 'https://www.gpaisa.in/calculator/mutual-fund',
     },
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/mutual-fund',
+        canonical: 'https://www.gpaisa.in/calculator/mutual-fund',
     },
 };
 

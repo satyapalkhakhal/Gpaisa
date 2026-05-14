@@ -11,7 +11,7 @@ function escapeXml(unsafe: string): string {
 }
 
 export async function GET() {
-    const baseUrl = 'https://gpaisa.in';
+    const baseUrl = 'https://www.gpaisa.in';
     
     try {
         // Fetch latest articles (last 2 days for Google News)

@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     title: 'Gold Rate Today in India (Live) – Price, Trends & Investment Insights | Gpaisa',
     description: 'Check today\'s live gold rate in India for 24K, 22K, 18K gold. Compare gold prices, view 10-day trends, and get expert investment insights at Gpaisa.in.',
     alternates: {
-        canonical: 'https://gpaisa.in'
+        canonical: 'https://www.gpaisa.in'
     }
 };
 

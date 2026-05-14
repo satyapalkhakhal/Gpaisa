@@ -5,7 +5,7 @@ export const metadata: Metadata = {
     title: 'Terms of Service - gpaisa.in',
     description: 'Terms of Service for gpaisa.in - Read our terms and conditions for using our financial information portal.',
     alternates: {
-        canonical: 'https://gpaisa.in/terms',
+        canonical: 'https://www.gpaisa.in/terms',
     },
 };
 
@@ -224,7 +224,7 @@ export default function TermsPage() {
                             </p>
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:legal@gpaisa.in" className="text-primary-600 hover:underline">legal@gpaisa.in</a></p>
-                                <p className="text-gray-700"><strong>Website:</strong> <a href="https://gpaisa.in/contact" className="text-primary-600 hover:underline">https://gpaisa.in/contact</a></p>
+                                <p className="text-gray-700"><strong>Website:</strong> <a href="https://www.gpaisa.in/contact" className="text-primary-600 hover:underline">https://www.gpaisa.in/contact</a></p>
                             </div>
                         </section>
 

@@ -9,10 +9,10 @@ export const metadata: Metadata = {
         title: 'HRA Calculator - Calculate House Rent Allowance Tax Exemption | Gpaisa',
         description: 'Calculate your HRA tax exemption instantly. Free House Rent Allowance calculator for India.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/hra',
+        url: 'https://www.gpaisa.in/calculator/hra',
     },
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/hra',
+        canonical: 'https://www.gpaisa.in/calculator/hra',
     },
 };
 

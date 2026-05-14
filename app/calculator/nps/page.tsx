@@ -9,10 +9,10 @@ export const metadata: Metadata = {
         title: 'NPS Calculator - Calculate National Pension System Returns | Gpaisa',
         description: 'Calculate your NPS retirement corpus and tax benefits. Free National Pension System calculator.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/nps',
+        url: 'https://www.gpaisa.in/calculator/nps',
     },
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/nps',
+        canonical: 'https://www.gpaisa.in/calculator/nps',
     },
 };
 

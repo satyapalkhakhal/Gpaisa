@@ -48,12 +48,12 @@ export const metadata: Metadata = {
         title: 'Gold vs Silver: 10-Year Price Chart, Returns & Which Is Better Investment in India?',
         description: 'Comprehensive comparison of gold vs silver as investment in India. 10-year charts, returns analysis, volatility & expert recommendations.',
         type: 'article',
-        url: 'https://gpaisa.in/gold-vs-silver',
+        url: 'https://www.gpaisa.in/gold-vs-silver',
         siteName: 'gpaisa.in',
         locale: 'en_IN',
         images: [
             {
-                url: 'https://gpaisa.in/android-chrome-512x512.png',
+                url: 'https://www.gpaisa.in/android-chrome-512x512.png',
                 width: 512,
                 height: 512,
                 alt: 'Gold vs Silver Investment Comparison India',
@@ -64,10 +64,10 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'Gold vs Silver: Which Is Better Investment in India? (10-Year Analysis)',
         description: 'Compare gold and silver returns, price charts, and find the best precious metal investment for your portfolio.',
-        images: ['https://gpaisa.in/android-chrome-512x512.png'],
+        images: ['https://www.gpaisa.in/android-chrome-512x512.png'],
     },
     alternates: {
-        canonical: 'https://gpaisa.in/gold-vs-silver',
+        canonical: 'https://www.gpaisa.in/gold-vs-silver',
     },
     robots: {
         index: true,
@@ -84,25 +84,25 @@ export default function GoldVsSilverPage() {
         '@type': 'Article',
         headline: 'Gold vs Silver: 10-Year Price Chart, Returns & Which Is Better Investment in India?',
         description: 'Comprehensive comparison of gold vs silver investment in India with 10-year price charts, returns analysis, and expert advice.',
-        image: 'https://gpaisa.in/android-chrome-512x512.png',
+        image: 'https://www.gpaisa.in/android-chrome-512x512.png',
         author: {
             '@type': 'Organization',
             name: 'gpaisa.in',
-            url: 'https://gpaisa.in',
+            url: 'https://www.gpaisa.in',
         },
         publisher: {
             '@type': 'Organization',
             name: 'gpaisa.in',
             logo: {
                 '@type': 'ImageObject',
-                url: 'https://gpaisa.in/android-chrome-512x512.png',
+                url: 'https://www.gpaisa.in/android-chrome-512x512.png',
             },
         },
         datePublished: '2026-04-16',
         dateModified: '2026-04-16',
         mainEntityOfPage: {
             '@type': 'WebPage',
-            '@id': 'https://gpaisa.in/gold-vs-silver',
+            '@id': 'https://www.gpaisa.in/gold-vs-silver',
         },
         inLanguage: 'en-IN',
         keywords: 'gold vs silver india, gold vs silver returns, gold price 10 year chart india',
@@ -112,9 +112,9 @@ export default function GoldVsSilverPage() {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         itemListElement: [
-            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://gpaisa.in' },
-            { '@type': 'ListItem', position: 2, name: 'Gold Rate', item: 'https://gpaisa.in/gold-rate' },
-            { '@type': 'ListItem', position: 3, name: 'Gold vs Silver', item: 'https://gpaisa.in/gold-vs-silver' },
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.gpaisa.in' },
+            { '@type': 'ListItem', position: 2, name: 'Gold Rate', item: 'https://www.gpaisa.in/gold-rate' },
+            { '@type': 'ListItem', position: 3, name: 'Gold vs Silver', item: 'https://www.gpaisa.in/gold-vs-silver' },
         ],
     };
 

@@ -5,7 +5,7 @@ export const metadata: Metadata = {
     title: 'Privacy Policy - gpaisa.in',
     description: 'Privacy Policy for gpaisa.in - Learn how we collect, use, and protect your personal information.',
     alternates: {
-        canonical: 'https://gpaisa.in/privacy-policy',
+        canonical: 'https://www.gpaisa.in/privacy-policy',
     },
 };
 
@@ -26,7 +26,7 @@ export default function PrivacyPolicyPage() {
                             <h2 className="text-2xl font-bold text-gray-900 mb-4">1. Introduction</h2>
                             <p className="text-gray-700 mb-4">
                                 Welcome to gpaisa.in (&quot;we,&quot; &quot;our,&quot; or &quot;us&quot;). We are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website{' '}
-                                <a href="https://gpaisa.in" className="text-primary-600 hover:underline">https://gpaisa.in</a>.
+                                <a href="https://www.gpaisa.in" className="text-primary-600 hover:underline">https://www.gpaisa.in</a>.
                             </p>
                             <p className="text-gray-700">
                                 By using our website, you consent to the data practices described in this policy. If you do not agree with the terms of this Privacy Policy, please do not access the site.
@@ -206,7 +206,7 @@ export default function PrivacyPolicyPage() {
                             </p>
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:privacy@gpaisa.in" className="text-primary-600 hover:underline">privacy@gpaisa.in</a></p>
-                                <p className="text-gray-700"><strong>Website:</strong> <a href="https://gpaisa.in/contact" className="text-primary-600 hover:underline">https://gpaisa.in/contact</a></p>
+                                <p className="text-gray-700"><strong>Website:</strong> <a href="https://www.gpaisa.in/contact" className="text-primary-600 hover:underline">https://www.gpaisa.in/contact</a></p>
                             </div>
                         </section>
 

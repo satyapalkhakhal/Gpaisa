@@ -9,10 +9,10 @@ export const metadata: Metadata = {
         title: 'FD Calculator - Calculate Fixed Deposit Returns | Gpaisa',
         description: 'Calculate your Fixed Deposit maturity amount instantly. Free FD calculator with all compounding options.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/fd',
+        url: 'https://www.gpaisa.in/calculator/fd',
     },
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/fd',
+        canonical: 'https://www.gpaisa.in/calculator/fd',
     },
 };
 

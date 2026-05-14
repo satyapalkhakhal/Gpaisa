@@ -9,10 +9,10 @@ export const metadata: Metadata = {
         title: 'Home Loan Calculator - Calculate Your Home Loan EMI | Gpaisa',
         description: 'Calculate your home loan EMI instantly with our free online calculator. Get detailed amortization schedule and payment breakdown.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/home-loan',
+        url: 'https://www.gpaisa.in/calculator/home-loan',
     },
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/home-loan',
+        canonical: 'https://www.gpaisa.in/calculator/home-loan',
     },
 };
 

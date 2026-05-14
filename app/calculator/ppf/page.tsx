@@ -50,7 +50,7 @@ export const metadata: Metadata = {
         title: 'PPF Calculator - Calculate Public Provident Fund Returns | Gpaisa',
         description: 'Plan your PPF investments with our advanced calculator. Calculate maturity amount, interest, and visualize your wealth growth over 15 years.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/ppf',
+        url: 'https://www.gpaisa.in/calculator/ppf',
         siteName: 'Gpaisa',
         images: [
             {
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     },
 
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/ppf',
+        canonical: 'https://www.gpaisa.in/calculator/ppf',
     },
 
     robots: {
@@ -98,45 +98,45 @@ export default function PPFCalculatorPage() {
             // WebPage Schema
             {
                 '@type': 'WebPage',
-                '@id': 'https://gpaisa.in/calculator/ppf#webpage',
-                url: 'https://gpaisa.in/calculator/ppf',
+                '@id': 'https://www.gpaisa.in/calculator/ppf#webpage',
+                url: 'https://www.gpaisa.in/calculator/ppf',
                 name: 'PPF Calculator - Calculate Public Provident Fund Returns Online',
                 description: 'Free online PPF calculator to calculate Public Provident Fund returns, maturity amount, and interest. Plan your PPF investments with accurate projections.',
                 isPartOf: {
-                    '@id': 'https://gpaisa.in/#website',
+                    '@id': 'https://www.gpaisa.in/#website',
                 },
                 breadcrumb: {
-                    '@id': 'https://gpaisa.in/calculator/ppf#breadcrumb',
+                    '@id': 'https://www.gpaisa.in/calculator/ppf#breadcrumb',
                 },
                 inLanguage: 'en-IN',
                 potentialAction: {
                     '@type': 'UseAction',
-                    target: 'https://gpaisa.in/calculator/ppf',
+                    target: 'https://www.gpaisa.in/calculator/ppf',
                 },
             },
 
             // BreadcrumbList Schema
             {
                 '@type': 'BreadcrumbList',
-                '@id': 'https://gpaisa.in/calculator/ppf#breadcrumb',
+                '@id': 'https://www.gpaisa.in/calculator/ppf#breadcrumb',
                 itemListElement: [
                     {
                         '@type': 'ListItem',
                         position: 1,
                         name: 'Home',
-                        item: 'https://gpaisa.in',
+                        item: 'https://www.gpaisa.in',
                     },
                     {
                         '@type': 'ListItem',
                         position: 2,
                         name: 'Calculator',
-                        item: 'https://gpaisa.in/calculator',
+                        item: 'https://www.gpaisa.in/calculator',
                     },
                     {
                         '@type': 'ListItem',
                         position: 3,
                         name: 'PPF Calculator',
-                        item: 'https://gpaisa.in/calculator/ppf',
+                        item: 'https://www.gpaisa.in/calculator/ppf',
                     },
                 ],
             },
@@ -170,7 +170,7 @@ export default function PPFCalculatorPage() {
             // FAQPage Schema
             {
                 '@type': 'FAQPage',
-                '@id': 'https://gpaisa.in/calculator/ppf#faq',
+                '@id': 'https://www.gpaisa.in/calculator/ppf#faq',
                 mainEntity: [
                     {
                         '@type': 'Question',

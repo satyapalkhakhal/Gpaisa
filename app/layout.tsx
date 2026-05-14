@@ -7,7 +7,7 @@ import { LanguageProvider } from "@/lib/i18n";
 import Script from "next/script";
 
 export const metadata: Metadata = {
-    metadataBase: new URL('https://gpaisa.in'),
+    metadataBase: new URL('https://www.gpaisa.in'),
     title: "Gpaisa - Live Market Updates, Gold Rates & Financial News",
     description: "Track live stock markets (Sensex, Nifty), today's gold & silver rates, breaking financial news, commodity prices, and smart investment calculators (SIP, PPF, EPF, SWP). Your trusted Indian finance companion!",
     keywords: "stock market, gold rates today, silver price, sensex live, nifty live, sip calculator, ppf calculator, epf calculator, swp calculator, commodity prices, financial news india, investment calculators, gold rate today, market news",
@@ -36,11 +36,11 @@ export const metadata: Metadata = {
         description: "Real-time market updates, gold rates, and financial news for India",
         type: "website",
         locale: "en_IN",
-        url: "https://gpaisa.in",
+        url: "https://www.gpaisa.in",
         siteName: "gpaisa.in",
         images: [
             {
-                url: 'https://gpaisa.in/android-chrome-512x512.png',
+                url: 'https://www.gpaisa.in/android-chrome-512x512.png',
                 width: 512,
                 height: 512,
                 alt: 'gpaisa.in logo',
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
         card: 'summary',
         title: 'gpaisa.in - Live Market Updates',
         description: 'Real-time stock market updates, gold rates, and financial news for India',
-        images: ['https://gpaisa.in/android-chrome-512x512.png'],
+        images: ['https://www.gpaisa.in/android-chrome-512x512.png'],
     },
 };
 

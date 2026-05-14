@@ -37,7 +37,7 @@ export async function generateMetadata({ params, searchParams }: {
         title: `${category.name} | gpaisa.in`,
         description: category.description,
         alternates: {
-            canonical: `https://gpaisa.in/category/${slug}`
+            canonical: `https://www.gpaisa.in/category/${slug}`
         }
     };
 }

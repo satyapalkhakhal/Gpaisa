@@ -45,7 +45,7 @@ export const metadata: Metadata = {
         title: 'SWP Calculator - Calculate Systematic Withdrawal Plan Returns | Gpaisa',
         description: 'Plan your retirement withdrawals with our advanced SWP calculator. Calculate monthly income, final corpus, and visualize your wealth depletion.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/swp',
+        url: 'https://www.gpaisa.in/calculator/swp',
         siteName: 'Gpaisa',
         images: [
             {
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     },
 
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/swp',
+        canonical: 'https://www.gpaisa.in/calculator/swp',
     },
 
     robots: {
@@ -89,15 +89,15 @@ export default function SWPCalculatorPage() {
             // WebPage Schema
             {
                 '@type': 'WebPage',
-                '@id': 'https://gpaisa.in/calculator/swp#webpage',
-                url: 'https://gpaisa.in/calculator/swp',
+                '@id': 'https://www.gpaisa.in/calculator/swp#webpage',
+                url: 'https://www.gpaisa.in/calculator/swp',
                 name: 'SWP Calculator - Calculate Systematic Withdrawal Plan Returns Online',
                 description: 'Free online SWP calculator to calculate Systematic Withdrawal Plan returns, monthly withdrawals, and final corpus. Plan your retirement income.',
                 isPartOf: {
-                    '@id': 'https://gpaisa.in/#website',
+                    '@id': 'https://www.gpaisa.in/#website',
                 },
                 breadcrumb: {
-                    '@id': 'https://gpaisa.in/calculator/swp#breadcrumb',
+                    '@id': 'https://www.gpaisa.in/calculator/swp#breadcrumb',
                 },
                 inLanguage: 'en-IN',
             },
@@ -105,25 +105,25 @@ export default function SWPCalculatorPage() {
             // BreadcrumbList Schema
             {
                 '@type': 'BreadcrumbList',
-                '@id': 'https://gpaisa.in/calculator/swp#breadcrumb',
+                '@id': 'https://www.gpaisa.in/calculator/swp#breadcrumb',
                 itemListElement: [
                     {
                         '@type': 'ListItem',
                         position: 1,
                         name: 'Home',
-                        item: 'https://gpaisa.in',
+                        item: 'https://www.gpaisa.in',
                     },
                     {
                         '@type': 'ListItem',
                         position: 2,
                         name: 'Calculator',
-                        item: 'https://gpaisa.in/calculator',
+                        item: 'https://www.gpaisa.in/calculator',
                     },
                     {
                         '@type': 'ListItem',
                         position: 3,
                         name: 'SWP Calculator',
-                        item: 'https://gpaisa.in/calculator/swp',
+                        item: 'https://www.gpaisa.in/calculator/swp',
                     },
                 ],
             },
@@ -157,7 +157,7 @@ export default function SWPCalculatorPage() {
             // FAQPage Schema
             {
                 '@type': 'FAQPage',
-                '@id': 'https://gpaisa.in/calculator/swp#faq',
+                '@id': 'https://www.gpaisa.in/calculator/swp#faq',
                 mainEntity: [
                     {
                         '@type': 'Question',

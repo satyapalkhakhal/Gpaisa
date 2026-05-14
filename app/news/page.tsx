@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     title: 'Latest Financial News & Market Updates | gpaisa.in',
     description: 'Stay updated with the latest financial news, market trends, policy changes, and economic developments in India.',
     alternates: {
-        canonical: 'https://gpaisa.in/news'
+        canonical: 'https://www.gpaisa.in/news'
     }
 };
 

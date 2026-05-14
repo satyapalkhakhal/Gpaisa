@@ -82,10 +82,10 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
             title: `Gold Rate in ${cityName} Today - 24K, 22K, 18K Live Prices | ${tagline}`,
             description: `Today's gold rate in ${cityName}, ${state}. ${tagline}. Live prices for 24K, 22K & 18K gold with calculator, history & buying guide.`,
             type: 'article',
-            url: `https://gpaisa.in/gold-rate/${citySlug}`,
+            url: `https://www.gpaisa.in/gold-rate/${citySlug}`,
             siteName: 'gpaisa.in',
             locale: 'en_IN',
-            images: [{ url: 'https://gpaisa.in/android-chrome-512x512.png', width: 512, height: 512, alt: `Gold Rate in ${cityName} Today` }],
+            images: [{ url: 'https://www.gpaisa.in/android-chrome-512x512.png', width: 512, height: 512, alt: `Gold Rate in ${cityName} Today` }],
         },
         twitter: {
             card: 'summary_large_image',
@@ -93,7 +93,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
             description: `Today's gold rate in ${cityName} for 24K, 22K & 18K. ${tagline}. Live prices with buying tips.`,
         },
         alternates: {
-            canonical: `https://gpaisa.in/gold-rate/${citySlug}`,
+            canonical: `https://www.gpaisa.in/gold-rate/${citySlug}`,
         },
     };
 }
@@ -119,14 +119,14 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
         "@type": "WebPage",
         name: `Gold Rate in ${cityName} Today`,
         description: `Current gold rates for ${cityName}, ${state} including 24K, 22K, and 18K gold prices. ${tagline}.`,
-        url: `https://gpaisa.in/gold-rate/${citySlug}`,
+        url: `https://www.gpaisa.in/gold-rate/${citySlug}`,
         inLanguage: 'en-IN',
-        isPartOf: { "@type": "WebSite", name: "gpaisa.in", url: "https://gpaisa.in" },
+        isPartOf: { "@type": "WebSite", name: "gpaisa.in", url: "https://www.gpaisa.in" },
         publisher: {
             "@type": "Organization",
             name: "gpaisa.in",
-            url: "https://gpaisa.in",
-            logo: { "@type": "ImageObject", url: "https://gpaisa.in/android-chrome-512x512.png" },
+            url: "https://www.gpaisa.in",
+            logo: { "@type": "ImageObject", url: "https://www.gpaisa.in/android-chrome-512x512.png" },
         },
         dateModified: new Date().toISOString(),
         about: {
@@ -140,9 +140,9 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://gpaisa.in" },
-            { "@type": "ListItem", position: 2, name: "Gold Rates", item: "https://gpaisa.in/gold-rate" },
-            { "@type": "ListItem", position: 3, name: cityName, item: `https://gpaisa.in/gold-rate/${citySlug}` },
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://www.gpaisa.in" },
+            { "@type": "ListItem", position: 2, name: "Gold Rates", item: "https://www.gpaisa.in/gold-rate" },
+            { "@type": "ListItem", position: 3, name: cityName, item: `https://www.gpaisa.in/gold-rate/${citySlug}` },
         ],
     };
 
@@ -174,15 +174,15 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
         "@type": "Article",
         headline: `Gold Rate in ${cityName} Today — ${tagline}`,
         description: heroDescription,
-        author: { "@type": "Organization", name: "gpaisa.in", url: "https://gpaisa.in" },
+        author: { "@type": "Organization", name: "gpaisa.in", url: "https://www.gpaisa.in" },
         publisher: {
             "@type": "Organization",
             name: "gpaisa.in",
-            logo: { "@type": "ImageObject", url: "https://gpaisa.in/android-chrome-512x512.png" },
+            logo: { "@type": "ImageObject", url: "https://www.gpaisa.in/android-chrome-512x512.png" },
         },
         datePublished: "2026-04-20",
         dateModified: new Date().toISOString(),
-        mainEntityOfPage: { "@type": "WebPage", "@id": `https://gpaisa.in/gold-rate/${citySlug}` },
+        mainEntityOfPage: { "@type": "WebPage", "@id": `https://www.gpaisa.in/gold-rate/${citySlug}` },
         inLanguage: "en-IN",
     };
 

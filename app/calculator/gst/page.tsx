@@ -10,11 +10,11 @@ export const metadata: Metadata = {
         title: 'GST Calculator - Calculate GST Online | Gpaisa',
         description: 'Free online GST calculator for India. Calculate Goods and Services Tax instantly with CGST, SGST, and IGST breakdown. Support for all GST rates.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/gst',
+        url: 'https://www.gpaisa.in/calculator/gst',
         siteName: 'gpaisa.in',
         images: [
             {
-                url: 'https://gpaisa.in/android-chrome-512x512.png',
+                url: 'https://www.gpaisa.in/android-chrome-512x512.png',
                 width: 512,
                 height: 512,
                 alt: 'GST Calculator - Gpaisa',
@@ -25,10 +25,10 @@ export const metadata: Metadata = {
         card: 'summary_large_image',
         title: 'GST Calculator - Calculate GST Online | Gpaisa',
         description: 'Free online GST calculator for India. Calculate Goods and Services Tax instantly with detailed breakdown.',
-        images: ['https://gpaisa.in/android-chrome-512x512.png'],
+        images: ['https://www.gpaisa.in/android-chrome-512x512.png'],
     },
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/gst',
+        canonical: 'https://www.gpaisa.in/calculator/gst',
     },
 };
 

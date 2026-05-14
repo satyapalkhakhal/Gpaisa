@@ -20,8 +20,8 @@ export default function robots(): MetadataRoute.Robots {
             },
         ],
         sitemap: [
-            'https://gpaisa.in/sitemap.xml',
-            'https://gpaisa.in/news-sitemap.xml',
+            'https://www.gpaisa.in/sitemap.xml',
+            'https://www.gpaisa.in/news-sitemap.xml',
         ],
     };
 }

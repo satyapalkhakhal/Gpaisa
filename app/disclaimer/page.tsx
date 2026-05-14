@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     title: 'Disclaimer - gpaisa.in',
     description: 'Important disclaimer for gpaisa.in - Understand the limitations and risks associated with using financial information from our website.',
     alternates: {
-        canonical: 'https://gpaisa.in/disclaimer',
+        canonical: 'https://www.gpaisa.in/disclaimer',
     },
 };
 
@@ -240,7 +240,7 @@ export default function DisclaimerPage() {
                             </p>
                             <div className="bg-gray-50 p-4 rounded-lg">
                                 <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:legal@gpaisa.in" className="text-primary-600 hover:underline">legal@gpaisa.in</a></p>
-                                <p className="text-gray-700"><strong>Website:</strong> <a href="https://gpaisa.in/contact" className="text-primary-600 hover:underline">https://gpaisa.in/contact</a></p>
+                                <p className="text-gray-700"><strong>Website:</strong> <a href="https://www.gpaisa.in/contact" className="text-primary-600 hover:underline">https://www.gpaisa.in/contact</a></p>
                             </div>
                         </section>
 

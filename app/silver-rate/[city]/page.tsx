@@ -79,10 +79,10 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
             title: `Silver Rate in ${cityName} Today - Live Prices${tagline ? ` | ${tagline}` : ''}`,
             description: `Today's silver price in ${cityName}, ${state}. Live rate updates, historical trends & buying guide.`,
             type: 'article',
-            url: `https://gpaisa.in/silver-rate/${citySlug}`,
+            url: `https://www.gpaisa.in/silver-rate/${citySlug}`,
             siteName: 'gpaisa.in',
             locale: 'en_IN',
-            images: [{ url: 'https://gpaisa.in/android-chrome-512x512.png', width: 512, height: 512, alt: `Silver Rate in ${cityName} Today` }],
+            images: [{ url: 'https://www.gpaisa.in/android-chrome-512x512.png', width: 512, height: 512, alt: `Silver Rate in ${cityName} Today` }],
         },
         twitter: {
             card: 'summary_large_image',
@@ -90,7 +90,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
             description: `Today's silver price in ${cityName} with live rate updates and historical trends.`,
         },
         alternates: {
-            canonical: `https://gpaisa.in/silver-rate/${citySlug}`,
+            canonical: `https://www.gpaisa.in/silver-rate/${citySlug}`,
         },
     };
 }
@@ -122,14 +122,14 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
         "@type": "WebPage",
         name: `Silver Rate in ${cityName} Today`,
         description: `Current silver rates for ${cityName}${silverInfo ? `. ${silverInfo.tagline}` : ''}.`,
-        url: `https://gpaisa.in/silver-rate/${citySlug}`,
+        url: `https://www.gpaisa.in/silver-rate/${citySlug}`,
         inLanguage: 'en-IN',
-        isPartOf: { "@type": "WebSite", name: "gpaisa.in", url: "https://gpaisa.in" },
+        isPartOf: { "@type": "WebSite", name: "gpaisa.in", url: "https://www.gpaisa.in" },
         publisher: {
             "@type": "Organization",
             name: "gpaisa.in",
-            url: "https://gpaisa.in",
-            logo: { "@type": "ImageObject", url: "https://gpaisa.in/android-chrome-512x512.png" },
+            url: "https://www.gpaisa.in",
+            logo: { "@type": "ImageObject", url: "https://www.gpaisa.in/android-chrome-512x512.png" },
         },
         dateModified: new Date().toISOString(),
     };
@@ -138,9 +138,9 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
         "@context": "https://schema.org",
         "@type": "BreadcrumbList",
         itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Home", item: "https://gpaisa.in" },
-            { "@type": "ListItem", position: 2, name: "Silver Rates", item: "https://gpaisa.in/silver-rate" },
-            { "@type": "ListItem", position: 3, name: cityName, item: `https://gpaisa.in/silver-rate/${citySlug}` },
+            { "@type": "ListItem", position: 1, name: "Home", item: "https://www.gpaisa.in" },
+            { "@type": "ListItem", position: 2, name: "Silver Rates", item: "https://www.gpaisa.in/silver-rate" },
+            { "@type": "ListItem", position: 3, name: cityName, item: `https://www.gpaisa.in/silver-rate/${citySlug}` },
         ],
     };
 
@@ -208,15 +208,15 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
         "@type": "Article",
         headline: `Silver Rate in ${cityName} Today${silverInfo ? ` — ${silverInfo.tagline}` : ''}`,
         description: silverInfo?.heroDescription || `Live silver prices in ${cityName} with calculator and history.`,
-        author: { "@type": "Organization", name: "gpaisa.in", url: "https://gpaisa.in" },
+        author: { "@type": "Organization", name: "gpaisa.in", url: "https://www.gpaisa.in" },
         publisher: {
             "@type": "Organization",
             name: "gpaisa.in",
-            logo: { "@type": "ImageObject", url: "https://gpaisa.in/android-chrome-512x512.png" },
+            logo: { "@type": "ImageObject", url: "https://www.gpaisa.in/android-chrome-512x512.png" },
         },
         datePublished: "2026-04-20",
         dateModified: new Date().toISOString(),
-        mainEntityOfPage: { "@type": "WebPage", "@id": `https://gpaisa.in/silver-rate/${citySlug}` },
+        mainEntityOfPage: { "@type": "WebPage", "@id": `https://www.gpaisa.in/silver-rate/${citySlug}` },
         inLanguage: "en-IN",
     };
 

@@ -7,13 +7,13 @@ export const metadata: Metadata = {
     description: 'Learn about gpaisa.in - India\'s leading financial information portal providing real-time gold rates, silver prices, market updates, and expert financial insights.',
     keywords: 'about gpaisa, financial portal India, gold rate information, market news India',
     alternates: {
-        canonical: 'https://gpaisa.in/about',
+        canonical: 'https://www.gpaisa.in/about',
     },
     openGraph: {
         title: 'About Us - gpaisa.in',
         description: 'India\'s trusted source for financial information, market updates, and investment insights.',
         type: 'website',
-        url: 'https://gpaisa.in/about',
+        url: 'https://www.gpaisa.in/about',
     },
 };
 

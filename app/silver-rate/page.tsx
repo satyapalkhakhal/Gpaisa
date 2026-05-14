@@ -32,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
             title: `Silver Rate Today in India — ${todayDate} | Live Prices Per Gram/Kg`,
             description: `Check today's silver rate in India on ${todayDate}. Live prices per gram and per kg. City-wise rates with historical trends, market analysis, and silver vs gold comparison.`,
             type: 'website',
-            url: 'https://gpaisa.in/silver-rate',
+            url: 'https://www.gpaisa.in/silver-rate',
             siteName: 'gpaisa.in',
             locale: 'en_IN',
             images: [
@@ -51,7 +51,7 @@ export async function generateMetadata(): Promise<Metadata> {
             images: ['https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg'],
         },
         alternates: {
-            canonical: 'https://gpaisa.in/silver-rate'
+            canonical: 'https://www.gpaisa.in/silver-rate'
         },
         robots: {
             index: true,
@@ -73,14 +73,14 @@ export default async function SilverRatePage() {
         "@type": "WebPage",
         "name": "Silver Rate Today in India",
         "description": "Current silver rates per gram and per kg in India, including city-wise prices, market trends, and investment insights.",
-        "url": "https://gpaisa.in/silver-rate",
+        "url": "https://www.gpaisa.in/silver-rate",
         "dateModified": new Date().toISOString().split('T')[0],
         "image": "https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg",
         "breadcrumb": {
             "@type": "BreadcrumbList",
             "itemListElement": [
-                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://gpaisa.in" },
-                { "@type": "ListItem", "position": 2, "name": "Silver Rates", "item": "https://gpaisa.in/silver-rate" }
+                { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.gpaisa.in" },
+                { "@type": "ListItem", "position": 2, "name": "Silver Rates", "item": "https://www.gpaisa.in/silver-rate" }
             ]
         },
         "mainEntity": {
@@ -119,15 +119,15 @@ export default async function SilverRatePage() {
         "headline": "Silver Rate Today in India - Market Analysis & Investment Guide 2026",
         "description": "Comprehensive guide to silver prices in India covering market trends, what affects silver prices, city-wise rates, and investment comparison with gold.",
         "image": "https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg",
-        "author": { "@type": "Organization", "name": "gpaisa.in", "url": "https://gpaisa.in" },
+        "author": { "@type": "Organization", "name": "gpaisa.in", "url": "https://www.gpaisa.in" },
         "publisher": {
             "@type": "Organization",
             "name": "gpaisa.in",
-            "logo": { "@type": "ImageObject", "url": "https://gpaisa.in/icon-512.png" }
+            "logo": { "@type": "ImageObject", "url": "https://www.gpaisa.in/icon-512.png" }
         },
         "datePublished": "2026-01-01",
         "dateModified": new Date().toISOString().split('T')[0],
-        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://gpaisa.in/silver-rate" },
+        "mainEntityOfPage": { "@type": "WebPage", "@id": "https://www.gpaisa.in/silver-rate" },
         "inLanguage": "en-IN",
     };
 

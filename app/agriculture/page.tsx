@@ -13,7 +13,7 @@ export const metadata: Metadata = {
         type: 'website',
     },
     alternates: {
-        canonical: 'https://gpaisa.in/agriculture'
+        canonical: 'https://www.gpaisa.in/agriculture'
     },
     robots: {
         index: false,

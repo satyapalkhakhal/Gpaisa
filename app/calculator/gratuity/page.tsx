@@ -9,10 +9,10 @@ export const metadata: Metadata = {
         title: 'Gratuity Calculator - Calculate Your Gratuity Amount | Gpaisa',
         description: 'Calculate your gratuity amount instantly. Free gratuity calculator as per Indian law.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/gratuity',
+        url: 'https://www.gpaisa.in/calculator/gratuity',
     },
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/gratuity',
+        canonical: 'https://www.gpaisa.in/calculator/gratuity',
     },
 };
 

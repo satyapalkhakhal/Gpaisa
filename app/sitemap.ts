@@ -15,7 +15,7 @@ const CITIES = [
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-    const baseUrl = 'https://gpaisa.in';
+    const baseUrl = 'https://www.gpaisa.in';
 
     // Static pages - use more realistic lastModified dates
     const staticPages: MetadataRoute.Sitemap = [

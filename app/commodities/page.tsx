@@ -19,7 +19,7 @@ export const metadata: Metadata = {
         type: 'website',
     },
     alternates: {
-        canonical: 'https://gpaisa.in/commodities'
+        canonical: 'https://www.gpaisa.in/commodities'
     }
 };
 
@@ -32,7 +32,7 @@ export default function CommoditiesPage() {
         "@type": "WebPage",
         "name": "Gold & Commodity Rates",
         "description": "Live gold rates (24K, 22K, 18K), silver prices, and commodity rates across India",
-        "url": "https://gpaisa.in/commodities",
+        "url": "https://www.gpaisa.in/commodities",
         "mainEntity": {
             "@type": "ItemList",
             "name": "Gold Rates in India",

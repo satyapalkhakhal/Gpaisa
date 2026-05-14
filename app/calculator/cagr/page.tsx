@@ -9,10 +9,10 @@ export const metadata: Metadata = {
         title: 'CAGR Calculator - Calculate Compound Annual Growth Rate | Gpaisa',
         description: 'Calculate CAGR for your investments instantly. Free online Compound Annual Growth Rate calculator for stocks, mutual funds, and portfolios.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/cagr',
+        url: 'https://www.gpaisa.in/calculator/cagr',
     },
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/cagr',
+        canonical: 'https://www.gpaisa.in/calculator/cagr',
     },
 };
 

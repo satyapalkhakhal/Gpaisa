@@ -9,10 +9,10 @@ export const metadata: Metadata = {
         title: 'EMI Calculator - Calculate Loan EMI Online',
         description: 'Calculate your loan EMI instantly with our free EMI calculator. Get detailed amortization schedule for home loan, car loan, and personal loan.',
         type: 'website',
-        url: 'https://gpaisa.in/calculator/emi',
+        url: 'https://www.gpaisa.in/calculator/emi',
     },
     alternates: {
-        canonical: 'https://gpaisa.in/calculator/emi',
+        canonical: 'https://www.gpaisa.in/calculator/emi',
     },
     robots: {
         index: true,
@@ -26,35 +26,35 @@ export default function EMICalculatorPage() {
         '@graph': [
             {
                 '@type': 'WebPage',
-                '@id': 'https://gpaisa.in/calculator/emi#webpage',
-                url: 'https://gpaisa.in/calculator/emi',
+                '@id': 'https://www.gpaisa.in/calculator/emi#webpage',
+                url: 'https://www.gpaisa.in/calculator/emi',
                 name: 'EMI Calculator - Calculate Loan EMI Online',
                 description: 'Free EMI Calculator to calculate monthly loan payments for home loan, car loan, personal loan. Get instant EMI calculation with amortization schedule.',
                 isPartOf: {
-                    '@id': 'https://gpaisa.in/#website',
+                    '@id': 'https://www.gpaisa.in/#website',
                 },
             },
             {
                 '@type': 'BreadcrumbList',
-                '@id': 'https://gpaisa.in/calculator/emi#breadcrumb',
+                '@id': 'https://www.gpaisa.in/calculator/emi#breadcrumb',
                 itemListElement: [
                     {
                         '@type': 'ListItem',
                         position: 1,
                         name: 'Home',
-                        item: 'https://gpaisa.in',
+                        item: 'https://www.gpaisa.in',
                     },
                     {
                         '@type': 'ListItem',
                         position: 2,
                         name: 'Calculator',
-                        item: 'https://gpaisa.in/calculator',
+                        item: 'https://www.gpaisa.in/calculator',
                     },
                     {
                         '@type': 'ListItem',
                         position: 3,
                         name: 'EMI Calculator',
-                        item: 'https://gpaisa.in/calculator/emi',
+                        item: 'https://www.gpaisa.in/calculator/emi',
                     },
                 ],
             },

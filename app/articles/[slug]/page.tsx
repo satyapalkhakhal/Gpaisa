@@ -79,7 +79,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             images: article.image_url ? [article.image_url] : [],
         },
         alternates: {
-            canonical: `https://gpaisa.in/articles/${article.slug}`,
+            canonical: `https://www.gpaisa.in/articles/${article.slug}`,
         },
     };
 }
@@ -123,7 +123,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         '@type': 'NewsArticle',
         headline: article.title,
         description: article.excerpt || article.title,
-        image: article.image_url || 'https://gpaisa.in/icon-512.png',
+        image: article.image_url || 'https://www.gpaisa.in/icon-512.png',
         datePublished: publishedDate.toISOString(),
         dateModified: publishedDate.toISOString(),
         author: {
@@ -135,12 +135,12 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
             name: 'gpaisa.in',
             logo: {
                 '@type': 'ImageObject',
-                url: 'https://gpaisa.in/icon-512.png',
+                url: 'https://www.gpaisa.in/icon-512.png',
             },
         },
         mainEntityOfPage: {
             '@type': 'WebPage',
-            '@id': `https://gpaisa.in/articles/${article.slug}`,
+            '@id': `https://www.gpaisa.in/articles/${article.slug}`,
         },
     };
 
@@ -152,19 +152,19 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                 '@type': 'ListItem',
                 position: 1,
                 name: 'Home',
-                item: 'https://gpaisa.in',
+                item: 'https://www.gpaisa.in',
             },
             {
                 '@type': 'ListItem',
                 position: 2,
                 name: article.category || 'News',
-                item: `https://gpaisa.in/news`,
+                item: `https://www.gpaisa.in/news`,
             },
             {
                 '@type': 'ListItem',
                 position: 3,
                 name: article.title,
-                item: `https://gpaisa.in/articles/${article.slug}`,
+                item: `https://www.gpaisa.in/articles/${article.slug}`,
             },
         ],
     };
