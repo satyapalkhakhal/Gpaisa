@@ -1,11 +1,44 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import SIPSlider from '@/components/sip/SIPSlider';
 import { homeLoanBanks } from '@/lib/homeLoanBankData';
+import HomeLoanResultCards from '@/components/home-loan/HomeLoanResultCards';
+import HomeLoanPrepayment, { type PrepaymentConfig } from '@/components/home-loan/HomeLoanPrepayment';
+import HomeLoanFormula from '@/components/home-loan/HomeLoanFormula';
+import HomeLoanReportDownload from '@/components/home-loan/HomeLoanReportDownload';
+import type { AmortizationRow } from '@/components/home-loan/HomeLoanAmortization';
 
-type HomeLoanCalculatorClientProps = { bankName?: string; defaultInterestRate?: number };
+// Lazy-load heavy components
+const HomeLoanDonutChart = dynamic(() => import('@/components/home-loan/HomeLoanDonutChart'), {
+  ssr: false,
+  loading: () => (
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 h-[280px] flex items-center justify-center">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-10 h-10 border-3 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
+        <div className="text-gray-400 text-sm">Loading chart...</div>
+      </div>
+    </div>
+  ),
+});
+
+const HomeLoanAmortization = dynamic(() => import('@/components/home-loan/HomeLoanAmortization'), {
+  ssr: false,
+  loading: () => (
+    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 flex items-center justify-center min-h-[80px]">
+      <div className="text-gray-400 text-sm">Loading schedule...</div>
+    </div>
+  ),
+});
+
+const HomeLoanEducational = dynamic(() => import('@/components/home-loan/HomeLoanEducational'), {
+  ssr: false,
+  loading: () => <div className="min-h-[200px]" />,
+});
+
+type Props = { bankName?: string; defaultInterestRate?: number };
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
@@ -17,51 +50,179 @@ const formatLakh = (val: number) => {
   return `₹${val}`;
 };
 
-export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate = 8.5 }: HomeLoanCalculatorClientProps = {}) {
+const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+function getDateString(startMonth: number, startYear: number, monthOffset: number) {
+  const m = (startMonth + monthOffset - 1) % 12;
+  const y = startYear + Math.floor((startMonth + monthOffset - 1) / 12);
+  return `${MONTH_NAMES[m]} ${y}`;
+}
+
+function getPayoffDate(startMonth: number, startYear: number, totalMonths: number) {
+  return getDateString(startMonth, startYear, totalMonths);
+}
+
+// Generate amortization schedule
+function generateSchedule(
+  loanAmount: number,
+  monthlyRate: number,
+  emi: number,
+  totalMonths: number,
+  startMonth: number,
+  startYear: number,
+  prepay: PrepaymentConfig | null,
+): { schedule: AmortizationRow[]; totalInterest: number; actualMonths: number; newEMI: number } {
+  const schedule: AmortizationRow[] = [];
+  let balance = loanAmount;
+  let totalInterest = 0;
+  let currentEMI = emi;
+  let prepayApplied = false;
+
+  for (let i = 1; i <= totalMonths && balance > 0.5; i++) {
+    const interest = balance * monthlyRate;
+    let principalPaid = currentEMI - interest;
+    let prepayment = 0;
+
+    // Apply prepayment
+    if (prepay && prepay.enabled && i >= prepay.startMonth) {
+      const shouldApply =
+        prepay.frequency === 'one-time' ? i === prepay.startMonth :
+        prepay.frequency === 'monthly' ? true :
+        prepay.frequency === 'yearly' ? ((i - prepay.startMonth) % 12 === 0) : false;
+
+      if (shouldApply) {
+        prepayment = Math.min(prepay.amount, balance - principalPaid);
+
+        if (prepay.type === 'emi-cut' && !prepayApplied && prepay.frequency === 'one-time') {
+          // Recalculate EMI with reduced principal after one-time prepayment
+          const newBalance = balance - principalPaid - prepayment;
+          const remainingMonths = totalMonths - i;
+          if (remainingMonths > 0 && newBalance > 0) {
+            currentEMI = (newBalance * monthlyRate * Math.pow(1 + monthlyRate, remainingMonths)) /
+              (Math.pow(1 + monthlyRate, remainingMonths) - 1);
+          }
+          prepayApplied = true;
+        } else if (prepay.type === 'emi-cut' && prepay.frequency !== 'one-time' && !prepayApplied) {
+          // For recurring emi-cut, recalculate once at first prepayment
+          const newBalance = balance - principalPaid - prepayment;
+          const remainingMonths = totalMonths - i;
+          if (remainingMonths > 0 && newBalance > 0) {
+            currentEMI = (newBalance * monthlyRate * Math.pow(1 + monthlyRate, remainingMonths)) /
+              (Math.pow(1 + monthlyRate, remainingMonths) - 1);
+          }
+          prepayApplied = true;
+        }
+      }
+    }
+
+    // Ensure we don't overshoot
+    if (principalPaid + prepayment > balance) {
+      principalPaid = balance - prepayment;
+      if (principalPaid < 0) {
+        prepayment = balance;
+        principalPaid = 0;
+      }
+    }
+
+    balance -= (principalPaid + prepayment);
+    totalInterest += interest;
+
+    schedule.push({
+      month: i,
+      date: getDateString(startMonth, startYear, i),
+      emi: Math.round(currentEMI),
+      principal: Math.round(principalPaid),
+      interest: Math.round(interest),
+      prepayment: Math.round(prepayment),
+      balance: Math.max(0, Math.round(balance)),
+    });
+
+    if (balance <= 0.5) break;
+  }
+
+  return {
+    schedule,
+    totalInterest: Math.round(totalInterest),
+    actualMonths: schedule.length,
+    newEMI: Math.round(currentEMI),
+  };
+}
+
+export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate = 8.5 }: Props = {}) {
+  // Core inputs
   const [loanAmount, setLoanAmount] = useState(2500000);
   const [interestRate, setInterestRate] = useState(defaultInterestRate);
   const [loanTenure, setLoanTenure] = useState(20);
-  const [monthlyEMI, setMonthlyEMI] = useState(0);
-  const [totalInterest, setTotalInterest] = useState(0);
-  const [totalAmount, setTotalAmount] = useState(0);
-  const [showBreakdown, setShowBreakdown] = useState(false);
+
+  // Start date — use stable initial values to avoid hydration mismatch
+  const [startMonth, setStartMonth] = useState(5); // June (0-indexed)
+  const [startYear, setStartYear] = useState(2026);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const principal = loanAmount;
-    const monthlyRate = interestRate / 12 / 100;
-    const tenureMonths = loanTenure * 12;
-    if (principal > 0 && monthlyRate > 0 && tenureMonths > 0) {
-      const emi = (principal * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) / (Math.pow(1 + monthlyRate, tenureMonths) - 1);
-      const total = emi * tenureMonths;
-      setMonthlyEMI(Math.round(emi));
-      setTotalInterest(Math.round(total - principal));
-      setTotalAmount(Math.round(total));
+    if (!mounted) {
+      const now = new Date();
+      const nextMonth = (now.getMonth() + 1) % 12;
+      setStartMonth(nextMonth);
+      setStartYear(nextMonth === 0 ? now.getFullYear() + 1 : now.getFullYear());
+      setMounted(true);
     }
-  }, [loanAmount, interestRate, loanTenure]);
+  }, [mounted]);
 
-  const generateBreakdown = () => {
-    const monthlyRate = interestRate / 12 / 100;
-    const breakdown = [];
-    let balance = loanAmount;
-    for (let year = 1; year <= loanTenure; year++) {
-      let yearlyPrincipal = 0, yearlyInterest = 0;
-      for (let month = 1; month <= 12; month++) {
-        const interest = balance * monthlyRate;
-        const principalPaid = monthlyEMI - interest;
-        yearlyInterest += interest;
-        yearlyPrincipal += principalPaid;
-        balance -= principalPaid;
-      }
-      breakdown.push({ year, principal: Math.round(yearlyPrincipal), interest: Math.round(yearlyInterest), balance: Math.max(0, Math.round(balance)) });
-      if (balance <= 0) break;
-    }
-    return breakdown;
-  };
+  // Prepayment config
+  const [prepayConfig, setPrepayConfig] = useState<PrepaymentConfig>({
+    enabled: false,
+    amount: 500000,
+    type: 'tenure-cut',
+    startMonth: 13,
+    frequency: 'one-time',
+  });
+
+  // Core calculations
+  const monthlyRate = interestRate / 12 / 100;
+  const tenureMonths = loanTenure * 12;
+
+  const monthlyEMI = useMemo(() => {
+    if (loanAmount <= 0 || monthlyRate <= 0 || tenureMonths <= 0) return 0;
+    return Math.round(
+      (loanAmount * monthlyRate * Math.pow(1 + monthlyRate, tenureMonths)) /
+      (Math.pow(1 + monthlyRate, tenureMonths) - 1)
+    );
+  }, [loanAmount, monthlyRate, tenureMonths]);
+
+  // Normal schedule (no prepayment)
+  const normalResult = useMemo(() => {
+    if (monthlyEMI <= 0) return { schedule: [], totalInterest: 0, actualMonths: 0, newEMI: 0 };
+    return generateSchedule(loanAmount, monthlyRate, monthlyEMI, tenureMonths, startMonth, startYear, null);
+  }, [loanAmount, monthlyRate, monthlyEMI, tenureMonths, startMonth, startYear]);
+
+  // Prepayment schedule
+  const prepayResult = useMemo(() => {
+    if (!prepayConfig.enabled || monthlyEMI <= 0) return normalResult;
+    return generateSchedule(loanAmount, monthlyRate, monthlyEMI, tenureMonths * 2, startMonth, startYear, prepayConfig);
+  }, [loanAmount, monthlyRate, monthlyEMI, tenureMonths, startMonth, startYear, prepayConfig, normalResult]);
+
+  const totalInterest = normalResult.totalInterest;
+  const totalAmount = loanAmount + totalInterest;
+  const payoffDate = getPayoffDate(startMonth, startYear, normalResult.actualMonths);
+
+  const prepayTotalInterest = prepayResult.totalInterest;
+  const prepayTotalAmount = loanAmount + prepayTotalInterest;
+  const prepayPayoffDate = getPayoffDate(startMonth, startYear, prepayResult.actualMonths);
+
+  // Active schedule for amortization table
+  const activeSchedule = prepayConfig.enabled ? prepayResult.schedule : normalResult.schedule;
 
   const title = bankName ? `${bankName} Home Loan Calculator` : 'Home Loan Calculator';
 
+  // Start date handler
+  const handleStartMonth = useCallback((m: number) => {
+    setStartMonth(m);
+  }, []);
+
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 via-white to-gray-50">
+      {/* Breadcrumb */}
       <div className="bg-white/80 backdrop-blur-sm border-b border-gray-100">
         <div className="max-w-6xl mx-auto px-4 py-2.5 md:py-3">
           <nav className="flex text-sm" aria-label="Breadcrumb">
@@ -74,60 +235,145 @@ export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate
         </div>
       </div>
 
+      {/* Title / Hero */}
       <div className="max-w-6xl mx-auto px-4 pt-5 md:pt-8 pb-1">
         <div className="flex items-start gap-3 mb-2">
           <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 flex items-center justify-center text-white text-lg md:text-xl shadow-lg shadow-orange-200 flex-shrink-0">🏠</div>
           <div>
             <h1 className="text-xl md:text-2xl lg:text-4xl font-bold text-gray-900 leading-tight">{title} (2026)</h1>
-            <p className="text-sm md:text-base text-gray-500 mt-1 max-w-2xl">Calculate your {bankName ? `${bankName} ` : ''}home loan EMI with detailed amortization schedule.</p>
+            <p className="text-sm md:text-base text-gray-500 mt-1 max-w-2xl">
+              Calculate your {bankName ? `${bankName} ` : ''}home loan EMI with amortization schedule, prepayment analysis, and complete repayment timeline.
+            </p>
           </div>
         </div>
         <div className="mt-3 inline-flex items-center gap-2 bg-orange-50 text-orange-700 text-xs md:text-sm font-semibold px-3 md:px-4 py-1.5 md:py-2 rounded-full ring-1 ring-orange-200">
           <span className="relative flex h-2 w-2"><span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-400 opacity-75" /><span className="relative inline-flex rounded-full h-2 w-2 bg-orange-500" /></span>
-          ₹25L @ 8.5% for 20 yrs → EMI {formatCurrency(monthlyEMI)}
+          ₹25L @ {interestRate}% for {loanTenure} yrs → EMI {formatCurrency(monthlyEMI)}
         </div>
       </div>
 
+      {/* Main Calculator Area */}
       <div className="max-w-6xl mx-auto px-4 py-5 md:py-6">
         <div className="lg:grid lg:grid-cols-5 lg:gap-6">
+
+          {/* LEFT COLUMN: Inputs */}
           <div className="lg:col-span-2 mb-5 lg:mb-0">
-            <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100 lg:sticky lg:top-4">
-              <h2 className="text-base md:text-lg font-bold text-gray-900 mb-4 md:mb-5">Loan Details</h2>
-              <div className="space-y-5 md:space-y-6">
-                <SIPSlider label="Loan Amount" value={loanAmount} min={500000} max={50000000} step={100000} prefix="₹" color="blue" onChange={setLoanAmount} formatDisplay={(v) => formatLakh(v)} />
-                <SIPSlider label="Interest Rate (p.a.)" value={interestRate} min={6} max={15} step={0.05} suffix="%" color="amber" onChange={setInterestRate} formatDisplay={(v) => `${v}%`} />
-                <SIPSlider label="Loan Tenure" value={loanTenure} min={5} max={30} step={1} suffix=" yrs" color="emerald" onChange={setLoanTenure} formatDisplay={(v) => `${v} year${v > 1 ? 's' : ''}`} />
+            <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100 lg:sticky lg:top-4 space-y-6">
+              <div>
+                <h2 className="text-base md:text-lg font-bold text-gray-900 mb-4 md:mb-5">Loan Details</h2>
+                <div className="space-y-5 md:space-y-6">
+                  <SIPSlider label="Loan Amount" value={loanAmount} min={500000} max={50000000} step={100000} prefix="₹" color="blue" onChange={setLoanAmount} formatDisplay={(v) => formatLakh(v)} />
+                  <SIPSlider label="Interest Rate (p.a.)" value={interestRate} min={6} max={15} step={0.05} suffix="%" color="amber" onChange={setInterestRate} formatDisplay={(v) => `${v}%`} />
+                  <SIPSlider label="Loan Tenure" value={loanTenure} min={5} max={30} step={1} suffix=" yrs" color="emerald" onChange={setLoanTenure} formatDisplay={(v) => `${v} year${v > 1 ? 's' : ''}`} />
+                </div>
+              </div>
+
+              {/* Start Date Picker */}
+              <div className="border-t border-gray-100 pt-4">
+                <span className="text-[13px] font-semibold text-gray-500 block mb-2">EMI Start Date</span>
+                <div className="flex gap-2">
+                  <select
+                    value={startMonth}
+                    onChange={(e) => handleStartMonth(Number(e.target.value))}
+                    className="flex-1 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                  >
+                    {MONTH_NAMES.map((name, i) => (
+                      <option key={i} value={i}>{name}</option>
+                    ))}
+                  </select>
+                  <select
+                    value={startYear}
+                    onChange={(e) => setStartYear(Number(e.target.value))}
+                    className="w-24 bg-gray-50 border border-gray-200 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-primary-200"
+                  >
+                    {Array.from({ length: 5 }, (_, i) => startYear + i).map((y) => (
+                      <option key={y} value={y}>{y}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Prepayment Config */}
+              <div className="border-t border-gray-100 pt-4">
+                <HomeLoanPrepayment
+                  config={prepayConfig}
+                  onChange={setPrepayConfig}
+                  maxTenureMonths={tenureMonths}
+                  originalInterest={totalInterest}
+                  originalTenureMonths={normalResult.actualMonths}
+                  prepayInterest={prepayTotalInterest}
+                  prepayTenureMonths={prepayResult.actualMonths}
+                  originalEMI={monthlyEMI}
+                  prepayEMI={prepayResult.newEMI}
+                />
+              </div>
+
+              {/* Quick Info — desktop only */}
+              <div className="hidden lg:block border-t border-gray-100 pt-5">
+                <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.12em] mb-3">📋 Quick Info</h4>
+                <ul className="space-y-2.5">
+                  {[
+                    { icon: '🏦', color: 'text-blue-500', text: 'Compare rates across banks' },
+                    { icon: '💡', color: 'text-amber-500', text: 'Prepay early to save lakhs' },
+                    { icon: '🛡️', color: 'text-emerald-500', text: 'Tax benefit up to ₹3.5L/yr' },
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-start gap-2.5 text-xs text-gray-600 leading-relaxed">
+                      <span className={`${item.color} flex-shrink-0 text-sm mt-0.5`}>{item.icon}</span>
+                      {item.text}
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
           </div>
 
+          {/* RIGHT COLUMN: Results */}
           <div className="lg:col-span-3 space-y-4 md:space-y-6">
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-              <div className="divide-y divide-gray-100">
-                <div className="flex items-center justify-between px-4 md:px-5 py-4 bg-gray-50/50"><span className="text-base font-semibold text-gray-900">Monthly EMI</span><span className="text-lg font-extrabold text-gray-900">{formatCurrency(monthlyEMI)}</span></div>
-                <div className="flex items-center justify-between px-4 md:px-5 py-3.5"><span className="text-sm text-gray-500">Principal Amount</span><span className="text-sm font-bold text-gray-800">{formatCurrency(loanAmount)}</span></div>
-                <div className="flex items-center justify-between px-4 md:px-5 py-3.5"><span className="text-sm text-gray-500">Total Interest</span><span className="text-sm font-bold text-orange-600">{formatCurrency(totalInterest)}</span></div>
-                <div className="flex items-center justify-between px-4 md:px-5 py-3.5"><span className="text-sm text-gray-500">Total Amount Payable</span><span className="text-sm font-bold text-gray-800">{formatCurrency(totalAmount)}</span></div>
-              </div>
-            </div>
 
-            <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-              <button onClick={() => setShowBreakdown(!showBreakdown)} className="w-full flex justify-between items-center px-4 md:px-5 py-4 text-left">
-                <h3 className="text-sm font-bold text-gray-900">Year-wise Payment Breakdown</h3>
-                <span className="text-lg text-gray-400">{showBreakdown ? '−' : '+'}</span>
-              </button>
-              {showBreakdown && (
-                <div className="px-4 md:px-5 pb-4 max-h-80 overflow-y-auto">
-                  <table className="w-full text-xs">
-                    <thead className="bg-gray-50 sticky top-0"><tr><th className="px-2 py-2 text-left font-semibold text-gray-600">Year</th><th className="px-2 py-2 text-right font-semibold text-gray-600">Principal</th><th className="px-2 py-2 text-right font-semibold text-gray-600">Interest</th><th className="px-2 py-2 text-right font-semibold text-gray-600">Balance</th></tr></thead>
-                    <tbody>{generateBreakdown().map((row) => (
-                      <tr key={row.year} className="border-b border-gray-50"><td className="px-2 py-2 font-medium">{row.year}</td><td className="px-2 py-2 text-right text-emerald-600">{formatCurrency(row.principal)}</td><td className="px-2 py-2 text-right text-orange-600">{formatCurrency(row.interest)}</td><td className="px-2 py-2 text-right font-bold">{formatCurrency(row.balance)}</td></tr>
-                    ))}</tbody>
-                  </table>
-                </div>
-              )}
-            </div>
+            {/* Result Cards */}
+            <HomeLoanResultCards
+              monthlyEMI={monthlyEMI}
+              totalInterest={totalInterest}
+              totalAmount={totalAmount}
+              loanAmount={loanAmount}
+              payoffDate={payoffDate}
+              prepaymentActive={prepayConfig.enabled}
+              prepayEMI={prepayResult.newEMI}
+              prepayTotalInterest={prepayTotalInterest}
+              prepayTotalAmount={prepayTotalAmount}
+              prepayPayoffDate={prepayPayoffDate}
+              prepayTenureMonths={prepayResult.actualMonths}
+              originalTenureMonths={normalResult.actualMonths}
+            />
 
+            {/* Donut Chart */}
+            <HomeLoanDonutChart
+              loanAmount={loanAmount}
+              totalInterest={totalInterest}
+              prepaymentActive={prepayConfig.enabled}
+              prepayTotalInterest={prepayTotalInterest}
+            />
+
+            {/* Download Buttons */}
+            <HomeLoanReportDownload
+              schedule={activeSchedule}
+              loanAmount={loanAmount}
+              interestRate={interestRate}
+              loanTenure={loanTenure}
+              monthlyEMI={monthlyEMI}
+              totalInterest={prepayConfig.enabled ? prepayTotalInterest : totalInterest}
+              totalAmount={prepayConfig.enabled ? prepayTotalAmount : totalAmount}
+              prepaymentActive={prepayConfig.enabled}
+            />
+
+            {/* Amortization Schedule */}
+            <HomeLoanAmortization
+              schedule={activeSchedule}
+              loanTenure={loanTenure}
+              prepaymentActive={prepayConfig.enabled}
+            />
+
+            {/* Bank-wise Links (only on generic page) */}
             {!bankName && (
               <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
                 <div className="px-4 md:px-5 pt-4 pb-2"><h3 className="text-sm font-bold text-gray-900">Bank-wise Home Loan Calculators</h3></div>
@@ -139,10 +385,41 @@ export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate
               </div>
             )}
 
+            {/* Formula Section */}
+            <HomeLoanFormula
+              loanAmount={loanAmount}
+              interestRate={interestRate}
+              loanTenure={loanTenure}
+              monthlyEMI={monthlyEMI}
+            />
+
+            {/* Quick Info (mobile only) */}
+            <div className="lg:hidden bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+              <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.12em] mb-3">📋 Quick Info</h4>
+              <ul className="space-y-3">
+                {[
+                  { icon: '🏦', color: 'text-blue-500', text: 'Compare rates across banks for best deal' },
+                  { icon: '💡', color: 'text-amber-500', text: 'Prepay early to save lakhs in interest' },
+                  { icon: '🛡️', color: 'text-emerald-500', text: 'Tax benefit up to ₹3.5L/yr (80C + 24b)' },
+                ].map((item, i) => (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-gray-600 leading-relaxed">
+                    <span className={`${item.color} flex-shrink-0 text-base mt-0.5`}>{item.icon}</span>
+                    {item.text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Disclaimer */}
             <div className="bg-amber-50 rounded-2xl p-4 md:p-5 border border-amber-200">
-              <div className="flex items-start gap-3"><span className="text-xl flex-shrink-0">⚠️</span><div><h3 className="text-sm font-bold text-gray-900 mb-1">Important Disclaimer</h3><p className="text-xs md:text-sm text-gray-600 leading-relaxed">EMI calculations assume a fixed interest rate. Actual EMI may vary based on floating rate changes, processing fees, and lender terms.</p></div></div>
+              <div className="flex items-start gap-3"><span className="text-xl flex-shrink-0">⚠️</span><div><h3 className="text-sm font-bold text-gray-900 mb-1">Important Disclaimer</h3><p className="text-xs md:text-sm text-gray-600 leading-relaxed">EMI calculations assume a fixed interest rate throughout the tenure. Actual EMI may vary based on floating rate changes, processing fees, and lender terms. This tool is for educational purposes only.</p></div></div>
             </div>
           </div>
+        </div>
+
+        {/* Educational Content (full width) */}
+        <div className="mt-8 md:mt-10">
+          <HomeLoanEducational />
         </div>
       </div>
     </div>
