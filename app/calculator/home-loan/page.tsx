@@ -1,5 +1,8 @@
 import { Metadata } from 'next';
 import HomeLoanCalculatorClient from '@/components/HomeLoanCalculatorClient';
+import HomeLoanAmortizationSSR from '@/components/home-loan/HomeLoanAmortizationSSR';
+import HomeLoanChartSSR from '@/components/home-loan/HomeLoanChartSSR';
+import { computeDefaults } from '@/lib/homeLoanCalculations';
 
 export const metadata: Metadata = {
     title: 'Home Loan EMI Calculator 2026 — Amortization Schedule, Prepayment & Interest | GPaisa',
@@ -17,6 +20,9 @@ export const metadata: Metadata = {
 };
 
 export default function HomeLoanCalculatorPage() {
+    // Pre-compute default amortization data server-side
+    const defaults = computeDefaults();
+
     const faqSchema = {
         '@context': 'https://schema.org',
         '@type': 'FAQPage',
@@ -126,7 +132,28 @@ export default function HomeLoanCalculatorPage() {
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
             />
-            <HomeLoanCalculatorClient />
+
+            {/* 
+              Server-rendered initial data — visible in View Source with JS disabled.
+              The client component below will hydrate and take over interactivity.
+            */}
+            <HomeLoanCalculatorClient
+                ssrChartFallback={
+                    <HomeLoanChartSSR
+                        loanAmount={defaults.loanAmount}
+                        totalInterest={defaults.totalInterest}
+                        principalPercent={defaults.principalPercent}
+                        interestPercent={defaults.interestPercent}
+                    />
+                }
+                ssrAmortizationFallback={
+                    <HomeLoanAmortizationSSR
+                        schedule={defaults.first12Months}
+                        loanTenure={defaults.loanTenure}
+                        totalMonths={defaults.loanTenure * 12}
+                    />
+                }
+            />
         </>
     );
 }

@@ -1,16 +1,9 @@
 'use client';
 
 import { useState, useMemo } from 'react';
+import type { AmortizationRow } from '@/lib/homeLoanCalculations';
 
-export type AmortizationRow = {
-  month: number;
-  date: string;        // "Jun 2026"
-  emi: number;
-  principal: number;
-  interest: number;
-  prepayment: number;
-  balance: number;
-};
+export type { AmortizationRow };
 
 type Props = {
   schedule: AmortizationRow[];

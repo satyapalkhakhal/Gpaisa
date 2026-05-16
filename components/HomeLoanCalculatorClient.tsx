@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, type ReactNode } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import SIPSlider from '@/components/sip/SIPSlider';
@@ -9,28 +9,16 @@ import HomeLoanResultCards from '@/components/home-loan/HomeLoanResultCards';
 import HomeLoanPrepayment, { type PrepaymentConfig } from '@/components/home-loan/HomeLoanPrepayment';
 import HomeLoanFormula from '@/components/home-loan/HomeLoanFormula';
 import HomeLoanReportDownload from '@/components/home-loan/HomeLoanReportDownload';
-import type { AmortizationRow } from '@/components/home-loan/HomeLoanAmortization';
+import type { AmortizationRow } from '@/lib/homeLoanCalculations';
+import { generateSchedule, getDateString, getPayoffDate } from '@/lib/homeLoanCalculations';
 
-// Lazy-load heavy components
+// Lazy-load heavy components — no loading placeholder needed, SSR fallbacks handle it
 const HomeLoanDonutChart = dynamic(() => import('@/components/home-loan/HomeLoanDonutChart'), {
   ssr: false,
-  loading: () => (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 h-[280px] flex items-center justify-center">
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-10 h-10 border-3 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
-        <div className="text-gray-400 text-sm">Loading chart...</div>
-      </div>
-    </div>
-  ),
 });
 
 const HomeLoanAmortization = dynamic(() => import('@/components/home-loan/HomeLoanAmortization'), {
   ssr: false,
-  loading: () => (
-    <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 flex items-center justify-center min-h-[80px]">
-      <div className="text-gray-400 text-sm">Loading schedule...</div>
-    </div>
-  ),
 });
 
 const HomeLoanEducational = dynamic(() => import('@/components/home-loan/HomeLoanEducational'), {
@@ -38,7 +26,12 @@ const HomeLoanEducational = dynamic(() => import('@/components/home-loan/HomeLoa
   loading: () => <div className="min-h-[200px]" />,
 });
 
-type Props = { bankName?: string; defaultInterestRate?: number };
+type Props = {
+  bankName?: string;
+  defaultInterestRate?: number;
+  ssrChartFallback?: ReactNode;
+  ssrAmortizationFallback?: ReactNode;
+};
 
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
@@ -52,103 +45,9 @@ const formatLakh = (val: number) => {
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-function getDateString(startMonth: number, startYear: number, monthOffset: number) {
-  const m = (startMonth + monthOffset - 1) % 12;
-  const y = startYear + Math.floor((startMonth + monthOffset - 1) / 12);
-  return `${MONTH_NAMES[m]} ${y}`;
-}
-
-function getPayoffDate(startMonth: number, startYear: number, totalMonths: number) {
-  return getDateString(startMonth, startYear, totalMonths);
-}
-
-// Generate amortization schedule
-function generateSchedule(
-  loanAmount: number,
-  monthlyRate: number,
-  emi: number,
-  totalMonths: number,
-  startMonth: number,
-  startYear: number,
-  prepay: PrepaymentConfig | null,
-): { schedule: AmortizationRow[]; totalInterest: number; actualMonths: number; newEMI: number } {
-  const schedule: AmortizationRow[] = [];
-  let balance = loanAmount;
-  let totalInterest = 0;
-  let currentEMI = emi;
-  let prepayApplied = false;
-
-  for (let i = 1; i <= totalMonths && balance > 0.5; i++) {
-    const interest = balance * monthlyRate;
-    let principalPaid = currentEMI - interest;
-    let prepayment = 0;
-
-    // Apply prepayment
-    if (prepay && prepay.enabled && i >= prepay.startMonth) {
-      const shouldApply =
-        prepay.frequency === 'one-time' ? i === prepay.startMonth :
-        prepay.frequency === 'monthly' ? true :
-        prepay.frequency === 'yearly' ? ((i - prepay.startMonth) % 12 === 0) : false;
-
-      if (shouldApply) {
-        prepayment = Math.min(prepay.amount, balance - principalPaid);
-
-        if (prepay.type === 'emi-cut' && !prepayApplied && prepay.frequency === 'one-time') {
-          // Recalculate EMI with reduced principal after one-time prepayment
-          const newBalance = balance - principalPaid - prepayment;
-          const remainingMonths = totalMonths - i;
-          if (remainingMonths > 0 && newBalance > 0) {
-            currentEMI = (newBalance * monthlyRate * Math.pow(1 + monthlyRate, remainingMonths)) /
-              (Math.pow(1 + monthlyRate, remainingMonths) - 1);
-          }
-          prepayApplied = true;
-        } else if (prepay.type === 'emi-cut' && prepay.frequency !== 'one-time' && !prepayApplied) {
-          // For recurring emi-cut, recalculate once at first prepayment
-          const newBalance = balance - principalPaid - prepayment;
-          const remainingMonths = totalMonths - i;
-          if (remainingMonths > 0 && newBalance > 0) {
-            currentEMI = (newBalance * monthlyRate * Math.pow(1 + monthlyRate, remainingMonths)) /
-              (Math.pow(1 + monthlyRate, remainingMonths) - 1);
-          }
-          prepayApplied = true;
-        }
-      }
-    }
-
-    // Ensure we don't overshoot
-    if (principalPaid + prepayment > balance) {
-      principalPaid = balance - prepayment;
-      if (principalPaid < 0) {
-        prepayment = balance;
-        principalPaid = 0;
-      }
-    }
-
-    balance -= (principalPaid + prepayment);
-    totalInterest += interest;
-
-    schedule.push({
-      month: i,
-      date: getDateString(startMonth, startYear, i),
-      emi: Math.round(currentEMI),
-      principal: Math.round(principalPaid),
-      interest: Math.round(interest),
-      prepayment: Math.round(prepayment),
-      balance: Math.max(0, Math.round(balance)),
-    });
-
-    if (balance <= 0.5) break;
-  }
-
-  return {
-    schedule,
-    totalInterest: Math.round(totalInterest),
-    actualMonths: schedule.length,
-    newEMI: Math.round(currentEMI),
-  };
-}
-
-export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate = 8.5 }: Props = {}) {
+export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate = 8.5, ssrChartFallback, ssrAmortizationFallback }: Props = {}) {
+  // Track whether client-side JS has loaded to swap SSR fallbacks with interactive components
+  const [clientReady, setClientReady] = useState(false);
   // Core inputs
   const [loanAmount, setLoanAmount] = useState(2500000);
   const [interestRate, setInterestRate] = useState(defaultInterestRate);
@@ -167,6 +66,8 @@ export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate
       setStartYear(nextMonth === 0 ? now.getFullYear() + 1 : now.getFullYear());
       setMounted(true);
     }
+    // Mark client as ready to replace SSR fallbacks with interactive components
+    setClientReady(true);
   }, [mounted]);
 
   // Prepayment config
@@ -346,13 +247,21 @@ export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate
               originalTenureMonths={normalResult.actualMonths}
             />
 
-            {/* Donut Chart */}
-            <HomeLoanDonutChart
-              loanAmount={loanAmount}
-              totalInterest={totalInterest}
-              prepaymentActive={prepayConfig.enabled}
-              prepayTotalInterest={prepayTotalInterest}
-            />
+            {/* Donut Chart — show SSR fallback until client loads */}
+            {clientReady ? (
+              <HomeLoanDonutChart
+                loanAmount={loanAmount}
+                totalInterest={totalInterest}
+                prepaymentActive={prepayConfig.enabled}
+                prepayTotalInterest={prepayTotalInterest}
+              />
+            ) : (
+              ssrChartFallback || (
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 h-[280px] flex items-center justify-center">
+                  <div className="text-gray-400 text-sm">Loading chart...</div>
+                </div>
+              )
+            )}
 
             {/* Download Buttons */}
             <HomeLoanReportDownload
@@ -366,12 +275,20 @@ export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate
               prepaymentActive={prepayConfig.enabled}
             />
 
-            {/* Amortization Schedule */}
-            <HomeLoanAmortization
-              schedule={activeSchedule}
-              loanTenure={loanTenure}
-              prepaymentActive={prepayConfig.enabled}
-            />
+            {/* Amortization Schedule — show SSR fallback until client loads */}
+            {clientReady ? (
+              <HomeLoanAmortization
+                schedule={activeSchedule}
+                loanTenure={loanTenure}
+                prepaymentActive={prepayConfig.enabled}
+              />
+            ) : (
+              ssrAmortizationFallback || (
+                <div className="bg-white rounded-2xl shadow-lg border border-gray-100 p-6 flex items-center justify-center min-h-[80px]">
+                  <div className="text-gray-400 text-sm">Loading schedule...</div>
+                </div>
+              )
+            )}
 
             {/* Bank-wise Links (only on generic page) */}
             {!bankName && (
