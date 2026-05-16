@@ -37,18 +37,18 @@ export default function HomeLoanCalculatorPage() {
             },
             {
                 '@type': 'Question',
-                name: 'What is the current HDFC home loan interest rate?',
+                name: 'What are the current home loan interest rates in India?',
                 acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'HDFC Bank home loan interest rates start from around 8.50% to 9.40% p.a. for salaried individuals (as of 2026). The rate depends on your credit score, loan amount, employment type, and property location.',
+                    text: 'Home loan interest rates in India currently range from 7.20% to 9.80% across major banks (May 2026). SBI offers rates from 7.50%, HDFC Bank from 7.20%, ICICI Bank from 7.65%, and Bank of Baroda from 7.20%. Your actual rate depends on your CIBIL score, loan amount, employment type, and property location.',
                 },
             },
             {
                 '@type': 'Question',
-                name: 'Can I prepay my HDFC home loan?',
+                name: 'Can I prepay my home loan without penalty?',
                 acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'Yes, HDFC Bank allows prepayment of home loans. For floating rate loans, there are no prepayment or foreclosure charges. For fixed rate loans, a prepayment penalty of up to 2% may apply.',
+                    text: 'Yes. As per RBI guidelines, banks cannot charge any prepayment or foreclosure penalty on floating rate home loans. This applies to all banks in India — SBI, HDFC, ICICI, Axis, and others. For fixed rate loans, a prepayment penalty of up to 2% may apply depending on the lender.',
                 },
             },
             {
@@ -69,10 +69,10 @@ export default function HomeLoanCalculatorPage() {
             },
             {
                 '@type': 'Question',
-                name: 'Is HDFC home loan interest fixed or floating?',
+                name: 'Is a home loan interest rate fixed or floating?',
                 acceptedAnswer: {
                     '@type': 'Answer',
-                    text: 'HDFC Bank offers both fixed and floating rate home loans. Floating rate loans are linked to an external benchmark (RBI repo rate) and can change periodically.',
+                    text: 'Most home loans in India are floating rate loans, linked to an external benchmark like the RBI repo rate. This means your EMI can change when the repo rate changes. Some banks also offer fixed rate loans at a slightly higher rate. Floating rate loans are generally recommended as they allow penalty-free prepayment and tend to be lower in the long run.',
                 },
             },
             {
