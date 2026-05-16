@@ -7,7 +7,29 @@ import SIPSlider from '@/components/sip/SIPSlider';
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
 
-export default function EPFCalculatorClient() {
+export type EPFYearRow = {
+  year: number;
+  age: number;
+  basicSalary: number;
+  employeeContrib: number;
+  employerContrib: number;
+  interest: number;
+  closingBalance: number;
+};
+
+type Props = {
+  initialMaturity?: number;
+  initialTotalContrib?: number;
+  initialTotalInterest?: number;
+  initialPension?: number;
+};
+
+export default function EPFCalculatorClient({
+  initialMaturity = 0,
+  initialTotalContrib = 0,
+  initialTotalInterest = 0,
+  initialPension = 0,
+}: Props = {}) {
   const [basicSalary, setBasicSalary] = useState(50000);
   const [currentAge, setCurrentAge] = useState(30);
   const [retirementAge, setRetirementAge] = useState(58);
@@ -18,10 +40,11 @@ export default function EPFCalculatorClient() {
   const employeeContribution = 12;
   const employerContribution = 12;
 
-  const [maturityAmount, setMaturityAmount] = useState(0);
-  const [totalContribution, setTotalContribution] = useState(0);
-  const [totalInterest, setTotalInterest] = useState(0);
-  const [pensionAmount, setPensionAmount] = useState(0);
+  // Pre-initialised with server-computed defaults — no ₹0 flash on first render
+  const [maturityAmount, setMaturityAmount] = useState(initialMaturity);
+  const [totalContribution, setTotalContribution] = useState(initialTotalContrib);
+  const [totalInterest, setTotalInterest] = useState(initialTotalInterest);
+  const [pensionAmount, setPensionAmount] = useState(initialPension);
 
   useEffect(() => {
     const yearsToRetirement = retirementAge - currentAge;
