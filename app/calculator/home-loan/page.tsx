@@ -75,6 +75,30 @@ export default function HomeLoanCalculatorPage() {
                     text: 'HDFC Bank offers both fixed and floating rate home loans. Floating rate loans are linked to an external benchmark (RBI repo rate) and can change periodically.',
                 },
             },
+            {
+                '@type': 'Question',
+                name: 'What is the home loan EMI for ₹30 lakh?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'At 8.5% interest rate for 20 years, the monthly EMI for a ₹30 lakh home loan is approximately ₹26,030. The total interest payable over the tenure would be around ₹32.47 lakh, making the total repayment ₹62.47 lakh. You can reduce this by choosing a shorter tenure or making prepayments.',
+                },
+            },
+            {
+                '@type': 'Question',
+                name: 'What CIBIL score is needed for a home loan?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Most banks require a minimum CIBIL score of 650–700 to approve a home loan. However, a score of 750 or above qualifies you for the lowest interest rates — typically 0.25% to 0.50% lower than standard rates. For example, SBI offers preferential rates starting at 8.50% for applicants with a CIBIL score above 750.',
+                },
+            },
+            {
+                '@type': 'Question',
+                name: 'Can I get a home loan on ₹25,000 monthly salary?',
+                acceptedAnswer: {
+                    '@type': 'Answer',
+                    text: 'Yes. Banks typically allow an EMI-to-income ratio of 40–50%. On a ₹25,000 salary, your maximum EMI would be ₹10,000–₹12,500. At 8.5% interest for 20 years (EMI per lakh = ₹868), this qualifies you for a home loan of approximately ₹11.5–₹14.4 lakh. A co-applicant\'s income can increase your eligibility significantly.',
+                },
+            },
         ],
     };
 

@@ -9,6 +9,7 @@ import HomeLoanResultCards from '@/components/home-loan/HomeLoanResultCards';
 import HomeLoanPrepayment, { type PrepaymentConfig } from '@/components/home-loan/HomeLoanPrepayment';
 import HomeLoanFormula from '@/components/home-loan/HomeLoanFormula';
 import HomeLoanReportDownload from '@/components/home-loan/HomeLoanReportDownload';
+import HomeLoanSEOContent from '@/components/home-loan/HomeLoanSEOContent';
 import type { AmortizationRow } from '@/lib/homeLoanCalculations';
 import { generateSchedule, getDateString, getPayoffDate } from '@/lib/homeLoanCalculations';
 
@@ -301,6 +302,9 @@ export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate
                 </div>
               </div>
             )}
+
+            {/* SEO Content Sections — static HTML, server-rendered */}
+            <HomeLoanSEOContent />
 
             {/* Formula Section */}
             <HomeLoanFormula
