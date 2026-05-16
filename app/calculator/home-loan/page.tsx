@@ -8,11 +8,17 @@ export const metadata: Metadata = {
     title: 'Home Loan EMI Calculator 2026 — Amortization Schedule, Prepayment & Interest | GPaisa',
     description: 'Calculate your home loan EMI instantly with amortization schedule, interest breakdown, prepayment simulator, payoff timeline, and downloadable report on GPaisa. India\'s most complete home loan calculator.',
     keywords: 'home loan calculator, home loan EMI calculator, housing loan calculator, EMI calculator, home loan interest calculator, mortgage calculator india, home loan amortization schedule, home loan prepayment calculator, HDFC home loan EMI, SBI home loan calculator, home loan tax benefits',
+    authors: [{ name: 'Satyapal Khakhal' }],
     openGraph: {
         title: 'Home Loan EMI Calculator — Amortization, Prepayment & Report | GPaisa',
         description: 'Calculate your home loan EMI with detailed amortization schedule, prepayment analysis, interest breakdown, and downloadable report.',
         type: 'website',
         url: 'https://www.gpaisa.in/calculator/home-loan',
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'Home Loan EMI Calculator 2026 — Amortization Schedule, Prepayment & Interest | GPaisa',
+        description: 'Calculate your home loan EMI with amortization schedule, prepayment analysis, interest breakdown, and downloadable report. Compare rates across SBI, HDFC, ICICI & more.',
     },
     alternates: {
         canonical: 'https://www.gpaisa.in/calculator/home-loan',
@@ -140,6 +146,10 @@ export default function HomeLoanCalculatorPage() {
             'Principal vs interest breakdown chart',
             'Multiple bank comparisons',
         ],
+        author: {
+            '@type': 'Person',
+            name: 'Satyapal Khakhal',
+        },
     };
 
     return (
