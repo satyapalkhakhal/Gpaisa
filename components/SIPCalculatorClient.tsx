@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type ReactNode } from 'react';
 import Link from 'next/link';
 import dynamic from 'next/dynamic';
 import SIPSlider from '@/components/sip/SIPSlider';
@@ -8,21 +8,35 @@ import SIPResultCards from '@/components/sip/SIPResultCards';
 import SIPBreakdownTable from '@/components/sip/SIPBreakdownTable';
 import SIPEducationalContent from '@/components/sip/SIPEducationalContent';
 
-// Lazy-load the chart to improve initial page load
+// Lazy-load the chart — SIPChart uses useMemo internally so no loading spinner needed
 const SIPChart = dynamic(() => import('@/components/sip/SIPChart'), {
   ssr: false,
-  loading: () => (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 sip-chart-container flex items-center justify-center">
-      <div className="flex flex-col items-center gap-3">
-        <div className="w-10 h-10 border-3 border-primary-200 border-t-primary-600 rounded-full animate-spin" />
-        <div className="text-gray-400 text-sm">Loading chart...</div>
-      </div>
-    </div>
-  ),
 });
+
+// ─── Pre-compute default values so useState is initialised with real numbers ───
+// Defaults: ₹10,000/month @ 12% for 10 years (regular SIP)
+const DEFAULT_MONTHLY = 10000;
+const DEFAULT_RATE = 12;
+const DEFAULT_YEARS = 10;
+
+function computeRegularSIP(monthly: number, ratePercent: number, years: number) {
+  const monthlyRate = ratePercent / 12 / 100;
+  const months = years * 12;
+  const futureValue =
+    monthly * (((Math.pow(1 + monthlyRate, months) - 1) / monthlyRate) * (1 + monthlyRate));
+  const invested = monthly * months;
+  return {
+    totalInvestment: Math.round(invested),
+    estimatedReturns: Math.round(futureValue - invested),
+    totalValue: Math.round(futureValue),
+  };
+}
+
+const defaultSIPResult = computeRegularSIP(DEFAULT_MONTHLY, DEFAULT_RATE, DEFAULT_YEARS);
 
 type SIPCalculatorClientProps = {
   bankName?: string;
+  ssrAmcContent?: ReactNode;
 };
 
 const formatCurrency = (amount: number) =>
@@ -32,19 +46,19 @@ const formatCurrency = (amount: number) =>
     maximumFractionDigits: 0,
   }).format(amount);
 
-export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientProps = {}) {
-  // Calculator state
-  const [monthlyInvestment, setMonthlyInvestment] = useState(10000);
-  const [expectedReturn, setExpectedReturn] = useState(12);
-  const [timePeriod, setTimePeriod] = useState(10);
+export default function SIPCalculatorClient({ bankName, ssrAmcContent }: SIPCalculatorClientProps = {}) {
+  // Calculator state — initialised with default values (10k/mo @ 12% / 10yr)
+  const [monthlyInvestment, setMonthlyInvestment] = useState(DEFAULT_MONTHLY);
+  const [expectedReturn, setExpectedReturn] = useState(DEFAULT_RATE);
+  const [timePeriod, setTimePeriod] = useState(DEFAULT_YEARS);
   const [stepUpPercentage, setStepUpPercentage] = useState(0);
   const [calculatorType, setCalculatorType] = useState<'regular' | 'stepup' | 'lumpsum'>('regular');
   const [lumpSumAmount, setLumpSumAmount] = useState(100000);
 
-  // Results state
-  const [totalInvestment, setTotalInvestment] = useState(0);
-  const [estimatedReturns, setEstimatedReturns] = useState(0);
-  const [totalValue, setTotalValue] = useState(0);
+  // Results state — pre-initialised so summary cards show real numbers on first render
+  const [totalInvestment, setTotalInvestment] = useState(defaultSIPResult.totalInvestment);
+  const [estimatedReturns, setEstimatedReturns] = useState(defaultSIPResult.estimatedReturns);
+  const [totalValue, setTotalValue] = useState(defaultSIPResult.totalValue);
 
   // Calculate SIP returns — same formulas as before
   useEffect(() => {
@@ -333,6 +347,13 @@ export default function SIPCalculatorClient({ bankName }: SIPCalculatorClientPro
             </div>
           </div>
         </div>
+
+        {/* ===== AMC-specific SSR content (bank pages only) ===== */}
+        {ssrAmcContent && (
+          <div className="mt-8 md:mt-10">
+            {ssrAmcContent}
+          </div>
+        )}
 
         {/* ===== Educational Content ===== */}
         <div className="mt-8 md:mt-10">

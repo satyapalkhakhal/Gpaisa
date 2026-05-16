@@ -116,11 +116,10 @@ export default function HomeLoanAmortization({ schedule, loanTenure, prepaymentA
                 <button
                   key={year}
                   onClick={() => setSelectedYear(year)}
-                  className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
-                    selectedYear === year
+                  className={`flex-shrink-0 px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${selectedYear === year
                       ? 'bg-primary-600 text-white shadow-sm'
                       : 'bg-gray-100 text-gray-600 active:bg-gray-200'
-                  }`}
+                    }`}
                 >
                   Yr {year}
                 </button>
@@ -148,9 +147,8 @@ export default function HomeLoanAmortization({ schedule, loanTenure, prepaymentA
                 {yearRows.map((row, idx) => (
                   <tr
                     key={row.month}
-                    className={`border-t border-gray-100 transition-colors hover:bg-blue-50/30 ${
-                      idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'
-                    } ${row.balance <= 0 ? 'bg-emerald-50/50' : ''}`}
+                    className={`border-t border-gray-100 transition-colors hover:bg-blue-50/30 ${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'
+                      } ${row.balance <= 0 ? 'bg-emerald-50/50' : ''}`}
                   >
                     <td className="px-3 py-2.5 font-medium text-gray-800">{row.month}</td>
                     <td className="px-3 py-2.5 text-gray-600 whitespace-nowrap">{row.date}</td>

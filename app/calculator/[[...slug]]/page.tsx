@@ -1,11 +1,13 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import SIPCalculatorClient from '@/components/SIPCalculatorClient';
+import SipAmcContent from '@/components/sip/SipAmcContent';
 import HomeLoanCalculatorClient from '@/components/HomeLoanCalculatorClient';
 import BankSpecificContent from '@/components/home-loan/BankSpecificContent';
 import HomeLoanAmortizationSSR from '@/components/home-loan/HomeLoanAmortizationSSR';
 import HomeLoanChartSSR from '@/components/home-loan/HomeLoanChartSSR';
 import { getBankBySlug, getAllBankSlugs } from '@/lib/bankData';
+import { getSipAmcDataBySlug } from '@/lib/sipAmcData';
 import { getHomeLoanBankBySlug, getAllHomeLoanBankSlugs } from '@/lib/homeLoanBankData';
 import { getBankHomeLoanDataBySlug } from '@/lib/bankHomeLoanData';
 import {
@@ -34,21 +36,53 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
 
-    // Handle SIP calculator URLs
+    // Handle SIP calculator URLs — use enriched AMC data for meta tags
     if (slug && slug.length === 1 && slug[0].endsWith('-sip-calculator')) {
-        const bankSlug = slug[0].replace('-sip-calculator', '');
-        const bank = getBankBySlug(bankSlug);
+        const amcData = getSipAmcDataBySlug(slug[0]);
+        const bank = getBankBySlug(slug[0].replace('-sip-calculator', ''));
 
+        if (amcData) {
+            return {
+                title: amcData.metaTitle,
+                description: amcData.metaDescription,
+                keywords: `${amcData.shortName.toLowerCase()} sip calculator, ${amcData.amcName.toLowerCase()} sip, ${amcData.shortName.toLowerCase()} mutual fund calculator, sip calculator india`,
+                authors: [{ name: 'Satyapal Khakhal' }],
+                openGraph: {
+                    title: amcData.metaTitle,
+                    description: amcData.metaDescription,
+                    type: 'website',
+                    url: `https://www.gpaisa.in/calculator/${slug[0]}`,
+                },
+                twitter: {
+                    card: 'summary_large_image',
+                    title: `${amcData.shortName} SIP Calculator 2026 — Top Funds, Returns & Investment Guide | gpaisa.in`,
+                    description: amcData.metaDescription,
+                    creator: '@gpaisa_in',
+                },
+                alternates: {
+                    canonical: `https://www.gpaisa.in/calculator/${slug[0]}`,
+                },
+            };
+        }
+
+        // Fallback for banks not in sipAmcData
         if (bank) {
             return {
-                title: `${bank.name} SIP Calculator - Calculate ${bank.name} Mutual Fund Returns | Gpaisa`,
+                title: `${bank.name} SIP Calculator 2026 — Top Funds, Returns & Investment Guide | gpaisa.in`,
                 description: bank.description,
                 keywords: `${bank.name.toLowerCase()} sip calculator, ${bank.name.toLowerCase()} mutual fund calculator, sip calculator online`,
+                authors: [{ name: 'Satyapal Khakhal' }],
                 openGraph: {
                     title: `${bank.name} SIP Calculator`,
                     description: bank.description,
                     type: 'website',
                     url: `https://www.gpaisa.in/calculator/${slug[0]}`,
+                },
+                twitter: {
+                    card: 'summary_large_image',
+                    title: `${bank.name} SIP Calculator 2026 — Top Funds, Returns & Investment Guide | gpaisa.in`,
+                    description: bank.description,
+                    creator: '@gpaisa_in',
                 },
                 alternates: {
                     canonical: `https://www.gpaisa.in/calculator/${slug[0]}`,
@@ -100,13 +134,18 @@ export default async function CalculatorCatchAll({ params }: Props) {
     if (slug && slug.length === 1 && slug[0].endsWith('-sip-calculator')) {
         const bankSlug = slug[0].replace('-sip-calculator', '');
         const bank = getBankBySlug(bankSlug);
+        const amcData = getSipAmcDataBySlug(slug[0]);
 
         if (bank) {
             const jsonLd = {
                 '@context': 'https://schema.org',
                 '@type': 'WebPage',
-                name: `${bank.name} SIP Calculator`,
-                description: bank.description,
+                name: amcData ? `${amcData.amcName} SIP Calculator` : `${bank.name} SIP Calculator`,
+                description: amcData?.metaDescription ?? bank.description,
+                author: {
+                    '@type': 'Person',
+                    name: 'Satyapal Khakhal',
+                },
             };
 
             return (
@@ -115,7 +154,10 @@ export default async function CalculatorCatchAll({ params }: Props) {
                         type="application/ld+json"
                         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
                     />
-                    <SIPCalculatorClient bankName={bank.name} />
+                    <SIPCalculatorClient
+                        bankName={amcData?.amcName ?? bank.name}
+                        ssrAmcContent={amcData ? <SipAmcContent data={amcData} /> : undefined}
+                    />
                 </>
             );
         }
