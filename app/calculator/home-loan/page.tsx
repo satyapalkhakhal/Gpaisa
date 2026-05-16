@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import HomeLoanCalculatorClient from '@/components/HomeLoanCalculatorClient';
 import HomeLoanAmortizationSSR from '@/components/home-loan/HomeLoanAmortizationSSR';
 import HomeLoanChartSSR from '@/components/home-loan/HomeLoanChartSSR';
+import HomeLoanSEOContent from '@/components/home-loan/HomeLoanSEOContent';
 import { computeDefaults } from '@/lib/homeLoanCalculations';
 
 export const metadata: Metadata = {
@@ -17,8 +18,9 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        title: 'Home Loan EMI Calculator 2026 — Amortization Schedule, Prepayment & Interest | GPaisa',
+        title: 'Home Loan EMI Calculator 2026 — Amortization & Prepayment | gpaisa.in',
         description: 'Calculate your home loan EMI with amortization schedule, prepayment analysis, interest breakdown, and downloadable report. Compare rates across SBI, HDFC, ICICI & more.',
+        creator: '@gpaisa_in',
     },
     alternates: {
         canonical: 'https://www.gpaisa.in/calculator/home-loan',
@@ -187,6 +189,7 @@ export default function HomeLoanCalculatorPage() {
                         totalMonths={defaults.loanTenure * 12}
                     />
                 }
+                ssrBankContent={<HomeLoanSEOContent />}
             />
         </>
     );

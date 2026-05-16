@@ -3,9 +3,19 @@ import { notFound } from 'next/navigation';
 import SIPCalculatorClient from '@/components/SIPCalculatorClient';
 import HomeLoanCalculatorClient from '@/components/HomeLoanCalculatorClient';
 import BankSpecificContent from '@/components/home-loan/BankSpecificContent';
+import HomeLoanAmortizationSSR from '@/components/home-loan/HomeLoanAmortizationSSR';
+import HomeLoanChartSSR from '@/components/home-loan/HomeLoanChartSSR';
 import { getBankBySlug, getAllBankSlugs } from '@/lib/bankData';
 import { getHomeLoanBankBySlug, getAllHomeLoanBankSlugs } from '@/lib/homeLoanBankData';
 import { getBankHomeLoanDataBySlug } from '@/lib/bankHomeLoanData';
+import {
+    calculateEMI,
+    generateSchedule,
+    DEFAULT_START_MONTH,
+    DEFAULT_START_YEAR,
+    DEFAULT_LOAN_AMOUNT,
+    DEFAULT_LOAN_TENURE,
+} from '@/lib/homeLoanCalculations';
 
 type Props = {
     params: Promise<{ slug?: string[] }>;
@@ -118,6 +128,26 @@ export default async function CalculatorCatchAll({ params }: Props) {
         const bankData = getBankHomeLoanDataBySlug(slug[0]);
 
         if (bank) {
+            // Pre-compute SSR defaults using the bank's actual default rate
+            const bankRate = bankData?.defaultRate ?? bank.interestRate ?? 8.5;
+            const monthlyRate = bankRate / 12 / 100;
+            const tenureMonths = DEFAULT_LOAN_TENURE * 12;
+            const emi = calculateEMI(DEFAULT_LOAN_AMOUNT, monthlyRate, tenureMonths);
+            const scheduleResult = generateSchedule(
+                DEFAULT_LOAN_AMOUNT,
+                monthlyRate,
+                emi,
+                tenureMonths,
+                DEFAULT_START_MONTH,
+                DEFAULT_START_YEAR,
+                null,
+            );
+            const totalInterest = scheduleResult.totalInterest;
+            const totalAmount = DEFAULT_LOAN_AMOUNT + totalInterest;
+            const principalPercent = Math.round((DEFAULT_LOAN_AMOUNT / totalAmount) * 100);
+            const interestPercent = 100 - principalPercent;
+            const first12Months = scheduleResult.schedule.slice(0, 12);
+
             const jsonLd = {
                 '@context': 'https://schema.org',
                 '@type': 'WebPage',
@@ -138,6 +168,21 @@ export default async function CalculatorCatchAll({ params }: Props) {
                     <HomeLoanCalculatorClient
                         bankName={bank.name}
                         defaultInterestRate={bankData?.defaultRate || bank.interestRate}
+                        ssrChartFallback={
+                            <HomeLoanChartSSR
+                                loanAmount={DEFAULT_LOAN_AMOUNT}
+                                totalInterest={totalInterest}
+                                principalPercent={principalPercent}
+                                interestPercent={interestPercent}
+                            />
+                        }
+                        ssrAmortizationFallback={
+                            <HomeLoanAmortizationSSR
+                                schedule={first12Months}
+                                loanTenure={DEFAULT_LOAN_TENURE}
+                                totalMonths={tenureMonths}
+                            />
+                        }
                         ssrBankContent={bankData ? <BankSpecificContent data={bankData} /> : undefined}
                     />
                 </>
