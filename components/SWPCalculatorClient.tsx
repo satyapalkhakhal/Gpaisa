@@ -4,6 +4,14 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import SIPSlider from '@/components/sip/SIPSlider';
 
+export type YearRow = {
+  year: number;
+  openingBalance: number;
+  withdrawal: number;
+  returns: number;
+  closingBalance: number;
+};
+
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
 
@@ -14,17 +22,30 @@ const formatLakh = (val: number) => {
   return `₹${val}`;
 };
 
-export default function SWPCalculatorClient() {
+type Props = {
+  initialTotalWithdrawal?: number;
+  initialFinalCorpus?: number;
+  initialTotalMonths?: number;
+  initialYearlyData?: YearRow[];
+};
+
+export default function SWPCalculatorClient({
+  initialTotalWithdrawal = 0,
+  initialFinalCorpus = 0,
+  initialTotalMonths = 0,
+  initialYearlyData = [],
+}: Props = {}) {
   const [initialInvestment, setInitialInvestment] = useState(1000000);
   const [monthlyWithdrawal, setMonthlyWithdrawal] = useState(10000);
   const [expectedReturn, setExpectedReturn] = useState(12);
   const [timePeriod, setTimePeriod] = useState(20);
   const [showYearlyBreakdown, setShowYearlyBreakdown] = useState(false);
 
-  const [totalWithdrawal, setTotalWithdrawal] = useState(0);
-  const [finalCorpus, setFinalCorpus] = useState(0);
-  const [totalMonths, setTotalMonths] = useState(0);
-  const [yearlyData, setYearlyData] = useState<Array<{ year: number; openingBalance: number; withdrawal: number; returns: number; closingBalance: number }>>([]);
+  // Pre-initialised with server-computed defaults — no ₹0 flash on first render
+  const [totalWithdrawal, setTotalWithdrawal] = useState(initialTotalWithdrawal);
+  const [finalCorpus, setFinalCorpus] = useState(initialFinalCorpus);
+  const [totalMonths, setTotalMonths] = useState(initialTotalMonths);
+  const [yearlyData, setYearlyData] = useState<YearRow[]>(initialYearlyData);
 
   useEffect(() => {
     const monthlyRate = expectedReturn / 12 / 100;

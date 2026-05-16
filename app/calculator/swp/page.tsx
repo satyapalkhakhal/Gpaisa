@@ -1,10 +1,58 @@
 import { Metadata } from 'next';
 import SWPCalculatorClient from '@/components/SWPCalculatorClient';
+import SWPContent from '@/components/swp/SWPContent';
+import type { YearRow } from '@/components/SWPCalculatorClient';
+
+// Pre-compute SWP defaults server-side (₹10L, ₹10K/mo, 12%, 20yr)
+function computeSWPDefaults() {
+  const initialInvestment = 1000000;
+  const monthlyWithdrawal = 10000;
+  const monthlyRate = 12 / 12 / 100;
+  const timePeriod = 20;
+
+  let balance = initialInvestment;
+  const yearlyData: YearRow[] = [];
+  let totalWithdrawn = 0;
+  let monthsLasted = 0;
+
+  for (let year = 1; year <= timePeriod; year++) {
+    const openingBalance = balance;
+    let yearlyWithdrawal = 0;
+    let yearlyReturns = 0;
+    for (let month = 1; month <= 12; month++) {
+      if (balance <= 0) break;
+      const withdrawal = Math.min(monthlyWithdrawal, balance);
+      balance -= withdrawal;
+      yearlyWithdrawal += withdrawal;
+      totalWithdrawn += withdrawal;
+      monthsLasted++;
+      if (balance <= 0) break;
+      const ret = balance * monthlyRate;
+      balance += ret;
+      yearlyReturns += ret;
+    }
+    yearlyData.push({
+      year,
+      openingBalance: Math.round(openingBalance),
+      withdrawal: Math.round(yearlyWithdrawal),
+      returns: Math.round(yearlyReturns),
+      closingBalance: Math.max(0, Math.round(balance)),
+    });
+    if (balance <= 0) break;
+  }
+
+  return {
+    totalWithdrawal: Math.round(totalWithdrawn),
+    finalCorpus: Math.max(0, Math.round(balance)),
+    totalMonths: monthsLasted,
+    yearlyData,
+  };
+}
 
 // Comprehensive SEO metadata targeting high-volume keywords
 export const metadata: Metadata = {
-    title: 'SWP Calculator Online - Calculate Systematic Withdrawal Plan Returns | Gpaisa',
-    description: 'Free SWP Calculator to calculate Systematic Withdrawal Plan returns, final corpus, and monthly withdrawals. Plan your retirement income with our online SWP calculator.',
+    title: 'SWP Calculator 2026 — Systematic Withdrawal Plan Returns, Corpus & Monthly Income | gpaisa.in',
+    description: 'Free SWP Calculator: calculate how long ₹10L corpus lasts at 12% return with ₹10,000/month withdrawal. Year-wise breakdown, tax guide, SWP vs FD comparison.',
     keywords: [
         // Primary keywords (high volume)
         'swp calculator',
@@ -59,15 +107,16 @@ export const metadata: Metadata = {
 
     twitter: {
         card: 'summary_large_image',
-        title: 'SWP Calculator - Calculate SWP Returns',
-        description: 'Free online SWP calculator to plan your systematic withdrawals and retirement income.',
-        images: ['/og-swp-calculator.jpg'],
+        title: 'SWP Calculator 2026 — Monthly Income, Corpus & Tax Guide | gpaisa.in',
+        description: 'Calculate SWP returns: ₹10L corpus at 12% supports ₹10,000/month withdrawal for 20+ years. Year-wise breakdown, SWP vs FD, tax treatment guide.',
+        creator: '@gpaisa_in',
     },
 
     alternates: {
         canonical: 'https://www.gpaisa.in/calculator/swp',
     },
 
+    authors: [{ name: 'Satyapal Khakhal' }],
     robots: {
         index: true,
         follow: true,
@@ -82,6 +131,8 @@ export const metadata: Metadata = {
 };
 
 export default function SWPCalculatorPage() {
+    const defaults = computeSWPDefaults();
+
     // JSON-LD Structured Data for SEO
     const jsonLd = {
         '@context': 'https://schema.org',
@@ -237,8 +288,18 @@ export default function SWPCalculatorPage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
 
-            {/* Main Content */}
-            <SWPCalculatorClient />
+            {/* Main Calculator — pre-initialised with server-computed defaults */}
+            <SWPCalculatorClient
+                initialTotalWithdrawal={defaults.totalWithdrawal}
+                initialFinalCorpus={defaults.finalCorpus}
+                initialTotalMonths={defaults.totalMonths}
+                initialYearlyData={defaults.yearlyData}
+            />
+
+            {/* Static educational content — server-rendered, visible without JS */}
+            <div className="max-w-6xl mx-auto px-4 pb-10">
+                <SWPContent first5Years={defaults.yearlyData.slice(0, 5)} />
+            </div>
         </>
     );
 }
