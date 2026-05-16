@@ -14,13 +14,13 @@ const emiPerLakhData = [
 ];
 
 const bankRatesData = [
-  { bank: 'SBI', min: '8.50%', max: '9.65%', emi: 868 },
-  { bank: 'HDFC Bank', min: '8.75%', max: '9.40%', emi: 882 },
-  { bank: 'ICICI Bank', min: '8.75%', max: '9.50%', emi: 882 },
-  { bank: 'Bank of Baroda', min: '8.40%', max: '10.65%', emi: 862 },
-  { bank: 'PNB', min: '8.45%', max: '10.25%', emi: 865 },
-  { bank: 'Kotak Mahindra', min: '8.75%', max: '9.40%', emi: 882 },
-  { bank: 'Axis Bank', min: '8.75%', max: '13.30%', emi: 882 },
+  { bank: 'SBI', min: '7.50%', max: '8.70%', emiRange: '₹806 – ₹873' },
+  { bank: 'HDFC Bank', min: '7.20%', max: '13.20%', emiRange: '₹789 – ₹1,026' },
+  { bank: 'ICICI Bank', min: '7.65%', max: '9.80%', emiRange: '₹818 – ₹940' },
+  { bank: 'Axis Bank', min: '8.35%', max: '11.90%', emiRange: '₹857 – ₹1,011' },
+  { bank: 'Kotak Mahindra', min: '7.70%', max: '9.40%', emiRange: '₹822 – ₹914' },
+  { bank: 'PNB', min: '7.30%', max: '9.30%', emiRange: '₹793 – ₹906' },
+  { bank: 'Bank of Baroda', min: '7.20%', max: '9.00%', emiRange: '₹789 – ₹900' },
 ];
 
 const faqItems = [
@@ -30,7 +30,7 @@ const faqItems = [
   },
   {
     q: 'What CIBIL score is needed for a home loan?',
-    a: 'Most banks require a minimum CIBIL score of 650–700 to approve a home loan. However, a score of 750 or above qualifies you for the lowest interest rates — typically 0.25% to 0.50% lower than standard rates. For example, SBI offers preferential rates starting at 8.50% for applicants with a CIBIL score above 750.',
+    a: 'Most banks require a minimum CIBIL score of 650–700 to approve a home loan. However, a score of 750 or above qualifies you for the lowest interest rates — typically 0.25% to 0.50% lower than standard rates. For example, SBI offers preferential rates starting at 7.50% for applicants with a CIBIL score above 750.',
   },
   {
     q: 'Can I get a home loan on ₹25,000 monthly salary?',
@@ -99,7 +99,7 @@ export default function HomeLoanSEOContent() {
                 <th className={thClass}>Bank</th>
                 <th className={`${thClass} text-right`}>Min Rate</th>
                 <th className={`${thClass} text-right`}>Max Rate</th>
-                <th className={`${thClass} text-right`}>EMI/Lakh (20yr)</th>
+                <th className={`${thClass} text-right`}>EMI per ₹1L (20yr)</th>
               </tr>
             </thead>
             <tbody>
@@ -108,12 +108,12 @@ export default function HomeLoanSEOContent() {
                   <td className={`${tdClass} font-bold text-gray-900`}>{row.bank}</td>
                   <td className={`${tdRightClass} text-emerald-600`}>{row.min}</td>
                   <td className={tdRightClass}>{row.max}</td>
-                  <td className={`${tdRightClass} font-bold text-primary-700`}>₹{fmt(row.emi)}</td>
+                  <td className={`${tdRightClass} font-bold text-primary-700`}>{row.emiRange}</td>
                 </tr>
               ))}
             </tbody>
           </table>
-          <p className="text-[10px] text-gray-400 mt-2 italic">Rates sourced from bank websites, May 2026. Actual rates depend on your credit profile, loan amount, and property type. Verify directly with the bank before applying.</p>
+          <p className="text-[10px] text-gray-400 mt-2 italic">Rates sourced from Paisabazaar and official bank websites, May 2026. Actual rate depends on your CIBIL score, loan amount, income type, and property location. Verify current rates directly with the bank before applying.</p>
         </div>
       </div>
 

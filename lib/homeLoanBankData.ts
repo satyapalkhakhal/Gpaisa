@@ -5,49 +5,49 @@ export const homeLoanBanks = [
         name: 'SBI',
         fullName: 'SBI Home Loan Calculator',
         description: 'Calculate SBI home loan EMI with our free calculator. Check State Bank of India home loan interest rates, eligibility, and monthly installments.',
-        interestRate: 8.5, // Default rate for reference
+        interestRate: 8.0, // Mid-point of 7.50–8.70%
     },
     {
         slug: 'hdfc',
         name: 'HDFC',
         fullName: 'HDFC Home Loan Calculator',
         description: 'Calculate HDFC Bank home loan EMI online. Get instant EMI calculation for HDFC home loans with competitive interest rates.',
-        interestRate: 8.6,
+        interestRate: 8.5, // Realistic rate for standard salaried profile
     },
     {
         slug: 'icici',
         name: 'ICICI Bank',
         fullName: 'ICICI Home Loan Calculator',
         description: 'ICICI Bank home loan EMI calculator. Calculate your monthly EMI, total interest, and loan eligibility for ICICI home loans.',
-        interestRate: 8.75,
+        interestRate: 8.25, // Mid-point of typical range for salaried
     },
     {
         slug: 'axis',
         name: 'Axis Bank',
         fullName: 'Axis Bank Home Loan Calculator',
         description: 'Calculate Axis Bank home loan EMI with our online calculator. Check Axis home loan interest rates and monthly payments.',
-        interestRate: 8.7,
+        interestRate: 8.75, // Realistic for standard profile
     },
     {
         slug: 'kotak',
         name: 'Kotak Mahindra Bank',
         fullName: 'Kotak Home Loan Calculator',
         description: 'Kotak Mahindra Bank home loan calculator. Calculate EMI, interest rates, and total payment for Kotak home loans.',
-        interestRate: 8.65,
+        interestRate: 8.5,
     },
     {
         slug: 'pnb',
         name: 'PNB',
         fullName: 'PNB Home Loan Calculator',
         description: 'Punjab National Bank home loan EMI calculator. Calculate PNB home loan EMI with current interest rates.',
-        interestRate: 8.55,
+        interestRate: 8.25,
     },
     {
         slug: 'bank-of-baroda',
         name: 'Bank of Baroda',
         fullName: 'Bank of Baroda Home Loan Calculator',
         description: 'Calculate Bank of Baroda home loan EMI online. Check BOB home loan interest rates and monthly installments.',
-        interestRate: 8.6,
+        interestRate: 8.1,
     },
     {
         slug: 'canara-bank',
