@@ -2,8 +2,10 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import SIPCalculatorClient from '@/components/SIPCalculatorClient';
 import HomeLoanCalculatorClient from '@/components/HomeLoanCalculatorClient';
+import BankSpecificContent from '@/components/home-loan/BankSpecificContent';
 import { getBankBySlug, getAllBankSlugs } from '@/lib/bankData';
 import { getHomeLoanBankBySlug, getAllHomeLoanBankSlugs } from '@/lib/homeLoanBankData';
+import { getBankHomeLoanDataBySlug } from '@/lib/bankHomeLoanData';
 
 type Props = {
     params: Promise<{ slug?: string[] }>;
@@ -45,21 +47,31 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         }
     }
 
-    // Handle Home Loan calculator URLs
+    // Handle Home Loan calculator URLs — use enriched bank data for meta tags
     if (slug && slug.length === 1 && slug[0].endsWith('-home-loan-calculator')) {
         const bankSlug = slug[0].replace('-home-loan-calculator', '');
         const bank = getHomeLoanBankBySlug(bankSlug);
+        const bankData = getBankHomeLoanDataBySlug(slug[0]);
 
         if (bank) {
+            const metaTitle = bankData?.metaTitle || `${bank.name} Home Loan Calculator - Calculate ${bank.name} Home Loan EMI | Gpaisa`;
+            const metaDescription = bankData?.metaDescription || bank.description;
+
             return {
-                title: `${bank.name} Home Loan Calculator - Calculate ${bank.name} Home Loan EMI | Gpaisa`,
-                description: bank.description,
+                title: metaTitle,
+                description: metaDescription,
                 keywords: `${bank.name.toLowerCase()} home loan calculator, ${bank.name.toLowerCase()} home loan emi, home loan calculator online`,
+                authors: [{ name: 'Satyapal Khakhal' }],
                 openGraph: {
-                    title: `${bank.name} Home Loan Calculator`,
-                    description: bank.description,
+                    title: metaTitle,
+                    description: metaDescription,
                     type: 'website',
                     url: `https://www.gpaisa.in/calculator/${slug[0]}`,
+                },
+                twitter: {
+                    card: 'summary_large_image',
+                    title: metaTitle,
+                    description: metaDescription,
                 },
                 alternates: {
                     canonical: `https://www.gpaisa.in/calculator/${slug[0]}`,
@@ -103,13 +115,18 @@ export default async function CalculatorCatchAll({ params }: Props) {
     if (slug && slug.length === 1 && slug[0].endsWith('-home-loan-calculator')) {
         const bankSlug = slug[0].replace('-home-loan-calculator', '');
         const bank = getHomeLoanBankBySlug(bankSlug);
+        const bankData = getBankHomeLoanDataBySlug(slug[0]);
 
         if (bank) {
             const jsonLd = {
                 '@context': 'https://schema.org',
                 '@type': 'WebPage',
-                name: `${bank.name} Home Loan Calculator`,
-                description: bank.description,
+                name: bankData ? `${bankData.bankName} Home Loan Calculator` : `${bank.name} Home Loan Calculator`,
+                description: bankData?.metaDescription || bank.description,
+                author: {
+                    '@type': 'Person',
+                    name: 'Satyapal Khakhal',
+                },
             };
 
             return (
@@ -120,7 +137,8 @@ export default async function CalculatorCatchAll({ params }: Props) {
                     />
                     <HomeLoanCalculatorClient
                         bankName={bank.name}
-                        defaultInterestRate={bank.interestRate}
+                        defaultInterestRate={bankData?.defaultRate || bank.interestRate}
+                        ssrBankContent={bankData ? <BankSpecificContent data={bankData} /> : undefined}
                     />
                 </>
             );

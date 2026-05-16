@@ -32,6 +32,7 @@ type Props = {
   defaultInterestRate?: number;
   ssrChartFallback?: ReactNode;
   ssrAmortizationFallback?: ReactNode;
+  ssrBankContent?: ReactNode;
 };
 
 const formatCurrency = (amount: number) =>
@@ -46,7 +47,7 @@ const formatLakh = (val: number) => {
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate = 8.5, ssrChartFallback, ssrAmortizationFallback }: Props = {}) {
+export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate = 8.5, ssrChartFallback, ssrAmortizationFallback, ssrBankContent }: Props = {}) {
   // Track whether client-side JS has loaded to swap SSR fallbacks with interactive components
   const [clientReady, setClientReady] = useState(false);
   // Core inputs
@@ -303,8 +304,8 @@ export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate
               </div>
             )}
 
-            {/* SEO Content Sections — static HTML, server-rendered */}
-            <HomeLoanSEOContent />
+            {/* SEO Content — bank-specific on bank pages, generic on main page */}
+            {ssrBankContent || <HomeLoanSEOContent />}
 
             {/* Formula Section */}
             <HomeLoanFormula
