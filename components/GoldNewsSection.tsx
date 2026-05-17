@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Newspaper, Clock, ArrowRight } from 'lucide-react';
 
 interface GoldNewsArticle {
@@ -106,12 +107,9 @@ export default function GoldNewsSection() {
                         >
                             <div className="w-20 h-16 bg-yellow-100 rounded-lg shrink-0 overflow-hidden">
                                 {article.image_url ? (
-                                    <img
-                                        src={article.image_url}
-                                        alt=""
-                                        className="w-full h-full object-cover"
-                                        loading="lazy"
-                                    />
+                                    <div className="relative w-full h-full">
+                                        <Image src={article.image_url} alt="" fill className="object-cover" sizes="80px" />
+                                    </div>
                                 ) : (
                                     <div className="w-full h-full bg-gradient-to-br from-yellow-200 to-amber-200 flex items-center justify-center text-yellow-600 text-xs font-bold">
                                         GOLD

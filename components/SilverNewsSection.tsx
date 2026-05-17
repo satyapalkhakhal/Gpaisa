@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Newspaper, Clock, ArrowRight } from 'lucide-react';
 
 interface SilverNewsArticle {
@@ -77,7 +78,9 @@ export default function SilverNewsSection() {
                         <Link key={article.id} href={`/articles/${article.slug}`} className="group flex gap-3 bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-gray-200 hover:border-gray-400 hover:shadow-md transition-all duration-300">
                             <div className="w-20 h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
                                 {article.image_url ? (
-                                    <img src={article.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                                    <div className="relative w-full h-full">
+                                        <Image src={article.image_url} alt="" fill className="object-cover" sizes="80px" />
+                                    </div>
                                 ) : (
                                     <div className="w-full h-full bg-gradient-to-br from-gray-200 to-slate-300 flex items-center justify-center text-gray-500 text-xs font-bold">SILVER</div>
                                 )}

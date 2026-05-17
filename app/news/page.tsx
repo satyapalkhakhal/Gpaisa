@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Newspaper, Clock, TrendingUp, Star } from 'lucide-react';
 import {
     fetchAllArticles,
@@ -22,7 +23,15 @@ const NewsCard = ({ article }: { article: Article }) => (
     <Link href={`/articles/${article.slug}`} className="group block bg-white rounded-xl border border-gray-100 overflow-hidden hover:shadow-lg hover:border-gray-200 transition-all duration-300 h-full">
         <div className="h-44 bg-gray-100 overflow-hidden">
             {article.image_url ? (
-                <img src={article.image_url} alt={article.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="relative w-full h-full">
+                    <Image
+                        src={article.image_url}
+                        alt={article.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                </div>
             ) : (
                 <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-gray-400">
                     <Newspaper className="w-8 h-8" />

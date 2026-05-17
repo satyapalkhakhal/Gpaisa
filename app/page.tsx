@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ChevronRight, Calculator, Shield, ArrowRight } from 'lucide-react';
 import GoldDashboard from '@/components/GoldDashboard';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
@@ -47,12 +48,15 @@ const InsightCard = ({ article }: { article: Article }) => (
     <Link href={`/articles/${article.slug}`} className="group block bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-gray-300 transition-all duration-300">
         <div className="h-40 bg-gray-100 overflow-hidden">
             {article.image_url ? (
-                <img
-                    src={article.image_url}
-                    alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                    loading="lazy"
-                />
+                <div className="relative w-full h-full">
+                    <Image
+                        src={article.image_url}
+                        alt={article.title}
+                        fill
+                        className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                </div>
             ) : (
                 <div className="w-full h-full bg-gradient-to-br from-amber-50 to-yellow-100 flex items-center justify-center">
                     <span className="text-amber-400 font-bold text-sm">Gpaisa</span>
@@ -75,7 +79,9 @@ const FinanceCard = ({ article }: { article: Article }) => (
     <Link href={`/articles/${article.slug}`} className="group flex gap-3 bg-white rounded-xl border border-gray-200 p-3 hover:shadow-md hover:border-blue-200 transition-all duration-300">
         <div className="w-20 h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
             {article.image_url ? (
-                <img src={article.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                <div className="relative w-full h-full">
+                    <Image src={article.image_url} alt="" fill className="object-cover" sizes="80px" />
+                </div>
             ) : (
                 <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center text-blue-400 text-[10px] font-bold">FINANCE</div>
             )}
@@ -93,7 +99,9 @@ const LatestArticleRow = ({ article }: { article: Article }) => (
     <Link href={`/articles/${article.slug}`} className="group flex items-center gap-3 py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors rounded-lg px-2 -mx-2">
         <div className="w-14 h-12 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
             {article.image_url ? (
-                <img src={article.image_url} alt="" className="w-full h-full object-cover" loading="lazy" />
+                <div className="relative w-full h-full">
+                    <Image src={article.image_url} alt="" fill className="object-cover" sizes="56px" />
+                </div>
             ) : (
                 <div className="w-full h-full bg-gray-100" />
             )}

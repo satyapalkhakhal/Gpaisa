@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { fetchArticleBySlug, fetchLatestArticles, fetchArticlesByCategory, Article } from '@/lib/supabaseApi';
 import { ChevronRight, Clock, User, Calendar, ArrowLeft, Share2, Bookmark } from 'lucide-react';
@@ -254,11 +255,14 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                             {/* Featured Image */}
                             {article.image_url && (
                                 <div className="px-5 sm:px-6 mb-6">
-                                    <div className="rounded-xl overflow-hidden bg-gray-100 aspect-video">
-                                        <img
+                                    <div className="relative rounded-xl overflow-hidden bg-gray-100 aspect-video">
+                                        <Image
                                             src={article.image_url}
                                             alt={article.title}
-                                            className="w-full h-full object-cover"
+                                            fill
+                                            className="object-cover"
+                                            sizes="(max-width: 768px) 100vw, 66vw"
+                                            priority
                                         />
                                     </div>
                                 </div>
@@ -318,7 +322,9 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                         <Link key={news.id} href={`/articles/${news.slug}`} className="group block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:border-gray-200 transition-all duration-300">
                                             <div className="h-40 bg-gray-200 overflow-hidden">
                                                 {news.image_url ? (
-                                                    <img src={news.image_url} alt={news.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                                    <div className="relative w-full h-full">
+                                                        <Image src={news.image_url} alt={news.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 640px) 100vw, 50vw" />
+                                                    </div>
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-gray-400 bg-gray-100">IMG</div>
                                                 )}

@@ -205,12 +205,12 @@ export default function HomeLoanEducational() {
           Use our advanced home loan calculator with prepayment analysis and amortization schedule to plan the most efficient repayment strategy.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-3">
-          <a href="/calculator/sip" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-blue-50 transition-colors shadow-lg text-sm flex items-center justify-center">
+          <Link href="/calculator/sip" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-blue-50 transition-colors shadow-lg text-sm flex items-center justify-center">
             Try SIP Calculator
-          </a>
-          <a href="/calculator/fd" className="sip-touch-target bg-primary-500 text-white px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-primary-400 transition-colors border-2 border-white/30 text-sm flex items-center justify-center">
+          </Link>
+          <Link href="/calculator/fd" className="sip-touch-target bg-primary-500 text-white px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-primary-400 transition-colors border-2 border-white/30 text-sm flex items-center justify-center">
             FD Calculator
-          </a>
+          </Link>
         </div>
       </div>
 

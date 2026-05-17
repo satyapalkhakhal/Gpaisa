@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import Image from 'next/image';
 import { fetchArticlesByCategorySlug } from '@/lib/supabaseApi';
 import { ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
 
@@ -101,11 +102,15 @@ export default async function CategoryPage({ params, searchParams }: {
                             >
                                 <div className="h-48 bg-gray-200 overflow-hidden">
                                     {article.featured_image_url ? (
-                                        <img
-                                            src={article.featured_image_url}
-                                            alt={article.title}
-                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                        />
+                                        <div className="relative w-full h-full">
+                                            <Image
+                                                src={article.featured_image_url}
+                                                alt={article.title}
+                                                fill
+                                                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                sizes="(max-width: 768px) 100vw, 33vw"
+                                            />
+                                        </div>
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-gray-400">
                                             <Newspaper className="w-12 h-12" />
