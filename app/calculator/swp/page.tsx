@@ -51,8 +51,9 @@ function computeSWPDefaults() {
 
 // Comprehensive SEO metadata targeting high-volume keywords
 export const metadata: Metadata = {
-    title: 'SWP Calculator 2026 — Systematic Withdrawal Plan Returns, Corpus & Monthly Income | gpaisa.in',
-    description: 'Free SWP Calculator: calculate how long ₹10L corpus lasts at 12% return with ₹10,000/month withdrawal. Year-wise breakdown, tax guide, SWP vs FD comparison.',
+    title: 'SWP Calculator 2026 — Systematic Withdrawal Plan with Inflation & Tax | gpaisa.in',
+    description: "India's most complete SWP calculator. Calculate final corpus, safe withdrawal rate, inflation-adjusted returns, and corpus depletion date. Compare SWP vs FD vs Annuity. Free online tool.",
+    authors: [{ name: 'Satyapal Khakhal' }],
     keywords: [
         // Primary keywords (high volume)
         'swp calculator',
@@ -62,36 +63,35 @@ export const metadata: Metadata = {
         'swp mutual fund calculator',
 
         // Secondary keywords
-        'swp calculator 2024',
+        'swp calculator 2026',
         'swp calculator india',
-        'swp calculator with growth',
+        'swp calculator with inflation',
         'swp maturity calculator',
         'retirement withdrawal calculator',
 
-        // Long-tail keywords
-        'swp calculator monthly withdrawal',
-        'swp calculator with inflation',
-        'systematic withdrawal plan returns',
-        'swp vs sip calculator',
-        'retirement income calculator',
+        // Long-tail — competitive moat
+        'swp calculator with inflation adjustment india',
+        'how long will my swp corpus last',
+        'swp vs fd for retirement india',
+        'safe withdrawal rate mutual fund india',
+        'swp calculator with corpus depletion date',
 
         // Related terms
         'systematic withdrawal plan',
         'swp benefits',
         'swp tax implications',
-        'swp vs lump sum',
+        'swp vs annuity',
         'retirement planning calculator',
-        'pension calculator',
 
         // Feature-based
         'swp calculator with charts',
         'swp calculator year wise',
-        'swp calculator excel alternative',
+        'safe monthly withdrawal calculator',
     ].join(', '),
 
     openGraph: {
-        title: 'SWP Calculator - Calculate Systematic Withdrawal Plan Returns | Gpaisa',
-        description: 'Plan your retirement withdrawals with our advanced SWP calculator. Calculate monthly income, final corpus, and visualize your wealth depletion.',
+        title: 'SWP Calculator 2026 — Inflation, Safe Withdrawal & Depletion Date | gpaisa.in',
+        description: "India's most complete SWP calculator. Calculate safe withdrawal rate, inflation-adjusted returns, and corpus depletion date. Compare SWP vs FD vs Annuity.",
         type: 'website',
         url: 'https://www.gpaisa.in/calculator/swp',
         siteName: 'Gpaisa',
@@ -107,8 +107,8 @@ export const metadata: Metadata = {
 
     twitter: {
         card: 'summary_large_image',
-        title: 'SWP Calculator 2026 — Monthly Income, Corpus & Tax Guide | gpaisa.in',
-        description: 'Calculate SWP returns: ₹10L corpus at 12% supports ₹10,000/month withdrawal for 20+ years. Year-wise breakdown, SWP vs FD, tax treatment guide.',
+        title: 'SWP Calculator 2026 — Inflation, Safe Withdrawal & Depletion | gpaisa.in',
+        description: 'Calculate SWP: ₹10L corpus at 12% supports ₹10,000/month for 20+ years. Inflation-adjusted real value, corpus depletion warning, SWP vs FD vs Annuity.',
         creator: '@gpaisa_in',
     },
 
@@ -116,7 +116,6 @@ export const metadata: Metadata = {
         canonical: 'https://www.gpaisa.in/calculator/swp',
     },
 
-    authors: [{ name: 'Satyapal Khakhal' }],
     robots: {
         index: true,
         follow: true,
@@ -133,7 +132,7 @@ export const metadata: Metadata = {
 export default function SWPCalculatorPage() {
     const defaults = computeSWPDefaults();
 
-    // JSON-LD Structured Data for SEO
+    // JSON-LD Structured Data for SEO — updated FAQ with exact specified Q&A
     const jsonLd = {
         '@context': 'https://schema.org',
         '@graph': [
@@ -142,10 +141,14 @@ export default function SWPCalculatorPage() {
                 '@type': 'WebPage',
                 '@id': 'https://www.gpaisa.in/calculator/swp#webpage',
                 url: 'https://www.gpaisa.in/calculator/swp',
-                name: 'SWP Calculator - Calculate Systematic Withdrawal Plan Returns Online',
-                description: 'Free online SWP calculator to calculate Systematic Withdrawal Plan returns, monthly withdrawals, and final corpus. Plan your retirement income.',
+                name: "SWP Calculator 2026 — Systematic Withdrawal Plan with Inflation & Tax | gpaisa.in",
+                description: "India's most complete SWP calculator. Calculate final corpus, safe withdrawal rate, inflation-adjusted returns, and corpus depletion date.",
                 isPartOf: {
                     '@id': 'https://www.gpaisa.in/#website',
+                },
+                author: {
+                    '@type': 'Person',
+                    name: 'Satyapal Khakhal',
                 },
                 breadcrumb: {
                     '@id': 'https://www.gpaisa.in/calculator/swp#breadcrumb',
@@ -189,11 +192,6 @@ export default function SWPCalculatorPage() {
                     '@type': 'Offer',
                     price: '0',
                     priceCurrency: 'INR',
-                    hasMerchantReturnPolicy: {
-                        '@type': 'MerchantReturnPolicy',
-                        applicableCountry: 'IN',
-                        returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
-                    },
                 },
                 aggregateRating: {
                     '@type': 'AggregateRating',
@@ -202,28 +200,28 @@ export default function SWPCalculatorPage() {
                     bestRating: '5',
                     worstRating: '1',
                 },
-                description: 'Free online SWP calculator to calculate Systematic Withdrawal Plan returns and retirement income.',
+                description: 'Free online SWP calculator with inflation adjustment, safe withdrawal rate, and corpus depletion date. Compare SWP vs FD vs Annuity.',
             },
 
-            // FAQPage Schema
+            // FAQPage Schema — exact Q&A as specified
             {
                 '@type': 'FAQPage',
                 '@id': 'https://www.gpaisa.in/calculator/swp#faq',
                 mainEntity: [
                     {
                         '@type': 'Question',
-                        name: 'What is a SWP Calculator?',
+                        name: 'What is a safe SWP withdrawal rate?',
                         acceptedAnswer: {
                             '@type': 'Answer',
-                            text: 'A SWP Calculator is a financial tool that helps you calculate how long your investment will last with regular withdrawals. It shows your final corpus, total withdrawals, and helps plan retirement income.',
+                            text: '0.8–1% monthly (9.6–12% annually) if corpus earns 12–14% in diversified equity. At 1% monthly withdrawal, ₹10 lakh corpus supports ₹10,000/month withdrawal indefinitely.',
                         },
                     },
                     {
                         '@type': 'Question',
-                        name: 'How does SWP work?',
+                        name: 'Can SWP corpus run out?',
                         acceptedAnswer: {
                             '@type': 'Answer',
-                            text: 'SWP (Systematic Withdrawal Plan) allows you to withdraw a fixed amount regularly from your mutual fund investment while the remaining amount continues to earn returns. It provides regular income while keeping your capital invested.',
+                            text: 'Yes if withdrawal exceeds returns. Our calculator shows exact depletion date based on your corpus, withdrawal amount, and expected return rate.',
                         },
                     },
                     {
@@ -231,15 +229,23 @@ export default function SWPCalculatorPage() {
                         name: 'Is SWP better than FD for retirement?',
                         acceptedAnswer: {
                             '@type': 'Answer',
-                            text: 'SWP can be better than FD for retirement as it offers potentially higher returns (10-12% vs 6-7%), tax efficiency (only gains taxed), and flexibility in withdrawal amounts. However, SWP involves market risk unlike FDs.',
+                            text: 'For 20–30% tax bracket investors, yes — significantly more tax-efficient and higher income. FD interest is taxed at your full slab rate; SWP gains from equity funds held 1+ year are taxed at 10% LTCG on only the gains portion.',
                         },
                     },
                     {
                         '@type': 'Question',
-                        name: 'What is the tax on SWP withdrawals?',
+                        name: 'What is the minimum corpus for SWP?',
                         acceptedAnswer: {
                             '@type': 'Answer',
-                            text: 'For equity funds: LTCG above ₹1 lakh taxed at 10%, STCG at 15%. For debt funds: LTCG at 20% with indexation (if held >3 years), STCG at slab rates. Only capital gains portion is taxed, not the entire withdrawal.',
+                            text: 'For ₹10,000/month sustainable withdrawal at 12% return, minimum corpus = ₹10,00,000. Formula: Minimum Corpus = Monthly Withdrawal ÷ Monthly Return Rate.',
+                        },
+                    },
+                    {
+                        '@type': 'Question',
+                        name: 'How is SWP different from dividend option?',
+                        acceptedAnswer: {
+                            '@type': 'Answer',
+                            text: 'SWP gives you control over amount and timing. Dividends are at the AMC\'s discretion and taxed at full slab rate. SWP from equity funds held over 1 year is taxed at 10% LTCG on gains only.',
                         },
                     },
                 ],
@@ -249,31 +255,37 @@ export default function SWPCalculatorPage() {
             {
                 '@type': 'HowTo',
                 name: 'How to Use SWP Calculator',
-                description: 'Step-by-step guide to calculate your SWP returns',
+                description: 'Step-by-step guide to calculate your SWP returns and safe withdrawal rate',
                 step: [
                     {
                         '@type': 'HowToStep',
                         position: 1,
                         name: 'Enter Initial Investment',
-                        text: 'Enter the lump sum amount you want to invest initially.',
+                        text: 'Enter the lump sum amount you want to invest initially (default: ₹10,00,000).',
                     },
                     {
                         '@type': 'HowToStep',
                         position: 2,
                         name: 'Set Monthly Withdrawal',
-                        text: 'Choose how much you want to withdraw every month.',
+                        text: 'Choose how much you want to withdraw every month (default: ₹10,000).',
                     },
                     {
                         '@type': 'HowToStep',
                         position: 3,
                         name: 'Select Expected Return',
-                        text: 'Enter the expected annual return rate (typically 10-12% for equity funds).',
+                        text: 'Enter the expected annual return rate (default: 12% for diversified equity funds).',
                     },
                     {
                         '@type': 'HowToStep',
                         position: 4,
+                        name: 'Enable Inflation Adjustment (Optional)',
+                        text: 'Toggle inflation adjustment to see the real purchasing power of your corpus over time.',
+                    },
+                    {
+                        '@type': 'HowToStep',
+                        position: 5,
                         name: 'View Results',
-                        text: 'The calculator will show your final corpus, total withdrawals, and year-by-year breakdown.',
+                        text: 'See final corpus, safe withdrawal amount, depletion warning, and year-by-year breakdown.',
                     },
                 ],
             },
