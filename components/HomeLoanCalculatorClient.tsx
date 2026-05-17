@@ -9,7 +9,6 @@ import HomeLoanResultCards from '@/components/home-loan/HomeLoanResultCards';
 import HomeLoanPrepayment, { type PrepaymentConfig } from '@/components/home-loan/HomeLoanPrepayment';
 import HomeLoanFormula from '@/components/home-loan/HomeLoanFormula';
 import HomeLoanReportDownload from '@/components/home-loan/HomeLoanReportDownload';
-import HomeLoanSEOContent from '@/components/home-loan/HomeLoanSEOContent';
 import type { AmortizationRow } from '@/lib/homeLoanCalculations';
 import { generateSchedule, getDateString, getPayoffDate } from '@/lib/homeLoanCalculations';
 
@@ -22,17 +21,11 @@ const HomeLoanAmortization = dynamic(() => import('@/components/home-loan/HomeLo
   ssr: false,
 });
 
-const HomeLoanEducational = dynamic(() => import('@/components/home-loan/HomeLoanEducational'), {
-  ssr: false,
-  loading: () => <div className="min-h-[200px]" />,
-});
-
 type Props = {
   bankName?: string;
   defaultInterestRate?: number;
   ssrChartFallback?: ReactNode;
   ssrAmortizationFallback?: ReactNode;
-  ssrBankContent?: ReactNode;
 };
 
 const formatCurrency = (amount: number) =>
@@ -47,7 +40,7 @@ const formatLakh = (val: number) => {
 
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
-export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate = 8.5, ssrChartFallback, ssrAmortizationFallback, ssrBankContent }: Props = {}) {
+export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate = 8.5, ssrChartFallback, ssrAmortizationFallback }: Props = {}) {
   // Track whether client-side JS has loaded to swap SSR fallbacks with interactive components
   const [clientReady, setClientReady] = useState(false);
   // Core inputs
@@ -304,10 +297,7 @@ export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate
               </div>
             )}
 
-            {/* SEO Content — bank-specific on bank pages, generic on main page */}
-            {ssrBankContent || <HomeLoanSEOContent />}
-
-            {/* Formula Section */}
+            {/* Formula Section — receives live slider values, must stay in client */}
             <HomeLoanFormula
               loanAmount={loanAmount}
               interestRate={interestRate}
@@ -339,10 +329,6 @@ export default function HomeLoanCalculatorClient({ bankName, defaultInterestRate
           </div>
         </div>
 
-        {/* Educational Content (full width) */}
-        <div className="mt-8 md:mt-10">
-          <HomeLoanEducational />
-        </div>
       </div>
     </div>
   );

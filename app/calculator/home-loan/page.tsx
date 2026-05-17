@@ -3,6 +3,7 @@ import HomeLoanCalculatorClient from '@/components/HomeLoanCalculatorClient';
 import HomeLoanAmortizationSSR from '@/components/home-loan/HomeLoanAmortizationSSR';
 import HomeLoanChartSSR from '@/components/home-loan/HomeLoanChartSSR';
 import HomeLoanSEOContent from '@/components/home-loan/HomeLoanSEOContent';
+import HomeLoanEducational from '@/components/home-loan/HomeLoanEducational';
 import { computeDefaults } from '@/lib/homeLoanCalculations';
 
 export const metadata: Metadata = {
@@ -169,9 +170,9 @@ export default function HomeLoanCalculatorPage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(appSchema) }}
             />
 
-            {/* 
-              Server-rendered initial data — visible in View Source with JS disabled.
-              The client component below will hydrate and take over interactivity.
+            {/*
+              Interactive calculator widget — client component.
+              Static content (SEO tables, FAQ, educational) is rendered BELOW as server components.
             */}
             <HomeLoanCalculatorClient
                 ssrChartFallback={
@@ -189,8 +190,14 @@ export default function HomeLoanCalculatorPage() {
                         totalMonths={defaults.loanTenure * 12}
                     />
                 }
-                ssrBankContent={<HomeLoanSEOContent />}
             />
+
+            {/* Static content — server-rendered, visible in View Source / with JS disabled */}
+            <div className="max-w-6xl mx-auto px-4 pb-10 space-y-6">
+                <HomeLoanSEOContent />
+                <HomeLoanEducational />
+            </div>
         </>
     );
 }
+

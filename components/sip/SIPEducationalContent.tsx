@@ -1,6 +1,4 @@
-'use client';
-
-import Link from 'next/link';
+// Server component — no 'use client', no hooks, renders as static HTML
 import { banks } from '@/lib/bankData';
 
 export default function SIPEducationalContent() {
@@ -152,13 +150,13 @@ export default function SIPEducationalContent() {
         <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4 pb-3 border-b border-gray-200">Bank-wise SIP Calculators</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
           {banks.map((bank) => (
-            <Link
+            <a
               key={bank.slug}
               href={`/calculator/${bank.slug}-sip-calculator`}
               className="sip-touch-target block px-3 md:px-4 py-3 min-h-[44px] text-gray-700 active:bg-primary-50 active:text-primary-600 transition-colors border-b border-gray-100 font-medium text-sm flex items-center"
             >
               {bank.name} SIP Calculator
-            </Link>
+            </a>
           ))}
         </div>
       </div>
@@ -167,7 +165,7 @@ export default function SIPEducationalContent() {
       <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100">
         <h3 className="text-lg font-bold text-gray-900 mb-3 md:mb-4">Other Calculators</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
-          <Link href="/calculator/ppf" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
+          <a href="/calculator/ppf" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
             <div className="flex items-center gap-3">
               <div className="text-2xl">💰</div>
               <div>
@@ -175,8 +173,8 @@ export default function SIPEducationalContent() {
                 <div className="text-xs text-gray-600">Calculate PPF returns</div>
               </div>
             </div>
-          </Link>
-          <Link href="/calculator/swp" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
+          </a>
+          <a href="/calculator/swp" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
             <div className="flex items-center gap-3">
               <div className="text-2xl">💸</div>
               <div>
@@ -184,8 +182,8 @@ export default function SIPEducationalContent() {
                 <div className="text-xs text-gray-600">Calculate SWP returns</div>
               </div>
             </div>
-          </Link>
-          <Link href="/calculator/emi" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
+          </a>
+          <a href="/calculator/emi" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
             <div className="flex items-center gap-3">
               <div className="text-2xl">🏠</div>
               <div>
@@ -193,7 +191,7 @@ export default function SIPEducationalContent() {
                 <div className="text-xs text-gray-600">Calculate loan EMI</div>
               </div>
             </div>
-          </Link>
+          </a>
         </div>
       </div>
 
@@ -201,21 +199,21 @@ export default function SIPEducationalContent() {
       <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl shadow-lg p-5 md:p-8 border border-green-100">
         <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 md:mb-4">Related Financial Tools</h2>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
-          <Link href="/gold-rate" className="sip-touch-target bg-white rounded-xl p-4 md:p-5 active:shadow-xl transition-shadow border border-gray-200">
+          <a href="/gold-rate" className="sip-touch-target bg-white rounded-xl p-4 md:p-5 active:shadow-xl transition-shadow border border-gray-200">
             <div className="text-2xl mb-2">🏆</div>
             <h3 className="font-bold text-gray-900 mb-1 text-sm">Gold Rate Today</h3>
             <p className="text-gray-700 text-xs">Check live gold prices</p>
-          </Link>
-          <Link href="/silver-rate" className="sip-touch-target bg-white rounded-xl p-4 md:p-5 active:shadow-xl transition-shadow border border-gray-200">
+          </a>
+          <a href="/silver-rate" className="sip-touch-target bg-white rounded-xl p-4 md:p-5 active:shadow-xl transition-shadow border border-gray-200">
             <div className="text-2xl mb-2">⚪</div>
             <h3 className="font-bold text-gray-900 mb-1 text-sm">Silver Rate Today</h3>
             <p className="text-gray-700 text-xs">Live silver prices</p>
-          </Link>
-          <Link href="/gold-rate" className="sip-touch-target bg-white rounded-xl p-4 md:p-5 active:shadow-xl transition-shadow border border-gray-200">
+          </a>
+          <a href="/gold-rate" className="sip-touch-target bg-white rounded-xl p-4 md:p-5 active:shadow-xl transition-shadow border border-gray-200">
             <div className="text-2xl mb-2">📊</div>
             <h3 className="font-bold text-gray-900 mb-1 text-sm">Gold vs Silver</h3>
             <p className="text-gray-700 text-xs">Compare precious metals</p>
-          </Link>
+          </a>
         </div>
       </div>
 
@@ -226,12 +224,12 @@ export default function SIPEducationalContent() {
           Use our free SIP calculator to plan your investments and achieve your financial dreams.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-3">
-          <Link href="/finance" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-green-50 transition-colors shadow-lg text-sm flex items-center justify-center">
+          <a href="/finance" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-green-50 transition-colors shadow-lg text-sm flex items-center justify-center">
             Explore More Tools
-          </Link>
-          <Link href="/news" className="sip-touch-target bg-primary-500 text-white px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-primary-400 transition-colors border-2 border-white/30 text-sm flex items-center justify-center">
+          </a>
+          <a href="/news" className="sip-touch-target bg-primary-500 text-white px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-primary-400 transition-colors border-2 border-white/30 text-sm flex items-center justify-center">
             Read Finance News
-          </Link>
+          </a>
         </div>
       </div>
 
@@ -239,7 +237,7 @@ export default function SIPEducationalContent() {
       <div className="bg-gray-50 rounded-xl border mt-4">
         <div className="px-4 py-5 md:py-6 text-center">
           <p className="text-xs text-gray-500">
-            Last Updated: {new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+            Last Updated: May 2026
           </p>
         </div>
       </div>

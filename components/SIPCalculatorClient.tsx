@@ -6,7 +6,6 @@ import dynamic from 'next/dynamic';
 import SIPSlider from '@/components/sip/SIPSlider';
 import SIPResultCards from '@/components/sip/SIPResultCards';
 import SIPBreakdownTable from '@/components/sip/SIPBreakdownTable';
-import SIPEducationalContent from '@/components/sip/SIPEducationalContent';
 
 // Lazy-load the chart — SIPChart uses useMemo internally so no loading spinner needed
 const SIPChart = dynamic(() => import('@/components/sip/SIPChart'), {
@@ -355,10 +354,6 @@ export default function SIPCalculatorClient({ bankName, ssrAmcContent }: SIPCalc
           </div>
         )}
 
-        {/* ===== Educational Content ===== */}
-        <div className="mt-8 md:mt-10">
-          <SIPEducationalContent />
-        </div>
       </div>
     </div>
   );

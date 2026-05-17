@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import SIPCalculatorClient from '@/components/SIPCalculatorClient';
+import SIPEducationalContent from '@/components/sip/SIPEducationalContent';
 
 // Comprehensive SEO metadata targeting high-volume keywords
 export const metadata: Metadata = {
@@ -259,8 +260,13 @@ export default function SIPCalculatorPage() {
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
             />
 
-            {/* Main Content */}
+            {/* Main Calculator — client component (sliders + chart) */}
             <SIPCalculatorClient />
+
+            {/* Static educational content — server-rendered, visible without JS */}
+            <div className="max-w-6xl mx-auto px-4 pb-10">
+                <SIPEducationalContent />
+            </div>
         </>
     );
 }

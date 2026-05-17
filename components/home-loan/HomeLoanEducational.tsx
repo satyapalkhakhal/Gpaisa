@@ -1,26 +1,6 @@
-'use client';
-
-import { useState } from 'react';
+// Server component — no 'use client'. FAQ accordion uses native <details> / <summary>
+// so it works without JavaScript and is visible in View Source.
 import Link from 'next/link';
-
-function FAQItem({ question, answer }: { question: string; answer: string }) {
-  const [open, setOpen] = useState(false);
-  return (
-    <div className="border-b border-gray-100 last:border-0">
-      <button
-        onClick={() => setOpen(!open)}
-        className="sip-touch-target w-full flex items-start justify-between gap-3 px-4 md:px-5 py-4 text-left min-h-[56px]"
-        aria-expanded={open}
-      >
-        <span className="text-sm md:text-base font-semibold text-gray-900 leading-snug">{question}</span>
-        <span className={`text-gray-400 text-lg flex-shrink-0 transition-transform duration-200 ${open ? 'rotate-45' : ''}`}>+</span>
-      </button>
-      <div className={`overflow-hidden transition-all duration-300 ease-out ${open ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'}`}>
-        <p className="px-4 md:px-5 pb-4 text-sm text-gray-600 leading-relaxed">{answer}</p>
-      </div>
-    </div>
-  );
-}
 
 const faqs = [
   { q: 'How much EMI do I need to pay for ₹50 lakh home loan?', a: 'For a ₹50 lakh home loan at 8.5% interest for 20 years, your monthly EMI would be approximately ₹43,391. The exact EMI depends on the interest rate and tenure you choose. Use the calculator above to get the precise EMI for your loan parameters.' },
@@ -174,15 +154,23 @@ export default function HomeLoanEducational() {
         </div>
       </div>
 
-      {/* FAQ Section */}
+      {/* FAQ Section — native <details> works without JS */}
       <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
         <div className="px-4 md:px-6 pt-5 md:pt-6 pb-2">
           <h2 className="text-xl md:text-3xl font-bold text-gray-900">Frequently Asked Questions</h2>
           <p className="text-xs text-gray-500 mt-1">Common questions about home loans and EMI</p>
         </div>
-        <div className="mt-2">
-          {faqs.map((faq) => (
-            <FAQItem key={faq.q} question={faq.q} answer={faq.a} />
+        <div className="px-4 md:px-6 pb-4 mt-2 space-y-2">
+          {faqs.map((faq, idx) => (
+            <details key={idx} className="group bg-gray-50 rounded-xl border border-gray-200 overflow-hidden" open={idx === 0}>
+              <summary className="flex items-center justify-between px-4 py-3.5 cursor-pointer list-none">
+                <h3 className="text-sm font-semibold text-gray-900 pr-4">{faq.q}</h3>
+                <span className="text-gray-400 flex-shrink-0 text-lg group-open:rotate-45 transition-transform">+</span>
+              </summary>
+              <div className="px-4 pb-4">
+                <p className="text-sm text-gray-600 leading-relaxed">{faq.a}</p>
+              </div>
+            </details>
           ))}
         </div>
       </div>
@@ -197,7 +185,7 @@ export default function HomeLoanEducational() {
             { icon: '💼', title: 'EPF Calculator', desc: 'Provident fund returns', href: '/calculator/epf' },
             { icon: '📈', title: 'FD Calculator', desc: 'Fixed deposit returns', href: '/calculator/fd' },
           ].map((calc) => (
-            <Link key={calc.href} href={calc.href} className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl border border-gray-200 active:shadow-lg transition-all">
+            <a key={calc.href} href={calc.href} className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl border border-gray-200 active:shadow-lg transition-all">
               <div className="flex items-center gap-3">
                 <div className="text-2xl">{calc.icon}</div>
                 <div>
@@ -205,7 +193,7 @@ export default function HomeLoanEducational() {
                   <div className="text-xs text-gray-600">{calc.desc}</div>
                 </div>
               </div>
-            </Link>
+            </a>
           ))}
         </div>
       </div>
@@ -217,12 +205,12 @@ export default function HomeLoanEducational() {
           Use our advanced home loan calculator with prepayment analysis and amortization schedule to plan the most efficient repayment strategy.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-3">
-          <Link href="/calculator/sip" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-blue-50 transition-colors shadow-lg text-sm flex items-center justify-center">
+          <a href="/calculator/sip" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-blue-50 transition-colors shadow-lg text-sm flex items-center justify-center">
             Try SIP Calculator
-          </Link>
-          <Link href="/calculator/fd" className="sip-touch-target bg-primary-500 text-white px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-primary-400 transition-colors border-2 border-white/30 text-sm flex items-center justify-center">
+          </a>
+          <a href="/calculator/fd" className="sip-touch-target bg-primary-500 text-white px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-primary-400 transition-colors border-2 border-white/30 text-sm flex items-center justify-center">
             FD Calculator
-          </Link>
+          </a>
         </div>
       </div>
 
@@ -233,7 +221,7 @@ export default function HomeLoanEducational() {
             <strong>Popular Searches:</strong> home loan calculator, home loan EMI calculator, HDFC home loan calculator, SBI home loan EMI, housing loan calculator, home loan interest calculator, mortgage calculator India, amortization schedule, home loan prepayment calculator, home loan tax benefits, Section 80C home loan, home loan eligibility calculator 2026
           </p>
           <p className="text-xs text-gray-500 mt-2">
-            Last Updated: {new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}
+            Last Updated: May 2026
           </p>
         </div>
       </div>

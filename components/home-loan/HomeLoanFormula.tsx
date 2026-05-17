@@ -1,4 +1,4 @@
-'use client';
+// Server component — pure computation from props, no hooks needed
 
 const fmt = (n: number) =>
   new Intl.NumberFormat('en-IN', {
