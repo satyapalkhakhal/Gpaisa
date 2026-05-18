@@ -163,7 +163,7 @@ export default function NPSCalculatorClient({
               <SIPSlider label="Current Age" value={currentAge} min={18} max={59} step={1} suffix=" yrs" color="emerald" onChange={setCurrentAge} formatDisplay={(v) => `${v} years`} />
               <SIPSlider label="Retirement Age" value={retirementAge} min={60} max={75} step={1} suffix=" yrs" color="amber" onChange={setRetirementAge} formatDisplay={(v) => `${v} years`} />
               <SIPSlider label="Expected Return (p.a.)" value={expectedReturn} min={8} max={14} step={0.5} suffix="%" color="blue" onChange={setExpectedReturn} formatDisplay={(v) => `${v}%`} />
-              <SIPSlider label="Expected Annuity Rate" value={annuityRate} min={4} max={8} step={0.25} suffix="%" color="purple" onChange={setAnnuityRate} formatDisplay={(v) => `${v}% p.a.`} />
+              <SIPSlider label="Expected Annuity Rate" value={annuityRate} min={4} max={8} step={0.25} suffix="%" color="emerald" onChange={setAnnuityRate} formatDisplay={(v) => `${v}% p.a.`} />
 
               {/* Employer contribution */}
               <div>
