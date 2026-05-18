@@ -1,129 +1,196 @@
 import { Metadata } from 'next';
 import GSTCalculatorClient from '@/components/GSTCalculatorClient';
+import GSTContent from '@/components/gst/GSTContent';
 
+// ─── Server-side GST computation for default inputs ───────────────────────────
+// Defaults: ₹10,000 amount | 18% GST rate | "Add GST" (exclusive) mode
+function computeGSTDefaults() {
+  const amount = 10000;
+  const gstRate = 18;
+  const gst = (amount * gstRate) / 100;
+  const cgst = gst / 2;
+  const sgst = gst / 2;
+  return {
+    preGstAmount: amount,      // ₹10,000
+    cgst,                      // ₹900
+    sgst,                      // ₹900
+    totalGst: gst,             // ₹1,800
+    postGstAmount: amount + gst, // ₹11,800
+  };
+}
+
+// ─── Metadata ─────────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
-    title: 'GST Calculator - Calculate GST Online | Add or Remove GST | Gpaisa',
-    description: 'Free online GST calculator for India. Calculate Goods and Services Tax (GST) instantly. Add or remove GST from any amount with CGST, SGST, and IGST breakdown. Support for all GST rates: 0%, 5%, 12%, 18%, 28%.',
-    keywords: 'gst calculator, gst calculator india, goods and services tax calculator, calculate gst online, gst calculation, cgst sgst calculator, igst calculator, add gst calculator, remove gst calculator, gst exclusive calculator, gst inclusive calculator, 18% gst calculator, 28% gst calculator, india gst rates, gst breakdown, online gst tool',
-    authors: [{ name: 'gpaisa.in' }],
-    openGraph: {
-        title: 'GST Calculator - Calculate GST Online | Gpaisa',
-        description: 'Free online GST calculator for India. Calculate Goods and Services Tax instantly with CGST, SGST, and IGST breakdown. Support for all GST rates.',
-        type: 'website',
-        url: 'https://www.gpaisa.in/calculator/gst',
-        siteName: 'gpaisa.in',
-        images: [
-            {
-                url: 'https://www.gpaisa.in/android-chrome-512x512.png',
-                width: 512,
-                height: 512,
-                alt: 'GST Calculator - Gpaisa',
-            },
-        ],
+  title: 'GST Calculator India 2026 — Add/Remove GST, CGST SGST IGST Breakdown | gpaisa.in',
+  description: "India's most complete GST calculator. Add or remove GST instantly. Get CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%. With rate guide, worked examples, and FAQ. Updated 2026.",
+  keywords: 'gst calculator, gst calculator india, goods and services tax calculator, calculate gst online, gst calculation, cgst sgst calculator, igst calculator, add gst calculator, remove gst calculator, gst exclusive calculator, gst inclusive calculator, 18% gst calculator, 28% gst calculator, india gst rates, gst breakdown, online gst tool, gst rate slabs 2026, cgst sgst igst difference',
+  authors: [{ name: 'Satyapal Khakhal' }],
+  openGraph: {
+    title: 'GST Calculator India 2026 — Add/Remove GST, CGST SGST IGST Breakdown | gpaisa.in',
+    description: "India's most complete GST calculator. Add or remove GST instantly. Get CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%.",
+    type: 'website',
+    url: 'https://www.gpaisa.in/calculator/gst',
+    siteName: 'gpaisa.in',
+    images: [
+      {
+        url: '/og-gst-calculator.jpg',
+        width: 1200,
+        height: 630,
+        alt: 'GST Calculator India 2026 — CGST SGST IGST Breakdown | gpaisa.in',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'GST Calculator India 2026 — Add/Remove GST, CGST SGST IGST | gpaisa.in',
+    description: "India's most complete GST calculator. CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%. Updated 2026.",
+    creator: '@gpaisa_in',
+    images: ['/og-gst-calculator.jpg'],
+  },
+  alternates: {
+    canonical: 'https://www.gpaisa.in/calculator/gst',
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
     },
-    twitter: {
-        card: 'summary_large_image',
-        title: 'GST Calculator - Calculate GST Online | Gpaisa',
-        description: 'Free online GST calculator for India. Calculate Goods and Services Tax instantly with detailed breakdown.',
-        images: ['https://www.gpaisa.in/android-chrome-512x512.png'],
-    },
-    alternates: {
-        canonical: 'https://www.gpaisa.in/calculator/gst',
-    },
+  },
 };
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
 export default function GSTCalculatorPage() {
-    const jsonLd = {
-        '@context': 'https://schema.org',
-        '@type': 'WebApplication',
+  const defaults = computeGSTDefaults();
+
+  // Combined JSON-LD graph
+  const jsonLd = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      // ── WebPage
+      {
+        '@type': 'WebPage',
+        '@id': 'https://www.gpaisa.in/calculator/gst#webpage',
+        url: 'https://www.gpaisa.in/calculator/gst',
+        name: 'GST Calculator India 2026 — Add/Remove GST, CGST SGST IGST Breakdown | gpaisa.in',
+        description: "India's most complete GST calculator. Add or remove GST instantly. Get CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%.",
+        isPartOf: { '@id': 'https://www.gpaisa.in/#website' },
+        author: { '@type': 'Person', name: 'Satyapal Khakhal' },
+        breadcrumb: { '@id': 'https://www.gpaisa.in/calculator/gst#breadcrumb' },
+        inLanguage: 'en-IN',
+      },
+
+      // ── BreadcrumbList
+      {
+        '@type': 'BreadcrumbList',
+        '@id': 'https://www.gpaisa.in/calculator/gst#breadcrumb',
+        itemListElement: [
+          { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.gpaisa.in' },
+          { '@type': 'ListItem', position: 2, name: 'Calculator', item: 'https://www.gpaisa.in/calculator' },
+          { '@type': 'ListItem', position: 3, name: 'GST Calculator', item: 'https://www.gpaisa.in/calculator/gst' },
+        ],
+      },
+
+      // ── SoftwareApplication
+      {
+        '@type': 'SoftwareApplication',
         name: 'GST Calculator',
-        description: 'Free online GST calculator for India. Calculate Goods and Services Tax (GST) instantly. Add or remove GST from any amount with CGST, SGST, and IGST breakdown.',
         applicationCategory: 'FinanceApplication',
-        operatingSystem: 'Any',
-        offers: {
-            '@type': 'Offer',
-            price: '0',
-            priceCurrency: 'INR',
-            hasMerchantReturnPolicy: {
-                '@type': 'MerchantReturnPolicy',
-                applicableCountry: 'IN',
-                returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
-            },
-        },
-        featureList: [
-            'Calculate GST Exclusive (Add GST)',
-            'Calculate GST Inclusive (Remove GST)',
-            'CGST and SGST breakdown',
-            'IGST calculation',
-            'Support for all GST rates (0%, 5%, 12%, 18%, 28%)',
-            'Instant calculation',
-            'Visual breakdown charts',
-        ],
+        operatingSystem: 'Web',
+        offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
         aggregateRating: {
-            '@type': 'AggregateRating',
-            ratingValue: '4.8',
-            ratingCount: '2500',
+          '@type': 'AggregateRating',
+          ratingValue: '4.8',
+          ratingCount: '5200',
+          bestRating: '5',
+          worstRating: '1',
         },
-    };
-
-    const faqJsonLd = {
-        '@context': 'https://schema.org',
-        '@type': 'FAQPage',
-        mainEntity: [
-            {
-                '@type': 'Question',
-                name: 'What is GST?',
-                acceptedAnswer: {
-                    '@type': 'Answer',
-                    text: 'GST (Goods and Services Tax) is an indirect tax levied on the supply of goods and services in India. It replaced multiple indirect taxes like VAT, service tax, and excise duty.',
-                },
-            },
-            {
-                '@type': 'Question',
-                name: 'What are the GST rates in India?',
-                acceptedAnswer: {
-                    '@type': 'Answer',
-                    text: 'GST rates in India are 0%, 5%, 12%, 18%, and 28%. Essential items are taxed at 0%, household necessities at 5%, processed foods at 12%, most goods and services at 18%, and luxury items at 28%.',
-                },
-            },
-            {
-                '@type': 'Question',
-                name: 'What is the difference between CGST, SGST, and IGST?',
-                acceptedAnswer: {
-                    '@type': 'Answer',
-                    text: 'CGST (Central GST) and SGST (State GST) are levied on intra-state transactions and split equally. IGST (Integrated GST) is levied on inter-state transactions at the full GST rate.',
-                },
-            },
-            {
-                '@type': 'Question',
-                name: 'How to calculate GST?',
-                acceptedAnswer: {
-                    '@type': 'Answer',
-                    text: 'To add GST: GST Amount = (Original Amount × GST Rate) / 100. Total = Original Amount + GST Amount. To remove GST: Original Amount = Total Amount / (1 + GST Rate/100). GST Amount = Total Amount - Original Amount.',
-                },
-            },
-            {
-                '@type': 'Question',
-                name: 'What is GST Exclusive and GST Inclusive?',
-                acceptedAnswer: {
-                    '@type': 'Answer',
-                    text: 'GST Exclusive means the price does not include GST, and you need to add GST to get the final price. GST Inclusive means the price already includes GST, and you need to extract the GST component from the total.',
-                },
-            },
+        description: 'Free online GST calculator India 2026. Add or remove GST instantly with CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%.',
+        featureList: [
+          'Add GST (exclusive) calculation',
+          'Remove GST (inclusive) calculation',
+          'CGST and SGST breakdown',
+          'IGST for interstate transactions',
+          'All GST rate slabs: 0%, 5%, 12%, 18%, 28%',
+          'Server-side rendered default results',
         ],
-    };
+      },
 
-    return (
-        <>
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-            />
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
-            />
-            <GSTCalculatorClient />
-        </>
-    );
+      // ── FAQPage
+      {
+        '@type': 'FAQPage',
+        '@id': 'https://www.gpaisa.in/calculator/gst#faq',
+        mainEntity: [
+          {
+            '@type': 'Question',
+            name: 'What is the GST rate on services in India?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Most services in India fall under the 18% GST slab. Notable exceptions include healthcare and education (0%), food delivery apps (5%), and financial services (18%). Always check the latest CBIC notifications for specific service categories.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'How do I calculate GST on an inclusive amount?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Divide the total amount by (1 + rate/100). Example: ₹11,800 ÷ 1.18 = ₹10,000 base price. The GST component is ₹11,800 − ₹10,000 = ₹1,800. Use the Remove GST mode in the calculator.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'What is the difference between CGST and IGST?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'CGST (Central GST) + SGST (State GST) apply to intrastate transactions and are split equally. IGST (Integrated GST) applies to interstate transactions at the full rate and goes entirely to the central government before being distributed.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'Is GST applicable on exports?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'No. Exports are zero-rated under GST. This means no GST is charged on exported goods or services. Exporters can claim refund of input tax credit (ITC) paid on inputs used in export production.',
+            },
+          },
+          {
+            '@type': 'Question',
+            name: 'What items are exempt from GST?',
+            acceptedAnswer: {
+              '@type': 'Answer',
+              text: 'Fresh fruits and vegetables, milk, eggs, bread, books, newspapers, and most agricultural produce are exempt (0% GST). Petroleum products, alcohol for human consumption, and electricity are currently outside the GST framework.',
+            },
+          },
+        ],
+      },
+    ],
+  };
+
+  return (
+    <>
+      {/* JSON-LD Structured Data */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
+      {/* Main Calculator — pre-initialised with server-computed defaults */}
+      <GSTCalculatorClient
+        initialPreGstAmount={defaults.preGstAmount}
+        initialCgst={defaults.cgst}
+        initialSgst={defaults.sgst}
+        initialTotalGst={defaults.totalGst}
+        initialPostGstAmount={defaults.postGstAmount}
+      />
+
+      {/* Static educational content — server-rendered, visible without JS */}
+      <div className="max-w-6xl mx-auto px-4 pb-12">
+        <GSTContent />
+      </div>
+    </>
+  );
 }

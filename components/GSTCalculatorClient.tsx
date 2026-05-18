@@ -7,16 +7,30 @@ import SIPSlider from '@/components/sip/SIPSlider';
 const formatCurrency = (amount: number) =>
   new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(amount);
 
-export default function GSTCalculatorClient() {
+interface GSTCalculatorClientProps {
+  initialPreGstAmount?: number;
+  initialCgst?: number;
+  initialSgst?: number;
+  initialTotalGst?: number;
+  initialPostGstAmount?: number;
+}
+
+export default function GSTCalculatorClient({
+  initialPreGstAmount = 10000,
+  initialCgst = 900,
+  initialSgst = 900,
+  initialTotalGst = 1800,
+  initialPostGstAmount = 11800,
+}: GSTCalculatorClientProps) {
   const [calculationType, setCalculationType] = useState<'exclusive' | 'inclusive'>('exclusive');
   const [amount, setAmount] = useState(10000);
   const [gstRate, setGstRate] = useState(18);
 
-  const [cgst, setCgst] = useState(0);
-  const [sgst, setSgst] = useState(0);
-  const [totalGst, setTotalGst] = useState(0);
-  const [preGstAmount, setPreGstAmount] = useState(0);
-  const [postGstAmount, setPostGstAmount] = useState(0);
+  const [cgst, setCgst] = useState(initialCgst);
+  const [sgst, setSgst] = useState(initialSgst);
+  const [totalGst, setTotalGst] = useState(initialTotalGst);
+  const [preGstAmount, setPreGstAmount] = useState(initialPreGstAmount);
+  const [postGstAmount, setPostGstAmount] = useState(initialPostGstAmount);
 
   useEffect(() => {
     if (calculationType === 'exclusive') {
@@ -56,7 +70,7 @@ export default function GSTCalculatorClient() {
           <div className="w-10 h-10 md:w-12 md:h-12 rounded-xl bg-gradient-to-br from-purple-500 to-violet-600 flex items-center justify-center text-white text-lg md:text-xl shadow-lg shadow-purple-200 flex-shrink-0">🧾</div>
           <div>
             <h1 className="text-xl md:text-2xl lg:text-4xl font-bold text-gray-900 leading-tight">GST Calculator India (2026)</h1>
-            <p className="text-sm md:text-base text-gray-500 mt-1 max-w-2xl">Calculate GST inclusive/exclusive amounts with CGST & SGST breakdown instantly.</p>
+            <p className="text-sm md:text-base text-gray-500 mt-1 max-w-2xl">Calculate GST inclusive/exclusive amounts with CGST &amp; SGST breakdown instantly.</p>
           </div>
         </div>
       </div>
@@ -103,18 +117,33 @@ export default function GSTCalculatorClient() {
           <div className="lg:col-span-3 space-y-4 md:space-y-6">
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
               <div className="divide-y divide-gray-100">
-                <div className="flex items-center justify-between px-4 md:px-5 py-3.5"><span className="text-sm text-gray-500">Amount (Before GST)</span><span className="text-sm font-bold text-gray-800">{formatCurrency(Math.round(preGstAmount))}</span></div>
-                <div className="flex items-center justify-between px-4 md:px-5 py-3.5"><span className="text-sm text-gray-500">CGST ({gstRate / 2}%)</span><span className="text-sm font-bold text-purple-600">{formatCurrency(Math.round(cgst))}</span></div>
-                <div className="flex items-center justify-between px-4 md:px-5 py-3.5"><span className="text-sm text-gray-500">SGST ({gstRate / 2}%)</span><span className="text-sm font-bold text-purple-600">{formatCurrency(Math.round(sgst))}</span></div>
-                <div className="flex items-center justify-between px-4 md:px-5 py-3.5"><span className="text-sm text-gray-500">Total GST ({gstRate}%)</span><span className="text-sm font-bold text-emerald-600">{formatCurrency(Math.round(totalGst))}</span></div>
-                <div className="flex items-center justify-between px-4 md:px-5 py-4 bg-gray-50/50"><span className="text-base font-semibold text-gray-900">Total Amount (After GST)</span><span className="text-lg font-extrabold text-gray-900">{formatCurrency(Math.round(postGstAmount))}</span></div>
+                <div className="flex items-center justify-between px-4 md:px-5 py-3.5">
+                  <span className="text-sm text-gray-500">Amount Before GST</span>
+                  <span className="text-sm font-bold text-gray-800">{formatCurrency(Math.round(preGstAmount))}</span>
+                </div>
+                <div className="flex items-center justify-between px-4 md:px-5 py-3.5">
+                  <span className="text-sm text-gray-500">CGST ({gstRate / 2}%)</span>
+                  <span className="text-sm font-bold text-purple-600">{formatCurrency(Math.round(cgst))}</span>
+                </div>
+                <div className="flex items-center justify-between px-4 md:px-5 py-3.5">
+                  <span className="text-sm text-gray-500">SGST ({gstRate / 2}%)</span>
+                  <span className="text-sm font-bold text-purple-600">{formatCurrency(Math.round(sgst))}</span>
+                </div>
+                <div className="flex items-center justify-between px-4 md:px-5 py-3.5">
+                  <span className="text-sm text-gray-500">Total GST ({gstRate}%)</span>
+                  <span className="text-sm font-bold text-emerald-600">{formatCurrency(Math.round(totalGst))}</span>
+                </div>
+                <div className="flex items-center justify-between px-4 md:px-5 py-4 bg-gray-50/50">
+                  <span className="text-base font-semibold text-gray-900">Total Amount After GST</span>
+                  <span className="text-lg font-extrabold text-gray-900">{formatCurrency(Math.round(postGstAmount))}</span>
+                </div>
               </div>
             </div>
 
             <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
               <div className="px-4 md:px-6 py-4 md:py-5">
                 <h3 className="text-base md:text-lg font-bold text-gray-900 mb-3">About GST</h3>
-                <p className="text-sm text-gray-600 leading-relaxed">Goods and Services Tax (GST) is an indirect tax system applicable across India. It replaced multiple cascading taxes with a unified system. GST is divided equally into Central GST (CGST) and State GST (SGST).</p>
+                <p className="text-sm text-gray-600 leading-relaxed">Goods and Services Tax (GST) is an indirect tax system applicable across India. It replaced multiple cascading taxes with a unified system. GST is divided equally into Central GST (CGST) and State GST (SGST) for intrastate transactions, and a single Integrated GST (IGST) for interstate transactions.</p>
               </div>
             </div>
           </div>
