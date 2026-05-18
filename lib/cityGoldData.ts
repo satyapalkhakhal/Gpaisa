@@ -70,7 +70,7 @@ export const CITY_GOLD_DATA: Record<string, CityGoldInfo> = {
         priceFactors: [
             'MCX gold futures price and international spot gold rates',
             'USD/INR exchange rate — a weaker rupee increases gold prices',
-            'Import duty (currently 5%) and GST (3%) on gold',
+            'Import duty (currently 15%) and GST (3%) on gold',
             'Seasonal demand during Dhanteras, Diwali, and wedding season',
             'Making charges by Mumbai jewellers (8-25% of gold value)',
             'Local competition in Zaveri Bazaar keeping margins competitive',
@@ -132,7 +132,7 @@ export const CITY_GOLD_DATA: Record<string, CityGoldInfo> = {
         priceFactors: [
             'International gold spot price and London Bullion Market rates',
             'USD/INR exchange rate fluctuations',
-            'Import duty (5%) and GST (3%) on gold purchases',
+            'Import duty (15%) and GST (3%) on gold purchases',
             'High wedding season demand (October–February) pushes prices up',
             'Making charges for Kundan/Meenakari work (15-30%) are higher than plain gold',
             'Wholesale competition in Dariba Kalan keeps base margins thin',
