@@ -181,7 +181,7 @@ export default function NPSCalculatorClient({
                 </div>
                 <div className="flex-1">
                   <p className="text-[13px] font-semibold text-gray-700">Annual Step-Up Contribution</p>
-                  {showStepUp && <div className="mt-2"><SIPSlider label="" value={stepUpPct} min={1} max={20} step={1} suffix="% p.a." color="purple" onChange={setStepUpPct} formatDisplay={(v) => `${v}% per year`} /></div>}
+                  {showStepUp && <div className="mt-2"><SIPSlider label="" value={stepUpPct} min={1} max={20} step={1} suffix="% p.a." color="amber" onChange={setStepUpPct} formatDisplay={(v) => `${v}% per year`} /></div>}
                 </div>
               </label>
 
