@@ -78,7 +78,6 @@ export default function FDCalculatorPage() {
         applicationCategory: 'FinanceApplication',
         operatingSystem: 'Web',
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
-        aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.8', ratingCount: '6800', bestRating: '5', worstRating: '1' },
         description: 'Calculate Fixed Deposit maturity amount with TDS, senior citizen rates, and bank comparison. All compounding options — monthly, quarterly, yearly.',
         featureList: ['Senior citizen rate (+0.50%)', 'TDS calculation (10%/20%)', 'Tax-Saving FD (80C) mode', 'All compounding frequencies', 'Bank rate comparison table', 'SSR default results'],
       },

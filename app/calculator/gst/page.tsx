@@ -102,13 +102,6 @@ export default function GSTCalculatorPage() {
         applicationCategory: 'FinanceApplication',
         operatingSystem: 'Web',
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
-        aggregateRating: {
-          '@type': 'AggregateRating',
-          ratingValue: '4.8',
-          ratingCount: '5200',
-          bestRating: '5',
-          worstRating: '1',
-        },
         description: 'Free online GST calculator India 2026. Add or remove GST instantly with CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%.',
         featureList: [
           'Add GST (exclusive) calculation',

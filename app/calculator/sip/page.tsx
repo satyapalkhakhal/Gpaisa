@@ -159,13 +159,6 @@ export default function SIPCalculatorPage() {
                         returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
                     },
                 },
-                aggregateRating: {
-                    '@type': 'AggregateRating',
-                    ratingValue: '4.8',
-                    ratingCount: '15420',
-                    bestRating: '5',
-                    worstRating: '1',
-                },
                 description: 'Free online SIP calculator to calculate systematic investment plan returns for mutual funds.',
             },
 

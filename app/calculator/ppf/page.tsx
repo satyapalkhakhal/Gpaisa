@@ -157,13 +157,6 @@ export default function PPFCalculatorPage() {
                         returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
                     },
                 },
-                aggregateRating: {
-                    '@type': 'AggregateRating',
-                    ratingValue: '4.9',
-                    ratingCount: '12850',
-                    bestRating: '5',
-                    worstRating: '1',
-                },
                 description: 'Free online PPF calculator to calculate Public Provident Fund returns and maturity amount.',
             },
 

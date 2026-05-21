@@ -175,7 +175,6 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
                 },
             },
         },
-        aggregateRating: { "@type": "AggregateRating", ratingValue: "4.8", reviewCount: "156" },
     };
 
     const faqSchemaItems = silverInfo

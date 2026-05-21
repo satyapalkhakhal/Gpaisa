@@ -79,7 +79,6 @@ export default function NPSCalculatorPage() {
         applicationCategory: 'FinanceApplication',
         operatingSystem: 'Web',
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
-        aggregateRating: { '@type': 'AggregateRating', ratingValue: '4.8', ratingCount: '4200', bestRating: '5', worstRating: '1' },
         description: 'Calculate NPS retirement corpus, monthly pension, and tax savings under 80CCD. Updated for PFRDA Dec 2025 rules. Includes senior citizen bonus, step-up contributions, and year-wise growth table.',
         featureList: [
           'PFRDA Dec 2025 withdrawal rules (80% lump sum)',

@@ -193,13 +193,6 @@ export default function SWPCalculatorPage() {
                     price: '0',
                     priceCurrency: 'INR',
                 },
-                aggregateRating: {
-                    '@type': 'AggregateRating',
-                    ratingValue: '4.8',
-                    ratingCount: '8450',
-                    bestRating: '5',
-                    worstRating: '1',
-                },
                 description: 'Free online SWP calculator with inflation adjustment, safe withdrawal rate, and corpus depletion date. Compare SWP vs FD vs Annuity.',
             },
 
