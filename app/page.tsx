@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronRight, Calculator, Shield, ArrowRight } from 'lucide-react';
+import { ChevronRight, Calculator, Shield } from 'lucide-react';
 import GoldDashboard from '@/components/GoldDashboard';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
 import {
@@ -11,36 +11,43 @@ import {
 } from '@/lib/supabaseApi';
 
 export const metadata: Metadata = {
-    title: 'gpaisa.in — Gold Rates, SIP & FD Calculators, Market Data | India\'s Financial Portal',
-    description: 'India\'s trusted financial portal. Live gold & silver rates, SIP calculator, FD calculator, home loan calculator, GST calculator, credit card reviews and market news. Updated daily.',
-    keywords: 'gold rate today india, sip calculator, fd calculator, home loan calculator, gst calculator, silver rate today, financial calculators india, credit card reviews india, investment tools india, gpaisa',
-    authors: [{ name: 'Satyapal Khakhal' }],
+    title: "gpaisa.in — Live Gold Rates, Financial Calculators & Market Data India",
+    description: "India's trusted financial portal. Live 24K gold rate today, silver price, SIP calculator, FD calculator, home loan calculator, GST calculator, credit card reviews. Updated daily by Satyapal Khakhal.",
+    authors: [{ name: "Satyapal Khakhal", url: "https://www.gpaisa.in/about" }],
+    keywords: "gold rate today india, sip calculator, fd calculator, home loan calculator, gst calculator, silver rate today, financial calculators india, credit card reviews india, investment tools india, live gold price india",
+    alternates: { canonical: "https://www.gpaisa.in" },
     openGraph: {
-        title: 'gpaisa.in — Gold Rates, Financial Calculators & Market Data for India',
-        description: 'Live gold rates, silver prices, SIP/FD/home loan calculators, GST tool, credit card reviews and financial news — all in one place. Trusted by Indian investors.',
-        type: 'website',
-        locale: 'en_IN',
-        url: 'https://www.gpaisa.in',
-        siteName: 'gpaisa.in',
-        images: [
-            {
-                url: 'https://www.gpaisa.in/og-homepage.jpg',
-                width: 1200,
-                height: 630,
-                alt: 'gpaisa.in — India\'s Financial Portal for Gold Rates, Calculators & Market Data',
-            },
-        ],
+        title: "gpaisa.in — Live Gold Rates, Financial Calculators & Market Data India",
+        description: "Live 24K gold rates, silver prices, SIP/FD/home loan calculators, GST tool, credit card reviews and financial news. India's trusted financial portal.",
+        url: "https://www.gpaisa.in",
+        siteName: "gpaisa.in",
+        locale: "en_IN",
+        type: "website",
+        images: [{
+            url: "https://www.gpaisa.in/og-homepage.jpg",
+            width: 1200,
+            height: 630,
+            alt: "gpaisa.in — India's Financial Portal for Gold Rates, Calculators & Market Data"
+        }]
     },
     twitter: {
-        card: 'summary_large_image',
-        title: 'gpaisa.in — Gold Rates, SIP & FD Calculators, Market Data India',
-        description: 'Live gold & silver rates, SIP/FD/home loan calculators, credit card reviews. India\'s trusted financial portal. Updated daily.',
-        images: ['https://www.gpaisa.in/og-homepage.jpg'],
-        creator: '@gpaisa_in',
-        site: '@gpaisa_in',
+        card: "summary_large_image",
+        title: "gpaisa.in — Live Gold Rates, SIP & FD Calculators, Market Data India",
+        description: "Live gold & silver rates, SIP/FD/home loan calculators, credit card reviews. Updated daily.",
+        images: ["https://www.gpaisa.in/og-homepage.jpg"],
+        creator: "@gpaisa_in",
+        site: "@gpaisa_in"
     },
-    alternates: {
-        canonical: 'https://www.gpaisa.in'
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            "max-video-preview": -1,
+            "max-image-preview": "large",
+            "max-snippet": -1
+        }
     }
 };
 
@@ -171,90 +178,95 @@ export default async function HomePage() {
     // Latest articles (exclude already-shown ones)
     const latestFiltered = latestArticles.filter(a => !usedIds.has(a.id)).slice(0, 5);
 
-    // JSON-LD Structured Data
-    const websiteSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'WebSite',
-        '@id': 'https://www.gpaisa.in/#website',
-        'url': 'https://www.gpaisa.in',
-        'name': 'gpaisa.in',
-        'description': 'India\'s trusted financial portal for live gold rates, silver prices, financial calculators, and market data.',
-        'publisher': {
-            '@type': 'Organization',
-            'name': 'gpaisa.in',
+    // JSON-LD Structured Data — combined array
+    const jsonLdSchemas = [
+        {
+            '@context': 'https://schema.org',
+            '@type': 'WebSite',
+            '@id': 'https://www.gpaisa.in/#website',
             'url': 'https://www.gpaisa.in',
-            'logo': {
-                '@type': 'ImageObject',
-                'url': 'https://www.gpaisa.in/android-chrome-512x512.png',
-                'width': 512,
-                'height': 512
+            'name': 'gpaisa.in',
+            'description': "India's trusted financial portal for live gold rates, silver prices, financial calculators, and market data.",
+            'inLanguage': 'en-IN',
+            'publisher': {
+                '@type': 'Organization',
+                '@id': 'https://www.gpaisa.in/#organization',
+                'name': 'gpaisa.in',
+                'url': 'https://www.gpaisa.in',
+                'logo': { '@type': 'ImageObject', 'url': 'https://www.gpaisa.in/android-chrome-512x512.png', 'width': 512, 'height': 512 },
+                'founder': { '@type': 'Person', 'name': 'Satyapal Khakhal', 'url': 'https://www.gpaisa.in/about' },
+                'contactPoint': { '@type': 'ContactPoint', 'email': 'info@gpaisa.in', 'contactType': 'customer support' },
+                'sameAs': ['https://twitter.com/gpaisa_in']
+            },
+            'potentialAction': {
+                '@type': 'SearchAction',
+                'target': { '@type': 'EntryPoint', 'urlTemplate': 'https://www.gpaisa.in/search?q={search_term_string}' },
+                'query-input': 'required name=search_term_string'
             }
         },
-        'potentialAction': {
-            '@type': 'SearchAction',
-            'target': {
-                '@type': 'EntryPoint',
-                'urlTemplate': 'https://www.gpaisa.in/search?q={search_term_string}'
-            },
-            'query-input': 'required name=search_term_string'
+        {
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            '@id': 'https://www.gpaisa.in/#webpage',
+            'url': 'https://www.gpaisa.in',
+            'name': "gpaisa.in — Live Gold Rates, Financial Calculators & Market Data India",
+            'description': "India's trusted financial portal for live gold rates, silver prices, SIP/FD/home loan calculators, and market news.",
+            'isPartOf': { '@id': 'https://www.gpaisa.in/#website' },
+            'about': { '@id': 'https://www.gpaisa.in/#organization' },
+            'author': { '@type': 'Person', 'name': 'Satyapal Khakhal', 'url': 'https://www.gpaisa.in/about' },
+            'inLanguage': 'en-IN',
+            'dateModified': new Date().toISOString().split('T')[0]
+        },
+        {
+            '@context': 'https://schema.org',
+            '@type': 'ItemList',
+            'name': 'Financial Calculators — gpaisa.in',
+            'description': 'Free financial calculators for Indian investors',
+            'numberOfItems': 14,
+            'itemListElement': [
+                { '@type': 'ListItem', 'position': 1, 'name': 'SIP Calculator', 'url': 'https://www.gpaisa.in/calculator/sip' },
+                { '@type': 'ListItem', 'position': 2, 'name': 'FD Calculator', 'url': 'https://www.gpaisa.in/calculator/fd' },
+                { '@type': 'ListItem', 'position': 3, 'name': 'Home Loan Calculator', 'url': 'https://www.gpaisa.in/calculator/home-loan' },
+                { '@type': 'ListItem', 'position': 4, 'name': 'GST Calculator', 'url': 'https://www.gpaisa.in/calculator/gst' },
+                { '@type': 'ListItem', 'position': 5, 'name': 'SWP Calculator', 'url': 'https://www.gpaisa.in/calculator/swp' },
+                { '@type': 'ListItem', 'position': 6, 'name': 'PPF Calculator', 'url': 'https://www.gpaisa.in/calculator/ppf' },
+                { '@type': 'ListItem', 'position': 7, 'name': 'EPF Calculator', 'url': 'https://www.gpaisa.in/calculator/epf' },
+                { '@type': 'ListItem', 'position': 8, 'name': 'CAGR Calculator', 'url': 'https://www.gpaisa.in/calculator/cagr' },
+                { '@type': 'ListItem', 'position': 9, 'name': 'NPS Calculator', 'url': 'https://www.gpaisa.in/calculator/nps' },
+                { '@type': 'ListItem', 'position': 10, 'name': 'HRA Calculator', 'url': 'https://www.gpaisa.in/calculator/hra' },
+                { '@type': 'ListItem', 'position': 11, 'name': 'Gratuity Calculator', 'url': 'https://www.gpaisa.in/calculator/gratuity' },
+                { '@type': 'ListItem', 'position': 12, 'name': 'EMI Calculator', 'url': 'https://www.gpaisa.in/calculator/emi' },
+                { '@type': 'ListItem', 'position': 13, 'name': 'Mutual Fund Calculator', 'url': 'https://www.gpaisa.in/calculator/mutual-fund' },
+                { '@type': 'ListItem', 'position': 14, 'name': 'Simple Interest Calculator', 'url': 'https://www.gpaisa.in/calculator/simple-interest' },
+            ]
         }
-    };
-
-    const organizationSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'Organization',
-        '@id': 'https://www.gpaisa.in/#organization',
-        'name': 'gpaisa.in',
-        'url': 'https://www.gpaisa.in',
-        'logo': 'https://www.gpaisa.in/android-chrome-512x512.png',
-        'description': 'India\'s trusted financial portal providing live gold rates, silver prices, investment calculators, and financial news.',
-        'foundingDate': '2025',
-        'founder': {
-            '@type': 'Person',
-            'name': 'Satyapal Khakhal'
-        },
-        'contactPoint': {
-            '@type': 'ContactPoint',
-            'email': 'info@gpaisa.in',
-            'contactType': 'customer support',
-            'availableLanguage': ['English', 'Hindi']
-        },
-        'sameAs': [
-            'https://twitter.com/gpaisa_in'
-        ]
-    };
-
-    const webPageSchema = {
-        '@context': 'https://schema.org',
-        '@type': 'WebPage',
-        '@id': 'https://www.gpaisa.in/#webpage',
-        'url': 'https://www.gpaisa.in',
-        'name': 'gpaisa.in — Gold Rates, Financial Calculators & Market Data | India\'s Financial Portal',
-        'description': 'India\'s trusted financial portal for live gold rates, silver prices, SIP/FD/home loan calculators, and market news.',
-        'isPartOf': { '@id': 'https://www.gpaisa.in/#website' },
-        'about': { '@id': 'https://www.gpaisa.in/#organization' },
-        'author': {
-            '@type': 'Person',
-            'name': 'Satyapal Khakhal'
-        },
-        'inLanguage': 'en-IN',
-        'dateModified': '2026-05-21'
-    };
+    ];
 
     return (
         <>
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSchemas) }}
             />
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
-            />
-            <script
-                type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
-            />
+        {/* ① HERO STRIP */}
+        <section className="bg-gradient-to-r from-emerald-900 to-emerald-700 text-white py-3 px-4">
+            <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-3">
+                    <span className="text-sm font-bold">gpaisa.in</span>
+                    <span className="text-emerald-300 text-xs">India&apos;s Trusted Financial Portal</span>
+                </div>
+                <div className="flex items-center gap-4 text-xs text-emerald-200">
+                    <span>🪙 Live Gold Rates</span>
+                    <span>📊 14 Calculators</span>
+                    <span>📰 Financial News</span>
+                    <span>✅ Updated Daily</span>
+                </div>
+                <div className="text-xs text-emerald-300">
+                    By <Link href="/about" className="underline text-white font-semibold">Satyapal Khakhal</Link>
+                </div>
+            </div>
+        </section>
+
         <div className="bg-gray-50 text-gray-800 font-sans min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
 
@@ -334,6 +346,36 @@ export default async function HomePage() {
                             </div>
                         </section>
 
+                        {/* SECTION D: CALCULATOR HUB STRIP */}
+                        <section id="calculators" aria-labelledby="calc-heading" className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                            <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-base">🧮</span>
+                                    <h2 id="calc-heading" className="font-bold text-gray-900 text-sm uppercase tracking-wide">Free Financial Calculators</h2>
+                                </div>
+                                <Link href="/calculator" className="text-xs font-semibold text-primary-600 hover:text-primary-700">View All 14 →</Link>
+                            </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-0 divide-x divide-y divide-gray-100">
+                                {[
+                                    { name: 'SIP Calculator', desc: 'Mutual fund returns', href: '/calculator/sip', icon: '📊' },
+                                    { name: 'FD Calculator', desc: 'Fixed deposit maturity', href: '/calculator/fd', icon: '🏦' },
+                                    { name: 'Home Loan', desc: 'EMI & amortisation', href: '/calculator/home-loan', icon: '🏠' },
+                                    { name: 'GST Calculator', desc: 'Add / remove GST', href: '/calculator/gst', icon: '🧾' },
+                                    { name: 'SWP Calculator', desc: 'Withdrawal planning', href: '/calculator/swp', icon: '💸' },
+                                    { name: 'PPF Calculator', desc: 'PPF maturity & returns', href: '/calculator/ppf', icon: '📈' },
+                                    { name: 'CAGR Calculator', desc: 'Investment returns', href: '/calculator/cagr', icon: '📉' },
+                                    { name: 'EMI Calculator', desc: 'Loan EMI planning', href: '/calculator/emi', icon: '💰' },
+                                ].map(calc => (
+                                    <Link key={calc.href} href={calc.href} className="flex items-center gap-2.5 px-4 py-3 hover:bg-primary-50 transition-colors group">
+                                        <span className="text-xl flex-shrink-0">{calc.icon}</span>
+                                        <div>
+                                            <p className="text-xs font-semibold text-gray-800 group-hover:text-primary-700 leading-tight">{calc.name}</p>
+                                            <p className="text-[10px] text-gray-400 mt-0.5">{calc.desc}</p>
+                                        </div>
+                                    </Link>
+                                ))}
+                            </div>
+                        </section>
 
                         {/* ═══════════════════════════════════════════════
                             SECTION 10: FINANCE (CREDIT CARD ARTICLES)
@@ -373,22 +415,28 @@ export default async function HomePage() {
                         )}
 
 
-                        {/* ═══════════════════════════════════════════════
-                            SECTION 12: TRUST / ABOUT
-                        ═══════════════════════════════════════════════ */}
-                        <section id="about-trust" className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 sm:p-6">
-                            <div className="flex items-center gap-2 mb-3">
-                                <div className="w-8 h-8 rounded-lg bg-primary-50 flex items-center justify-center">
-                                    <Shield className="w-4 h-4 text-primary-600" />
+                        {/* SECTION G: ABOUT GPAISA TRUST SECTION */}
+                        <section id="about-gpaisa" aria-labelledby="about-heading" className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 sm:p-6">
+                            <div className="flex items-start gap-4">
+                                <div className="w-14 h-14 rounded-full bg-emerald-100 flex-shrink-0 overflow-hidden border-2 border-emerald-200">
+                                    <div className="w-full h-full bg-gradient-to-br from-emerald-200 to-emerald-300 flex items-center justify-center text-emerald-700 font-bold text-lg">SK</div>
                                 </div>
-                                <h2 className="text-sm font-bold text-gray-900 uppercase tracking-wide">About Gpaisa</h2>
+                                <div className="flex-1">
+                                    <h2 id="about-heading" className="text-sm font-bold text-gray-900 mb-1">About gpaisa.in</h2>
+                                    <p className="text-sm text-gray-600 leading-relaxed mb-3">
+                                        gpaisa.in is founded by <strong>Satyapal Khakhal</strong> to provide accurate, unbiased financial data to Indian investors. We cover live gold and silver rates, 14 free financial calculators, credit card reviews, and daily market news — all without any advertiser influence.
+                                    </p>
+                                    <div className="flex flex-wrap gap-2 mb-3">
+                                        <span className="text-xs bg-emerald-50 border border-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium">📡 Data from MCX, IBJA, LBMA</span>
+                                        <span className="text-xs bg-blue-50 border border-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-medium">📊 BSE, NSE, Agmarknet</span>
+                                        <span className="text-xs bg-amber-50 border border-amber-100 text-amber-700 px-2.5 py-1 rounded-full font-medium">🔄 Updated Daily</span>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <Link href="/about" className="text-xs font-bold text-primary-600 hover:text-primary-700">About Us →</Link>
+                                        <a href="https://twitter.com/gpaisa_in" target="_blank" rel="noopener" className="text-xs font-bold text-sky-600 hover:text-sky-700">@gpaisa_in →</a>
+                                    </div>
+                                </div>
                             </div>
-                            <p className="text-sm text-gray-600 leading-relaxed">
-                                Gpaisa provides accurate gold price data, investment comparisons, and expert-backed financial insights to help Indian investors make better decisions. We aggregate data from trusted sources to bring you real-time gold, silver, and commodity prices alongside calculators and tools for smarter financial planning.
-                            </p>
-                            <Link href="/about" className="inline-flex items-center gap-1.5 text-xs font-bold text-primary-600 hover:text-primary-700 mt-3 transition-colors">
-                                Learn More <ArrowRight className="w-3.5 h-3.5" />
-                            </Link>
                         </section>
 
                     </div>
@@ -493,15 +541,50 @@ export default async function HomePage() {
                                 </div>
                             </div>
                         </div>
-
-
-                        {/* ── AD SPACE ──
-                        <div className="bg-gray-100 h-64 flex items-center justify-center border border-dashed border-gray-300 rounded-xl">
-                            <span className="text-gray-400 text-sm font-medium">Ad Space</span>
-                        </div> */}
+                        {/* SECTION K: WHO WE ARE SIDEBAR */}
+                        <div className="bg-emerald-50 rounded-xl border border-emerald-100 p-4">
+                            <h3 className="text-xs font-bold text-emerald-800 uppercase tracking-wide mb-2">Who We Are</h3>
+                            <p className="text-xs text-emerald-700 leading-relaxed mb-3">
+                                Founded by <strong>Satyapal Khakhal</strong>. We track gold rates, silver prices, commodity markets, and provide free financial calculators for Indian investors.
+                            </p>
+                            <div className="space-y-1.5 text-[10px] text-emerald-600">
+                                <div className="flex items-center gap-1.5"><span>✅</span><span>Data sourced from MCX, IBJA, LBMA</span></div>
+                                <div className="flex items-center gap-1.5"><span>✅</span><span>14 free financial calculators</span></div>
+                                <div className="flex items-center gap-1.5"><span>✅</span><span>Not SEBI registered — for info only</span></div>
+                                <div className="flex items-center gap-1.5"><span>✅</span><span>No advertiser influence</span></div>
+                            </div>
+                            <Link href="/about" className="mt-3 block text-center text-xs font-bold text-emerald-700 hover:text-emerald-800 bg-white border border-emerald-200 rounded-lg py-1.5">
+                                Learn More About Us →
+                            </Link>
+                        </div>
 
                     </div>
                 </div>
+            </div>
+        </div>
+
+        {/* ④ DATA SOURCES STRIP */}
+        <section className="bg-gray-50 border-t border-gray-200 py-4 px-4">
+            <div className="max-w-7xl mx-auto">
+                <p className="text-xs text-gray-500 text-center mb-2 font-semibold uppercase tracking-wide">Data Sources</p>
+                <div className="flex flex-wrap justify-center gap-4 text-xs text-gray-400">
+                    <span>📊 MCX (Multi Commodity Exchange)</span>
+                    <span>🏅 IBJA (India Bullion & Jewellers Association)</span>
+                    <span>🌍 LBMA (London Bullion Market Association)</span>
+                    <span>📈 BSE & NSE</span>
+                    <span>🌾 Agmarknet</span>
+                    <span>🏦 RBI Historical Data</span>
+                </div>
+            </div>
+        </section>
+
+        {/* ⑤ SEBI DISCLAIMER STRIP */}
+        <div className="bg-amber-50 border-t border-amber-100 py-3 px-4">
+            <div className="max-w-7xl mx-auto">
+                <p className="text-[11px] text-amber-700 text-center leading-relaxed">
+                    <strong>Regulatory Notice:</strong> gpaisa.in is not registered with SEBI. All content is for informational and educational purposes only. Please consult a SEBI-registered investment advisor before making any financial or investment decisions.
+                    <Link href="/disclaimer" className="underline ml-1">Full Disclaimer →</Link>
+                </p>
             </div>
         </div>
         </>

@@ -52,6 +52,8 @@ export const metadata: Metadata = {
         title: 'gpaisa.in - Live Market Updates',
         description: 'Real-time stock market updates, gold rates, and financial news for India',
         images: ['https://www.gpaisa.in/android-chrome-512x512.png'],
+        creator: '@gpaisa_in',
+        site: '@gpaisa_in',
     },
 };
 
