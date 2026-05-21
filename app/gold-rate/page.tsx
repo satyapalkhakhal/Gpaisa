@@ -8,24 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
         title: `Gold Rate Today in India — ${todayDate} | gpaisa.in`,
         description: `Check today's gold rate in India on ${todayDate}. Live 24K, 22K, 18K and 916 gold prices updated daily with calculator, historical data, price trends, and gold vs silver comparison.`,
-        keywords: [
-            'gold rate today', 'gold price today', 'today gold rate', 'gold rate', 'gold price',
-            'gold rate today in india', 'india gold rate', '24k gold rate today', '22k gold rate today',
-            '18k gold rate today', '916 gold rate today', '24 carat gold rate', '22 carat gold rate',
-            'gold rate delhi', 'gold rate mumbai', 'gold rate bangalore', 'gold rate chennai',
-            'gold rate hyderabad', 'gold rate kolkata', 'gold rate pune', 'gold rate ahmedabad',
-            'gold rate kerala', 'city wise gold rate', 'all india gold rate',
-            '1 gram gold rate', '10 gram gold price', '8 gram gold rate', 'gold rate per gram',
-            'live gold rate india', 'gold rate today live', 'gold price calculator',
-            'gold rate history', 'gold rate chart', 'gold rate comparison',
-            'today gold rate in india', 'gold price in india', 'indian gold rate', 'gold rate update',
-            'gold vs silver', 'gold vs silver price today', 'gold investment india 2026',
-            'gold market trend', 'what affects gold prices', 'gold rate forecast',
-            'gold rate prediction', 'gold price trend india',
-            'gold price history india', 'gold rate 1964 to 2026', 'historical gold prices india',
-            'gold CAGR india', 'gold returns 10 years', 'gold returns 20 years',
-            'gold price last 50 years india', 'gold price last 10 years india'
-        ].join(', '),
+
         openGraph: {
             title: `Gold Rate Today in India — ${todayDate} | 24K, 22K, 18K Prices`,
             description: `Check today's gold rate in India on ${todayDate}. Live 24K, 22K and 18K gold prices with daily updates, market trends, and gold vs silver comparison.`,

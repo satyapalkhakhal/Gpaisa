@@ -16,18 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
     return {
         title: `Silver Rate Today in India — ${todayDate} | Live Price Per Gram/Kg | gpaisa.in`,
         description: `Check today's silver rate in India on ${todayDate}. Live silver prices per gram and per kg. City-wise rates with historical trends, calculator, market analysis, and silver vs gold comparison.`,
-        keywords: [
-            'silver rate today', 'silver price today', 'today silver rate', 'silver rate', 'silver price',
-            'silver rate today in india', 'india silver rate', 'silver rate per gram',
-            'silver rate per kg', 'silver price per kg today', 'silver rate city wise',
-            'silver rate delhi', 'silver rate mumbai', 'silver rate bangalore', 'silver rate chennai',
-            'silver rate hyderabad', 'silver rate kolkata', 'silver rate pune',
-            'live silver rate india', 'silver rate today live', 'silver price calculator',
-            'silver rate history', 'silver rate chart', 'silver rate comparison',
-            'silver vs gold', 'silver vs gold price today', 'silver investment india 2026',
-            'silver market trend', 'what affects silver prices', 'silver rate forecast',
-            'silver industrial demand', 'silver rate prediction'
-        ].join(', '),
+
         openGraph: {
             title: `Silver Rate Today in India — ${todayDate} | Live Prices Per Gram/Kg`,
             description: `Check today's silver rate in India on ${todayDate}. Live prices per gram and per kg. City-wise rates with historical trends, market analysis, and silver vs gold comparison.`,

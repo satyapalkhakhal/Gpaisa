@@ -38,41 +38,10 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
     const { city: cityName, mainMarkets, tagline, state } = cityData;
     const todayDate = getTodayIST();
 
-    const keywords = [
-        `gold rate today ${citySlug}`,
-        `gold price in ${citySlug} today`,
-        `${citySlug} gold rate`,
-        `today gold rate in ${citySlug}`,
-        `24k gold rate in ${citySlug}`,
-        `22k gold rate in ${citySlug}`,
-        `18k gold rate in ${citySlug}`,
-        `916 gold rate ${citySlug}`,
-        `999 gold rate ${citySlug}`,
-        `1 gram gold rate in ${citySlug}`,
-        `10 gram gold price ${citySlug}`,
-        `8 gram gold rate ${citySlug}`,
-        `gold rate today in ${citySlug} 22 carat`,
-        `gold rate today in ${citySlug} 24 carat`,
-        `live gold rate ${citySlug}`,
-        `today gold rate ${citySlug} per gram`,
-        `gold price calculator ${citySlug}`,
-        `gold rate history ${citySlug}`,
-        `gold rate chart ${citySlug}`,
-        `gold jewellery ${citySlug}`,
-        `gold market ${citySlug}`,
-        ...mainMarkets.map(m => `${m} gold market`),
-        `gold buying tips ${citySlug}`,
-        `best gold shop ${citySlug}`,
-        'gold rate today',
-        'gold price today india',
-        'live gold rate',
-        'gold rate india',
-    ];
 
     return {
         title: `Gold Rate in ${cityName} Today — ${todayDate} | 24K, 22K, 18K Live Prices | ${tagline} | gpaisa.in`,
         description: `Check today's gold rate in ${cityName}, ${state} on ${todayDate}. Live 24K, 22K & 18K gold prices. ${tagline}. Gold markets at ${mainMarkets.join(' & ')}. Calculator, price history, buying tips & expert guide.`,
-        keywords: keywords.join(', '),
         robots: {
             index: true,
             follow: true,

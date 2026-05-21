@@ -38,38 +38,10 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
     const state = silverInfo?.state || 'India';
     const todayDate = getTodayIST();
 
-    const keywords = [
-        `silver rate today ${citySlug}`,
-        `silver price in ${citySlug} today`,
-        `${citySlug} silver rate`,
-        `today silver rate in ${citySlug}`,
-        `999 silver rate in ${citySlug}`,
-        `925 silver rate in ${citySlug}`,
-        `sterling silver price ${citySlug}`,
-        `fine silver rate ${citySlug}`,
-        `1 gram silver rate in ${citySlug}`,
-        `1 kg silver price ${citySlug}`,
-        `10 gram silver rate ${citySlug}`,
-        `live silver rate ${citySlug}`,
-        `today silver rate ${citySlug} per gram`,
-        `silver rate today ${citySlug} per kg`,
-        `silver price calculator ${citySlug}`,
-        `silver rate history ${citySlug}`,
-        `silver rate chart ${citySlug}`,
-        `silver jewellery ${citySlug}`,
-        `silver market ${citySlug}`,
-        ...mainMarkets.map(m => `${m} silver market`),
-        `silver buying tips ${citySlug}`,
-        'silver rate today',
-        'silver price today india',
-        'live silver rate',
-        'silver rate india',
-    ];
 
     return {
         title: `Silver Rate in ${cityName} Today — ${todayDate} | Live Price Per Gram/Kg${tagline ? ` | ${tagline}` : ''} | gpaisa.in`,
         description: `Check today's silver rate in ${cityName}, ${state} on ${todayDate}. Live 999 & 925 silver prices per gram and kg.${tagline ? ` ${tagline}.` : ''} ${mainMarkets.length ? `Silver markets at ${mainMarkets.join(' & ')}.` : ''} Calculator, history & buying guide.`,
-        keywords: keywords.join(', '),
         robots: {
             index: true,
             follow: true,
