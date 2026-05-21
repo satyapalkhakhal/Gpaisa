@@ -19,10 +19,22 @@ export default function Footer() {
                         <p className="text-sm text-gray-400 mb-4">
                             {t('footer', 'about')}
                         </p>
-                        <div className="flex space-x-4">
+                        <div className="flex items-center flex-wrap gap-4">
                             <a href="mailto:info@gpaisa.in" className="flex items-center text-sm hover:text-primary-400 transition-colors">
                                 <Mail className="h-4 w-4 mr-2" />
                                 info@gpaisa.in
+                            </a>
+                            <a
+                                href="https://twitter.com/gpaisa_in"
+                                target="_blank"
+                                rel="noopener"
+                                aria-label="Follow gpaisa.in on Twitter"
+                                className="flex items-center text-sm hover:text-primary-400 transition-colors"
+                            >
+                                <svg className="h-4 w-4 mr-1.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+                                </svg>
+                                @gpaisa_in
                             </a>
                         </div>
                     </div>
@@ -53,10 +65,13 @@ export default function Footer() {
                     </div>
                 </div>
 
-                {/* Disclaimer */}
+                {/* Disclaimer + SEBI */}
                 <div className="mt-8 pt-8 border-t border-gray-800">
-                    <p className="text-xs text-gray-500 mb-4">
+                    <p className="text-xs text-gray-500 mb-3">
                         <strong>{t('footer', 'disclaimer')}:</strong> {t('footer', 'disclaimerText')}
+                    </p>
+                    <p className="text-xs text-gray-500 mb-4">
+                        <strong>SEBI Notice:</strong> {t('footer', 'sebiDisclaimer')}
                     </p>
                     <p className="text-xs text-gray-500">
                         © {currentYear} gpaisa.in. {t('footer', 'copyright')}

@@ -34,8 +34,8 @@ export const translations = {
     // ─── Footer ─────────────────────────────────────────────────────
     footer: {
         about: {
-            en: 'Your trusted source for real-time financial information, market updates, gold rates, commodity prices, and agriculture market data across India.',
-            hi: 'भारत भर में रीयल-टाइम वित्तीय जानकारी, बाज़ार अपडेट, सोने के भाव, कमोडिटी कीमतें और कृषि बाज़ार डेटा का आपका विश्वसनीय स्रोत।'
+            en: 'gpaisa.in is founded by Satyapal Khakhal. We provide accurate gold price data, investment calculators, and financial insights to help Indian investors make better decisions. Data sourced from MCX, IBJA, LBMA, BSE, NSE, and Agmarknet.',
+            hi: 'gpaisa.in की स्थापना सत्यपाल खाखल ने की है। हम भारतीय निवेशकों को बेहतर निर्णय लेने में मदद करने के लिए सटीक सोने की कीमत डेटा, निवेश कैलकुलेटर और वित्तीय अंतर्दृष्टि प्रदान करते हैं। डेटा MCX, IBJA, LBMA, BSE, NSE और Agmarknet से प्राप्त।'
         },
         quickLinks: { en: 'Quick Links', hi: 'त्वरित लिंक' },
         legalInfo: { en: 'Legal & Info', hi: 'कानूनी और जानकारी' },
@@ -54,6 +54,10 @@ export const translations = {
         copyright: {
             en: 'All rights reserved. Market data is provided for informational purposes only.',
             hi: 'सर्वाधिकार सुरक्षित। बाज़ार डेटा केवल सूचनात्मक उद्देश्यों के लिए प्रदान किया गया है।'
+        },
+        sebiDisclaimer: {
+            en: 'gpaisa.in is not registered with SEBI. All content is for informational purposes only. Please consult a SEBI-registered investment advisor before making investment decisions.',
+            hi: 'gpaisa.in SEBI के साथ पंजीकृत नहीं है। सभी सामग्री केवल सूचनात्मक उद्देश्यों के लिए है। निवेश निर्णय लेने से पहले कृपया SEBI-पंजीकृत निवेश सलाहकार से परामर्श करें।'
         },
     },
 

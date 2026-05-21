@@ -24,7 +24,7 @@ export default function Header() {
         // { name: t('nav', 'agriculture'), href: '/agriculture' },
         {
             name: t('nav', 'calculators'),
-            href: '/calculator/sip',
+            href: '/calculator',
             dropdown: [
                 { name: t('calculators', 'sipCalculator'), href: '/calculator/sip' },
                 { name: t('calculators', 'ppfCalculator'), href: '/calculator/ppf' },

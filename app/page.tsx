@@ -11,8 +11,34 @@ import {
 } from '@/lib/supabaseApi';
 
 export const metadata: Metadata = {
-    title: 'Gold Rate Today in India (Live) – Price, Trends & Investment Insights | Gpaisa',
-    description: 'Check today\'s live gold rate in India for 24K, 22K, 18K gold. Compare gold prices, view 10-day trends, and get expert investment insights at Gpaisa.in.',
+    title: 'gpaisa.in — Gold Rates, SIP & FD Calculators, Market Data | India\'s Financial Portal',
+    description: 'India\'s trusted financial portal. Live gold & silver rates, SIP calculator, FD calculator, home loan calculator, GST calculator, credit card reviews and market news. Updated daily.',
+    keywords: 'gold rate today india, sip calculator, fd calculator, home loan calculator, gst calculator, silver rate today, financial calculators india, credit card reviews india, investment tools india, gpaisa',
+    authors: [{ name: 'Satyapal Khakhal' }],
+    openGraph: {
+        title: 'gpaisa.in — Gold Rates, Financial Calculators & Market Data for India',
+        description: 'Live gold rates, silver prices, SIP/FD/home loan calculators, GST tool, credit card reviews and financial news — all in one place. Trusted by Indian investors.',
+        type: 'website',
+        locale: 'en_IN',
+        url: 'https://www.gpaisa.in',
+        siteName: 'gpaisa.in',
+        images: [
+            {
+                url: 'https://www.gpaisa.in/og-homepage.jpg',
+                width: 1200,
+                height: 630,
+                alt: 'gpaisa.in — India\'s Financial Portal for Gold Rates, Calculators & Market Data',
+            },
+        ],
+    },
+    twitter: {
+        card: 'summary_large_image',
+        title: 'gpaisa.in — Gold Rates, SIP & FD Calculators, Market Data India',
+        description: 'Live gold & silver rates, SIP/FD/home loan calculators, credit card reviews. India\'s trusted financial portal. Updated daily.',
+        images: ['https://www.gpaisa.in/og-homepage.jpg'],
+        creator: '@gpaisa_in',
+        site: '@gpaisa_in',
+    },
     alternates: {
         canonical: 'https://www.gpaisa.in'
     }
@@ -145,7 +171,90 @@ export default async function HomePage() {
     // Latest articles (exclude already-shown ones)
     const latestFiltered = latestArticles.filter(a => !usedIds.has(a.id)).slice(0, 5);
 
+    // JSON-LD Structured Data
+    const websiteSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        '@id': 'https://www.gpaisa.in/#website',
+        'url': 'https://www.gpaisa.in',
+        'name': 'gpaisa.in',
+        'description': 'India\'s trusted financial portal for live gold rates, silver prices, financial calculators, and market data.',
+        'publisher': {
+            '@type': 'Organization',
+            'name': 'gpaisa.in',
+            'url': 'https://www.gpaisa.in',
+            'logo': {
+                '@type': 'ImageObject',
+                'url': 'https://www.gpaisa.in/android-chrome-512x512.png',
+                'width': 512,
+                'height': 512
+            }
+        },
+        'potentialAction': {
+            '@type': 'SearchAction',
+            'target': {
+                '@type': 'EntryPoint',
+                'urlTemplate': 'https://www.gpaisa.in/search?q={search_term_string}'
+            },
+            'query-input': 'required name=search_term_string'
+        }
+    };
+
+    const organizationSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Organization',
+        '@id': 'https://www.gpaisa.in/#organization',
+        'name': 'gpaisa.in',
+        'url': 'https://www.gpaisa.in',
+        'logo': 'https://www.gpaisa.in/android-chrome-512x512.png',
+        'description': 'India\'s trusted financial portal providing live gold rates, silver prices, investment calculators, and financial news.',
+        'foundingDate': '2025',
+        'founder': {
+            '@type': 'Person',
+            'name': 'Satyapal Khakhal'
+        },
+        'contactPoint': {
+            '@type': 'ContactPoint',
+            'email': 'info@gpaisa.in',
+            'contactType': 'customer support',
+            'availableLanguage': ['English', 'Hindi']
+        },
+        'sameAs': [
+            'https://twitter.com/gpaisa_in'
+        ]
+    };
+
+    const webPageSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'WebPage',
+        '@id': 'https://www.gpaisa.in/#webpage',
+        'url': 'https://www.gpaisa.in',
+        'name': 'gpaisa.in — Gold Rates, Financial Calculators & Market Data | India\'s Financial Portal',
+        'description': 'India\'s trusted financial portal for live gold rates, silver prices, SIP/FD/home loan calculators, and market news.',
+        'isPartOf': { '@id': 'https://www.gpaisa.in/#website' },
+        'about': { '@id': 'https://www.gpaisa.in/#organization' },
+        'author': {
+            '@type': 'Person',
+            'name': 'Satyapal Khakhal'
+        },
+        'inLanguage': 'en-IN',
+        'dateModified': '2026-05-21'
+    };
+
     return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }}
+            />
         <div className="bg-gray-50 text-gray-800 font-sans min-h-screen">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
 
@@ -181,7 +290,7 @@ export default async function HomePage() {
                                 <SectionHeader
                                     title="Featured Gold Insights"
                                     accentColor="from-amber-500 to-orange-500"
-                                    href="/category/business"
+                                    href="/news"
                                 />
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                                     {businessCards.map(article => (
@@ -234,7 +343,7 @@ export default async function HomePage() {
                                 <SectionHeader
                                     title="Credit Card & Finance"
                                     accentColor="from-blue-500 to-indigo-500"
-                                    href="/category/finance"
+                                    href="/finance"
                                 />
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {financeCards.map(article => (
@@ -320,8 +429,8 @@ export default async function HomePage() {
                             <div className="p-3 space-y-1">
                                 {[
                                     { name: 'SIP Calculator', href: '/calculator/sip', icon: '📊', desc: 'Plan your mutual fund SIP' },
-                                    { name: 'HDFC SIP Calculator', href: '/calculator/sip', icon: '🏦', desc: 'Calculate HDFC fund returns' },
-                                    { name: 'ICICI SIP Calculator', href: '/calculator/sip', icon: '🏛️', desc: 'ICICI Prudential SIP planner' },
+                                    { name: 'HDFC SIP Calculator', href: '/calculator/hdfc-sip-calculator', icon: '🏦', desc: 'Calculate HDFC fund returns' },
+                                    { name: 'ICICI SIP Calculator', href: '/calculator/icici-sip-calculator', icon: '🏛️', desc: 'ICICI Prudential SIP planner' },
                                     { name: 'EMI Calculator', href: '/calculator/emi', icon: '🏠', desc: 'Calculate loan EMI' },
                                     { name: 'FD Calculator', href: '/calculator/fd', icon: '💰', desc: 'Fixed deposit returns' },
                                     { name: 'Gold Calculator', href: '/gold-rate', icon: '🪙', desc: 'Calculate gold value' },
@@ -395,5 +504,6 @@ export default async function HomePage() {
                 </div>
             </div>
         </div>
+        </>
     );
 }

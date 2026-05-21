@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
 import SIPCalculatorClient from '@/components/SIPCalculatorClient';
 import SipAmcContent from '@/components/sip/SipAmcContent';
 import HomeLoanCalculatorClient from '@/components/HomeLoanCalculatorClient';
@@ -23,6 +24,27 @@ type Props = {
     params: Promise<{ slug?: string[] }>;
 };
 
+// ─── Calculator Hub Data ─────────────────────────────────────────────
+
+const CALCULATORS = [
+    { name: 'SIP Calculator', href: '/calculator/sip', icon: '📊', description: 'Plan your mutual fund SIP investments. Calculate future value of monthly investments with expected returns.' },
+    { name: 'PPF Calculator', href: '/calculator/ppf', icon: '🏛️', description: 'Calculate Public Provident Fund maturity amount with current interest rates and tax benefits.' },
+    { name: 'SWP Calculator', href: '/calculator/swp', icon: '💸', description: 'Plan systematic withdrawals from your mutual fund investments. Calculate monthly income from your corpus.' },
+    { name: 'EPF Calculator', href: '/calculator/epf', icon: '🏢', description: 'Estimate your Employee Provident Fund corpus at retirement including employer contributions.' },
+    { name: 'EMI Calculator', href: '/calculator/emi', icon: '🏠', description: 'Calculate Equated Monthly Installments for home loans, car loans, and personal loans.' },
+    { name: 'Home Loan Calculator', href: '/calculator/home-loan', icon: '🏡', description: 'Plan your home loan with detailed EMI breakdowns, amortization schedules, and prepayment analysis.' },
+    { name: 'GST Calculator', href: '/calculator/gst', icon: '🧾', description: 'Calculate GST amount for any goods or services. Supports all GST slabs — 5%, 12%, 18%, 28%.' },
+    { name: 'CAGR Calculator', href: '/calculator/cagr', icon: '📈', description: 'Calculate Compound Annual Growth Rate for your investments to measure performance over time.' },
+    { name: 'FD Calculator', href: '/calculator/fd', icon: '💰', description: 'Compare fixed deposit returns across banks. Calculate maturity value with quarterly compounding.' },
+    { name: 'NPS Calculator', href: '/calculator/nps', icon: '🔐', description: 'Estimate your National Pension System corpus and monthly pension at retirement.' },
+    { name: 'HRA Calculator', href: '/calculator/hra', icon: '🏘️', description: 'Calculate HRA exemption under Section 10(13A). Find out your taxable HRA component.' },
+    { name: 'Gratuity Calculator', href: '/calculator/gratuity', icon: '🎁', description: 'Calculate gratuity amount based on your last drawn salary and years of service.' },
+    { name: 'Simple Interest Calculator', href: '/calculator/simple-interest', icon: '🧮', description: 'Calculate simple interest on deposits and loans. Compare with compound interest side by side.' },
+    { name: 'Mutual Fund Calculator', href: '/calculator/mutual-fund', icon: '📊', description: 'Estimate mutual fund returns for lumpsum and SIP investments with various fund categories.' },
+];
+
+// ─── Static Params ───────────────────────────────────────────────────
+
 export async function generateStaticParams() {
     const sipSlugs = getAllBankSlugs();
     const homeLoanSlugs = getAllHomeLoanBankSlugs();
@@ -33,8 +55,35 @@ export async function generateStaticParams() {
     ];
 }
 
+// ─── Metadata ────────────────────────────────────────────────────────
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
+
+    // Calculator Hub page (no slug)
+    if (!slug || slug.length === 0) {
+        return {
+            title: 'Financial Calculators India — SIP, FD, EMI, Home Loan, GST & More | gpaisa.in',
+            description: 'Free online financial calculators for India. SIP calculator, FD calculator, EMI calculator, home loan calculator, GST calculator, PPF, NPS, CAGR and more. Plan your investments with gpaisa.in.',
+            keywords: 'financial calculators india, sip calculator, fd calculator, emi calculator, home loan calculator, gst calculator, ppf calculator, nps calculator, investment calculator, gpaisa',
+            authors: [{ name: 'Satyapal Khakhal' }],
+            openGraph: {
+                title: 'Financial Calculators India — SIP, FD, EMI, Home Loan, GST & More',
+                description: '14 free financial calculators for Indian investors. SIP, FD, EMI, home loan, GST, PPF, NPS, CAGR and more.',
+                type: 'website',
+                url: 'https://www.gpaisa.in/calculator',
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: 'Financial Calculators India | gpaisa.in',
+                description: '14 free financial calculators — SIP, FD, EMI, Home Loan, GST & more.',
+                creator: '@gpaisa_in',
+            },
+            alternates: {
+                canonical: 'https://www.gpaisa.in/calculator',
+            },
+        };
+    }
 
     // Handle SIP calculator URLs — use enriched AMC data for meta tags
     if (slug && slug.length === 1 && slug[0].endsWith('-sip-calculator')) {
@@ -127,8 +176,112 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     return {};
 }
 
+// ─── Calculator Hub Component ────────────────────────────────────────
+
+function CalculatorHub() {
+    const jsonLd = {
+        '@context': 'https://schema.org',
+        '@type': 'CollectionPage',
+        '@id': 'https://www.gpaisa.in/calculator/#webpage',
+        'url': 'https://www.gpaisa.in/calculator',
+        'name': 'Financial Calculators India — SIP, FD, EMI, Home Loan, GST & More | gpaisa.in',
+        'description': 'Free online financial calculators for India. Plan your investments with SIP, FD, EMI, home loan, GST, PPF, NPS, CAGR calculators and more.',
+        'isPartOf': { '@id': 'https://www.gpaisa.in/#website' },
+        'author': {
+            '@type': 'Person',
+            'name': 'Satyapal Khakhal',
+        },
+        'inLanguage': 'en-IN',
+    };
+
+    return (
+        <>
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+            <div className="bg-gray-50 min-h-screen py-8 sm:py-12">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    {/* Breadcrumb */}
+                    <nav className="mb-6" aria-label="Breadcrumb">
+                        <ol className="flex items-center space-x-2 text-sm text-gray-600">
+                            <li><Link href="/" className="hover:text-primary-600">Home</Link></li>
+                            <li>/</li>
+                            <li className="text-gray-900 font-medium">Calculators</li>
+                        </ol>
+                    </nav>
+
+                    {/* Hero */}
+                    <div className="mb-10">
+                        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-gray-900 leading-tight">
+                            Financial Calculators for India
+                        </h1>
+                        <p className="text-sm sm:text-base text-gray-500 mt-3 max-w-3xl">
+                            Free, accurate financial calculators to help you plan investments, calculate loan EMIs, estimate tax savings, and make smarter financial decisions. All tools are updated for 2026 rates.
+                        </p>
+                    </div>
+
+                    {/* Calculator Grid */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-5">
+                        {CALCULATORS.map((calc) => (
+                            <Link
+                                key={calc.href}
+                                href={calc.href}
+                                className="group bg-white rounded-xl border border-gray-200 p-5 hover:shadow-lg hover:border-primary-200 transition-all duration-300"
+                            >
+                                <div className="flex items-start gap-3">
+                                    <span className="text-2xl flex-shrink-0">{calc.icon}</span>
+                                    <div className="flex-1 min-w-0">
+                                        <h2 className="text-sm sm:text-base font-bold text-gray-900 group-hover:text-primary-600 transition-colors">
+                                            {calc.name}
+                                        </h2>
+                                        <p className="text-xs text-gray-500 mt-1.5 leading-relaxed line-clamp-3">
+                                            {calc.description}
+                                        </p>
+                                    </div>
+                                </div>
+                                <div className="mt-3 pt-3 border-t border-gray-100">
+                                    <span className="text-xs font-semibold text-primary-600 group-hover:text-primary-700 transition-colors">
+                                        Open Calculator →
+                                    </span>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+
+                    {/* Trust Section */}
+                    <div className="mt-12 bg-white rounded-xl border border-gray-200 p-6 sm:p-8">
+                        <h2 className="text-lg font-bold text-gray-900 mb-3">Why Use gpaisa.in Calculators?</h2>
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm text-gray-600">
+                            <div className="flex items-start gap-2">
+                                <span className="text-green-500 font-bold mt-0.5">✓</span>
+                                <p><strong className="text-gray-800">Accurate & Updated</strong> — All rates and formulas are updated for 2026. Calculations verified against official sources.</p>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <span className="text-green-500 font-bold mt-0.5">✓</span>
+                                <p><strong className="text-gray-800">100% Free</strong> — No sign-up required. No hidden fees. Use any calculator unlimited times.</p>
+                            </div>
+                            <div className="flex items-start gap-2">
+                                <span className="text-green-500 font-bold mt-0.5">✓</span>
+                                <p><strong className="text-gray-800">India-Specific</strong> — Built for Indian investors with INR amounts, Indian tax rules, and local bank rates.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
+    );
+}
+
+// ─── Main Page Component ─────────────────────────────────────────────
+
 export default async function CalculatorCatchAll({ params }: Props) {
     const { slug } = await params;
+
+    // Calculator Hub (no slug = /calculator)
+    if (!slug || slug.length === 0) {
+        return <CalculatorHub />;
+    }
 
     // Handle SIP calculator URLs
     if (slug && slug.length === 1 && slug[0].endsWith('-sip-calculator')) {
