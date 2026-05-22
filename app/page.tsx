@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronRight, Calculator, Shield } from 'lucide-react';
-import GoldDashboard from '@/components/GoldDashboard';
+import GoldRateStrip from '@/components/GoldRateStrip';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
 import {
     fetchArticlesByCategory,
@@ -108,25 +108,6 @@ const InsightCard = ({ article }: { article: Article }) => (
     </Link>
 );
 
-const FinanceCard = ({ article }: { article: Article }) => (
-    <Link href={`/articles/${article.slug}`} className="group flex gap-3 bg-white rounded-xl border border-gray-200 p-3 hover:shadow-md hover:border-blue-200 transition-all duration-300">
-        <div className="w-20 h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
-            {article.image_url ? (
-                <div className="relative w-full h-full">
-                    <Image src={article.image_url} alt="" fill className="object-cover" sizes="80px" />
-                </div>
-            ) : (
-                <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center text-blue-400 text-[10px] font-bold">FINANCE</div>
-            )}
-        </div>
-        <div className="flex-1 min-w-0">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600">Finance</span>
-            <h3 className="text-sm font-bold text-gray-900 leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors mt-0.5">
-                {article.title}
-            </h3>
-        </div>
-    </Link>
-);
 
 const LatestArticleRow = ({ article }: { article: Article }) => (
     <Link href={`/articles/${article.slug}`} className="group flex items-center gap-3 py-3 border-b border-gray-100 last:border-0 hover:bg-gray-50/50 transition-colors rounded-lg px-2 -mx-2">
@@ -161,22 +142,27 @@ export default async function HomePage() {
     const [
         businessArticles,
         financeArticles,
-        latestArticles,
+        allArticles,
     ] = await Promise.all([
         fetchArticlesByCategory('BUSINESS', 3),
-        fetchArticlesByCategory('FINANCE', 2),
-        fetchAllArticles(5),
+        fetchArticlesByCategory('FINANCE', 4),
+        fetchAllArticles(15),
     ]);
 
-    // De-duplicate: collect all used article IDs
-    const usedIds = new Set<string>();
-    const businessCards = businessArticles.slice(0, 3);
-    businessCards.forEach(a => usedIds.add(a.id));
-    const financeCards = financeArticles.slice(0, 2);
-    financeCards.forEach(a => usedIds.add(a.id));
+    // ── Top Headlines data ──
+    const featuredArticle = allArticles[0] || null;
+    const secondaryArticles = allArticles.slice(1, 3);
+    const latestHeadlines = allArticles.slice(3, 8);
 
-    // Latest articles (exclude already-shown ones)
-    const latestFiltered = latestArticles.filter(a => !usedIds.has(a.id)).slice(0, 5);
+    // ── Section cards ──
+    const headlineIds = new Set(allArticles.slice(0, 8).map(a => a.id));
+    const businessCards = businessArticles.filter(a => !headlineIds.has(a.id)).slice(0, 3);
+    const financeCards = financeArticles.filter(a => !headlineIds.has(a.id)).slice(0, 4);
+
+    // De-duplicate for latest section
+    const usedIds = new Set<string>();
+    [...allArticles.slice(0, 8), ...businessCards, ...financeCards].forEach(a => usedIds.add(a.id));
+    const latestFiltered = allArticles.filter(a => !usedIds.has(a.id)).slice(0, 5);
 
     // JSON-LD Structured Data — combined array
     const jsonLdSchemas = [
@@ -271,16 +257,96 @@ export default async function HomePage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
 
                 {/* ═══════════════════════════════════════════════════════
-                    H1 — SEO TITLE
+                    SECTION ② — TOP HEADLINES (editorial hero)
                 ═══════════════════════════════════════════════════════ */}
-                <div className="mb-6">
-                    <h1 className="text-xl sm:text-2xl lg:text-3xl font-extrabold text-gray-900 leading-tight">
-                        Gold Rate Today in India (Live) – Price, Trends & Investment Insights
-                    </h1>
-                    <p className="text-sm sm:text-base text-gray-500 mt-2 max-w-2xl">
-                        Track live gold prices across purities, compare daily changes, and make informed investment decisions with Gpaisa.
-                    </p>
-                </div>
+                {featuredArticle && (
+                <section id="top-headlines" aria-labelledby="headlines-heading" className="mb-6">
+                    <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-2.5">
+                            <div className="w-1 h-6 rounded-full bg-gradient-to-b from-red-500 to-rose-600" />
+                            <h1 id="headlines-heading" className="text-base sm:text-lg font-bold text-gray-900">Top Headlines</h1>
+                            <span className="flex items-center gap-1 bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-red-100">
+                                <span className="relative flex h-1.5 w-1.5">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-red-500"></span>
+                                </span>
+                                LIVE
+                            </span>
+                        </div>
+                        <Link href="/news" className="text-xs font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1 transition-colors">
+                            View All <ChevronRight className="w-3.5 h-3.5" />
+                        </Link>
+                    </div>
+
+                    {/* Hero grid — 1 large + 2 small */}
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {/* LARGE featured article */}
+                        <Link href={`/articles/${featuredArticle.slug}`}
+                            className="md:col-span-2 group relative block bg-white rounded-2xl border border-gray-200 overflow-hidden hover:shadow-xl hover:border-gray-300 transition-all duration-300 min-h-[280px]">
+                            <div className="relative h-52 md:h-full w-full overflow-hidden">
+                                {featuredArticle.image_url ? (
+                                    <Image src={featuredArticle.image_url} alt={featuredArticle.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 100vw, 66vw" />
+                                ) : (
+                                    <div className="w-full h-full bg-gradient-to-br from-amber-100 to-yellow-200" />
+                                )}
+                                <div className="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent" />
+                                <div className="absolute bottom-0 left-0 right-0 p-4 md:p-5">
+                                    <span className="inline-block text-[10px] font-bold uppercase tracking-wider bg-red-500 text-white px-2 py-0.5 rounded-full mb-2">{featuredArticle.subcategory || featuredArticle.category}</span>
+                                    <h2 className="text-white font-bold text-base md:text-lg leading-snug line-clamp-3 group-hover:text-amber-300 transition-colors">{featuredArticle.title}</h2>
+                                    <p className="text-gray-300 text-xs mt-1.5 line-clamp-2">{featuredArticle.excerpt}</p>
+                                    <div className="flex items-center gap-2 mt-2 text-[10px] text-gray-400">
+                                        <span>{featuredArticle.date || new Date(featuredArticle.published_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</span>
+                                        <span>•</span>
+                                        <span>{featuredArticle.read_time || '3 min read'}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </Link>
+
+                        {/* 2 smaller articles stacked */}
+                        <div className="flex flex-col gap-4">
+                            {secondaryArticles.map((article) => (
+                                <Link key={article.id} href={`/articles/${article.slug}`}
+                                    className="group flex flex-col bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-md hover:border-gray-300 transition-all duration-300 flex-1">
+                                    <div className="relative h-32 overflow-hidden">
+                                        {article.image_url ? (
+                                            <Image src={article.image_url} alt={article.title} fill className="object-cover group-hover:scale-105 transition-transform duration-500" sizes="(max-width: 768px) 100vw, 33vw" />
+                                        ) : (
+                                            <div className="w-full h-full bg-gradient-to-br from-amber-50 to-yellow-100" />
+                                        )}
+                                    </div>
+                                    <div className="p-3 flex-1">
+                                        <span className="text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full">{article.subcategory || article.category}</span>
+                                        <h3 className="font-bold text-sm text-gray-900 leading-snug line-clamp-2 mt-1.5 group-hover:text-primary-600 transition-colors">{article.title}</h3>
+                                        <p className="text-[10px] text-gray-400 mt-1">{article.date || new Date(article.published_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</p>
+                                    </div>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* News ticker strip */}
+                    {latestHeadlines.length > 0 && (
+                    <div className="mt-3 bg-gray-900 rounded-xl px-4 py-2.5 flex items-center gap-3 overflow-hidden">
+                        <span className="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex-shrink-0 border-r border-gray-700 pr-3">LATEST</span>
+                        <div className="overflow-hidden flex-1">
+                            <div className="flex gap-6 animate-marquee whitespace-nowrap text-xs text-gray-300">
+                                {[...latestHeadlines, ...latestHeadlines].map((h, i) => (
+                                    <Link key={i} href={`/articles/${h.slug}`} className="hover:text-amber-300 transition-colors flex-shrink-0">
+                                        <span className="text-amber-500 mr-1.5">●</span>{h.title}
+                                    </Link>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    )}
+                </section>
+                )}
+
+                {/* ═══════════════════════════════════════════════════════
+                    SECTION ③ — GOLD RATE STRIP (compact)
+                ═══════════════════════════════════════════════════════ */}
+                <GoldRateStrip />
 
 
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
@@ -290,17 +356,13 @@ export default async function HomePage() {
                     ══════════════════════════════════════════════════ */}
                     <div className="lg:col-span-8 space-y-8">
 
-                        {/* SECTIONS 1-5: Gold Dashboard (client component) */}
-                        <GoldDashboard />
-
-
                         {/* ═══════════════════════════════════════════════
-                            SECTION 6: FEATURED GOLD INSIGHTS (BUSINESS)
+                            SECTION ④: GOLD MARKET UPDATES (BUSINESS)
                         ═══════════════════════════════════════════════ */}
                         {businessCards.length > 0 && (
                             <section id="gold-insights">
                                 <SectionHeader
-                                    title="Featured Gold Insights"
+                                    title="Gold Market Updates"
                                     accentColor="from-amber-500 to-orange-500"
                                     href="/news"
                                 />
@@ -314,7 +376,7 @@ export default async function HomePage() {
 
 
                         {/* ═══════════════════════════════════════════════
-                            SECTION 7: DECISION BLOCK
+                            SECTION ④b: DECISION BLOCK
                         ═══════════════════════════════════════════════ */}
                         <section id="decision-block">
                             <div className="bg-gradient-to-br from-yellow-50 to-amber-50 rounded-xl border border-yellow-200/70 p-5 sm:p-6">
@@ -346,7 +408,46 @@ export default async function HomePage() {
                             </div>
                         </section>
 
-                        {/* SECTION D: CALCULATOR HUB STRIP */}
+                        {/* ═══════════════════════════════════════════════
+                            SECTION ⑤: CREDIT CARD & FINANCE (2×2 grid)
+                        ═══════════════════════════════════════════════ */}
+                        {financeCards.length > 0 && (
+                            <section id="finance-news" aria-labelledby="finance-heading">
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className="flex items-center gap-2.5">
+                                        <div className="w-1 h-6 rounded-full bg-gradient-to-b from-blue-500 to-indigo-600" />
+                                        <h2 id="finance-heading" className="text-base sm:text-lg font-bold text-gray-900">Credit Card &amp; Finance</h2>
+                                    </div>
+                                    <Link href="/finance" className="text-xs font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1">
+                                        View All <ChevronRight className="w-3.5 h-3.5" />
+                                    </Link>
+                                </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {financeCards.slice(0, 4).map(article => (
+                                        <Link key={article.id} href={`/articles/${article.slug}`}
+                                            className="group flex gap-3 bg-white rounded-xl border border-gray-200 p-3 hover:shadow-md hover:border-blue-200 transition-all duration-300">
+                                            <div className="w-20 h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden relative">
+                                                {article.image_url ? (
+                                                    <Image src={article.image_url} alt="" fill className="object-cover" sizes="80px" />
+                                                ) : (
+                                                    <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center text-blue-400 text-[10px] font-bold">FINANCE</div>
+                                                )}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600">{article.subcategory || 'Finance'}</span>
+                                                <h3 className="text-sm font-bold text-gray-900 leading-snug line-clamp-2 group-hover:text-blue-600 transition-colors mt-0.5">{article.title}</h3>
+                                                <p className="text-[10px] text-gray-400 mt-1">{article.date || new Date(article.published_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</p>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+
+
+                        {/* ═══════════════════════════════════════════════
+                            SECTION ⑥: CALCULATOR HUB STRIP
+                        ═══════════════════════════════════════════════ */}
                         <section id="calculators" aria-labelledby="calc-heading" className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
                             <div className="px-4 py-3 border-b border-gray-100 flex items-center justify-between">
                                 <div className="flex items-center gap-2">
@@ -377,27 +478,9 @@ export default async function HomePage() {
                             </div>
                         </section>
 
-                        {/* ═══════════════════════════════════════════════
-                            SECTION 10: FINANCE (CREDIT CARD ARTICLES)
-                        ═══════════════════════════════════════════════ */}
-                        {financeCards.length > 0 && (
-                            <section id="finance-articles">
-                                <SectionHeader
-                                    title="Credit Card & Finance"
-                                    accentColor="from-blue-500 to-indigo-500"
-                                    href="/finance"
-                                />
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                    {financeCards.map(article => (
-                                        <FinanceCard key={article.id} article={article} />
-                                    ))}
-                                </div>
-                            </section>
-                        )}
-
 
                         {/* ═══════════════════════════════════════════════
-                            SECTION 11: LATEST ARTICLES
+                            SECTION ⑦: LATEST ARTICLES
                         ═══════════════════════════════════════════════ */}
                         {latestFiltered.length > 0 && (
                             <section id="latest-articles">
@@ -415,26 +498,45 @@ export default async function HomePage() {
                         )}
 
 
-                        {/* SECTION G: ABOUT GPAISA TRUST SECTION */}
-                        <section id="about-gpaisa" aria-labelledby="about-heading" className="bg-white rounded-xl border border-gray-200 shadow-sm p-5 sm:p-6">
-                            <div className="flex items-start gap-4">
-                                <div className="w-14 h-14 rounded-full bg-emerald-100 flex-shrink-0 overflow-hidden border-2 border-emerald-200">
-                                    <div className="w-full h-full bg-gradient-to-br from-emerald-200 to-emerald-300 flex items-center justify-center text-emerald-700 font-bold text-lg">SK</div>
+                        {/* ═══════════════════════════════════════════════
+                            SECTION ⑧: ABOUT GPAISA (redesigned)
+                        ═══════════════════════════════════════════════ */}
+                        <section id="about-gpaisa" aria-labelledby="about-heading" className="bg-white rounded-xl border border-gray-200 shadow-sm overflow-hidden">
+                            <div className="p-5 sm:p-6">
+                                <div className="flex items-start gap-4">
+                                    {/* Premium avatar */}
+                                    <div className="w-16 h-16 rounded-full flex-shrink-0 overflow-hidden border-2 border-emerald-300 shadow-md">
+                                        <div className="w-full h-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center text-white font-bold text-xl tracking-wider">SK</div>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h2 id="about-heading" className="text-base font-bold text-gray-900 mb-0.5">About gpaisa.in</h2>
+                                        <p className="text-xs text-gray-500 mb-2">Founded by <strong className="text-gray-700">Satyapal Khakhal</strong></p>
+                                        <p className="text-sm text-gray-600 leading-relaxed mb-3">
+                                            gpaisa.in provides accurate, unbiased financial data to Indian investors. We cover live gold &amp; silver rates across 30+ cities, 14 free financial calculators, credit card reviews, and daily market news — all without any advertiser influence.
+                                        </p>
+                                    </div>
                                 </div>
-                                <div className="flex-1">
-                                    <h2 id="about-heading" className="text-sm font-bold text-gray-900 mb-1">About gpaisa.in</h2>
-                                    <p className="text-sm text-gray-600 leading-relaxed mb-3">
-                                        gpaisa.in is founded by <strong>Satyapal Khakhal</strong> to provide accurate, unbiased financial data to Indian investors. We cover live gold and silver rates, 14 free financial calculators, credit card reviews, and daily market news — all without any advertiser influence.
-                                    </p>
-                                    <div className="flex flex-wrap gap-2 mb-3">
-                                        <span className="text-xs bg-emerald-50 border border-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium">📡 Data from MCX, IBJA, LBMA</span>
-                                        <span className="text-xs bg-blue-50 border border-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-medium">📊 BSE, NSE, Agmarknet</span>
-                                        <span className="text-xs bg-amber-50 border border-amber-100 text-amber-700 px-2.5 py-1 rounded-full font-medium">🔄 Updated Daily</span>
-                                    </div>
-                                    <div className="flex items-center gap-3">
-                                        <Link href="/about" className="text-xs font-bold text-primary-600 hover:text-primary-700">About Us →</Link>
-                                        <a href="https://twitter.com/gpaisa_in" target="_blank" rel="noopener" className="text-xs font-bold text-sky-600 hover:text-sky-700">@gpaisa_in →</a>
-                                    </div>
+
+                                {/* Data source badges */}
+                                <div className="flex flex-wrap gap-2 mt-4 mb-4">
+                                    <span className="text-xs bg-emerald-50 border border-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium">📡 MCX</span>
+                                    <span className="text-xs bg-emerald-50 border border-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium">🏅 IBJA</span>
+                                    <span className="text-xs bg-emerald-50 border border-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-medium">🌍 LBMA</span>
+                                    <span className="text-xs bg-blue-50 border border-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-medium">📊 BSE &amp; NSE</span>
+                                    <span className="text-xs bg-blue-50 border border-blue-100 text-blue-700 px-2.5 py-1 rounded-full font-medium">🌾 Agmarknet</span>
+                                    <span className="text-xs bg-amber-50 border border-amber-100 text-amber-700 px-2.5 py-1 rounded-full font-medium">🏦 RBI Data</span>
+                                    <span className="text-xs bg-gray-50 border border-gray-200 text-gray-600 px-2.5 py-1 rounded-full font-medium">🔄 Updated Daily</span>
+                                </div>
+
+                                {/* CTAs */}
+                                <div className="flex items-center gap-3 pt-3 border-t border-gray-100">
+                                    <Link href="/about" className="text-xs font-bold text-primary-600 hover:text-primary-700 transition-colors">About Us →</Link>
+                                    <span className="text-gray-300">|</span>
+                                    <a href="https://twitter.com/gpaisa_in" target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-sky-600 hover:text-sky-700 transition-colors flex items-center gap-1">
+                                        𝕏 @gpaisa_in
+                                    </a>
+                                    <span className="text-gray-300">|</span>
+                                    <a href="mailto:info@gpaisa.in" className="text-xs font-bold text-gray-500 hover:text-gray-700 transition-colors">info@gpaisa.in</a>
                                 </div>
                             </div>
                         </section>
