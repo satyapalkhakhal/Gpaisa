@@ -10,7 +10,6 @@ export const metadata: Metadata = {
     metadataBase: new URL('https://www.gpaisa.in'),
     title: "Gpaisa - Live Market Updates, Gold Rates & Financial News",
     description: "Track live stock markets (Sensex, Nifty), today's gold & silver rates, breaking financial news, commodity prices, and smart investment calculators (SIP, PPF, EPF, SWP). Your trusted Indian finance companion!",
-    keywords: "stock market, gold rates today, silver price, sensex live, nifty live, sip calculator, ppf calculator, epf calculator, swp calculator, commodity prices, financial news india, investment calculators, gold rate today, market news",
     authors: [{ name: "Satyapal Khakhal" }],
     other: {
         author: "Satyapal Khakhal",
