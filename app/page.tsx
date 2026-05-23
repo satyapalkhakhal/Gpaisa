@@ -208,7 +208,7 @@ export default async function HomePage() {
             '@type': 'ItemList',
             'name': 'Financial Calculators — gpaisa.in',
             'description': 'Free financial calculators for Indian investors',
-            'numberOfItems': 14,
+            'numberOfItems': 15,
             'itemListElement': [
                 { '@type': 'ListItem', 'position': 1, 'name': 'SIP Calculator', 'url': 'https://www.gpaisa.in/calculator/sip' },
                 { '@type': 'ListItem', 'position': 2, 'name': 'FD Calculator', 'url': 'https://www.gpaisa.in/calculator/fd' },
@@ -224,6 +224,7 @@ export default async function HomePage() {
                 { '@type': 'ListItem', 'position': 12, 'name': 'EMI Calculator', 'url': 'https://www.gpaisa.in/calculator/emi' },
                 { '@type': 'ListItem', 'position': 13, 'name': 'Mutual Fund Calculator', 'url': 'https://www.gpaisa.in/calculator/mutual-fund' },
                 { '@type': 'ListItem', 'position': 14, 'name': 'Simple Interest Calculator', 'url': 'https://www.gpaisa.in/calculator/simple-interest' },
+                { '@type': 'ListItem', 'position': 15, 'name': 'Car Loan Calculator', 'url': 'https://www.gpaisa.in/calculator/car-loan' },
             ]
         }
     ];
@@ -243,7 +244,7 @@ export default async function HomePage() {
                 </div>
                 <div className="flex items-center gap-4 text-xs text-emerald-200">
                     <span>🪙 Live Gold Rates</span>
-                    <span>📊 14 Calculators</span>
+                    <span>📊 15 Calculators</span>
                     <span>📰 Financial News</span>
                     <span>✅ Updated Daily</span>
                 </div>
@@ -454,7 +455,7 @@ export default async function HomePage() {
                                     <span className="text-base">🧮</span>
                                     <h2 id="calc-heading" className="font-bold text-gray-900 text-sm uppercase tracking-wide">Free Financial Calculators</h2>
                                 </div>
-                                <Link href="/calculator" className="text-xs font-semibold text-primary-600 hover:text-primary-700">View All 14 →</Link>
+                                <Link href="/calculator" className="text-xs font-semibold text-primary-600 hover:text-primary-700">View All 15 →</Link>
                             </div>
                             <div className="grid grid-cols-2 sm:grid-cols-4 gap-0 divide-x divide-y divide-gray-100">
                                 {[
@@ -466,6 +467,7 @@ export default async function HomePage() {
                                     { name: 'PPF Calculator', desc: 'PPF maturity & returns', href: '/calculator/ppf', icon: '📈' },
                                     { name: 'CAGR Calculator', desc: 'Investment returns', href: '/calculator/cagr', icon: '📉' },
                                     { name: 'EMI Calculator', desc: 'Loan EMI planning', href: '/calculator/emi', icon: '💰' },
+                                    { name: 'Car Loan', desc: 'Auto loan EMI & rates', href: '/calculator/car-loan', icon: '🚗' },
                                 ].map(calc => (
                                     <Link key={calc.href} href={calc.href} className="flex items-center gap-2.5 px-4 py-3 hover:bg-primary-50 transition-colors group">
                                         <span className="text-xl flex-shrink-0">{calc.icon}</span>
@@ -512,7 +514,7 @@ export default async function HomePage() {
                                         <h2 id="about-heading" className="text-base font-bold text-gray-900 mb-0.5">About gpaisa.in</h2>
                                         <p className="text-xs text-gray-500 mb-2">Founded by <strong className="text-gray-700">Satyapal Khakhal</strong></p>
                                         <p className="text-sm text-gray-600 leading-relaxed mb-3">
-                                            gpaisa.in provides accurate, unbiased financial data to Indian investors. We cover live gold &amp; silver rates across 30+ cities, 14 free financial calculators, credit card reviews, and daily market news — all without any advertiser influence.
+                                            gpaisa.in provides accurate, unbiased financial data to Indian investors. We cover live gold &amp; silver rates across 30+ cities, 15 free financial calculators, credit card reviews, and daily market news — all without any advertiser influence.
                                         </p>
                                     </div>
                                 </div>
@@ -651,7 +653,7 @@ export default async function HomePage() {
                             </p>
                             <div className="space-y-1.5 text-[10px] text-emerald-600">
                                 <div className="flex items-center gap-1.5"><span>✅</span><span>Data sourced from MCX, IBJA, LBMA</span></div>
-                                <div className="flex items-center gap-1.5"><span>✅</span><span>14 free financial calculators</span></div>
+                                <div className="flex items-center gap-1.5"><span>✅</span><span>15 free financial calculators</span></div>
                                 <div className="flex items-center gap-1.5"><span>✅</span><span>Not SEBI registered — for info only</span></div>
                                 <div className="flex items-center gap-1.5"><span>✅</span><span>No advertiser influence</span></div>
                             </div>

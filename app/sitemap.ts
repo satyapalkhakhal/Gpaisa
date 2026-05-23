@@ -157,6 +157,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'weekly',
             priority: 0.9,
         },
+        {
+            url: `${baseUrl}/calculator/car-loan`,
+            lastModified: new Date('2026-05-22'),
+            changeFrequency: 'monthly',
+            priority: 0.9,
+        },
     ];
 
     // Bank-specific SIP calculator pages

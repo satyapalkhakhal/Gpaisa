@@ -82,6 +82,11 @@ export default async function SitemapPage() {
                                     Contact
                                 </Link>
                             </li>
+                            <li>
+                                <Link href="/calculator/car-loan" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    Car Loan Calculator
+                                </Link>
+                            </li>
                         </ul>
                     </section>
 
