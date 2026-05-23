@@ -215,12 +215,12 @@ export default function AboutPage() {
                                 Sensex, Nifty 50, Nifty Bank, and currency rates are sourced from <strong>BSE</strong>, <strong>NSE</strong>, and public market data providers, refreshed every 60 seconds during trading hours.
                             </p>
                         </div>
-                        <div className="border-l-4 border-green-500 pl-4">
+                        {/* <div className="border-l-4 border-green-500 pl-4">
                             <h3 className="text-xl font-bold text-gray-900 mb-2">Agricultural Prices</h3>
                             <p className="text-gray-700">
                                 Mandi prices are sourced from <strong>Agmarknet</strong> (Government of India) and verified against regional agricultural market committee data.
                             </p>
-                        </div>
+                        </div> */}
                         <div className="border-l-4 border-purple-500 pl-4">
                             <h3 className="text-xl font-bold text-gray-900 mb-2">Editorial Standards</h3>
                             <p className="text-gray-700">

@@ -120,7 +120,7 @@ export default function DisclaimerPage() {
                             <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
                                 <li>Gold and silver rates are indicative and may vary by location and vendor</li>
                                 <li>Stock market data may be delayed by 15-20 minutes or more</li>
-                                <li>Agricultural prices are sourced from various mandis and may not reflect real-time rates</li>
+                                {/* <li>Agricultural prices are sourced from various mandis and may not reflect real-time rates</li> */}
                                 <li>Currency exchange rates are approximate and subject to change</li>
                             </ul>
 
