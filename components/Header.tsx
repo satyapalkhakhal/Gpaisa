@@ -40,6 +40,7 @@ export default function Header() {
                 { name: t('calculators', 'gratuityCalculator'), href: '/calculator/gratuity' },
                 { name: t('calculators', 'simpleInterest'), href: '/calculator/simple-interest' },
                 { name: t('calculators', 'mutualFundCalculator'), href: '/calculator/mutual-fund' },
+                { name: t('calculators', 'carLoanCalculator'), href: '/calculator/car-loan' },
             ]
         },
         { name: t('nav', 'personalFinance'), href: '/finance' },

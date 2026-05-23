@@ -29,6 +29,7 @@ export const translations = {
         gratuityCalculator: { en: 'Gratuity Calculator', hi: 'ग्रेच्युटी कैलकुलेटर' },
         simpleInterest: { en: 'Simple Interest', hi: 'साधारण ब्याज' },
         mutualFundCalculator: { en: 'Mutual Fund Calculator', hi: 'म्यूचुअल फंड कैलकुलेटर' },
+        carLoanCalculator: { en: 'Car Loan Calculator', hi: 'कार लोन कैलकुलेटर' },
     },
 
     // ─── Footer ─────────────────────────────────────────────────────
