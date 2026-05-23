@@ -23,7 +23,6 @@ function computeGSTDefaults() {
 export const metadata: Metadata = {
   title: 'GST Calculator India 2026 — Add/Remove GST, CGST SGST IGST Breakdown | gpaisa.in',
   description: "India's most complete GST calculator. Add or remove GST instantly. Get CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%. With rate guide, worked examples, and FAQ. Updated 2026.",
-  keywords: 'gst calculator, gst calculator india, goods and services tax calculator, calculate gst online, gst calculation, cgst sgst calculator, igst calculator, add gst calculator, remove gst calculator, gst exclusive calculator, gst inclusive calculator, 18% gst calculator, 28% gst calculator, india gst rates, gst breakdown, online gst tool, gst rate slabs 2026, cgst sgst igst difference',
   authors: [{ name: 'Satyapal Khakhal' }],
   openGraph: {
     title: 'GST Calculator India 2026 — Add/Remove GST, CGST SGST IGST Breakdown | gpaisa.in',

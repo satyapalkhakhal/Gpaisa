@@ -13,7 +13,6 @@ export const metadata: Metadata = {
   title: 'Mutual Fund Calculator 2026 — SIP & Lumpsum Returns, Examples & Tax Guide | gpaisa.in',
   description: 'Free Mutual Fund Calculator India (2026). SIP formula FV=P×[((1+r)^n−1)/r]×(1+r) with 4 worked examples, SIP vs lumpsum comparison, fund type presets, year-wise growth table, and tax guide for equity & debt funds.',
   authors: [{ name: 'Satyapal Khakhal' }],
-  keywords: 'mutual fund calculator, sip calculator india, lumpsum calculator, mf returns calculator, sip vs lumpsum, elss calculator, equity fund returns, mutual fund tax 2026, sip future value formula, mutual fund investment calculator india',
   openGraph: {
     title: 'Mutual Fund Calculator 2026 — SIP & Lumpsum Returns, Examples & Tax Guide | gpaisa.in',
     description: 'Free MF calculator with SIP & lumpsum formulas, 4 worked examples, year-wise growth table, SIP vs lumpsum comparison, fund type presets, and 2026 tax guide.',

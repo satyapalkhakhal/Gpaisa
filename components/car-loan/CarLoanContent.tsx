@@ -137,31 +137,6 @@ export default function CarLoanContent() {
         </div>
       </section>
 
-      {/* 6. Static Amortisation */}
-      <section aria-labelledby="car-amort-heading">
-        <h2 id="car-amort-heading" className="text-xl md:text-2xl font-bold text-gray-900 mb-4">Year-wise Amortisation Schedule — ₹8L at 9.5% for 5 Years</h2>
-        <div className="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm mb-3">
-          <table className="w-full text-sm">
-            <thead><tr>{['Year','Opening Balance','EMI Paid','Principal','Interest','Closing Balance'].map((h,i) => <Th key={i} c={h} right={i>0} />)}</tr></thead>
-            <tbody>
-              {[
-                ['Year 1','₹8,00,000','₹2,01,476','₹1,43,792','₹57,684','₹6,56,208'],
-                ['Year 2','₹6,56,208','₹2,01,476','₹1,57,692','₹43,784','₹4,98,516'],
-                ['Year 3','₹4,98,516','₹2,01,476','₹1,73,041','₹28,435','₹3,25,475'],
-                ['Year 4','₹3,25,475','₹2,01,476','₹1,89,774','₹11,702','₹1,35,701'],
-                ['Year 5','₹1,35,701','₹1,37,148','₹1,35,701','₹1,447','₹0'],
-              ].map((row, i) => (
-                <tr key={i} className="hover:bg-blue-50/30 transition-colors">
-                  <td className="px-3 py-2.5 font-semibold text-gray-800 border-b border-gray-50">{row[0]}</td>
-                  {row.slice(1).map((v, j) => <Td key={j} c={v} right bold={j===2} color={j===2 ? 'text-blue-700' : j===3 ? 'text-red-500' : 'text-gray-700'} />)}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="text-xs text-gray-400 italic">Showing schedule for ₹8L at 9.5% for 5 years. Use the calculator above for your specific loan details.</p>
-      </section>
-
       {/* 7. Tips */}
       <section aria-labelledby="car-tips-heading">
         <h2 id="car-tips-heading" className="text-xl md:text-2xl font-bold text-gray-900 mb-4">5 Ways to Reduce Your Car Loan Cost</h2>

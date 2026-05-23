@@ -65,7 +65,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         return {
             title: 'Financial Calculators India — SIP, FD, EMI, Home Loan, GST & More | gpaisa.in',
             description: 'Free online financial calculators for India. SIP calculator, FD calculator, EMI calculator, home loan calculator, GST calculator, PPF, NPS, CAGR and more. Plan your investments with gpaisa.in.',
-            keywords: 'financial calculators india, sip calculator, fd calculator, emi calculator, home loan calculator, gst calculator, ppf calculator, nps calculator, investment calculator, gpaisa',
             authors: [{ name: 'Satyapal Khakhal' }],
             openGraph: {
                 title: 'Financial Calculators India — SIP, FD, EMI, Home Loan, GST & More',
@@ -94,7 +93,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             return {
                 title: amcData.metaTitle,
                 description: amcData.metaDescription,
-                keywords: `${amcData.shortName.toLowerCase()} sip calculator, ${amcData.amcName.toLowerCase()} sip, ${amcData.shortName.toLowerCase()} mutual fund calculator, sip calculator india`,
                 authors: [{ name: 'Satyapal Khakhal' }],
                 openGraph: {
                     title: amcData.metaTitle,
@@ -119,7 +117,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             return {
                 title: `${bank.name} SIP Calculator 2026 — Top Funds, Returns & Investment Guide | gpaisa.in`,
                 description: bank.description,
-                keywords: `${bank.name.toLowerCase()} sip calculator, ${bank.name.toLowerCase()} mutual fund calculator, sip calculator online`,
                 authors: [{ name: 'Satyapal Khakhal' }],
                 openGraph: {
                     title: `${bank.name} SIP Calculator`,
@@ -153,7 +150,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             return {
                 title: metaTitle,
                 description: metaDescription,
-                keywords: `${bank.name.toLowerCase()} home loan calculator, ${bank.name.toLowerCase()} home loan emi, home loan calculator online`,
                 authors: [{ name: 'Satyapal Khakhal' }],
                 openGraph: {
                     title: metaTitle,

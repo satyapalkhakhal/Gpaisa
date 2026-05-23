@@ -21,7 +21,6 @@ export const metadata: Metadata = {
   title: 'FD Calculator 2026 — Fixed Deposit Maturity, TDS & Bank Rate Comparison | gpaisa.in',
   description: "India's most complete FD calculator. ₹1 lakh at 7% for 5 years = ₹1,41,478. Calculate maturity with TDS, senior citizen rates, quarterly/monthly compounding. Compare SBI, HDFC, ICICI, Post Office rates. Updated May 2026.",
   authors: [{ name: 'Satyapal Khakhal' }],
-  keywords: 'fd calculator, fixed deposit calculator, fd maturity calculator, fd interest calculator, sbi fd calculator, hdfc fd calculator, icici fd calculator, fd calculator india, tds on fd, senior citizen fd rates, tax saving fd 80c, post office fd rates 2026, fd vs rd comparison, quarterly compounding fd',
   openGraph: {
     title: 'FD Calculator 2026 — Fixed Deposit Maturity & Bank Rate Comparison | gpaisa.in',
     description: "India's most complete FD calculator. Compare SBI, HDFC, ICICI, Post Office FD rates. Calculate maturity with TDS deduction, senior citizen bonus, all compounding options.",

@@ -26,7 +26,6 @@ export const metadata: Metadata = {
   title: 'NPS Calculator 2026 — Retirement Corpus, Monthly Pension & Tax Savings | gpaisa.in',
   description: "India's most complete NPS calculator (2026). Calculate retirement corpus, monthly pension, tax benefits under 80CCD, and year-wise growth. Updated for latest PFRDA 2025 rules — 80% lump sum, ₹5L threshold, age 85 extension.",
   authors: [{ name: 'Satyapal Khakhal' }],
-  keywords: 'nps calculator, national pension system calculator, nps return calculator, nps maturity calculator, nps monthly pension calculator, nps tax benefit 80ccd, pfrda 2025 rules, nps vs ppf, nps tier 1 tier 2, nps withdrawal rules 2026',
   openGraph: {
     title: 'NPS Calculator 2026 — Retirement Corpus, Monthly Pension & Tax Benefits | gpaisa.in',
     description: "Calculate NPS retirement corpus, monthly pension, and tax savings. Updated for 2025 PFRDA rules — 80% lump sum, ₹5L threshold, age 85 extension.",

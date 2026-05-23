@@ -12,7 +12,6 @@ import { Coins, TrendingUp, History } from 'lucide-react';
 export const metadata: Metadata = {
     title: 'Live Gold & Silver Rates, Commodity Prices Today | gpaisa.in',
     description: 'Check today\'s gold rates (24K, 22K, 18K), silver prices, and other commodity rates across India. Updated in real-time.',
-    keywords: ['gold rate', 'gold price', '24k gold', '22k gold', '18k gold', 'silver rate', 'commodity prices', 'gold rate today', 'gold rate India'],
     openGraph: {
         title: 'Live Gold & Silver Rates, Commodity Prices Today',
         description: 'Check today\'s gold rates (24K, 22K, 18K), silver prices, and other commodity rates across India. Updated in real-time.',

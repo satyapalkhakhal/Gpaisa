@@ -11,9 +11,6 @@ export const metadata: Metadata = {
     title: "Gpaisa - Live Market Updates, Gold Rates & Financial News",
     description: "Track live stock markets (Sensex, Nifty), today's gold & silver rates, breaking financial news, commodity prices, and smart investment calculators (SIP, PPF, EPF, SWP). Your trusted Indian finance companion!",
     authors: [{ name: "Satyapal Khakhal" }],
-    other: {
-        author: "Satyapal Khakhal",
-    },
     manifest: "/manifest.json",
     icons: {
         icon: [
@@ -67,8 +64,6 @@ export default function RootLayout({
     return (
         <html lang="en">
             <head>
-                {/* Author Meta */}
-                <meta name="author" content="Satyapal Khakhal" />
 
                 {/* Favicon for Google Search */}
                 <link rel="icon" href="/favicon.ico" sizes="48x48" />

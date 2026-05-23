@@ -38,7 +38,6 @@ export const metadata: Metadata = {
   title: "Car Loan EMI Calculator 2026 — Interest Rate, Amortisation & Bank Comparison | gpaisa.in",
   description: "India's most complete car loan calculator. Calculate EMI for any car loan instantly. Compare SBI, HDFC, ICICI, Axis, Kotak, Bank of Baroda rates. With amortisation schedule, prepayment simulator, and tax benefits. Updated May 2026.",
   authors: [{ name: "Satyapal Khakhal", url: "https://www.gpaisa.in/about" }],
-  keywords: "car loan emi calculator, car loan calculator india, auto loan calculator, car loan interest rate 2026, sbi car loan emi, hdfc car loan emi, icici car loan calculator, car loan amortisation, car loan prepayment calculator, new car loan rate, used car loan rate",
   alternates: { canonical: "https://www.gpaisa.in/calculator/car-loan" },
   openGraph: {
     title: "Car Loan EMI Calculator 2026 — Bank Rate Comparison & Amortisation | gpaisa.in",

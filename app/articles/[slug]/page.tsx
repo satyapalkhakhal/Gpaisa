@@ -7,36 +7,7 @@ import { ChevronRight, Clock, User, Calendar, ArrowLeft, Share2, Bookmark } from
 
 export const revalidate = 86400; // Cache for 1 day (ISR)
 
-// Helper function to generate keywords from article content
-function generateKeywords(article: Article): string[] {
-    const baseKeywords = [
-        'financial news',
-        'India finance',
-        'gpaisa',
-        'market news',
-        'investment news',
-    ];
 
-    if (article.category) {
-        baseKeywords.push(article.category, `${article.category} news`, `${article.category} India`);
-    }
-
-    if (article.subcategory) {
-        baseKeywords.push(article.subcategory);
-    }
-
-    // Extract keywords from title
-    const titleWords = article.title
-        .toLowerCase()
-        .split(/\s+/)
-        .filter((word: string) => word.length > 4)
-        .slice(0, 5);
-
-    // Include tags
-    const tagKeywords = article.tags || [];
-
-    return [...baseKeywords, ...titleWords, ...tagKeywords];
-}
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
     const { slug } = await params;
@@ -48,13 +19,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         };
     }
 
-    const keywords = generateKeywords(article);
     const publishedTime = new Date(article.published_at || Date.now()).toISOString();
 
     return {
         title: `${article.title} | gpaisa.in`,
         description: article.excerpt || article.title,
-        keywords: keywords.join(', '),
         authors: [{ name: article.author || 'Gpaisa Desk' }],
         openGraph: {
             title: article.title,

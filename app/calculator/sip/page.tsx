@@ -6,47 +6,6 @@ import SIPEducationalContent from '@/components/sip/SIPEducationalContent';
 export const metadata: Metadata = {
     title: 'SIP Calculator Online - Calculate SIP Returns & Investment Growth | Gpaisa',
     description: 'Free SIP Calculator to calculate mutual fund SIP returns. Plan your systematic investment with our step-up SIP calculator, lump sum calculator, and SIP return calculator. Get accurate projections for your wealth creation journey.',
-    keywords: [
-        // Primary keywords (high volume)
-        'sip calculator',
-        'sip return calculator',
-        'mutual fund sip calculator',
-        'sbi sip calculator',
-        'step up sip calculator',
-
-        // Secondary keywords
-        'sip calculator with step up',
-        'sip calculator groww',
-        'sip calculator with inflation',
-        'lump sum sip calculator',
-        'groww sip calculator',
-
-        // Long-tail keywords
-        'systematic investment plan calculator',
-        'sip investment calculator online',
-        'monthly sip calculator',
-        'sip returns calculator india',
-        'best sip calculator',
-        'sip maturity calculator',
-        'sip interest calculator',
-        'mutual fund calculator sip',
-
-        // Related terms
-        'investment calculator',
-        'mutual fund calculator',
-        'wealth calculator',
-        'retirement planning calculator',
-        'goal based investment calculator',
-
-        // Location-based
-        'sip calculator india',
-        'sip calculator online india',
-
-        // Feature-based
-        'sip calculator with charts',
-        'sip calculator with goal planning',
-        'sip calculator excel alternative',
-    ].join(', '),
 
     openGraph: {
         title: 'SIP Calculator - Calculate Your Mutual Fund Returns | Gpaisa',

@@ -140,7 +140,6 @@ export default function GoldRatePage() {
             encodingFormat: 'text/csv',
             contentUrl: 'https://www.gpaisa.in/gold_prices_india_1964_2026.csv',
         },
-        keywords: ['gold price history india', 'gold rate 1964 to 2026', 'historical gold prices', 'gold CAGR india', 'gold investment returns'],
     };
 
     return (

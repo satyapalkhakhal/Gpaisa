@@ -1,11 +1,11 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
+import Image from 'next/image';
 import { Users, Target, Award, TrendingUp } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: 'About Us - gpaisa.in | Your Trusted Financial Information Portal',
     description: 'Learn about gpaisa.in - India\'s leading financial information portal providing real-time gold rates, silver prices, market updates, and expert financial insights.',
-    keywords: 'about gpaisa, financial portal India, gold rate information, market news India',
     alternates: {
         canonical: 'https://www.gpaisa.in/about',
     },
@@ -127,17 +127,31 @@ export default function AboutPage() {
 
                     {/* Founder / Author */}
                     <div className="bg-gray-50 border border-gray-200 rounded-xl p-6 mb-6">
-                        <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                            Satyapal Khakhal
-                        </h3>
+                        <div className="flex flex-col sm:flex-row items-start gap-5">
+                            <div className="flex-shrink-0">
+                                <Image
+                                    src="https://res.cloudinary.com/dpqtibvzn/image/upload/v1779511268/thinkscope/merzsltgiiep9ebljs6d.png"
+                                    alt="Satyapal Khakhal — Founder, gpaisa.in"
+                                    width={120}
+                                    height={120}
+                                    className="rounded-xl object-cover border-2 border-primary-100 shadow-sm"
+                                    priority
+                                />
+                            </div>
+                            <div>
+                                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                                    Satyapal Khakhal
+                                </h3>
 
-                        <p className="text-primary-600 font-semibold mb-3">
-                            Founder & Financial Content Author
-                        </p>
+                                <p className="text-primary-600 font-semibold mb-3">
+                                    Founder & Financial Content Author
+                                </p>
 
-                        <p className="text-gray-700 leading-relaxed">
-                            Satyapal Khakhal is the founder of gpaisa.in and writes about personal finance, gold prices, investment trends, credit cards, and financial tools for Indian readers. His focus is on simplifying complex financial topics into practical, easy-to-understand insights backed by real market data and research.
-                        </p>
+                                <p className="text-gray-700 leading-relaxed">
+                                    Satyapal Khakhal is the founder of gpaisa.in and writes about personal finance, gold prices, investment trends, credit cards, and financial tools for Indian readers. His focus is on simplifying complex financial topics into practical, easy-to-understand insights backed by real market data and research.
+                                </p>
+                            </div>
+                        </div>
                     </div>
                     <ul className="space-y-3 text-gray-700">
                         <li className="flex items-start">

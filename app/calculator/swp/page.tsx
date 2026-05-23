@@ -54,40 +54,6 @@ export const metadata: Metadata = {
     title: 'SWP Calculator 2026 — Systematic Withdrawal Plan with Inflation & Tax | gpaisa.in',
     description: "India's most complete SWP calculator. Calculate final corpus, safe withdrawal rate, inflation-adjusted returns, and corpus depletion date. Compare SWP vs FD vs Annuity. Free online tool.",
     authors: [{ name: 'Satyapal Khakhal' }],
-    keywords: [
-        // Primary keywords (high volume)
-        'swp calculator',
-        'systematic withdrawal plan calculator',
-        'swp calculator online',
-        'swp return calculator',
-        'swp mutual fund calculator',
-
-        // Secondary keywords
-        'swp calculator 2026',
-        'swp calculator india',
-        'swp calculator with inflation',
-        'swp maturity calculator',
-        'retirement withdrawal calculator',
-
-        // Long-tail — competitive moat
-        'swp calculator with inflation adjustment india',
-        'how long will my swp corpus last',
-        'swp vs fd for retirement india',
-        'safe withdrawal rate mutual fund india',
-        'swp calculator with corpus depletion date',
-
-        // Related terms
-        'systematic withdrawal plan',
-        'swp benefits',
-        'swp tax implications',
-        'swp vs annuity',
-        'retirement planning calculator',
-
-        // Feature-based
-        'swp calculator with charts',
-        'swp calculator year wise',
-        'safe monthly withdrawal calculator',
-    ].join(', '),
 
     openGraph: {
         title: 'SWP Calculator 2026 — Inflation, Safe Withdrawal & Depletion Date | gpaisa.in',

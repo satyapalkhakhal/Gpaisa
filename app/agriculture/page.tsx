@@ -6,7 +6,6 @@ import AgriculturePageClient from '@/components/AgriculturePageClient';
 export const metadata: Metadata = {
     title: 'Kisan Mandi Prices India - Live Crop Rates by State & District | Gpaisa',
     description: 'Check rate of wheat today and all crop mandi prices across India. State-wise, district-wise kisan mandi rates updated daily from government sources.',
-    keywords: ['mandi prices', 'rate of wheat today', 'kisan mandi', 'crop rates today', 'wheat rate today', 'agriculture prices', 'farmer prices', 'wholesale market prices', 'India agriculture'],
     openGraph: {
         title: 'Live Kisan Mandi Prices - India',
         description: 'Check rate of wheat today & real-time kisan mandi prices for crops across all states and districts in India',

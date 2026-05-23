@@ -61,26 +61,6 @@ function computeEPFDefaults() {
 export const metadata: Metadata = {
     title: 'EPF Calculator India 2026 — EPF Maturity, EPS Pension & Year-wise Growth | gpaisa.in',
     description: 'Free EPF Calculator India 2026 — Calculate your EPF maturity amount, EPS pension, interest earned and year-wise growth. Updated for 8.25% interest rate.',
-    keywords: [
-        'epf calculator',
-        'epf calculator 2026',
-        'employees provident fund calculator',
-        'epf calculator online',
-        'epf maturity calculator',
-        'eps pension calculator',
-        'pf calculator',
-        'provident fund calculator',
-        'epf calculator india',
-        'epf interest rate 2026',
-        'epf withdrawal rules',
-        'vpf calculator',
-        'epf year wise calculator',
-        'pf balance check',
-        'epf pension calculator',
-        'epf interest calculator',
-        'epf withdrawal calculator',
-        'retirement calculator india',
-    ].join(', '),
 
     authors: [{ name: 'Satyapal Khakhal' }],
 

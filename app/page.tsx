@@ -14,7 +14,6 @@ export const metadata: Metadata = {
     title: "gpaisa.in — Live Gold Rates, Financial Calculators & Market Data India",
     description: "India's trusted financial portal. Live 24K gold rate today, silver price, SIP calculator, FD calculator, home loan calculator, GST calculator, credit card reviews. Updated daily by Satyapal Khakhal.",
     authors: [{ name: "Satyapal Khakhal", url: "https://www.gpaisa.in/about" }],
-    keywords: "gold rate today india, sip calculator, fd calculator, home loan calculator, gst calculator, silver rate today, financial calculators india, credit card reviews india, investment tools india, live gold price india",
     alternates: { canonical: "https://www.gpaisa.in" },
     openGraph: {
         title: "gpaisa.in — Live Gold Rates, Financial Calculators & Market Data India",

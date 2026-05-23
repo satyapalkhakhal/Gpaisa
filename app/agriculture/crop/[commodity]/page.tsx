@@ -22,7 +22,6 @@ export async function generateMetadata({ params }: { params: Promise<{ commodity
     return {
         title: `Rate of ${commodityName} Today - ${commodityName} Kisan Mandi Prices India | Gpaisa`,
         description: `Check rate of ${commodityName} today across all states and mandis in India. Latest wholesale kisan mandi rates for ${commodityName} updated daily.`,
-        keywords: [`rate of ${commodityName} today`, `${commodityName} price today`, `${commodityName} mandi rates`, `${commodityName} wholesale price`, 'kisan mandi', 'crop rates today'],
         openGraph: {
             title: `Rate of ${commodityName} Today - Kisan Mandi Prices India`,
             description: `Live rate of ${commodityName} today across Indian kisan mandis`

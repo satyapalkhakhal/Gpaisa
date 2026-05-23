@@ -7,7 +7,6 @@ import { BookOpen, TrendingUp, Newspaper } from 'lucide-react';
 export const metadata: Metadata = {
     title: 'Business & Finance News - Latest Updates | Gpaisa',
     description: 'Stay updated with the latest business and finance news. Get insights on markets, economy, investments, corporate news, and financial trends in India.',
-    keywords: 'business news, finance news, market updates, economy news, corporate news, financial news India, business updates, stock market news',
     openGraph: {
         title: 'Business & Finance News - Latest Updates | Gpaisa',
         description: 'Stay updated with the latest business and finance news. Get insights on markets, economy, investments, corporate news, and financial trends in India.',

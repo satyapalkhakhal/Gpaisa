@@ -19,7 +19,6 @@ export const metadata: Metadata = {
   title: 'HRA Calculator 2026 — HRA Exemption, Metro vs Non-Metro & Tax Savings | gpaisa.in',
   description: 'Free HRA calculator India (2026). Calculate House Rent Allowance tax exemption under Section 10(13A). Metro vs non-metro, Form 12BB guide, Section 80GG for self-employed. Instant results.',
   authors: [{ name: 'Satyapal Khakhal' }],
-  keywords: 'hra calculator, house rent allowance calculator, hra exemption calculator, hra tax benefit, metro hra 50 percent, non metro hra 40 percent, section 10 13a, form 12bb, section 80gg, hra old tax regime, bengaluru hra non metro, hyderabad hra calculator 2026',
   openGraph: {
     title: 'HRA Calculator 2026 — House Rent Allowance Tax Exemption India | gpaisa.in',
     description: 'Calculate HRA exemption instantly. Three-component formula, metro vs non-metro, old vs new tax regime comparison. Worked example included.',

@@ -13,7 +13,6 @@ export const metadata: Metadata = {
   title: 'Simple Interest Calculator 2026 — Formula, Examples, Reverse Calculator | gpaisa.in',
   description: 'Free Simple Interest Calculator India (2026). Formula SI=(P×R×T)/100 with 3 worked examples, reverse calculator to find P/R/T, SI vs CI comparison table, and interest rate reference chart.',
   authors: [{ name: 'Satyapal Khakhal' }],
-  keywords: 'simple interest calculator, si formula calculator, simple interest formula, si calculator india, find principal from simple interest, find rate from si, reverse simple interest calculator, si vs ci comparison, simple interest examples, simple interest 2026',
   openGraph: {
     title: 'Simple Interest Calculator 2026 — SI Formula, Examples & Reverse Calculator | gpaisa.in',
     description: 'Calculate simple interest instantly. SI = (P×R×T)/100 with worked examples, reverse calculator (find P, R or T), SI vs CI comparison, and reference rate table.',

@@ -4,7 +4,6 @@ import EMICalculatorClient from '@/components/EMICalculatorClient';
 export const metadata: Metadata = {
     title: 'EMI Calculator - Calculate Loan EMI, Home Loan, Car Loan, Personal Loan | Gpaisa',
     description: 'Free EMI Calculator to calculate monthly loan payments for home loan, car loan, personal loan, and education loan. Get instant EMI calculation with amortization schedule and total interest payable.',
-    keywords: 'emi calculator, loan emi calculator, home loan emi calculator, car loan emi calculator, personal loan emi calculator, education loan emi, emi calculation, loan calculator, monthly emi, interest calculator, amortization schedule',
     openGraph: {
         title: 'EMI Calculator - Calculate Loan EMI Online',
         description: 'Calculate your loan EMI instantly with our free EMI calculator. Get detailed amortization schedule for home loan, car loan, and personal loan.',

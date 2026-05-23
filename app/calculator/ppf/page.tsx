@@ -5,46 +5,6 @@ import PPFCalculatorClient from '@/components/PPFCalculatorClient';
 export const metadata: Metadata = {
     title: 'PPF Calculator Online - Calculate Public Provident Fund Returns & Maturity | Gpaisa',
     description: 'Free PPF Calculator to calculate Public Provident Fund returns, maturity amount, and interest. Plan your PPF investment with our online PPF calculator. Get accurate projections for your wealth creation journey.',
-    keywords: [
-        // Primary keywords (high volume)
-        'ppf calculator',
-        'public provident fund calculator',
-        'ppf calculator online',
-        'ppf maturity calculator',
-        'ppf interest calculator',
-
-        // Secondary keywords
-        'ppf calculator 2024',
-        'ppf calculator india',
-        'ppf account calculator',
-        'ppf return calculator',
-        'ppf investment calculator',
-
-        // Long-tail keywords
-        'ppf calculator with interest rate',
-        'ppf calculator 15 years',
-        'ppf maturity amount calculator',
-        'ppf yearly calculator',
-        'ppf calculator sbi',
-        'ppf calculator post office',
-
-        // Related terms
-        'public provident fund',
-        'ppf scheme',
-        'ppf interest rate',
-        'ppf tax benefits',
-        'ppf maturity period',
-        'ppf withdrawal rules',
-
-        // Location-based
-        'ppf calculator india online',
-        'ppf calculator indian post office',
-
-        // Feature-based
-        'ppf calculator with charts',
-        'ppf calculator year wise',
-        'ppf calculator excel alternative',
-    ].join(', '),
 
     openGraph: {
         title: 'PPF Calculator - Calculate Public Provident Fund Returns | Gpaisa',
