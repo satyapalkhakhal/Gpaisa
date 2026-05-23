@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { fetchArticleBySlug, fetchLatestArticles, fetchArticlesByCategory, Article } from '@/lib/supabaseApi';
+import { fetchArticleBySlug, fetchLatestArticles, fetchArticlesByCategory } from '@/lib/supabaseApi';
 import { ChevronRight, Clock, User, Calendar, ArrowLeft, Share2, Bookmark } from 'lucide-react';
 
 export const revalidate = 86400; // Cache for 1 day (ISR)
