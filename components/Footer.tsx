@@ -20,9 +20,9 @@ export default function Footer() {
                             {t('footer', 'about')}
                         </p>
                         <div className="flex items-center flex-wrap gap-4">
-                            <a href="mailto:info@gpaisa.in" className="flex items-center text-sm hover:text-primary-400 transition-colors">
+                            <a href="mailto:contact@gpaisa.in" className="flex items-center text-sm hover:text-primary-400 transition-colors">
                                 <Mail className="h-4 w-4 mr-2" />
-                                info@gpaisa.in
+                                contact@gpaisa.in
                             </a>
                             <a
                                 href="https://twitter.com/gpaisa_in"

@@ -35,7 +35,7 @@ export default function PrivacyPolicyPage() {
 
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Information We Collect</h2>
-                            
+
                             <h3 className="text-xl font-bold text-gray-900 mb-3">2.1 Personal Information</h3>
                             <p className="text-gray-700 mb-4">
                                 We may collect personally identifiable information that you voluntarily provide to us when you:
@@ -93,7 +93,7 @@ export default function PrivacyPolicyPage() {
                             <p className="text-gray-700 mb-4">
                                 We use cookies and similar tracking technologies to track activity on our website and store certain information. Cookies are small data files stored on your device.
                             </p>
-                            
+
                             <h3 className="text-xl font-bold text-gray-900 mb-3">Types of Cookies We Use:</h3>
                             <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
                                 <li><strong>Essential Cookies:</strong> Required for the website to function properly</li>
@@ -101,7 +101,7 @@ export default function PrivacyPolicyPage() {
                                 <li><strong>Advertising Cookies:</strong> Used to deliver relevant advertisements (e.g., Google AdSense)</li>
                                 <li><strong>Preference Cookies:</strong> Remember your settings and preferences</li>
                             </ul>
-                            
+
                             <p className="text-gray-700 mb-4">
                                 You can control cookie settings through your browser preferences. However, disabling cookies may affect the functionality of our website.
                             </p>
@@ -112,7 +112,7 @@ export default function PrivacyPolicyPage() {
                             <p className="text-gray-700 mb-4">
                                 We may use third-party services that collect, monitor, and analyze information to improve our service. These third parties have their own privacy policies:
                             </p>
-                            
+
                             <h3 className="text-xl font-bold text-gray-900 mb-3">Google Analytics</h3>
                             <p className="text-gray-700 mb-4">
                                 We use Google Analytics to analyze website traffic. Google Analytics uses cookies to collect information about your use of our website. For more information, visit{' '}
@@ -174,7 +174,7 @@ export default function PrivacyPolicyPage() {
                             </ul>
                             <p className="text-gray-700">
                                 To exercise these rights, please contact us at{' '}
-                                <a href="mailto:privacy@gpaisa.in" className="text-primary-600 hover:underline">privacy@gpaisa.in</a>.
+                                <a href="mailto:contact@gpaisa.in" className="text-primary-600 hover:underline">contact@gpaisa.in</a>.
                             </p>
                         </section>
 
@@ -205,7 +205,7 @@ export default function PrivacyPolicyPage() {
                                 If you have any questions about this Privacy Policy or our data practices, please contact us:
                             </p>
                             <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:privacy@gpaisa.in" className="text-primary-600 hover:underline">privacy@gpaisa.in</a></p>
+                                <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:contact@gpaisa.in" className="text-primary-600 hover:underline">contact@gpaisa.in</a></p>
                                 <p className="text-gray-700"><strong>Website:</strong> <a href="https://www.gpaisa.in/contact" className="text-primary-600 hover:underline">https://www.gpaisa.in/contact</a></p>
                             </div>
                         </section>

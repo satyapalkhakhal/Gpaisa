@@ -34,7 +34,7 @@ export default function TermsPage() {
 
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-gray-900 mb-4">2. Use of Website</h2>
-                            
+
                             <h3 className="text-xl font-bold text-gray-900 mb-3">2.1 Permitted Use</h3>
                             <p className="text-gray-700 mb-4">
                                 You may use this website for lawful purposes only. You agree to use the website in accordance with all applicable laws and regulations.
@@ -57,7 +57,7 @@ export default function TermsPage() {
 
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-gray-900 mb-4">3. Intellectual Property Rights</h2>
-                            
+
                             <h3 className="text-xl font-bold text-gray-900 mb-3">3.1 Our Content</h3>
                             <p className="text-gray-700 mb-4">
                                 The content on this website, including but not limited to text, graphics, logos, images, audio clips, digital downloads, data compilations, and software, is the property of gpaisa.in or its content suppliers and is protected by Indian and international copyright laws.
@@ -81,7 +81,7 @@ export default function TermsPage() {
 
                         <section className="mb-8">
                             <h2 className="text-2xl font-bold text-gray-900 mb-4">4. User-Generated Content</h2>
-                            
+
                             <h3 className="text-xl font-bold text-gray-900 mb-3">4.1 Your Content</h3>
                             <p className="text-gray-700 mb-4">
                                 If you submit comments, feedback, or other content to our website, you grant us a non-exclusive, royalty-free, perpetual, and worldwide license to use, reproduce, modify, and distribute such content.
@@ -223,7 +223,7 @@ export default function TermsPage() {
                                 If you have any questions about these Terms of Service, please contact us:
                             </p>
                             <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:legal@gpaisa.in" className="text-primary-600 hover:underline">legal@gpaisa.in</a></p>
+                                <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:contact@gpaisa.in" className="text-primary-600 hover:underline">contact@gpaisa.in</a></p>
                                 <p className="text-gray-700"><strong>Website:</strong> <a href="https://www.gpaisa.in/contact" className="text-primary-600 hover:underline">https://www.gpaisa.in/contact</a></p>
                             </div>
                         </section>

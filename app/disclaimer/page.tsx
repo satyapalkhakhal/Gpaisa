@@ -239,7 +239,7 @@ export default function DisclaimerPage() {
                                 If you have questions about this disclaimer, please contact us:
                             </p>
                             <div className="bg-gray-50 p-4 rounded-lg">
-                                <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:legal@gpaisa.in" className="text-primary-600 hover:underline">legal@gpaisa.in</a></p>
+                                <p className="text-gray-700"><strong>Email:</strong> <a href="mailto:contact@gpaisa.in" className="text-primary-600 hover:underline">contact@gpaisa.in</a></p>
                                 <p className="text-gray-700"><strong>Website:</strong> <a href="https://www.gpaisa.in/contact" className="text-primary-600 hover:underline">https://www.gpaisa.in/contact</a></p>
                             </div>
                         </section>
