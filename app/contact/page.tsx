@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
-import { Mail, MapPin, Phone, Send } from 'lucide-react';
+import { Mail, MapPin, Phone } from 'lucide-react';
+import ContactForm from '@/components/ContactForm';
 
 export const metadata: Metadata = {
     title: 'Contact Us - gpaisa.in | Get in Touch',
@@ -75,115 +76,7 @@ export default function ContactPage() {
                 </div>
 
                 {/* Contact Form */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 max-w-3xl mx-auto">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">Send Us a Message</h2>
-                    <form className="space-y-6">
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-2">
-                                    Full Name *
-                                </label>
-                                <input
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    required
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                    placeholder="Your name"
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="email" className="block text-sm font-semibold text-gray-700 mb-2">
-                                    Email Address *
-                                </label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    required
-                                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                    placeholder="your.email@example.com"
-                                />
-                            </div>
-                        </div>
-
-                        <div>
-                            <label htmlFor="subject" className="block text-sm font-semibold text-gray-700 mb-2">
-                                Subject *
-                            </label>
-                            <input
-                                type="text"
-                                id="subject"
-                                name="subject"
-                                required
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                placeholder="What is this regarding?"
-                            />
-                        </div>
-
-                        <div>
-                            <label htmlFor="category" className="block text-sm font-semibold text-gray-700 mb-2">
-                                Category
-                            </label>
-                            <select
-                                id="category"
-                                name="category"
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                            >
-                                <option value="">Select a category</option>
-                                <option value="general">General Inquiry</option>
-                                <option value="feedback">Feedback</option>
-                                <option value="support">Technical Support</option>
-                                <option value="partnership">Partnership</option>
-                                <option value="advertising">Advertising</option>
-                                <option value="other">Other</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label htmlFor="message" className="block text-sm font-semibold text-gray-700 mb-2">
-                                Message *
-                            </label>
-                            <textarea
-                                id="message"
-                                name="message"
-                                rows={6}
-                                required
-                                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent resize-none"
-                                placeholder="Tell us more about your inquiry..."
-                            />
-                        </div>
-
-                        <div className="flex items-start">
-                            <input
-                                type="checkbox"
-                                id="privacy"
-                                name="privacy"
-                                required
-                                className="mt-1 mr-2"
-                            />
-                            <label htmlFor="privacy" className="text-sm text-gray-600">
-                                I agree to the{' '}
-                                <a href="/privacy-policy" className="text-primary-600 hover:text-primary-700 underline">
-                                    Privacy Policy
-                                </a>{' '}
-                                and consent to being contacted regarding my inquiry.
-                            </label>
-                        </div>
-
-                        <button
-                            type="submit"
-                            className="w-full bg-primary-600 text-white px-8 py-4 rounded-lg font-bold hover:bg-primary-700 transition flex items-center justify-center"
-                        >
-                            <Send className="w-5 h-5 mr-2" />
-                            Send Message
-                        </button>
-                    </form>
-
-                    <p className="text-sm text-gray-500 mt-6 text-center">
-                        We typically respond within 24-48 hours during business days.
-                    </p>
-                </div>
+                <ContactForm />
 
                 {/* FAQ Section */}
                 <div className="mt-12 bg-white rounded-lg shadow-sm border border-gray-200 p-8 max-w-3xl mx-auto">

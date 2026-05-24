@@ -4,6 +4,7 @@ import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { fetchArticleBySlug, fetchLatestArticles, fetchArticlesByCategory } from '@/lib/supabaseApi';
 import { ChevronRight, Clock, User, Calendar, ArrowLeft, Share2, Bookmark } from 'lucide-react';
+import NewsletterSubscribe from '@/components/NewsletterSubscribe';
 
 export const revalidate = 86400; // Cache for 1 day (ISR)
 
@@ -359,14 +360,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                             </div>
 
                             {/* Newsletter */}
-                            <div className="bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl p-5 text-center border border-primary-200">
-                                <h4 className="font-bold text-primary-900 mb-2">Stay Updated</h4>
-                                <p className="text-sm text-primary-700 mb-4">Get the latest financial news delivered to your inbox.</p>
-                                <input type="email" placeholder="Your email" className="w-full text-sm p-2.5 rounded-lg border border-primary-200 mb-2 focus:ring-2 focus:ring-primary-400 focus:border-primary-400 outline-none" />
-                                <button className="w-full bg-primary-600 text-white font-bold text-xs uppercase py-2.5 rounded-lg hover:bg-primary-700 transition-colors">
-                                    Subscribe Now
-                                </button>
-                            </div>
+                            <NewsletterSubscribe variant="sidebar" />
 
                         </div>
                     </div>
