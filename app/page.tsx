@@ -144,7 +144,7 @@ export default async function HomePage() {
         allArticles,
     ] = await Promise.all([
         fetchArticlesByCategory('BUSINESS', 3),
-        fetchArticlesByCategory('FINANCE', 4),
+        fetchArticlesByCategory('FINANCE', 8),
         fetchAllArticles(15),
     ]);
 
@@ -156,7 +156,9 @@ export default async function HomePage() {
     // ── Section cards ──
     const headlineIds = new Set(allArticles.slice(0, 8).map(a => a.id));
     const businessCards = businessArticles.filter(a => !headlineIds.has(a.id)).slice(0, 3);
-    const financeCards = financeArticles.filter(a => !headlineIds.has(a.id)).slice(0, 4);
+    const financeCardsDedupe = financeArticles.filter(a => !headlineIds.has(a.id)).slice(0, 4);
+    // Fallback: if dedup removed all articles, use raw finance articles so section always shows
+    const financeCards = financeCardsDedupe.length > 0 ? financeCardsDedupe : financeArticles.slice(0, 4);
 
     // De-duplicate for latest section
     const usedIds = new Set<string>();
@@ -411,7 +413,7 @@ export default async function HomePage() {
                             {/* ═══════════════════════════════════════════════
                             SECTION ⑤: CREDIT CARD & FINANCE (2×2 grid)
                         ═══════════════════════════════════════════════ */}
-                            {financeCards.length > 0 && (
+                            {financeArticles.length > 0 && (
                                 <section id="finance-news" aria-labelledby="finance-heading">
                                     <div className="flex items-center justify-between mb-3">
                                         <div className="flex items-center gap-2.5">
