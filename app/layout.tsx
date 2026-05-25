@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
+import CookieConsent from "@/components/CookieConsent";
 import MarketTicker from "@/components/MarketTicker";
 import { LanguageProvider } from "@/lib/i18n";
 import Script from "next/script";
@@ -71,7 +72,21 @@ export default function RootLayout({
                 <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
                 <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
 
-                {/* Google Analytics */}
+                {/* Google Consent Mode v2 — deny by default until user accepts */}
+                <Script id="consent-mode-default" strategy="beforeInteractive">
+                    {`
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('consent', 'default', {
+                            ad_storage: 'denied',
+                            ad_user_data: 'denied',
+                            ad_personalization: 'denied',
+                            analytics_storage: 'denied',
+                            wait_for_update: 500
+                        });
+                    `}
+                </Script>
+
                 {/* Google Analytics */}
                 <Script
                     src="https://www.googletagmanager.com/gtag/js?id=G-TV8X50LJB1"
@@ -94,6 +109,7 @@ export default function RootLayout({
                         {children}
                     </main>
                     <Footer />
+                    <CookieConsent />
                 </LanguageProvider>
             </body>
         </html>

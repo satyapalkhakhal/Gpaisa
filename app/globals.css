@@ -375,6 +375,22 @@
   animation-play-state: paused;
 }
 
+/* Cookie consent banner animations */
+@keyframes cookieSlideIn {
+  0% { opacity: 0; transform: translateY(100%); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+@keyframes cookieSlideOut {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(100%); }
+}
+.animate-cookie-in {
+  animation: cookieSlideIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+.animate-cookie-out {
+  animation: cookieSlideOut 0.35s ease-in forwards;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
