@@ -158,18 +158,18 @@ export default function AboutPage() {
                             <span className="text-primary-600 mr-2">•</span>
                             <span><strong>Financial Analysts:</strong> Experts who monitor markets and provide insightful analysis</span>
                         </li>
-                        <li className="flex items-start">
+                        {/* <li className="flex items-start">
                             <span className="text-primary-600 mr-2">•</span>
                             <span><strong>Content Specialists:</strong> Writers who translate complex financial concepts into easy-to-understand articles</span>
-                        </li>
-                        <li className="flex items-start">
+                        </li> */}
+                        {/* <li className="flex items-start">
                             <span className="text-primary-600 mr-2">•</span>
                             <span><strong>Data Researchers:</strong> Professionals who ensure accuracy and timeliness of all market data</span>
                         </li>
                         <li className="flex items-start">
                             <span className="text-primary-600 mr-2">•</span>
                             <span><strong>Technology Team:</strong> Developers who maintain our platform and ensure seamless user experience</span>
-                        </li>
+                        </li> */}
                     </ul>
                 </div>
 

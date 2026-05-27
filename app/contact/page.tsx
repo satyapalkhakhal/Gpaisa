@@ -55,7 +55,7 @@ export default function ContactPage() {
                         <h3 className="text-xl font-bold text-gray-900 mb-2">Call Us</h3>
                         <p className="text-gray-600 mb-3">Mon-Fri, 9 AM - 6 PM IST</p>
                         <a
-                            href="tel:+911234567890"
+                            href="tel:+919833554532"
                             className="text-primary-600 hover:text-primary-700 font-semibold"
                         >
                             +91 9833554532
