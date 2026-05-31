@@ -35,7 +35,7 @@ export const translations = {
     // ─── Footer ─────────────────────────────────────────────────────
     footer: {
         about: {
-            en: 'gpaisa.in is founded by Satyapal Khakhal. We provide accurate gold and silver rate data, 14 free financial calculators, and daily financial news to help Indian investors make better decisions. Data sourced from MCX, IBJA, LBMA, BSE, NSE, and Agmarknet.',
+            en: 'gpaisa.in is founded by Satyapal Khakhal. We provide accurate gold and silver rate data, 15 free financial calculators, and daily financial news to help Indian investors make better decisions. Data sourced from MCX, IBJA, LBMA, BSE, NSE, and Agmarknet.',
             hi: 'gpaisa.in की स्थापना सत्यपाल खाखल ने की है। हम भारतीय निवेशकों को बेहतर निर्णय लेने में मदद करने के लिए सटीक सोने और चांदी के भाव, 14 मुफ्त वित्तीय कैलकुलेटर और दैनिक वित्तीय समाचार प्रदान करते हैं। डेटा MCX, IBJA, LBMA, BSE, NSE और Agmarknet से प्राप्त।'
         },
         quickLinks: { en: 'Quick Links', hi: 'त्वरित लिंक' },

@@ -3,12 +3,12 @@ import Link from 'next/link';
 
 export const metadata: Metadata = {
     title: 'Free Financial Calculators India — SIP, FD, EMI, GST, Home Loan | gpaisa.in',
-    description: 'Use 14 free financial calculators: SIP, FD, EMI, Home Loan, GST, PPF, EPF, NPS, HRA, Gratuity, CAGR, SWP, Mutual Fund & Simple Interest. Accurate results for Indian investors.',
+    description: 'Use 15 free financial calculators: SIP, FD, EMI, Home Loan, GST, PPF, EPF, NPS, HRA, Gratuity, CAGR, SWP, Mutual Fund & Simple Interest. Accurate results for Indian investors.',
     authors: [{ name: 'Satyapal Khakhal', url: 'https://www.gpaisa.in/about' }],
     alternates: { canonical: 'https://www.gpaisa.in/calculator' },
     openGraph: {
         title: 'Free Financial Calculators — SIP, FD, EMI, GST & More | gpaisa.in',
-        description: '14 free financial calculators for Indian investors. SIP, FD, EMI, Home Loan, GST, PPF, EPF, NPS, and more.',
+        description: '15 free financial calculators for Indian investors. SIP, FD, EMI, Home Loan, GST, PPF, EPF, NPS, and more.',
         url: 'https://www.gpaisa.in/calculator',
         siteName: 'gpaisa.in',
         locale: 'en_IN',
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     twitter: {
         card: 'summary_large_image',
         title: 'Free Financial Calculators India | gpaisa.in',
-        description: '14 free calculators: SIP, FD, EMI, Home Loan, GST, PPF, and more.',
+        description: '15 free calculators: SIP, FD, EMI, Home Loan, GST, PPF, and more.',
         creator: '@gpaisa_in',
         site: '@gpaisa_in',
     },
