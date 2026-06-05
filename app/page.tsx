@@ -143,8 +143,8 @@ export default async function HomePage() {
         financeArticles,
         allArticles,
     ] = await Promise.all([
-        fetchArticlesByCategory('BUSINESS', 3),
-        fetchArticlesByCategory('FINANCE', 8),
+        fetchArticlesByCategory('BUSINESS', 12),
+        fetchArticlesByCategory('FINANCE', 12),
         fetchAllArticles(15),
     ]);
 
