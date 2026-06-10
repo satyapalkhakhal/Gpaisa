@@ -243,13 +243,13 @@ export default async function HomePage() {
                         <span className="text-sm font-bold">gpaisa.in</span>
                         <span className="text-emerald-300 text-xs">India&apos;s Trusted Financial Portal</span>
                     </div>
-                    <div className="flex items-center gap-4 text-xs text-emerald-200">
+                    <div className="hidden sm:flex items-center gap-4 text-xs text-emerald-200">
                         <span>🪙 Live Gold Rates</span>
                         <span>📊 15 Calculators</span>
                         <span>📰 Financial News</span>
                         <span>✅ Updated Daily</span>
                     </div>
-                    <div className="text-xs text-emerald-300">
+                    <div className="hidden sm:block text-xs text-emerald-300">
                         By <Link href="/about" className="underline text-white font-semibold">Satyapal Khakhal</Link>
                     </div>
                 </div>
