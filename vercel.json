@@ -1,0 +1,15 @@
+{
+  "redirects": [
+    {
+      "source": "/:path((?!ads\\.txt$).*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "gpaisa.in"
+        }
+      ],
+      "destination": "https://www.gpaisa.in/:path*",
+      "permanent": true
+    }
+  ]
+}
