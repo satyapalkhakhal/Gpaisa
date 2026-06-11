@@ -91,22 +91,23 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
     // Prepare JSON-LD structured data
     const articleSchema = {
         '@context': 'https://schema.org',
-        '@type': 'NewsArticle',
+        '@type': 'Article',
         headline: article.title,
         description: article.excerpt || article.title,
-        image: article.image_url || 'https://www.gpaisa.in/icon-512.png',
+        image: article.image_url || 'https://www.gpaisa.in/android-chrome-512x512.png',
         datePublished: publishedDate.toISOString(),
         dateModified: publishedDate.toISOString(),
         author: {
             '@type': 'Person',
-            name: article.author || 'Gpaisa Desk',
+            name: 'Satyapal Khakhal',
+            url: 'https://www.gpaisa.in/about',
         },
         publisher: {
             '@type': 'Organization',
             name: 'gpaisa.in',
             logo: {
                 '@type': 'ImageObject',
-                url: 'https://www.gpaisa.in/icon-512.png',
+                url: 'https://www.gpaisa.in/android-chrome-512x512.png',
             },
         },
         mainEntityOfPage: {
