@@ -204,11 +204,11 @@ export async function fetchSilverNews(limit: number = 6): Promise<Article[]> {
 }
 
 /**
- * Fetch Loan News - articles related to home loan, loan, EMI, mortgage
+ * Fetch Loan News - articles with category IN ('BUSINESS','FINANCE') and content containing 'Home Loan'
  */
 export async function fetchLoanNews(limit: number = 6): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&or=(title.ilike.*loan*,title.ilike.*emi*,title.ilike.*mortgage*,content.ilike.*home loan*,content.ilike.*loan*,title.ilike.*housing finance*)&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&category=in.(BUSINESS,FINANCE)&content=ilike.*Home Loan*&order=published_at.desc&limit=${limit}`,
         'fetchLoanNews'
     );
     return articles.map(normalizeArticle);
