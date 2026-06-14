@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next';
-import { fetchLatestArticles } from '@/lib/supabaseApi';
+
+const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 const CITIES = [
     'delhi',
@@ -183,31 +185,48 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
     // Fetch latest articles for dynamic article pages
-    // IMPROVED: Increased from 100 to 1000 for better coverage
+    // Uses direct fetch with revalidate (not cache:'no-store') so sitemap can be statically generated
     let articlePages: MetadataRoute.Sitemap = [];
     try {
-        const articles = await fetchLatestArticles(1000); // Increased limit
-        articlePages = articles
-            .filter(article => article.slug) // Only include articles with slugs
-            .map((article) => {
-                // IMPROVED: Better lastModified logic without Date.now() fallback
-                const lastModified = article.updated_at
-                    ? new Date(article.updated_at)
-                    : article.published_at
-                        ? new Date(article.published_at)
-                        : article.publishedAt
-                            ? new Date(article.publishedAt)
-                            : new Date('2026-01-01'); // Fallback to a fixed date instead of now
+        if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+            console.error('[SITEMAP] Missing Supabase env vars');
+        } else {
+            const response = await fetch(
+                `${SUPABASE_URL}/rest/v1/articles?select=slug,published_at,updated_at&category=in.(BUSINESS,FINANCE)&order=published_at.desc&limit=1000`,
+                {
+                    headers: {
+                        'apikey': SUPABASE_ANON_KEY,
+                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+                        'Content-Type': 'application/json',
+                    },
+                    next: { revalidate: 86400 }, // Revalidate daily — compatible with static generation
+                }
+            );
 
-                return {
-                    url: `${baseUrl}/articles/${article.slug}`,
-                    lastModified,
-                    changeFrequency: 'weekly' as const,
-                    priority: 0.6,
-                };
-            });
+            if (!response.ok) {
+                console.error(`[SITEMAP] Fetch failed: HTTP ${response.status}`);
+            } else {
+                const articles = await response.json();
+                articlePages = (Array.isArray(articles) ? articles : [])
+                    .filter((article: any) => article.slug)
+                    .map((article: any) => {
+                        const lastModified = article.updated_at
+                            ? new Date(article.updated_at)
+                            : article.published_at
+                                ? new Date(article.published_at)
+                                : new Date('2026-01-01');
 
-        console.log(`Sitemap generated with ${articlePages.length} articles`);
+                        return {
+                            url: `${baseUrl}/articles/${article.slug}`,
+                            lastModified,
+                            changeFrequency: 'weekly' as const,
+                            priority: 0.6,
+                        };
+                    });
+
+                console.log(`Sitemap generated with ${articlePages.length} articles`);
+            }
+        }
     } catch (error) {
         console.error('Error fetching articles for sitemap:', error);
     }
