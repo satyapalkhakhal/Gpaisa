@@ -204,6 +204,17 @@ export async function fetchSilverNews(limit: number = 6): Promise<Article[]> {
 }
 
 /**
+ * Fetch Loan News - articles related to home loan, loan, EMI, mortgage
+ */
+export async function fetchLoanNews(limit: number = 6): Promise<Article[]> {
+    const articles = await supabaseFetch(
+        `articles?select=*&or=(title.ilike.*loan*,title.ilike.*emi*,title.ilike.*mortgage*,content.ilike.*home loan*,content.ilike.*loan*,title.ilike.*housing finance*)&order=published_at.desc&limit=${limit}`,
+        'fetchLoanNews'
+    );
+    return articles.map(normalizeArticle);
+}
+
+/**
  * Get article by slug (SEO-friendly URLs)
  */
 export async function fetchArticleBySlug(slug: string): Promise<Article | null> {

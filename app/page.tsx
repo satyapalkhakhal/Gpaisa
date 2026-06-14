@@ -7,6 +7,7 @@ import DynamicSilverRates from '@/components/DynamicSilverRates';
 import {
     fetchArticlesByCategory,
     fetchAllArticles,
+    fetchLoanNews,
     Article
 } from '@/lib/supabaseApi';
 
@@ -142,10 +143,12 @@ export default async function HomePage() {
         businessArticles,
         financeArticles,
         allArticles,
+        loanArticles,
     ] = await Promise.all([
         fetchArticlesByCategory('BUSINESS', 12),
         fetchArticlesByCategory('FINANCE', 12),
         fetchAllArticles(15),
+        fetchLoanNews(8),
     ]);
 
     // ── Top Headlines data ──
@@ -160,10 +163,10 @@ export default async function HomePage() {
     // Fallback: if dedup removed all articles, use raw finance articles so section always shows
     const financeCards = financeCardsDedupe.length > 0 ? financeCardsDedupe : financeArticles.slice(0, 4);
 
-    // De-duplicate for latest section
+    // De-duplicate loan articles against already shown content
     const usedIds = new Set<string>();
     [...allArticles.slice(0, 8), ...businessCards, ...financeCards].forEach(a => usedIds.add(a.id));
-    const latestFiltered = allArticles.filter(a => !usedIds.has(a.id)).slice(0, 5);
+    const loanCards = loanArticles.filter(a => !usedIds.has(a.id)).slice(0, 6);
 
     // JSON-LD Structured Data — combined array
     const jsonLdSchemas = [
@@ -483,18 +486,37 @@ export default async function HomePage() {
 
 
                             {/* ═══════════════════════════════════════════════
-                            SECTION ⑦: LATEST ARTICLES
+                            SECTION ⑦: HOME LOAN & LOANS
                         ═══════════════════════════════════════════════ */}
-                            {latestFiltered.length > 0 && (
-                                <section id="latest-articles">
-                                    <SectionHeader
-                                        title="Latest Articles"
-                                        accentColor="from-gray-600 to-gray-700"
-                                        href="/news"
-                                    />
-                                    <div className="bg-white rounded-xl border border-gray-200 shadow-sm p-4">
-                                        {latestFiltered.map(article => (
-                                            <LatestArticleRow key={article.id} article={article} />
+                            {loanCards.length > 0 && (
+                                <section id="loan-news" aria-labelledby="loan-heading">
+                                    <div className="flex items-center justify-between mb-3">
+                                        <div className="flex items-center gap-2.5">
+                                            <div className="w-1 h-6 rounded-full bg-gradient-to-b from-green-500 to-emerald-600" />
+                                            <h2 id="loan-heading" className="text-base sm:text-lg font-bold text-gray-900">Home Loan &amp; Loans</h2>
+                                            <span className="text-[10px] font-bold text-green-700 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">🏠 LOANS</span>
+                                        </div>
+                                        <Link href="/news" className="text-xs font-semibold text-primary-600 hover:text-primary-700 flex items-center gap-1 transition-colors">
+                                            View All <ChevronRight className="w-3.5 h-3.5" />
+                                        </Link>
+                                    </div>
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        {loanCards.map(article => (
+                                            <Link key={article.id} href={`/articles/${article.slug}`}
+                                                className="group flex gap-3 bg-white rounded-xl border border-gray-200 p-3 hover:shadow-md hover:border-green-200 transition-all duration-300">
+                                                <div className="w-20 h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden relative">
+                                                    {article.image_url ? (
+                                                        <Image src={article.image_url} alt="" fill className="object-cover" sizes="80px" />
+                                                    ) : (
+                                                        <div className="w-full h-full bg-gradient-to-br from-green-50 to-emerald-100 flex items-center justify-center text-green-500 text-[10px] font-bold">LOAN</div>
+                                                    )}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <span className="text-[10px] font-bold uppercase tracking-wider text-green-600">{article.subcategory || 'Home Loan'}</span>
+                                                    <h3 className="text-sm font-bold text-gray-900 leading-snug line-clamp-2 group-hover:text-green-600 transition-colors mt-0.5">{article.title}</h3>
+                                                    <p className="text-[10px] text-gray-400 mt-1">{article.date || new Date(article.published_at).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}</p>
+                                                </div>
+                                            </Link>
                                         ))}
                                     </div>
                                 </section>
