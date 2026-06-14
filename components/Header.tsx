@@ -20,8 +20,6 @@ export default function Header() {
         { name: t('nav', 'goldRate'), href: '/gold-rate' },
         { name: t('nav', 'silverRate'), href: '/silver-rate' },
         { name: t('nav', 'commodities'), href: '/commodities' },
-        // Agriculture temporarily hidden — will be re-enabled in the future
-        // { name: t('nav', 'agriculture'), href: '/agriculture' },
         {
             name: t('nav', 'calculators'),
             href: '/calculator',

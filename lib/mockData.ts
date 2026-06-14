@@ -1,4 +1,4 @@
-import { MarketIndex, Stock, GoldRate, Commodity, AgriculturePrice, Article, ChartDataPoint } from '@/types';
+import { MarketIndex, Stock, GoldRate, Commodity, Article, ChartDataPoint } from '@/types';
 
 // Market Indices Mock Data
 export const marketIndices: MarketIndex[] = [
@@ -63,20 +63,6 @@ export const commodities: Commodity[] = [
     { name: 'Natural Gas', symbol: 'NATURALGAS', price: 234.50, unit: '₹/mmbtu', change: -5.20, changePercent: -2.17 },
     { name: 'Copper', symbol: 'COPPER', price: 723.40, unit: '₹/kg', change: 3.20, changePercent: 0.44 },
     { name: 'Zinc', symbol: 'ZINC', price: 234.80, unit: '₹/kg', change: -1.50, changePercent: -0.63 },
-];
-
-// Agriculture Prices Mock Data
-export const agriculturePrices: AgriculturePrice[] = [
-    { id: '1', crop: 'Wheat', state: 'Punjab', mandi: 'Ludhiana', price: 2250, unit: '₹/quintal', date: '2026-01-01', change: 25 },
-    { id: '2', crop: 'Rice', state: 'Haryana', mandi: 'Karnal', price: 3450, unit: '₹/quintal', date: '2026-01-01', change: -30 },
-    { id: '3', crop: 'Sugarcane', state: 'Uttar Pradesh', mandi: 'Meerut', price: 340, unit: '₹/quintal', date: '2026-01-01', change: 5 },
-    { id: '4', crop: 'Cotton', state: 'Gujarat', mandi: 'Rajkot', price: 6780, unit: '₹/quintal', date: '2026-01-01', change: 120 },
-    { id: '5', crop: 'Soybean', state: 'Madhya Pradesh', mandi: 'Indore', price: 4560, unit: '₹/quintal', date: '2026-01-01', change: -45 },
-    { id: '6', crop: 'Maize', state: 'Karnataka', mandi: 'Bangalore', price: 1890, unit: '₹/quintal', date: '2026-01-01', change: 15 },
-    { id: '7', crop: 'Onion', state: 'Maharashtra', mandi: 'Nashik', price: 2340, unit: '₹/quintal', date: '2026-01-01', change: 180 },
-    { id: '8', crop: 'Potato', state: 'West Bengal', mandi: 'Kolkata', price: 1250, unit: '₹/quintal', date: '2026-01-01', change: -80 },
-    { id: '9', crop: 'Tomato', state: 'Andhra Pradesh', mandi: 'Guntur', price: 3200, unit: '₹/quintal', date: '2026-01-01', change: 450 },
-    { id: '10', crop: 'Turmeric', state: 'Tamil Nadu', mandi: 'Erode', price: 8900, unit: '₹/quintal', date: '2026-01-01', change: 120 },
 ];
 
 // Articles Mock Data

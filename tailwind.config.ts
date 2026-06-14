@@ -61,19 +61,6 @@ const config: Config = {
                     800: '#854d0e',
                     900: '#713f12',
                 },
-                // Agriculture Accent - #8BC34A
-                agri: {
-                    50: '#f7fee7',
-                    100: '#ecfccb',
-                    200: '#d9f99d',
-                    300: '#bef264',
-                    400: '#a3e635',
-                    500: '#8BC34A', // Agriculture/Crop accent
-                    600: '#65a30d',
-                    700: '#4d7c0f',
-                    800: '#3f6212',
-                    900: '#365314',
-                },
                 // Text Colors
                 textPrimary: '#1F2937',
                 textSecondary: '#6B7280',

@@ -75,18 +75,6 @@ export type IndianCity =
     | "Ahmedabad"
     | "Kerala";
 
-// Agriculture Types
-export interface AgriculturePrice {
-    id: string;
-    crop: string;
-    state: string;
-    mandi: string;
-    price: number;
-    unit: string;
-    date: string;
-    change?: number;
-}
-
 // Article Types
 export interface Article {
     id: string;
