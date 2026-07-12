@@ -94,7 +94,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                 title: amcData.metaTitle,
                 description: amcData.metaDescription,
                 authors: [{ name: 'Satyapal Khakhal' }],
-                robots: { index: false, follow: true },
                 openGraph: {
                     title: amcData.metaTitle,
                     description: amcData.metaDescription,
@@ -119,7 +118,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                 title: `${bank.name} SIP Calculator 2026 — Top Funds, Returns & Investment Guide | gpaisa.in`,
                 description: bank.description,
                 authors: [{ name: 'Satyapal Khakhal' }],
-                robots: { index: false, follow: true },
                 openGraph: {
                     title: `${bank.name} SIP Calculator`,
                     description: bank.description,
@@ -153,7 +151,6 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                 title: metaTitle,
                 description: metaDescription,
                 authors: [{ name: 'Satyapal Khakhal' }],
-                robots: { index: false, follow: true },
                 openGraph: {
                     title: metaTitle,
                     description: metaDescription,
