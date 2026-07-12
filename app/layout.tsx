@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Header from "@/components/Header";
-import Footer from "@/components/Footer";
-import CookieConsent from "@/components/CookieConsent";
-import MarketTicker from "@/components/MarketTicker";
+import SiteChrome from "@/components/SiteChrome";
 import { LanguageProvider } from "@/lib/i18n";
 import Script from "next/script";
 
@@ -106,13 +103,7 @@ export default function RootLayout({
             </head>
             <body className="flex flex-col min-h-screen">
                 <LanguageProvider>
-                    <Header />
-                    <MarketTicker />
-                    <main className="flex-grow">
-                        {children}
-                    </main>
-                    <Footer />
-                    <CookieConsent />
+                    <SiteChrome>{children}</SiteChrome>
                 </LanguageProvider>
             </body>
         </html>

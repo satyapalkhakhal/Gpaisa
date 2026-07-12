@@ -1,4 +1,6 @@
 // Supabase API Service for News Articles
+import { CATEGORIES } from './categories';
+
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
@@ -30,6 +32,11 @@ export interface Article {
     is_trending: boolean;
     masonry_height: string | null;
     created_at: string;
+    status?: 'draft' | 'published';
+    meta_title?: string;
+    meta_description?: string;
+    meta_keywords?: string;
+    focus_keyword?: string;
     // Legacy compat
     featured_image_url?: string;
     publishedAt?: string;
@@ -86,7 +93,7 @@ async function supabaseFetch(endpoint: string, tag?: string): Promise<any[]> {
  */
 export async function fetchAllArticles(limit: number = 50): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&category=in.(BUSINESS,FINANCE)&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&category=in.(BUSINESS,FINANCE)&status=eq.published&order=published_at.desc&limit=${limit}`,
         'fetchAllArticles'
     );
     return articles.map(normalizeArticle);
@@ -107,7 +114,7 @@ export async function fetchArticlesByCategory(
     limit: number = 10
 ): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&category=ilike.${encodeURIComponent(category)}&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&category=ilike.${encodeURIComponent(category)}&status=eq.published&order=published_at.desc&limit=${limit}`,
         `fetchByCategory(${category})`
     );
     return articles.map(normalizeArticle);
@@ -122,16 +129,8 @@ export async function fetchArticlesByCategorySlug(
 ): Promise<Article[]> {
     // Map slugs to actual category values in the DB
     const slugToCategoryMap: Record<string, string> = {
-        'news': '%',           // all categories for "news"
-        'business': 'BUSINESS',
-        'technology': 'TECHNOLOGY',
-        'travel': 'TRAVEL',
-        'world-affairs': 'WORLD',
-        'sports': 'SPORTS',
-        'movies': 'MOVIES',
-        'education': 'EDUCATION',
-        'finance': 'FINANCE',
-        'ipo': 'IPO',
+        news: '%', // all categories for "news"
+        ...Object.fromEntries(CATEGORIES.map(c => [c.slug, c.dbValue])),
     };
 
     const category = slugToCategoryMap[slug];
@@ -153,7 +152,7 @@ export async function fetchArticlesByCategorySlug(
  */
 export async function fetchFeaturedArticles(limit: number = 5): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&category=in.(BUSINESS,FINANCE)&is_featured=eq.true&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&category=in.(BUSINESS,FINANCE)&is_featured=eq.true&status=eq.published&order=published_at.desc&limit=${limit}`,
         'fetchFeatured'
     );
     return articles.map(normalizeArticle);
@@ -164,7 +163,7 @@ export async function fetchFeaturedArticles(limit: number = 5): Promise<Article[
  */
 export async function fetchTrendingArticles(limit: number = 5): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&category=in.(BUSINESS,FINANCE)&is_trending=eq.true&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&category=in.(BUSINESS,FINANCE)&is_trending=eq.true&status=eq.published&order=published_at.desc&limit=${limit}`,
         'fetchTrending'
     );
     return articles.map(normalizeArticle);
@@ -175,7 +174,7 @@ export async function fetchTrendingArticles(limit: number = 5): Promise<Article[
  */
 export async function fetchEditorsPickArticles(limit: number = 5): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&is_editors_pick=eq.true&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&is_editors_pick=eq.true&status=eq.published&order=published_at.desc&limit=${limit}`,
         'fetchEditorsPick'
     );
     return articles.map(normalizeArticle);
@@ -186,7 +185,7 @@ export async function fetchEditorsPickArticles(limit: number = 5): Promise<Artic
  */
 export async function fetchGoldNews(limit: number = 6): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&or=(content.ilike.*gold*,title.ilike.*gold*)&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&or=(content.ilike.*gold*,title.ilike.*gold*)&status=eq.published&order=published_at.desc&limit=${limit}`,
         'fetchGoldNews'
     );
     return articles.map(normalizeArticle);
@@ -197,7 +196,7 @@ export async function fetchGoldNews(limit: number = 6): Promise<Article[]> {
  */
 export async function fetchSilverNews(limit: number = 6): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&or=(content.ilike.*silver*,title.ilike.*silver*)&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&or=(content.ilike.*silver*,title.ilike.*silver*)&status=eq.published&order=published_at.desc&limit=${limit}`,
         'fetchSilverNews'
     );
     return articles.map(normalizeArticle);
@@ -208,7 +207,7 @@ export async function fetchSilverNews(limit: number = 6): Promise<Article[]> {
  */
 export async function fetchLoanNews(limit: number = 6): Promise<Article[]> {
     const articles = await supabaseFetch(
-        `articles?select=*&category=in.(BUSINESS,FINANCE)&content=ilike.*Home Loan*&order=published_at.desc&limit=${limit}`,
+        `articles?select=*&category=in.(BUSINESS,FINANCE)&content=ilike.*Home Loan*&status=eq.published&order=published_at.desc&limit=${limit}`,
         'fetchLoanNews'
     );
     return articles.map(normalizeArticle);
@@ -219,7 +218,7 @@ export async function fetchLoanNews(limit: number = 6): Promise<Article[]> {
  */
 export async function fetchArticleBySlug(slug: string): Promise<Article | null> {
     const articles = await supabaseFetch(
-        `articles?select=*&slug=eq.${encodeURIComponent(slug)}`,
+        `articles?select=*&slug=eq.${encodeURIComponent(slug)}&status=eq.published`,
         `fetchBySlug(${slug})`
     );
     return articles.length > 0 ? normalizeArticle(articles[0]) : null;
@@ -230,7 +229,7 @@ export async function fetchArticleBySlug(slug: string): Promise<Article | null> 
  */
 export async function fetchArticleById(id: string): Promise<Article | null> {
     const articles = await supabaseFetch(
-        `articles?select=*&id=eq.${id}`,
+        `articles?select=*&id=eq.${id}&status=eq.published`,
         `fetchById(${id})`
     );
     return articles.length > 0 ? normalizeArticle(articles[0]) : null;

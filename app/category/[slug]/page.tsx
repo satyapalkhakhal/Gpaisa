@@ -3,21 +3,10 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { fetchArticlesByCategorySlug } from '@/lib/supabaseApi';
+import { getCategoryBySlug } from '@/lib/categories';
 import { ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 15;
-
-const CATEGORIES: Record<string, { name: string; description: string }> = {
-    'business': { name: 'Business News', description: 'Latest business news, market updates, and corporate developments' },
-    'technology': { name: 'Technology News', description: 'Latest tech news, gadgets, AI, and software development' },
-    'travel': { name: 'Travel News', description: 'Travel guides, destinations, and tourism updates' },
-    'finance': { name: 'Finance News', description: 'Financial news, investment tips, and economic analysis' },
-    'ipo': { name: 'IPO News', description: 'Latest IPO launches, GMP, and listing updates' },
-    'world-affairs': { name: 'International News', description: 'Global news and international affairs coverage' },
-    'sports': { name: 'Sports News', description: 'Latest sports news, scores, and updates' },
-    'movies': { name: 'Movies News', description: 'Latest movie news, reviews, and entertainment updates' },
-    'education': { name: 'Education News', description: 'Education news, exam updates, and academic developments' },
-};
 
 export const revalidate = 86400; // Cache for 1 day (ISR)
 
@@ -26,7 +15,7 @@ export async function generateMetadata({ params, searchParams }: {
     searchParams: Promise<{ page?: string }>
 }): Promise<Metadata> {
     const { slug } = await params;
-    const category = CATEGORIES[slug as keyof typeof CATEGORIES];
+    const category = getCategoryBySlug(slug);
 
     if (!category) {
         return {
@@ -51,7 +40,7 @@ export default async function CategoryPage({ params, searchParams }: {
     const { page: pageParam } = await searchParams;
     const currentPage = parseInt(pageParam || '1', 10);
 
-    const category = CATEGORIES[slug as keyof typeof CATEGORIES];
+    const category = getCategoryBySlug(slug);
 
     if (!category) {
         notFound();
