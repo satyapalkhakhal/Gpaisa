@@ -1,4 +1,4 @@
-# gpaisa.in - Financial Information  
+# gpaisa.in - Financial Information   
    
 ## 🎨 Brand Colors
 
