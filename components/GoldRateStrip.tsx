@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { Coins } from 'lucide-react';
 
 interface GoldRates {
     '24K': number;
@@ -13,12 +14,6 @@ export default function GoldRateStrip() {
     const [goldRates, setGoldRates] = useState<GoldRates | null>(null);
     const [goldChange, setGoldChange] = useState<number>(0);
     const [loading, setLoading] = useState(true);
-
-    const todayDate = new Date().toLocaleDateString('en-IN', {
-        day: 'numeric',
-        month: 'short',
-        year: 'numeric',
-    });
 
     useEffect(() => {
         const fetchGoldData = async () => {
@@ -61,86 +56,55 @@ export default function GoldRateStrip() {
 
     if (loading) {
         return (
-            <div className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl border border-amber-200/70 px-4 py-3 mb-6 animate-pulse">
-                <div className="flex items-center justify-between gap-3">
-                    <div className="h-8 bg-amber-200/40 rounded w-32"></div>
-                    <div className="flex gap-6">
-                        <div className="h-8 bg-amber-200/40 rounded w-20"></div>
-                        <div className="h-8 bg-amber-200/40 rounded w-20"></div>
-                        <div className="h-8 bg-amber-200/40 rounded w-20"></div>
-                    </div>
-                    <div className="h-8 bg-amber-200/40 rounded w-28"></div>
-                </div>
+            <div className="bg-white rounded-lg border border-gray-200 px-4 py-2.5 mb-5 animate-pulse">
+                <div className="h-4 bg-gray-100 rounded w-40 mb-2"></div>
+                <div className="h-5 bg-gray-100 rounded w-full max-w-sm"></div>
             </div>
         );
     }
 
     if (!goldRates) return null;
 
-    const cities = ['Delhi', 'Mumbai', 'Chennai', 'Bangalore', 'Hyderabad', 'Kolkata', 'Pune', 'Ahmedabad'];
+    const isUp = goldChange >= 0;
 
     return (
         <section id="gold-rate-strip" aria-label="Live gold rate India"
-            className="bg-gradient-to-r from-amber-50 to-yellow-50 rounded-xl border border-amber-200/70 px-4 py-3 mb-6">
+            className="flex bg-white rounded-lg border border-gray-200 overflow-hidden mb-5">
+            <div className="w-1 bg-gradient-to-b from-amber-500 to-yellow-500 shrink-0" />
+            <div className="flex-1 min-w-0 px-3.5 py-2.5">
 
-            <div className="flex flex-wrap items-center justify-between gap-3">
-
-                {/* Left — label */}
-                <div className="flex items-center gap-2 flex-shrink-0">
-                    <span className="text-lg">🪙</span>
-                    <div>
-                        <p className="text-[10px] font-bold text-amber-700 uppercase tracking-wider">Gold Rate Today</p>
-                        <p className="text-[10px] text-amber-600">{todayDate} • India</p>
+                {/* Row 1 — identity + change + CTA */}
+                <div className="flex items-center justify-between gap-3 mb-1">
+                    <span className="flex items-center gap-1.5 text-[11px] font-bold text-gray-500 uppercase tracking-wide">
+                        <Coins className="w-3.5 h-3.5 text-amber-500" />
+                        Gold Rate Today
+                    </span>
+                    <div className="flex items-center gap-3 shrink-0">
+                        <span className={`text-xs font-bold ${isUp ? 'text-green-600' : 'text-red-600'}`}>
+                            {isUp ? '▲' : '▼'} ₹{Math.abs(goldChange)}/10g
+                        </span>
+                        <Link href="/gold-rate" className="text-xs font-bold text-amber-700 hover:text-amber-800">
+                            Full Rates →
+                        </Link>
                     </div>
                 </div>
 
-                {/* Middle — 3 purity prices */}
-                <div className="flex items-center gap-4 sm:gap-6">
+                {/* Row 2 — the three rates, one clean line */}
+                <div className="flex items-baseline gap-x-3 gap-y-1 flex-wrap">
                     {([
-                        { label: '24K', price: goldRates['24K'], unit: '/gram' },
-                        { label: '22K', price: goldRates['22K'], unit: '/gram' },
-                        { label: '18K', price: goldRates['18K'], unit: '/gram' },
-                    ] as const).map(({ label, price, unit }) => (
-                        <div key={label} className="text-center">
-                            <p className="text-[10px] font-bold text-amber-700 uppercase">{label}</p>
-                            <p className="text-sm font-bold text-gray-900">
-                                ₹{price?.toLocaleString('en-IN')}
-                                <span className="text-[9px] font-normal text-gray-400 ml-0.5">{unit}</span>
-                            </p>
-                        </div>
+                        { label: '24K', price: goldRates['24K'] },
+                        { label: '22K', price: goldRates['22K'] },
+                        { label: '18K', price: goldRates['18K'] },
+                    ] as const).map(({ label, price }, i) => (
+                        <span key={label} className="flex items-baseline gap-1">
+                            {i > 0 && <span className="text-gray-300 mr-2">·</span>}
+                            <span className="text-[11px] font-bold text-amber-700">{label}</span>
+                            <span className="text-sm font-bold text-gray-900">₹{price?.toLocaleString('en-IN')}</span>
+                        </span>
                     ))}
+                    <span className="text-[11px] text-gray-400">/gram</span>
                 </div>
-
-                {/* Right — change + CTA */}
-                <div className="flex items-center gap-3">
-                    {goldChange >= 0 ? (
-                        <span className="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-lg border border-green-100">
-                            ▲ ₹{goldChange}/10g today
-                        </span>
-                    ) : (
-                        <span className="text-xs font-bold text-red-600 bg-red-50 px-2 py-1 rounded-lg border border-red-100">
-                            ▼ ₹{Math.abs(goldChange)}/10g today
-                        </span>
-                    )}
-                    <Link href="/gold-rate"
-                        className="text-xs font-bold text-amber-700 hover:text-amber-800 bg-amber-100 hover:bg-amber-200 px-3 py-1.5 rounded-lg transition-colors border border-amber-200 flex-shrink-0">
-                        Full Rates →
-                    </Link>
-                </div>
-
             </div>
-
-            {/* City pills — quick access */}
-            <div className="flex flex-wrap gap-1.5 mt-2.5 pt-2.5 border-t border-amber-200/50">
-                {cities.map(city => (
-                    <Link key={city}
-                        href={`/gold-rate/${city.toLowerCase()}`}
-                        className="text-[10px] font-medium text-amber-700 bg-white/70 hover:bg-amber-50 border border-amber-200/60 px-2 py-0.5 rounded-full transition-colors">
-                        {city}
-                    </Link>
-                ))}
-            </div>
-
         </section>
     );
 }
