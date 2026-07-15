@@ -1,6 +1,6 @@
 # gpaisa.in - Financial Information   
    
-## 🎨 Brand Colors
+## 🎨 Brand Colors 
 
 ### Primary Green Theme 
 - **Brand Green**: `#1E7F43` - Main brand color for logo, buttons, links
