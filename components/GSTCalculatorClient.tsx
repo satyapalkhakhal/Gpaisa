@@ -95,20 +95,20 @@ export default function GSTCalculatorClient({
 
               <div className="mt-5">
                 <span className="text-[13px] font-semibold text-gray-500 block mb-2">GST Rate</span>
-                <div className="grid grid-cols-4 gap-1 bg-gray-50 p-0.5 rounded-lg border border-gray-100">
-                  {[5, 12, 18, 28].map((rate) => (
+                <div className="grid grid-cols-3 gap-1 bg-gray-50 p-0.5 rounded-lg border border-gray-100">
+                  {[5, 18, 40].map((rate) => (
                     <button key={rate} onClick={() => setGstRate(rate)} className={`sip-touch-target px-2 py-2 rounded-md text-xs font-bold transition-all ${gstRate === rate ? 'bg-white text-gray-900 shadow-sm ring-1 ring-gray-200/60' : 'text-gray-500 active:bg-gray-100/80'}`}>{rate}%</button>
                   ))}
                 </div>
+                <p className="text-[11px] text-gray-400 mt-2">GST 2.0 (effective 22 Sep 2025): the 12% and 28% slabs have been withdrawn.</p>
               </div>
 
               <div className="hidden lg:block mt-6 pt-5 border-t border-gray-100">
-                <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.12em] mb-3">📋 GST Rate Slabs</h4>
+                <h4 className="text-[11px] font-bold text-gray-400 uppercase tracking-[0.12em] mb-3">📋 GST Rate Slabs (GST 2.0)</h4>
                 <ul className="space-y-2 text-xs text-gray-600">
                   <li className="flex justify-between"><span>Essential items:</span><span className="font-semibold">5%</span></li>
-                  <li className="flex justify-between"><span>Standard goods:</span><span className="font-semibold">12%</span></li>
-                  <li className="flex justify-between"><span>Most services:</span><span className="font-semibold">18%</span></li>
-                  <li className="flex justify-between"><span>Luxury items:</span><span className="font-semibold">28%</span></li>
+                  <li className="flex justify-between"><span>Standard goods &amp; services:</span><span className="font-semibold">18%</span></li>
+                  <li className="flex justify-between"><span>De-merit / luxury items:</span><span className="font-semibold">40%</span></li>
                 </ul>
               </div>
             </div>

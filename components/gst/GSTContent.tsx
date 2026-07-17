@@ -51,8 +51,11 @@ export default function GSTContent() {
       {/* ─── 2. GST Rate Slab Table ─── */}
       <section aria-labelledby="gst-slabs-heading">
         <h2 id="gst-slabs-heading" className="text-xl md:text-2xl font-bold text-gray-900 mb-5">
-          GST Rate Slabs in India (2026)
+          GST Rate Slabs in India (GST 2.0, effective 22 Sep 2025)
         </h2>
+        <p className="text-sm text-gray-600 mb-4">
+          The GST Council&apos;s GST 2.0 reform replaced the old four-slab structure with a simpler three-slab system. The 12% and 28% slabs have been withdrawn — most items in those slabs moved to 5% or 18%, with a small set of de-merit/luxury goods moved to the new 40% slab.
+        </p>
         <div className="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm">
           <table className="w-full text-sm">
             <thead>
@@ -68,39 +71,35 @@ export default function GSTContent() {
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-gray-100 text-gray-700">0%</span>
                 </td>
                 <td className="px-4 py-3 font-medium text-gray-800">Exempt</td>
-                <td className="px-4 py-3 text-gray-600">Fresh milk, eggs, vegetables, books, newspapers</td>
+                <td className="px-4 py-3 text-gray-600">Fresh milk, eggs, vegetables, books, newspapers, individual life &amp; health insurance</td>
               </tr>
               <tr className="bg-white hover:bg-gray-50/50">
                 <td className="px-4 py-3">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-700">5%</span>
                 </td>
                 <td className="px-4 py-3 font-medium text-gray-800">Essential</td>
-                <td className="px-4 py-3 text-gray-600">Edible oil, sugar, spices, tea, coffee, coal</td>
-              </tr>
-              <tr className="bg-white hover:bg-gray-50/50">
-                <td className="px-4 py-3">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-yellow-100 text-yellow-700">12%</span>
-                </td>
-                <td className="px-4 py-3 font-medium text-gray-800">Standard</td>
-                <td className="px-4 py-3 text-gray-600">Butter, cheese, frozen meat, mobile phones, agarbatti</td>
+                <td className="px-4 py-3 text-gray-600">Edible oil, sugar, spices, tea, coffee, coal, butter, cheese, frozen meat</td>
               </tr>
               <tr className="bg-white hover:bg-gray-50/50">
                 <td className="px-4 py-3">
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-orange-100 text-orange-700">18%</span>
                 </td>
-                <td className="px-4 py-3 font-medium text-gray-800">Standard services</td>
-                <td className="px-4 py-3 text-gray-600">Most services, AC restaurants, IT services, financial services</td>
+                <td className="px-4 py-3 font-medium text-gray-800">Standard</td>
+                <td className="px-4 py-3 text-gray-600">Most services, mobile phones, AC restaurants, IT services, financial services</td>
               </tr>
               <tr className="bg-white hover:bg-gray-50/50">
                 <td className="px-4 py-3">
-                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700">28%</span>
+                  <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-700">40%</span>
                 </td>
-                <td className="px-4 py-3 font-medium text-gray-800">Luxury</td>
+                <td className="px-4 py-3 font-medium text-gray-800">De-merit / luxury</td>
                 <td className="px-4 py-3 text-gray-600">Cars, tobacco, aerated drinks, 5-star hotels, casinos</td>
               </tr>
             </tbody>
           </table>
         </div>
+        <p className="text-xs text-gray-500 mt-3">
+          Special rates outside these slabs still apply — e.g. 0.25% on rough precious stones and 3% on gold, silver, and jewellery.
+        </p>
       </section>
 
       {/* ─── 3. CGST vs SGST vs IGST ─── */}
@@ -209,11 +208,10 @@ export default function GSTContent() {
             <tbody className="divide-y divide-gray-50">
               {[
                 { amount: '₹1,000',  rate: '5%',  gst: '₹50',    cgst: '₹25',   sgst: '₹25',   total: '₹1,050' },
-                { amount: '₹1,000',  rate: '12%', gst: '₹120',   cgst: '₹60',   sgst: '₹60',   total: '₹1,120' },
                 { amount: '₹1,000',  rate: '18%', gst: '₹180',   cgst: '₹90',   sgst: '₹90',   total: '₹1,180' },
-                { amount: '₹1,000',  rate: '28%', gst: '₹280',   cgst: '₹140',  sgst: '₹140',  total: '₹1,280' },
+                { amount: '₹1,000',  rate: '40%', gst: '₹400',   cgst: '₹200',  sgst: '₹200',  total: '₹1,400' },
                 { amount: '₹10,000', rate: '18%', gst: '₹1,800', cgst: '₹900',  sgst: '₹900',  total: '₹11,800' },
-                { amount: '₹50,000', rate: '28%', gst: '₹14,000',cgst: '₹7,000',sgst: '₹7,000',total: '₹64,000' },
+                { amount: '₹50,000', rate: '40%', gst: '₹20,000',cgst: '₹10,000',sgst: '₹10,000',total: '₹70,000' },
               ].map((row, i) => (
                 <tr key={i} className="bg-white hover:bg-purple-50/30 transition-colors">
                   <td className="px-4 py-3 text-right font-medium text-gray-800">{row.amount}</td>
@@ -277,7 +275,7 @@ export default function GSTContent() {
       {/* ─── 7. Author byline + Related Calculators ─── */}
       <section className="border-t border-gray-100 pt-8">
         <p className="text-sm text-gray-500 mb-6">
-          Content by <strong className="text-gray-700">Satyapal Khakhal</strong>, Founder, gpaisa.in | Updated: May 2026
+          Content by <strong className="text-gray-700">Satyapal Khakhal</strong>, Founder, gpaisa.in | Updated for GST 2.0: July 2026
         </p>
         <div>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Related Calculators</p>

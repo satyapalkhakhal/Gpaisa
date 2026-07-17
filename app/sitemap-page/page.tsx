@@ -22,7 +22,7 @@ export default async function SitemapPage() {
     // Fetch latest articles for the sitemap
     let articles: any[] = [];
     try {
-        articles = await fetchLatestArticles(50);
+        articles = await fetchLatestArticles(50, 86400);
     } catch (error) {
         console.error('Error fetching articles for HTML sitemap:', error);
     }

@@ -22,11 +22,11 @@ function computeGSTDefaults() {
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 export const metadata: Metadata = {
   title: 'GST Calculator India 2026 — Add/Remove GST, CGST SGST IGST Breakdown | gpaisa.in',
-  description: "India's most complete GST calculator. Add or remove GST instantly. Get CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%. With rate guide, worked examples, and FAQ. Updated 2026.",
+  description: "India's most complete GST calculator. Add or remove GST instantly. Get CGST, SGST, IGST breakdown for all slabs — 5%, 18%, 40%. With rate guide, worked examples, and FAQ. Updated 2026.",
   authors: [{ name: 'Satyapal Khakhal' }],
   openGraph: {
     title: 'GST Calculator India 2026 — Add/Remove GST, CGST SGST IGST Breakdown | gpaisa.in',
-    description: "India's most complete GST calculator. Add or remove GST instantly. Get CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%.",
+    description: "India's most complete GST calculator. Add or remove GST instantly. Get CGST, SGST, IGST breakdown for all slabs — 5%, 18%, 40%.",
     type: 'website',
     url: 'https://www.gpaisa.in/calculator/gst',
     siteName: 'gpaisa.in',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'GST Calculator India 2026 — Add/Remove GST, CGST SGST IGST | gpaisa.in',
-    description: "India's most complete GST calculator. CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%. Updated 2026.",
+    description: "India's most complete GST calculator. CGST, SGST, IGST breakdown for all slabs — 5%, 18%, 40%. Updated 2026.",
     creator: '@gpaisa_in',
     images: ['/og-gst-calculator.jpg'],
   },
@@ -76,7 +76,7 @@ export default function GSTCalculatorPage() {
         '@id': 'https://www.gpaisa.in/calculator/gst#webpage',
         url: 'https://www.gpaisa.in/calculator/gst',
         name: 'GST Calculator India 2026 — Add/Remove GST, CGST SGST IGST Breakdown | gpaisa.in',
-        description: "India's most complete GST calculator. Add or remove GST instantly. Get CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%.",
+        description: "India's most complete GST calculator. Add or remove GST instantly. Get CGST, SGST, IGST breakdown for all slabs — 5%, 18%, 40%.",
         isPartOf: { '@id': 'https://www.gpaisa.in/#website' },
         author: { '@type': 'Person', name: 'Satyapal Khakhal' },
         breadcrumb: { '@id': 'https://www.gpaisa.in/calculator/gst#breadcrumb' },
@@ -101,13 +101,13 @@ export default function GSTCalculatorPage() {
         applicationCategory: 'FinanceApplication',
         operatingSystem: 'Web',
         offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' },
-        description: 'Free online GST calculator India 2026. Add or remove GST instantly with CGST, SGST, IGST breakdown for all slabs — 5%, 12%, 18%, 28%.',
+        description: 'Free online GST calculator India 2026. Add or remove GST instantly with CGST, SGST, IGST breakdown for all slabs — 5%, 18%, 40%.',
         featureList: [
           'Add GST (exclusive) calculation',
           'Remove GST (inclusive) calculation',
           'CGST and SGST breakdown',
           'IGST for interstate transactions',
-          'All GST rate slabs: 0%, 5%, 12%, 18%, 28%',
+          'All GST rate slabs: 0%, 5%, 18%, 40%',
           'Server-side rendered default results',
         ],
       },

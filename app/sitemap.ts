@@ -1,4 +1,5 @@
 import { MetadataRoute } from 'next';
+import { CATEGORIES } from '@/lib/categories';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -43,12 +44,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             url: `${baseUrl}/silver-rate`,
             lastModified: new Date(), // Silver rates update daily
             changeFrequency: 'daily',
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/markets`,
-            lastModified: new Date(), // Markets change frequently
-            changeFrequency: 'hourly',
             priority: 0.8,
         },
         {
@@ -168,6 +163,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ];
 
 
+    // Category hub pages
+    const categoryPages: MetadataRoute.Sitemap = CATEGORIES.map((c) => ({
+        url: `${baseUrl}/category/${c.slug}`,
+        lastModified: new Date(),
+        changeFrequency: 'daily',
+        priority: 0.6,
+    }));
+
     // City-specific gold rate pages
     const goldRateCityPages: MetadataRoute.Sitemap = CITIES.map((city) => ({
         url: `${baseUrl}/gold-rate/${city.toLowerCase()}`,
@@ -192,7 +195,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             console.error('[SITEMAP] Missing Supabase env vars');
         } else {
             const response = await fetch(
-                `${SUPABASE_URL}/rest/v1/articles?select=slug,published_at,updated_at&category=in.(BUSINESS,FINANCE)&order=published_at.desc&limit=1000`,
+                `${SUPABASE_URL}/rest/v1/articles?select=slug,published_at,updated_at&status=eq.published&order=published_at.desc&limit=1000`,
                 {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
@@ -233,6 +236,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     return [
         ...staticPages,
+        ...categoryPages,
         ...goldRateCityPages,
         ...silverRateCityPages,
         ...articlePages,

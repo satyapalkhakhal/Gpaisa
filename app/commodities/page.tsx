@@ -1,20 +1,18 @@
 import { Metadata } from 'next';
-import PriceCard from '@/components/PriceCard';
 import GoldHistoryTable from '@/components/GoldHistoryTable';
 import GoldCalculator from '@/components/GoldCalculator';
 import CityWiseGoldRates from '@/components/CityWiseGoldRates';
 import DynamicGoldRates from '@/components/DynamicGoldRates';
 import DynamicGoldChart from '@/components/DynamicGoldChart';
 import LastUpdatedTime from '@/components/LastUpdatedTime';
-import { commodities } from '@/lib/mockData';
-import { Coins, TrendingUp, History } from 'lucide-react';
+import { Coins, History } from 'lucide-react';
 
 export const metadata: Metadata = {
     title: 'Live Gold & Silver Rates, Commodity Prices Today | gpaisa.in',
-    description: 'Check today\'s gold rates (24K, 22K, 18K), silver prices, and other commodity rates across India. Updated in real-time.',
+    description: 'Check today\'s gold rates (24K, 22K, 18K) and silver prices across India. Updated in real-time.',
     openGraph: {
         title: 'Live Gold & Silver Rates, Commodity Prices Today',
-        description: 'Check today\'s gold rates (24K, 22K, 18K), silver prices, and other commodity rates across India. Updated in real-time.',
+        description: 'Check today\'s gold rates (24K, 22K, 18K) and silver prices across India. Updated in real-time.',
         type: 'website',
     },
     alternates: {
@@ -103,27 +101,6 @@ export default function CommoditiesPage() {
                     {/* City-Wise Gold Rates */}
                     <section className="mb-12" aria-labelledby="city-rates-heading">
                         <CityWiseGoldRates />
-                    </section>
-
-                    {/* Other Commodities */}
-                    <section aria-labelledby="other-commodities-heading">
-                        <div className="flex items-center space-x-3 mb-6">
-                            <TrendingUp className="h-7 w-7 text-primary-600" aria-hidden="true" />
-                            <h2 id="other-commodities-heading" className="text-2xl font-display font-semibold text-gray-900">Other Commodities</h2>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {commodities.map((commodity) => (
-                                <PriceCard
-                                    key={commodity.symbol}
-                                    title={commodity.name}
-                                    value={`₹${commodity.price.toLocaleString('en-IN')}`}
-                                    change={commodity.change}
-                                    changePercent={commodity.changePercent}
-                                    subtitle={commodity.unit}
-                                    variant={commodity.change >= 0 ? 'success' : 'danger'}
-                                />
-                            ))}
-                        </div>
                     </section>
 
                     {/* Information Box */}

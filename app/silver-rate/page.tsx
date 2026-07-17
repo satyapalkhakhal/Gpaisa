@@ -73,20 +73,9 @@ export default async function SilverRatePage() {
             ]
         },
         "mainEntity": {
-            "@type": "Product",
+            "@type": "FinancialProduct",
             "name": "Silver",
-            "description": "Real-time silver prices in India",
-            "image": "https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg",
-            "offers": {
-                "@type": "AggregateOffer",
-                "priceCurrency": "INR",
-                "availability": "https://schema.org/InStock",
-                "hasMerchantReturnPolicy": {
-                    "@type": "MerchantReturnPolicy",
-                    "applicableCountry": "IN",
-                    "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted"
-                }
-            }
+            "description": "Live silver rates per gram and per kg across major Indian cities"
         }
     };
 

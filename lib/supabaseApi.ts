@@ -55,7 +55,10 @@ function normalizeArticle(a: any): Article {
 }
 
 // Reusable fetch helper with proper error logging
-async function supabaseFetch(endpoint: string, tag?: string): Promise<any[]> {
+// `revalidateSeconds` matches the ISR window of the calling page (see each
+// wrapper's default below) instead of forcing `no-store`, so the CDN caching
+// already configured in next.config.mjs for these routes actually takes effect.
+async function supabaseFetch(endpoint: string, tag?: string, revalidateSeconds: number = 300): Promise<any[]> {
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
         console.error(`[SUPABASE] Cannot fetch "${tag || endpoint}" - missing env vars. URL=${!!SUPABASE_URL}, KEY=${!!SUPABASE_ANON_KEY}`);
         return [];
@@ -70,7 +73,7 @@ async function supabaseFetch(endpoint: string, tag?: string): Promise<any[]> {
                 'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
                 'Content-Type': 'application/json'
             },
-            cache: 'no-store' // Force fresh data on every request - no stale cache
+            next: { revalidate: revalidateSeconds }
         });
 
         if (!response.ok) {
@@ -91,10 +94,11 @@ async function supabaseFetch(endpoint: string, tag?: string): Promise<any[]> {
 /**
  * Fetch all articles ordered by published_at desc
  */
-export async function fetchAllArticles(limit: number = 50): Promise<Article[]> {
+export async function fetchAllArticles(limit: number = 50, revalidateSeconds: number = 300): Promise<Article[]> {
     const articles = await supabaseFetch(
         `articles?select=*&category=in.(BUSINESS,FINANCE)&status=eq.published&order=published_at.desc&limit=${limit}`,
-        'fetchAllArticles'
+        'fetchAllArticles',
+        revalidateSeconds
     );
     return articles.map(normalizeArticle);
 }
@@ -102,8 +106,8 @@ export async function fetchAllArticles(limit: number = 50): Promise<Article[]> {
 /**
  * Fetch latest articles (alias for backward compat)
  */
-export async function fetchLatestArticles(limit: number = 20): Promise<Article[]> {
-    return fetchAllArticles(limit);
+export async function fetchLatestArticles(limit: number = 20, revalidateSeconds: number = 300): Promise<Article[]> {
+    return fetchAllArticles(limit, revalidateSeconds);
 }
 
 /**
@@ -111,11 +115,13 @@ export async function fetchLatestArticles(limit: number = 20): Promise<Article[]
  */
 export async function fetchArticlesByCategory(
     category: string,
-    limit: number = 10
+    limit: number = 10,
+    revalidateSeconds: number = 300
 ): Promise<Article[]> {
     const articles = await supabaseFetch(
         `articles?select=*&category=ilike.${encodeURIComponent(category)}&status=eq.published&order=published_at.desc&limit=${limit}`,
-        `fetchByCategory(${category})`
+        `fetchByCategory(${category})`,
+        revalidateSeconds
     );
     return articles.map(normalizeArticle);
 }
@@ -125,7 +131,8 @@ export async function fetchArticlesByCategory(
  */
 export async function fetchArticlesByCategorySlug(
     slug: string,
-    limit: number = 10
+    limit: number = 10,
+    revalidateSeconds: number = 86400
 ): Promise<Article[]> {
     // Map slugs to actual category values in the DB
     const slugToCategoryMap: Record<string, string> = {
@@ -137,23 +144,24 @@ export async function fetchArticlesByCategorySlug(
 
     if (!category) {
         // Try direct match
-        return fetchArticlesByCategory(slug, limit);
+        return fetchArticlesByCategory(slug, limit, revalidateSeconds);
     }
 
     if (category === '%') {
-        return fetchLatestArticles(limit);
+        return fetchLatestArticles(limit, revalidateSeconds);
     }
 
-    return fetchArticlesByCategory(category, limit);
+    return fetchArticlesByCategory(category, limit, revalidateSeconds);
 }
 
 /**
  * Fetch featured articles
  */
-export async function fetchFeaturedArticles(limit: number = 5): Promise<Article[]> {
+export async function fetchFeaturedArticles(limit: number = 5, revalidateSeconds: number = 300): Promise<Article[]> {
     const articles = await supabaseFetch(
         `articles?select=*&category=in.(BUSINESS,FINANCE)&is_featured=eq.true&status=eq.published&order=published_at.desc&limit=${limit}`,
-        'fetchFeatured'
+        'fetchFeatured',
+        revalidateSeconds
     );
     return articles.map(normalizeArticle);
 }
@@ -161,10 +169,11 @@ export async function fetchFeaturedArticles(limit: number = 5): Promise<Article[
 /**
  * Fetch trending articles
  */
-export async function fetchTrendingArticles(limit: number = 5): Promise<Article[]> {
+export async function fetchTrendingArticles(limit: number = 5, revalidateSeconds: number = 300): Promise<Article[]> {
     const articles = await supabaseFetch(
         `articles?select=*&category=in.(BUSINESS,FINANCE)&is_trending=eq.true&status=eq.published&order=published_at.desc&limit=${limit}`,
-        'fetchTrending'
+        'fetchTrending',
+        revalidateSeconds
     );
     return articles.map(normalizeArticle);
 }
@@ -172,10 +181,11 @@ export async function fetchTrendingArticles(limit: number = 5): Promise<Article[
 /**
  * Fetch editors pick articles
  */
-export async function fetchEditorsPickArticles(limit: number = 5): Promise<Article[]> {
+export async function fetchEditorsPickArticles(limit: number = 5, revalidateSeconds: number = 300): Promise<Article[]> {
     const articles = await supabaseFetch(
         `articles?select=*&is_editors_pick=eq.true&status=eq.published&order=published_at.desc&limit=${limit}`,
-        'fetchEditorsPick'
+        'fetchEditorsPick',
+        revalidateSeconds
     );
     return articles.map(normalizeArticle);
 }
@@ -183,10 +193,11 @@ export async function fetchEditorsPickArticles(limit: number = 5): Promise<Artic
 /**
  * Fetch Gold News - articles whose content contains "gold" keyword
  */
-export async function fetchGoldNews(limit: number = 6): Promise<Article[]> {
+export async function fetchGoldNews(limit: number = 6, revalidateSeconds: number = 86400): Promise<Article[]> {
     const articles = await supabaseFetch(
         `articles?select=*&or=(content.ilike.*gold*,title.ilike.*gold*)&status=eq.published&order=published_at.desc&limit=${limit}`,
-        'fetchGoldNews'
+        'fetchGoldNews',
+        revalidateSeconds
     );
     return articles.map(normalizeArticle);
 }
@@ -194,10 +205,11 @@ export async function fetchGoldNews(limit: number = 6): Promise<Article[]> {
 /**
  * Fetch Silver News - articles whose content contains "silver" keyword
  */
-export async function fetchSilverNews(limit: number = 6): Promise<Article[]> {
+export async function fetchSilverNews(limit: number = 6, revalidateSeconds: number = 86400): Promise<Article[]> {
     const articles = await supabaseFetch(
         `articles?select=*&or=(content.ilike.*silver*,title.ilike.*silver*)&status=eq.published&order=published_at.desc&limit=${limit}`,
-        'fetchSilverNews'
+        'fetchSilverNews',
+        revalidateSeconds
     );
     return articles.map(normalizeArticle);
 }
@@ -205,10 +217,11 @@ export async function fetchSilverNews(limit: number = 6): Promise<Article[]> {
 /**
  * Fetch Loan News - articles with category IN ('BUSINESS','FINANCE') and content containing 'Home Loan'
  */
-export async function fetchLoanNews(limit: number = 6): Promise<Article[]> {
+export async function fetchLoanNews(limit: number = 6, revalidateSeconds: number = 300): Promise<Article[]> {
     const articles = await supabaseFetch(
         `articles?select=*&category=in.(BUSINESS,FINANCE)&content=ilike.*Home Loan*&status=eq.published&order=published_at.desc&limit=${limit}`,
-        'fetchLoanNews'
+        'fetchLoanNews',
+        revalidateSeconds
     );
     return articles.map(normalizeArticle);
 }
@@ -216,10 +229,11 @@ export async function fetchLoanNews(limit: number = 6): Promise<Article[]> {
 /**
  * Get article by slug (SEO-friendly URLs)
  */
-export async function fetchArticleBySlug(slug: string): Promise<Article | null> {
+export async function fetchArticleBySlug(slug: string, revalidateSeconds: number = 86400): Promise<Article | null> {
     const articles = await supabaseFetch(
         `articles?select=*&slug=eq.${encodeURIComponent(slug)}&status=eq.published`,
-        `fetchBySlug(${slug})`
+        `fetchBySlug(${slug})`,
+        revalidateSeconds
     );
     return articles.length > 0 ? normalizeArticle(articles[0]) : null;
 }
@@ -227,10 +241,11 @@ export async function fetchArticleBySlug(slug: string): Promise<Article | null> 
 /**
  * Get article by ID
  */
-export async function fetchArticleById(id: string): Promise<Article | null> {
+export async function fetchArticleById(id: string, revalidateSeconds: number = 300): Promise<Article | null> {
     const articles = await supabaseFetch(
         `articles?select=*&id=eq.${id}&status=eq.published`,
-        `fetchById(${id})`
+        `fetchById(${id})`,
+        revalidateSeconds
     );
     return articles.length > 0 ? normalizeArticle(articles[0]) : null;
 }

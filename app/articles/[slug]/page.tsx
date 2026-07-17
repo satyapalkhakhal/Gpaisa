@@ -65,10 +65,10 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
     // Fetch related articles - by same category or latest
     const [latestArticles, categoryArticles] = await Promise.all([
-        fetchLatestArticles(6),
+        fetchLatestArticles(6, 86400),
         article.category
-            ? fetchArticlesByCategory(article.category, 6)
-            : fetchLatestArticles(6)
+            ? fetchArticlesByCategory(article.category, 6, 86400)
+            : fetchLatestArticles(6, 86400)
     ]);
 
     // Filter out current article
@@ -99,7 +99,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         dateModified: publishedDate.toISOString(),
         author: {
             '@type': 'Person',
-            name: 'Satyapal Khakhal',
+            name: article.author || 'Gpaisa Desk',
             url: 'https://www.gpaisa.in/about',
         },
         publisher: {

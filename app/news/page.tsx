@@ -69,9 +69,9 @@ const NewsCard = ({ article }: { article: Article }) => (
 
 export default async function NewsPage() {
     const [allArticles, featuredArticles, trendingArticles] = await Promise.all([
-        fetchAllArticles(30),
-        fetchFeaturedArticles(3),
-        fetchTrendingArticles(6),
+        fetchAllArticles(30, 86400),
+        fetchFeaturedArticles(3, 86400),
+        fetchTrendingArticles(6, 86400),
     ]);
 
     // Get unique categories from articles

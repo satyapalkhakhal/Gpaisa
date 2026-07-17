@@ -103,6 +103,10 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
             name: `Gold Market in ${cityName}`,
             description: uniqueDescription,
         },
+        mentions: mainMarkets.map(market => ({
+            "@type": "Place",
+            name: `${market}, ${cityName}`,
+        })),
     };
 
     const breadcrumbSchema = {
@@ -123,19 +127,6 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
             name: f.question,
             acceptedAnswer: { "@type": "Answer", text: f.answer },
         })),
-    };
-
-    const localBusinessSchema = {
-        "@context": "https://schema.org",
-        "@type": "LocalBusiness",
-        name: `Gold Market - ${mainMarkets[0]}, ${cityName}`,
-        description: `Gold jewellery market in ${cityName}, ${state}. ${tagline}.`,
-        address: {
-            "@type": "PostalAddress",
-            addressLocality: cityName,
-            addressRegion: state,
-            addressCountry: "IN",
-        },
     };
 
     const articleSchema = {
@@ -160,7 +151,6 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(localBusinessSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
 
             <div className="bg-gray-50 py-8 sm:py-12">

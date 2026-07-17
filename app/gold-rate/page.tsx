@@ -76,17 +76,6 @@ export default function GoldRatePage() {
             { '@type': 'ListItem', position: 2, name: 'Gold Rate', item: 'https://www.gpaisa.in/gold-rate' },
         ],
     };
-    const productSchema = {
-        '@context': 'https://schema.org', '@type': 'Product',
-        name: '24K Gold Rate in India',
-        description: 'Live gold rates for 24K, 22K, and 18K gold across major Indian cities',
-        image: 'https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg',
-        brand: { '@type': 'Brand', name: 'Gold' },
-        offers: {
-            '@type': 'AggregateOffer', priceCurrency: 'INR', lowPrice: '6000', highPrice: '8000', offerCount: '10',
-            hasMerchantReturnPolicy: { '@type': 'MerchantReturnPolicy', applicableCountry: 'IN', returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted' },
-        },
-    };
     const faqSchema = {
         '@context': 'https://schema.org', '@type': 'FAQPage',
         mainEntity: [
@@ -146,7 +135,6 @@ export default function GoldRatePage() {
         <div className="bg-gray-50 py-12">
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }} />

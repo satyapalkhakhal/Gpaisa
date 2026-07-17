@@ -28,10 +28,10 @@ function transformArticle(article: SupabaseArticle): Article {
 
 export default async function FinancePage() {
     // Fetch business news from Supabase
-    const businessNews = await fetchArticlesByCategorySlug('business', 20);
+    const businessNews = await fetchArticlesByCategorySlug('business', 20, 600);
 
     // If no business news, fetch latest articles as fallback
-    const supabaseArticles = businessNews.length > 0 ? businessNews : await fetchLatestArticles(20);
+    const supabaseArticles = businessNews.length > 0 ? businessNews : await fetchLatestArticles(20, 600);
 
     // Transform articles to expected format
     const articles = supabaseArticles.map(transformArticle);
