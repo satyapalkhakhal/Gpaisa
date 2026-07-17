@@ -68,6 +68,17 @@ export default function SimpleInterestCalculatorPage() {
         featureList: ['SSR default results (₹24,000 interest, ₹1,24,000 total)', 'Reverse calculator tabs (Find P, R, T)', 'Year-wise interest breakdown table', 'SI vs CI comparison toggle', 'Interest rate reference table'],
       },
       {
+        '@type': 'HowTo',
+        name: 'How to Use Simple Interest Calculator',
+        description: 'Step-by-step guide to calculate simple interest',
+        step: [
+          { '@type': 'HowToStep', position: 1, name: 'Enter Principal Amount', text: 'Enter the principal amount (P) you are investing or borrowing.' },
+          { '@type': 'HowToStep', position: 2, name: 'Enter Interest Rate', text: 'Enter the annual interest rate (R) as a percentage.' },
+          { '@type': 'HowToStep', position: 3, name: 'Enter Time Period', text: 'Enter the time period (T) in years.' },
+          { '@type': 'HowToStep', position: 4, name: 'View Interest & Total', text: 'The calculator instantly shows the simple interest earned and the total amount using SI = (P×R×T)/100.' },
+        ],
+      },
+      {
         '@type': 'FAQPage',
         '@id': 'https://www.gpaisa.in/calculator/simple-interest#faq',
         mainEntity: [

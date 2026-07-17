@@ -3,8 +3,13 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { fetchArticleBySlug, fetchLatestArticles, fetchArticlesByCategory } from '@/lib/supabaseApi';
+import { DROPPED_CATEGORY_DB_VALUES } from '@/lib/categories';
 import { ChevronRight, Clock, User, Calendar, ArrowLeft, Share2, Bookmark } from 'lucide-react';
 import NewsletterSubscribe from '@/components/NewsletterSubscribe';
+
+function isDroppedCategory(category?: string | null): boolean {
+    return !!category && DROPPED_CATEGORY_DB_VALUES.includes(category.toUpperCase());
+}
 
 export const revalidate = 86400; // Cache for 1 day (ISR)
 
@@ -52,6 +57,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         alternates: {
             canonical: `https://www.gpaisa.in/articles/${article.slug}`,
         },
+        robots: isDroppedCategory(article.category)
+            ? { index: false, follow: true }
+            : { index: true, follow: true },
     };
 }
 

@@ -207,7 +207,7 @@ export default function NPSContent() {
         <div>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Related Calculators</p>
           <div className="flex flex-wrap gap-2">
-            {[['SIP Calculator', '/calculator/sip'], ['SWP Calculator', '/calculator/swp'], ['PPF Calculator', '/calculator/ppf'], ['CAGR Calculator', '/calculator/cagr']].map(([l, h]) => (
+            {[['EPF Calculator', '/calculator/epf'], ['PPF Calculator', '/calculator/ppf'], ['Gratuity Calculator', '/calculator/gratuity'], ['SWP Calculator', '/calculator/swp'], ['SIP Calculator', '/calculator/sip'], ['CAGR Calculator', '/calculator/cagr']].map(([l, h]) => (
               <Link key={h} href={h} className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-sm font-medium text-indigo-700 hover:bg-indigo-100 transition-colors">{l}</Link>
             ))}
           </div>

@@ -181,8 +181,35 @@ export default function PPFEducationalContent() {
 
       {/* Other Calculators */}
       <div className="bg-white rounded-2xl shadow-lg p-4 md:p-6 border border-gray-100">
-        <h3 className="text-lg font-bold text-gray-900 mb-3 md:mb-4">Other Calculators</h3>
+        <h3 className="text-lg font-bold text-gray-900 mb-3 md:mb-4">Retirement &amp; Savings Calculators</h3>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4">
+          <Link href="/calculator/epf" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">💼</div>
+              <div>
+                <div className="font-bold text-gray-900 text-sm">EPF Calculator</div>
+                <div className="text-xs text-gray-600">Provident fund returns</div>
+              </div>
+            </div>
+          </Link>
+          <Link href="/calculator/nps" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">🏛️</div>
+              <div>
+                <div className="font-bold text-gray-900 text-sm">NPS Calculator</div>
+                <div className="text-xs text-gray-600">National Pension System</div>
+              </div>
+            </div>
+          </Link>
+          <Link href="/calculator/gratuity" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">🎁</div>
+              <div>
+                <div className="font-bold text-gray-900 text-sm">Gratuity Calculator</div>
+                <div className="text-xs text-gray-600">Retirement gratuity amount</div>
+              </div>
+            </div>
+          </Link>
           <Link href="/calculator/sip" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
             <div className="flex items-center gap-3">
               <div className="text-2xl">📊</div>
@@ -198,15 +225,6 @@ export default function PPFEducationalContent() {
               <div>
                 <div className="font-bold text-gray-900 text-sm">SWP Calculator</div>
                 <div className="text-xs text-gray-600">Calculate SWP returns</div>
-              </div>
-            </div>
-          </Link>
-          <Link href="/calculator/emi" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
-            <div className="flex items-center gap-3">
-              <div className="text-2xl">🏠</div>
-              <div>
-                <div className="font-bold text-gray-900 text-sm">EMI Calculator</div>
-                <div className="text-xs text-gray-600">Calculate loan EMI</div>
               </div>
             </div>
           </Link>

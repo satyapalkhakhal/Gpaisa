@@ -148,9 +148,11 @@ export default function GratuityEducationalContent() {
         <h3 className="text-lg font-bold text-gray-900 mb-3 md:mb-4">Other Employment Calculators</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           {[
-            { icon: '🏠', title: 'HRA Calculator', desc: 'House rent exemption', href: '/calculator/hra' },
             { icon: '💰', title: 'EPF Calculator', desc: 'Provident fund returns', href: '/calculator/epf' },
             { icon: '🏦', title: 'NPS Calculator', desc: 'Pension scheme returns', href: '/calculator/nps' },
+            { icon: '🏛️', title: 'PPF Calculator', desc: 'Public provident fund', href: '/calculator/ppf' },
+            { icon: '💸', title: 'SWP Calculator', desc: 'Systematic withdrawal plan', href: '/calculator/swp' },
+            { icon: '🏠', title: 'HRA Calculator', desc: 'House rent exemption', href: '/calculator/hra' },
             { icon: '📊', title: 'SIP Calculator', desc: 'Mutual fund returns', href: '/calculator/sip' },
           ].map((calc) => (
             <Link key={calc.href} href={calc.href} className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-gray-50 to-blue-50 rounded-xl border border-gray-200 active:shadow-lg transition-all">

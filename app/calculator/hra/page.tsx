@@ -74,6 +74,17 @@ export default function HRACalculatorPage() {
         featureList: ['Metro/Non-metro city dropdown with clarification', 'Dual tax slab (20% & 30%) display', 'Monthly/Annual input toggle', 'Three-component breakdown with "least" highlight', 'Section 80GG guidance for self-employed', 'SSR default results'],
       },
       {
+        '@type': 'HowTo',
+        name: 'How to Use HRA Calculator',
+        description: 'Step-by-step guide to calculate your HRA tax exemption',
+        step: [
+          { '@type': 'HowToStep', position: 1, name: 'Select City Type', text: 'Choose whether you live in a metro city (50% of Basic+DA) or non-metro city (40% of Basic+DA).' },
+          { '@type': 'HowToStep', position: 2, name: 'Enter Basic Salary & DA', text: 'Enter your Basic Salary and Dearness Allowance.' },
+          { '@type': 'HowToStep', position: 3, name: 'Enter HRA Received & Rent Paid', text: 'Enter the HRA component of your salary and the actual rent you pay.' },
+          { '@type': 'HowToStep', position: 4, name: 'View Exempted Amount', text: 'The calculator shows your HRA exemption (least of the three components) and taxable HRA.' },
+        ],
+      },
+      {
         '@type': 'FAQPage',
         '@id': 'https://www.gpaisa.in/calculator/hra#faq',
         mainEntity: [

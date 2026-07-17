@@ -37,6 +37,17 @@ export default function CAGRCalculatorPage() {
                 },
             },
             {
+                '@type': 'HowTo',
+                name: 'How to Use CAGR Calculator',
+                description: 'Step-by-step guide to calculate Compound Annual Growth Rate',
+                step: [
+                    { '@type': 'HowToStep', position: 1, name: 'Enter Initial Investment', text: 'Enter the starting value of your investment.' },
+                    { '@type': 'HowToStep', position: 2, name: 'Enter Final Value', text: 'Enter the current or ending value of the investment.' },
+                    { '@type': 'HowToStep', position: 3, name: 'Set Duration', text: 'Enter the number of years between the initial and final value.' },
+                    { '@type': 'HowToStep', position: 4, name: 'View CAGR', text: 'The calculator instantly shows your Compound Annual Growth Rate as a percentage.' },
+                ],
+            },
+            {
                 '@type': 'FAQPage',
                 '@id': 'https://www.gpaisa.in/calculator/cagr#faq',
                 mainEntity: [

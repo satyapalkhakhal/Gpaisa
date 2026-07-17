@@ -18,7 +18,7 @@ export default function PrivacyPolicyPage() {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 md:p-12">
                     <h1 className="text-4xl font-bold text-gray-900 mb-4">Privacy Policy</h1>
                     <p className="text-gray-600 mb-8">
-                        <strong>Last Updated:</strong> January 7, 2026
+                        <strong>Last Updated:</strong> July 17, 2026
                     </p>
 
                     <div className="prose prose-lg max-w-none">
@@ -43,9 +43,7 @@ export default function PrivacyPolicyPage() {
                             <ul className="list-disc pl-6 mb-4 text-gray-700 space-y-2">
                                 <li>Subscribe to our newsletter</li>
                                 <li>Fill out a contact form</li>
-                                <li>Register for an account (if applicable)</li>
                                 <li>Participate in surveys or promotions</li>
-                                <li>Leave comments on our articles</li>
                             </ul>
                             <p className="text-gray-700 mb-4">
                                 This information may include:

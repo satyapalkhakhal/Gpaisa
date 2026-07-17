@@ -110,6 +110,19 @@ export default function HomeLoanCalculatorPage() {
         ],
     };
 
+    const howToSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'HowTo',
+        name: 'How to Use Home Loan EMI Calculator',
+        description: 'Step-by-step guide to calculate your home loan EMI',
+        step: [
+            { '@type': 'HowToStep', position: 1, name: 'Enter Loan Amount', text: 'Enter the total home loan amount you wish to borrow.' },
+            { '@type': 'HowToStep', position: 2, name: 'Enter Interest Rate', text: 'Enter the annual interest rate offered by your bank.' },
+            { '@type': 'HowToStep', position: 3, name: 'Set Loan Tenure', text: 'Choose the loan repayment tenure in years, typically up to 30 years.' },
+            { '@type': 'HowToStep', position: 4, name: 'View EMI & Amortization', text: 'The calculator shows your monthly EMI, total interest, and a month-wise amortization schedule with prepayment options.' },
+        ],
+    };
+
     const breadcrumbSchema = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
@@ -159,6 +172,10 @@ export default function HomeLoanCalculatorPage() {
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(howToSchema) }}
             />
             <script
                 type="application/ld+json"

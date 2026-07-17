@@ -81,6 +81,17 @@ export default function FDCalculatorPage() {
         featureList: ['Senior citizen rate (+0.50%)', 'TDS calculation (10%/20%)', 'Tax-Saving FD (80C) mode', 'All compounding frequencies', 'Bank rate comparison table', 'SSR default results'],
       },
       {
+        '@type': 'HowTo',
+        name: 'How to Use FD Calculator',
+        description: 'Step-by-step guide to calculate your Fixed Deposit maturity amount',
+        step: [
+          { '@type': 'HowToStep', position: 1, name: 'Enter Deposit Amount', text: 'Enter the amount you want to deposit as a Fixed Deposit.' },
+          { '@type': 'HowToStep', position: 2, name: 'Enter Interest Rate', text: 'Enter the annual interest rate offered by your bank.' },
+          { '@type': 'HowToStep', position: 3, name: 'Set Tenure & Compounding', text: 'Choose the deposit tenure in years and the compounding frequency (monthly/quarterly/yearly).' },
+          { '@type': 'HowToStep', position: 4, name: 'View Maturity Amount', text: 'The calculator shows your maturity amount, interest earned, and TDS impact.' },
+        ],
+      },
+      {
         '@type': 'FAQPage',
         '@id': 'https://www.gpaisa.in/calculator/fd#faq',
         mainEntity: [

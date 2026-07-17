@@ -132,6 +132,17 @@ export default function EPFCalculatorPage() {
                 ],
             },
             {
+                '@type': 'HowTo',
+                name: 'How to Use EPF Calculator',
+                description: 'Step-by-step guide to calculate your EPF maturity amount',
+                step: [
+                    { '@type': 'HowToStep', position: 1, name: 'Enter Basic Salary', text: 'Enter your current monthly Basic Salary.' },
+                    { '@type': 'HowToStep', position: 2, name: 'Set Current & Retirement Age', text: 'Enter your current age and expected retirement age.' },
+                    { '@type': 'HowToStep', position: 3, name: 'Set Annual Salary Increment', text: 'Enter your expected annual salary increment percentage.' },
+                    { '@type': 'HowToStep', position: 4, name: 'View EPF Maturity', text: 'The calculator shows your EPF maturity amount, EPS pension, and year-wise growth.' },
+                ],
+            },
+            {
                 '@type': 'FAQPage',
                 '@id': 'https://www.gpaisa.in/calculator/epf#faq',
                 mainEntity: [

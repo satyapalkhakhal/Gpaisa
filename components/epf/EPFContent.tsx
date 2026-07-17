@@ -316,9 +316,10 @@ export default function EPFContent({ first5Years }: Props) {
             {[
               { label: 'PPF Calculator', href: '/calculator/ppf' },
               { label: 'NPS Calculator', href: '/calculator/nps' },
+              { label: 'Gratuity Calculator', href: '/calculator/gratuity' },
+              { label: 'SWP Calculator', href: '/calculator/swp' },
               { label: 'SIP Calculator', href: '/calculator/sip' },
               { label: 'HRA Calculator', href: '/calculator/hra' },
-              { label: 'Income Tax Calculator', href: '/calculator/income-tax' },
             ].map((link) => (
               <a
                 key={link.href}

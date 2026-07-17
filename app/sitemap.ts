@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { CATEGORIES } from '@/lib/categories';
+import { CATEGORIES, DROPPED_CATEGORY_DB_VALUES } from '@/lib/categories';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -189,7 +189,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             console.error('[SITEMAP] Missing Supabase env vars');
         } else {
             const response = await fetch(
-                `${SUPABASE_URL}/rest/v1/articles?select=slug,published_at,updated_at&status=eq.published&order=published_at.desc&limit=1000`,
+                `${SUPABASE_URL}/rest/v1/articles?select=slug,published_at,updated_at&status=eq.published&category=not.in.(${DROPPED_CATEGORY_DB_VALUES.join(',')})&order=published_at.desc&limit=1000`,
                 {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,

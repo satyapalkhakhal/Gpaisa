@@ -9,15 +9,16 @@ export interface CategoryDef {
 
 export const CATEGORIES: CategoryDef[] = [
     { slug: 'business', dbValue: 'BUSINESS', name: 'Business News', description: 'Latest business news, market updates, and corporate developments' },
-    { slug: 'technology', dbValue: 'TECHNOLOGY', name: 'Technology News', description: 'Latest tech news, gadgets, AI, and software development' },
-    { slug: 'travel', dbValue: 'TRAVEL', name: 'Travel News', description: 'Travel guides, destinations, and tourism updates' },
     { slug: 'finance', dbValue: 'FINANCE', name: 'Finance News', description: 'Financial news, investment tips, and economic analysis' },
     { slug: 'ipo', dbValue: 'IPO', name: 'IPO News', description: 'Latest IPO launches, GMP, and listing updates' },
     { slug: 'world-affairs', dbValue: 'WORLD', name: 'International News', description: 'Global news and international affairs coverage' },
-    { slug: 'sports', dbValue: 'SPORTS', name: 'Sports News', description: 'Latest sports news, scores, and updates' },
-    { slug: 'movies', dbValue: 'MOVIES', name: 'Movies News', description: 'Latest movie news, reviews, and entertainment updates' },
-    { slug: 'education', dbValue: 'EDUCATION', name: 'Education News', description: 'Education news, exam updates, and academic developments' },
 ];
+
+// Off-topic categories dropped from a finance-authority site (2026-07-17).
+// Their category hub pages and sitemap/index entries were removed; individual
+// articles already published under these categories are set to noindex
+// rather than deleted, since the underlying content still exists in Supabase.
+export const DROPPED_CATEGORY_DB_VALUES = ['TECHNOLOGY', 'TRAVEL', 'SPORTS', 'MOVIES', 'EDUCATION'];
 
 export function getCategoryBySlug(slug: string): CategoryDef | undefined {
     return CATEGORIES.find(c => c.slug === slug);

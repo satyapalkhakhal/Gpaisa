@@ -18,7 +18,7 @@ export default function TermsPage() {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 md:p-12">
                     <h1 className="text-4xl font-bold text-gray-900 mb-4">Terms of Service</h1>
                     <p className="text-gray-600 mb-8">
-                        <strong>Last Updated:</strong> January 7, 2026
+                        <strong>Last Updated:</strong> July 17, 2026
                     </p>
 
                     <div className="prose prose-lg max-w-none">

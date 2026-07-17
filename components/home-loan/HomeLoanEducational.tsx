@@ -182,6 +182,7 @@ export default function HomeLoanEducational() {
           {[
             { icon: '📊', title: 'SIP Calculator', desc: 'Mutual fund returns', href: '/calculator/sip' },
             { icon: '🏦', title: 'EMI Calculator', desc: 'General loan EMI', href: '/calculator/emi' },
+            { icon: '🚗', title: 'Car Loan Calculator', desc: 'Car loan EMI', href: '/calculator/car-loan' },
             { icon: '💼', title: 'EPF Calculator', desc: 'Provident fund returns', href: '/calculator/epf' },
             { icon: '📈', title: 'FD Calculator', desc: 'Fixed deposit returns', href: '/calculator/fd' },
           ].map((calc) => (

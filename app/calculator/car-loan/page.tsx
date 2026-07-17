@@ -160,6 +160,18 @@ export default function CarLoanCalculatorPage() {
           "acceptedAnswer": { "@type": "Answer", "text": "For personal use vehicles, car loan interest is NOT tax deductible in India. However, if the vehicle is used for business purposes, you can claim the interest paid as a business expense under Section 37(1) of the Income Tax Act. Self-employed individuals and business owners can thus deduct car loan interest from their taxable income." }
         }
       ]
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "HowTo",
+      "name": "How to Use Car Loan EMI Calculator",
+      "description": "Step-by-step guide to calculate your car loan EMI",
+      "step": [
+        { "@type": "HowToStep", "position": 1, "name": "Enter Loan Amount", "text": "Enter the car loan amount you wish to borrow." },
+        { "@type": "HowToStep", "position": 2, "name": "Set Tenure & Down Payment", "text": "Choose your loan tenure (in years or months) and down payment percentage." },
+        { "@type": "HowToStep", "position": 3, "name": "Enter Interest Rate", "text": "Enter the annual interest rate offered by your bank." },
+        { "@type": "HowToStep", "position": 4, "name": "View EMI & Amortization", "text": "The calculator shows your monthly EMI, total interest, payoff date, and amortization schedule." }
+      ]
     }
   ];
 

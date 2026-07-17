@@ -37,6 +37,17 @@ export default function GratuityCalculatorPage() {
                 },
             },
             {
+                '@type': 'HowTo',
+                name: 'How to Use Gratuity Calculator',
+                description: 'Step-by-step guide to calculate your gratuity amount',
+                step: [
+                    { '@type': 'HowToStep', position: 1, name: 'Enter Last Drawn Salary', text: 'Enter your last drawn Basic Salary + Dearness Allowance (DA).' },
+                    { '@type': 'HowToStep', position: 2, name: 'Enter Years of Service', text: 'Enter the total number of years you have worked continuously at the organisation.' },
+                    { '@type': 'HowToStep', position: 3, name: 'Adjust for Extra Months', text: 'Add any extra months served beyond full years — rounded up if over 6 months.' },
+                    { '@type': 'HowToStep', position: 4, name: 'View Gratuity Amount', text: 'The calculator instantly shows your gratuity amount as per the Payment of Gratuity Act, 1972.' },
+                ],
+            },
+            {
                 '@type': 'FAQPage',
                 '@id': 'https://www.gpaisa.in/calculator/gratuity#faq',
                 mainEntity: [

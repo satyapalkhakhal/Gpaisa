@@ -189,6 +189,15 @@ export default function EMIEducationalContent() {
               </div>
             </div>
           </Link>
+          <Link href="/calculator/car-loan" className="sip-touch-target block p-4 min-h-[56px] bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl border border-green-200 active:shadow-lg transition-all">
+            <div className="flex items-center gap-3">
+              <div className="text-2xl">🚗</div>
+              <div>
+                <div className="font-bold text-gray-900 text-sm">Car Loan</div>
+                <div className="text-xs text-gray-600">Car loan EMI</div>
+              </div>
+            </div>
+          </Link>
         </div>
       </div>
 

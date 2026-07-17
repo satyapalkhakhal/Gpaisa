@@ -248,9 +248,11 @@ export default function SWPContent({ first5Years }: { first5Years?: YearRow[] })
           <p className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-2">Related Calculators</p>
           <div className="flex flex-wrap gap-2">
             {[
-              { label: 'SIP Calculator', href: '/calculator/sip' },
               { label: 'PPF Calculator', href: '/calculator/ppf' },
-              { label: 'Home Loan Calculator', href: '/calculator/home-loan' },
+              { label: 'EPF Calculator', href: '/calculator/epf' },
+              { label: 'NPS Calculator', href: '/calculator/nps' },
+              { label: 'Gratuity Calculator', href: '/calculator/gratuity' },
+              { label: 'SIP Calculator', href: '/calculator/sip' },
               { label: 'FD Calculator', href: '/calculator/fd' },
             ].map((link) => (
               <a

@@ -90,6 +90,17 @@ export default function NPSCalculatorPage() {
         ],
       },
       {
+        '@type': 'HowTo',
+        name: 'How to Use NPS Calculator',
+        description: 'Step-by-step guide to calculate your NPS retirement corpus and pension',
+        step: [
+          { '@type': 'HowToStep', position: 1, name: 'Enter Monthly Contribution', text: 'Enter your own monthly contribution to your NPS Tier 1 account.' },
+          { '@type': 'HowToStep', position: 2, name: 'Set Current & Retirement Age', text: 'Enter your current age and the age at which you plan to retire.' },
+          { '@type': 'HowToStep', position: 3, name: 'Set Expected Return & Annuity Rate', text: 'Choose your expected annual return and the annuity rate for pension calculation.' },
+          { '@type': 'HowToStep', position: 4, name: 'View Corpus & Pension', text: 'The calculator shows your retirement corpus, lump sum, and estimated monthly pension.' },
+        ],
+      },
+      {
         '@type': 'FAQPage',
         '@id': 'https://www.gpaisa.in/calculator/nps#faq',
         mainEntity: [

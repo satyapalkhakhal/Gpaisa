@@ -112,6 +112,19 @@ export default function GSTCalculatorPage() {
         ],
       },
 
+      // ── HowTo
+      {
+        '@type': 'HowTo',
+        name: 'How to Use GST Calculator',
+        description: 'Step-by-step guide to add or remove GST from an amount',
+        step: [
+          { '@type': 'HowToStep', position: 1, name: 'Choose Add or Remove GST', text: 'Select "Add GST" to calculate GST on a base amount, or "Remove GST" to extract the base price from a GST-inclusive amount.' },
+          { '@type': 'HowToStep', position: 2, name: 'Enter Amount', text: 'Enter the amount before or after GST, depending on the mode selected.' },
+          { '@type': 'HowToStep', position: 3, name: 'Select GST Rate', text: 'Choose the applicable GST rate — 5%, 18%, or 40% under GST 2.0.' },
+          { '@type': 'HowToStep', position: 4, name: 'View CGST/SGST Breakdown', text: 'The calculator instantly shows the CGST, SGST, total GST, and final amount.' },
+        ],
+      },
+
       // ── FAQPage
       {
         '@type': 'FAQPage',

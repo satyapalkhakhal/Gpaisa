@@ -68,6 +68,17 @@ export default function MutualFundCalculatorPage() {
         featureList: ['SSR default results (SIP ₹10K → ₹23,23,391 in 10yr)', 'Fund type presets (Debt/Hybrid/Equity/ELSS)', 'Year-wise growth table', 'SIP vs Lumpsum comparison toggle', 'Absolute return % display', 'Tax guide for equity and debt funds 2026'],
       },
       {
+        '@type': 'HowTo',
+        name: 'How to Use Mutual Fund Calculator',
+        description: 'Step-by-step guide to calculate SIP or lumpsum mutual fund returns',
+        step: [
+          { '@type': 'HowToStep', position: 1, name: 'Choose SIP or Lumpsum', text: 'Select SIP for monthly investments or Lumpsum for a one-time investment.' },
+          { '@type': 'HowToStep', position: 2, name: 'Enter Investment Amount', text: 'Enter your monthly SIP amount or one-time lumpsum amount.' },
+          { '@type': 'HowToStep', position: 3, name: 'Set Expected Return & Duration', text: 'Choose the expected annual return rate (or a fund-type preset) and investment time period.' },
+          { '@type': 'HowToStep', position: 4, name: 'View Returns', text: 'The calculator shows your total invested amount, estimated returns, and maturity value with a year-wise growth table.' },
+        ],
+      },
+      {
         '@type': 'FAQPage',
         '@id': 'https://www.gpaisa.in/calculator/mutual-fund#faq',
         mainEntity: [

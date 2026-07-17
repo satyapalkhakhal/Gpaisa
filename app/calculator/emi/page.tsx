@@ -76,6 +76,17 @@ export default function EMICalculatorPage() {
                 description: 'Calculate EMI for home loan, car loan, personal loan with amortization schedule',
             },
             {
+                '@type': 'HowTo',
+                name: 'How to Use EMI Calculator',
+                description: 'Step-by-step guide to calculate your loan EMI',
+                step: [
+                    { '@type': 'HowToStep', position: 1, name: 'Enter Loan Amount', text: 'Enter the total loan amount you wish to borrow.' },
+                    { '@type': 'HowToStep', position: 2, name: 'Enter Interest Rate', text: 'Enter the annual interest rate offered by your lender.' },
+                    { '@type': 'HowToStep', position: 3, name: 'Set Loan Tenure', text: 'Choose the loan repayment tenure in years or months.' },
+                    { '@type': 'HowToStep', position: 4, name: 'View EMI & Amortization', text: 'The calculator shows your monthly EMI, total interest payable, and a full amortization schedule.' },
+                ],
+            },
+            {
                 '@type': 'FAQPage',
                 mainEntity: [
                     {
