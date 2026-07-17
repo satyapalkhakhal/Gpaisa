@@ -7,7 +7,7 @@
 - **CTA Green**: `#2DBE60` - Call-to-action buttons and highlights 
 - **Success Green**: `#16A34A` - Positive price changes, gains
 - **Danger Red**: `#DC2626` - Negative price changes, losses
-- **Gold Accent**: `#D4AF37` - Gold rates and precious metals
+- **Gold Accent**: `#D4AF37` - Gold rates and precious metals 
 - **Agriculture Green**: `#8BC34A` - Agriculture and farming sections
 
 ## 🚀 Features
