@@ -6,6 +6,8 @@ export const metadata: Metadata = {
     title: 'PPF Calculator Online - Calculate Public Provident Fund Returns & Maturity | Gpaisa',
     description: 'Free PPF Calculator to calculate Public Provident Fund returns, maturity amount, and interest. Plan your PPF investment with our online PPF calculator. Get accurate projections for your wealth creation journey.',
 
+    authors: [{ name: 'Satyapal Khakhal' }],
+
     openGraph: {
         title: 'PPF Calculator - Calculate Public Provident Fund Returns | Gpaisa',
         description: 'Plan your PPF investments with our advanced calculator. Calculate maturity amount, interest, and visualize your wealth growth over 15 years.',

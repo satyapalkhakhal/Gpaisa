@@ -10,11 +10,22 @@ import GoldPriceHistoryChart from '@/components/GoldPriceHistoryChart';
 import GoldNewsSection from '@/components/GoldNewsSection';
 import { MarketInsight, DecisionBlock, InternalLinks, GoldFAQ } from '@/components/GoldDashboardSections';
 
-export default function GoldRatePageClient({ todayDate }: { todayDate: string }) {
+interface GoldRatePageClientProps {
+    todayDate: string;
+    initialHeroData?: {
+        price24k10g: number;
+        change: number;
+        changePercent: number;
+        trend: 'Bullish' | 'Bearish' | 'Neutral';
+        lastUpdated: string;
+    } | null;
+}
+
+export default function GoldRatePageClient({ todayDate, initialHeroData = null }: GoldRatePageClientProps) {
     return (
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {/* SECTION 1: Hero — Live Price Above the Fold */}
-            <GoldDashboardHero todayDate={todayDate} />
+            <GoldDashboardHero todayDate={todayDate} initialData={initialHeroData} />
 
             {/* SECTION 2: Gold Price Table — All Purities with Gram/Tola */}
             <GoldPriceTable />

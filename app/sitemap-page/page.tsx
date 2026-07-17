@@ -67,7 +67,7 @@ export default async function SitemapPage() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/finance" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                <Link href="/category/business" className="text-primary-600 hover:text-primary-700 hover:underline">
                                     Finance
                                 </Link>
                             </li>

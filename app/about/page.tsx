@@ -20,8 +20,36 @@ export const metadata: Metadata = {
 export const dynamic = 'force-static'; // Fully static page, cached permanently
 
 export default function AboutPage() {
+    const personSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        '@id': 'https://www.gpaisa.in/about#founder',
+        name: 'Satyapal Khakhal',
+        jobTitle: 'Founder & Financial Content Author',
+        url: 'https://www.gpaisa.in/about',
+        image: 'https://res.cloudinary.com/dpqtibvzn/image/upload/v1779511268/thinkscope/merzsltgiiep9ebljs6d.png',
+        worksFor: {
+            '@type': 'Organization',
+            name: 'gpaisa.in',
+            url: 'https://www.gpaisa.in',
+        },
+        description: 'Satyapal Khakhal is the founder of gpaisa.in and writes about personal finance, gold prices, investment trends, credit cards, and financial tools for Indian readers.',
+    };
+
+    const aboutPageSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'AboutPage',
+        name: 'About gpaisa.in',
+        url: 'https://www.gpaisa.in/about',
+        description: "Learn about gpaisa.in - India's leading financial information portal providing real-time gold rates, silver prices, market updates, and expert financial insights.",
+        mainEntity: { '@id': 'https://www.gpaisa.in/about#founder' },
+        isPartOf: { '@type': 'WebSite', name: 'gpaisa.in', url: 'https://www.gpaisa.in' },
+    };
+
     return (
         <div className="bg-gray-50 py-12">
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(aboutPageSchema) }} />
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="text-center mb-12">

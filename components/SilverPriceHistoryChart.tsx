@@ -240,7 +240,15 @@ export default function SilverPriceHistoryChart({ cityName }: SilverPriceHistory
                     <p className="text-xs text-gray-500 leading-relaxed">
                         <strong>Data Source:</strong> RBI Handbook of Statistics, IBJA, and MCX historical records.
                         Prices reflect average annual silver rate per Kg in INR.
-                        Past performance is not indicative of future returns. Silver prices are subject to market risks.
+                        Past performance is not indicative of future returns. Silver prices are subject to market risks.{' '}
+                        <a
+                            href="/silver_prices_india_1981_2026.csv"
+                            download
+                            className="text-slate-700 font-semibold underline hover:text-slate-900"
+                        >
+                            Download the full 1981–2026 dataset (CSV)
+                        </a>
+                        .
                     </p>
                 </div>
             </div>

@@ -41,7 +41,7 @@ export default function Header() {
                 { name: t('calculators', 'carLoanCalculator'), href: '/calculator/car-loan' },
             ]
         },
-        { name: t('nav', 'personalFinance'), href: '/finance' },
+        { name: t('nav', 'personalFinance'), href: '/category/business' },
         { name: t('nav', 'news'), href: '/news' },
     ];
 

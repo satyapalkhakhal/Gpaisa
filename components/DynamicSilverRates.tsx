@@ -4,11 +4,19 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 
+interface SilverRateData {
+    price: number;
+    change: number;
+    changePercent: number;
+}
+
 interface DynamicSilverRatesProps {
     symbol?: string; // Default 'XAG'
     city?: string;
     simpleView?: boolean;
     displayWeight?: number; // Weight in grams to display in simple view
+    initialRateData?: SilverRateData | null;
+    initialLastUpdated?: string | null;
 }
 
 /** Format a number as Indian currency without decimals */
@@ -30,11 +38,18 @@ function formatTimestamp(date: Date): string {
     return `${day} ${month} ${year}, ${time} IST`;
 }
 
-export default function DynamicSilverRates({ symbol = 'XAG', city = 'National', simpleView = false, displayWeight = 1 }: DynamicSilverRatesProps) {
-    const [rateData, setRateData] = useState<{ price: number; change: number; changePercent: number } | null>(null);
-    const [loading, setLoading] = useState(true);
+export default function DynamicSilverRates({
+    symbol = 'XAG',
+    city = 'National',
+    simpleView = false,
+    displayWeight = 1,
+    initialRateData = null,
+    initialLastUpdated = null,
+}: DynamicSilverRatesProps) {
+    const [rateData, setRateData] = useState<SilverRateData | null>(initialRateData);
+    const [loading, setLoading] = useState(!initialRateData);
     const [error, setError] = useState<string | null>(null);
-    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(initialLastUpdated ? new Date(initialLastUpdated) : null);
 
     useEffect(() => {
         const fetchRate = async () => {

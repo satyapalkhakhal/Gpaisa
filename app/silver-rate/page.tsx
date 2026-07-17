@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { fetchSilverCities } from '@/lib/angelOneApi';
+import { fetchSilverCities, fetchSilverRateData } from '@/lib/angelOneApi';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
 import SilverHistoryTable from '@/components/SilverHistoryTable';
 import SilverPriceHistoryChart from '@/components/SilverPriceHistoryChart';
@@ -56,6 +56,7 @@ export const revalidate = 86400; // Cache for 1 day (ISR)
 
 export default async function SilverRatePage() {
     const cities = await fetchSilverCities();
+    const silverRateData = await fetchSilverRateData('XAG');
 
     const structuredData = {
         "@context": "https://schema.org",
@@ -160,7 +161,7 @@ export default async function SilverRatePage() {
                     <h2 className="text-2xl font-display font-semibold text-gray-900 mb-6 text-center">
                         Current Silver Rates
                     </h2>
-                    <DynamicSilverRates />
+                    <DynamicSilverRates initialRateData={silverRateData} initialLastUpdated={silverRateData ? new Date().toISOString() : null} />
                 </section>
 
                 {/* 📅 Silver Rate History - Last 10 Days */}

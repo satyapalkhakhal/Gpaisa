@@ -94,17 +94,32 @@ export function InternalLinks() {
 export function DownloadSection() {
     return (
         <div className="bg-gradient-to-r from-gray-900 to-gray-800 rounded-2xl p-6 sm:p-8 text-white text-center">
-            <h3 className="text-xl sm:text-2xl font-display font-bold mb-3">📥 Download Gold vs Silver Price Chart</h3>
+            <h3 className="text-xl sm:text-2xl font-display font-bold mb-3">📥 Download Historical Gold &amp; Silver Price Data</h3>
             <p className="text-gray-300 text-sm mb-5 max-w-xl mx-auto">
-                Save this 10-year gold vs silver price comparison chart for your research, portfolio analysis, or financial planning.
+                Get the full historical dataset behind this comparison for your own research, portfolio analysis, or financial planning.
             </p>
-            <button
-                onClick={() => window.print()}
-                className="inline-flex items-center gap-2 bg-gold-600 hover:bg-gold-500 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
-            >
-                🖨️ Print / Save as PDF
-            </button>
-            <p className="text-gray-500 text-xs mt-3">Use your browser's print dialog to save as PDF</p>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+                <a
+                    href="/gold_prices_india_1964_2026.csv"
+                    download
+                    className="inline-flex items-center gap-2 bg-gold-600 hover:bg-gold-500 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+                >
+                    📈 Gold Prices 1964–2026 (CSV)
+                </a>
+                <a
+                    href="/silver_prices_india_1981_2026.csv"
+                    download
+                    className="inline-flex items-center gap-2 bg-gray-600 hover:bg-gray-500 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+                >
+                    📉 Silver Prices 1981–2026 (CSV)
+                </a>
+                <button
+                    onClick={() => window.print()}
+                    className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-xl font-semibold transition-all duration-200 border border-white/20"
+                >
+                    🖨️ Print / Save Chart as PDF
+                </button>
+            </div>
         </div>
     );
 }

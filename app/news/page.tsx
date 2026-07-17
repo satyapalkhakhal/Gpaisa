@@ -77,8 +77,18 @@ export default async function NewsPage() {
     // Get unique categories from articles
     const categories = [...new Set(allArticles.map(a => a.category))];
 
+    const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.gpaisa.in' },
+            { '@type': 'ListItem', position: 2, name: 'News', item: 'https://www.gpaisa.in/news' },
+        ],
+    };
+
     return (
         <div className="bg-gray-50 py-8 sm:py-12">
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
                 {/* Page Header */}

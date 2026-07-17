@@ -13,6 +13,7 @@ import {
     Article
 } from '@/lib/supabaseApi';
 import { fetchMarketIndices } from '@/lib/indicesApi';
+import { fetchSilverRateData } from '@/lib/angelOneApi';
 
 export const metadata: Metadata = {
     title: "gpaisa.in — Live Gold Rates, Financial Calculators & Market Data India",
@@ -93,7 +94,7 @@ const DenseRow = ({ article, accent }: { article: Article; accent: Accent }) => 
     <Link href={`/articles/${article.slug}`} className="group flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50/70 transition-colors">
         <div className="w-14 h-11 bg-gray-100 rounded-md shrink-0 overflow-hidden relative">
             {article.image_url ? (
-                <Image src={article.image_url} alt="" fill className="object-cover" sizes="56px" />
+                <Image src={article.image_url} alt={article.title} fill className="object-cover" sizes="56px" />
             ) : (
                 <div className={`w-full h-full flex items-center justify-center text-[9px] font-bold ${ACCENT[accent].tag}`}>{article.category?.slice(0, 3)}</div>
             )}
@@ -149,6 +150,7 @@ export default async function HomePage() {
         loanArticles,
         trendingArticles,
         marketIndices,
+        silverRateData,
     ] = await Promise.all([
         fetchArticlesByCategory('BUSINESS', 12),
         fetchArticlesByCategory('FINANCE', 12),
@@ -157,6 +159,7 @@ export default async function HomePage() {
         fetchLoanNews(8),
         fetchTrendingArticles(5),
         fetchMarketIndices().catch(() => []),
+        fetchSilverRateData('XAG').catch(() => null),
     ]);
 
     const featuredArticle = allArticles[0] || null;
@@ -172,9 +175,10 @@ export default async function HomePage() {
     const loanCards = loanArticles.filter(a => !usedIds.has(a.id)).slice(0, 5);
     const trendingCards = trendingArticles.filter(a => !usedIds.has(a.id)).slice(0, 5);
 
-    const jsonLdSchemas = [
+    const jsonLdSchemas = {
+        '@context': 'https://schema.org',
+        '@graph': [
         {
-            '@context': 'https://schema.org',
             '@type': 'WebSite',
             '@id': 'https://www.gpaisa.in/#website',
             'url': 'https://www.gpaisa.in',
@@ -198,7 +202,6 @@ export default async function HomePage() {
             }
         },
         {
-            '@context': 'https://schema.org',
             '@type': 'WebPage',
             '@id': 'https://www.gpaisa.in/#webpage',
             'url': 'https://www.gpaisa.in',
@@ -211,7 +214,6 @@ export default async function HomePage() {
             'dateModified': new Date().toISOString().split('T')[0]
         },
         {
-            '@context': 'https://schema.org',
             '@type': 'ItemList',
             'name': 'Financial Calculators — gpaisa.in',
             'description': 'Free financial calculators for Indian investors',
@@ -234,7 +236,8 @@ export default async function HomePage() {
                 { '@type': 'ListItem', 'position': 15, 'name': 'Car Loan Calculator', 'url': 'https://www.gpaisa.in/calculator/car-loan' },
             ]
         }
-    ];
+        ]
+    };
 
     return (
         <>
@@ -260,6 +263,11 @@ export default async function HomePage() {
             <div className="bg-gray-50 text-gray-800 font-sans min-h-screen">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
 
+                    {/* Page H1 — unconditional, matches the page's <title> */}
+                    <h1 className="text-sm sm:text-base font-semibold text-gray-500 mb-3">
+                        Live Gold Rates, Financial Calculators &amp; Market Data for India
+                    </h1>
+
                     {/* ② GOLD RATE STRIP */}
                     <div className="mb-5">
                         <GoldRateStrip />
@@ -270,7 +278,7 @@ export default async function HomePage() {
                         <section className="mb-5">
                             <div className="flex items-center gap-2.5 mb-3">
                                 <div className="w-1 h-6 rounded-full bg-gradient-to-b from-red-500 to-rose-600" />
-                                <h1 className="text-base sm:text-lg font-bold text-gray-900">Top Headlines</h1>
+                                <h2 className="text-base sm:text-lg font-bold text-gray-900">Top Headlines</h2>
                                 <span className="flex items-center gap-1 bg-red-50 text-red-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-red-100">
                                     <span className="relative flex h-1.5 w-1.5">
                                         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
@@ -329,7 +337,7 @@ export default async function HomePage() {
 
                             <NewsPanel title="IPO News" accent="violet" href="/category/ipo" badge="IPO" articles={ipoArticles} />
 
-                            <NewsPanel title="Credit Card &amp; Finance" accent="blue" href="/finance" articles={financeCards} />
+                            <NewsPanel title="Credit Card &amp; Finance" accent="blue" href="/category/finance" articles={financeCards} />
 
                             <NewsPanel title="Home Loan &amp; Loans" accent="green" href="/news" articles={loanCards} />
 
@@ -376,7 +384,7 @@ export default async function HomePage() {
                                     <span className="bg-white/20 text-white text-[9px] font-bold px-2 py-0.5 rounded-full">LIVE</span>
                                 </div>
                                 <div className="p-3">
-                                    <DynamicSilverRates simpleView={true} displayWeight={1000} />
+                                    <DynamicSilverRates simpleView={true} displayWeight={1000} initialRateData={silverRateData} initialLastUpdated={silverRateData ? new Date().toISOString() : null} />
                                     <Link href="/silver-rate" className="mt-2 block text-center text-[11px] font-bold text-gray-600 uppercase hover:underline">
                                         View Full Silver Rates →
                                     </Link>

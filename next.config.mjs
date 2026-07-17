@@ -1,5 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    async redirects() {
+        return [
+            {
+                // /finance rendered the same BUSINESS-category article feed as /category/business
+                // under a different title, with no unique content of its own.
+                source: '/finance',
+                destination: '/category/business',
+                permanent: true,
+            },
+        ];
+    },
     images: {
         remotePatterns: [
             {

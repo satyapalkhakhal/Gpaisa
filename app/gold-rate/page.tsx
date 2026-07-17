@@ -1,6 +1,37 @@
 import { Metadata } from 'next';
 import GoldRatePageClient from '@/components/GoldRatePageClient';
 import { getTodayIST } from '@/lib/dateUtils';
+import { fetchGoldHistory } from '@/lib/angelOneApi';
+
+function formatHeroTime(d: Date): string {
+    return d.toLocaleString('en-IN', {
+        day: 'numeric', month: 'short', year: 'numeric',
+        hour: 'numeric', minute: '2-digit', hour12: true,
+        timeZone: 'Asia/Kolkata',
+    }) + ' IST';
+}
+
+async function fetchGoldHeroData() {
+    const history = await fetchGoldHistory('India', '24k');
+    if (!history?.success || !history.data || history.data.length < 2) {
+        return null;
+    }
+    const today = history.data[0];
+    const yesterday = history.data[1];
+    const rate = parseFloat(today.rate);
+    const prevRate = parseFloat(yesterday.rate);
+    const diff = rate - prevRate;
+    const pct = prevRate > 0 ? (diff / prevRate) * 100 : 0;
+    const trend: 'Bullish' | 'Bearish' | 'Neutral' =
+        pct > 0.1 ? 'Bullish' : pct < -0.1 ? 'Bearish' : 'Neutral';
+    return {
+        price24k10g: rate,
+        change: diff,
+        changePercent: pct,
+        trend,
+        lastUpdated: formatHeroTime(new Date()),
+    };
+}
 
 export async function generateMetadata(): Promise<Metadata> {
     const todayDate = getTodayIST();
@@ -46,8 +77,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export const revalidate = 86400; // Cache for 1 day (ISR) - static content is cached
 
-export default function GoldRatePage() {
+export default async function GoldRatePage() {
     const todayDate = getTodayIST();
+    const heroData = await fetchGoldHeroData();
 
     const webPageSchema = {
         '@context': 'https://schema.org',
@@ -138,7 +170,7 @@ export default function GoldRatePage() {
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }} />
-            <GoldRatePageClient todayDate={todayDate} />
+            <GoldRatePageClient todayDate={todayDate} initialHeroData={heroData} />
         </div>
     );
 }

@@ -15,6 +15,8 @@ export async function generateMetadata({ params, searchParams }: {
     searchParams: Promise<{ page?: string }>
 }): Promise<Metadata> {
     const { slug } = await params;
+    const { page: pageParam } = await searchParams;
+    const currentPage = parseInt(pageParam || '1', 10);
     const category = getCategoryBySlug(slug);
 
     if (!category) {
@@ -23,11 +25,15 @@ export async function generateMetadata({ params, searchParams }: {
         };
     }
 
+    const canonicalUrl = currentPage > 1
+        ? `https://www.gpaisa.in/category/${slug}?page=${currentPage}`
+        : `https://www.gpaisa.in/category/${slug}`;
+
     return {
-        title: `${category.name} | gpaisa.in`,
+        title: currentPage > 1 ? `${category.name} — Page ${currentPage} | gpaisa.in` : `${category.name} | gpaisa.in`,
         description: category.description,
         alternates: {
-            canonical: `https://www.gpaisa.in/category/${slug}`
+            canonical: canonicalUrl
         }
     };
 }
@@ -56,8 +62,18 @@ export default async function CategoryPage({ params, searchParams }: {
     const endIndex = startIndex + ITEMS_PER_PAGE;
     const articles = allArticles.slice(startIndex, endIndex);
 
+    const breadcrumbSchema = {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: [
+            { '@type': 'ListItem', position: 1, name: 'Home', item: 'https://www.gpaisa.in' },
+            { '@type': 'ListItem', position: 2, name: category.name, item: `https://www.gpaisa.in/category/${slug}` },
+        ],
+    };
+
     return (
         <div className="bg-gray-50 py-12">
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 {/* Breadcrumb */}
                 <nav className="mb-6" aria-label="Breadcrumb">

@@ -24,9 +24,14 @@ function formatTime(d: Date): string {
     }) + ' IST';
 }
 
-export default function GoldDashboardHero({ todayDate }: { todayDate: string }) {
-    const [data, setData] = useState<HeroData | null>(null);
-    const [loading, setLoading] = useState(true);
+interface GoldDashboardHeroProps {
+    todayDate: string;
+    initialData?: HeroData | null;
+}
+
+export default function GoldDashboardHero({ todayDate, initialData = null }: GoldDashboardHeroProps) {
+    const [data, setData] = useState<HeroData | null>(initialData);
+    const [loading, setLoading] = useState(!initialData);
 
     useEffect(() => {
         (async () => {

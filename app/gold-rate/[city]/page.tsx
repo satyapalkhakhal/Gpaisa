@@ -10,6 +10,7 @@ import { Coins, MapPin, Calculator, TrendingUp, ShoppingBag, Landmark, BookOpen,
 import Link from 'next/link';
 import { getCityGoldData, CITY_GOLD_DATA } from '@/lib/cityGoldData';
 import { getTodayIST } from '@/lib/dateUtils';
+import { fetchGoldRatesAllCarats } from '@/lib/angelOneApi';
 import GoldPriceHistoryChart from '@/components/GoldPriceHistoryChart';
 import GoldNewsSection from '@/components/GoldNewsSection';
 
@@ -40,7 +41,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
 
 
     return {
-        title: `Gold Rate in ${cityName} Today — ${todayDate} | 24K, 22K, 18K Live Prices | ${tagline} | gpaisa.in`,
+        title: `Gold Rate in ${cityName} Today — ${todayDate} | gpaisa.in`,
         description: `Check today's gold rate in ${cityName}, ${state} on ${todayDate}. Live 24K, 22K & 18K gold prices. ${tagline}. Gold markets at ${mainMarkets.join(' & ')}. Calculator, price history, buying tips & expert guide.`,
         robots: {
             index: true,
@@ -75,6 +76,8 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
     if (!cityData || !CITIES.map(c => c.toLowerCase()).includes(citySlug)) {
         notFound();
     }
+
+    const goldRates = await fetchGoldRatesAllCarats();
 
     const {
         city: cityName, state, mainMarkets, tagline, heroDescription,
@@ -216,7 +219,7 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                                 Today&apos;s Gold Rates in {cityName}
                             </h2>
                         </div>
-                        <DynamicGoldRates />
+                        <DynamicGoldRates initialRates={goldRates} initialLastUpdated={goldRates.length ? new Date().toISOString() : null} />
                     </section>
 
                     {/* ── Gold Calculator ────────────────────────────────────── */}

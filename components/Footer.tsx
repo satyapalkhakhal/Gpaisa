@@ -44,8 +44,11 @@ export default function Footer() {
                         <h4 className="text-sm font-semibold text-white mb-4">{t('footer', 'quickLinks')}</h4>
                         <ul className="space-y-2 text-sm">
                             {/* Markets temporarily hidden */}
+                            <li><Link href="/calculator" className="hover:text-primary-400 transition-colors">{t('nav', 'calculators')}</Link></li>
+                            <li><Link href="/gold-rate" className="hover:text-primary-400 transition-colors">{t('nav', 'goldRate')}</Link></li>
+                            <li><Link href="/silver-rate" className="hover:text-primary-400 transition-colors">{t('nav', 'silverRate')}</Link></li>
                             <li><Link href="/commodities" className="hover:text-primary-400 transition-colors">{t('footer', 'goldCommodities')}</Link></li>
-                            <li><Link href="/finance" className="hover:text-primary-400 transition-colors">{t('nav', 'personalFinance')}</Link></li>
+                            <li><Link href="/category/business" className="hover:text-primary-400 transition-colors">{t('nav', 'personalFinance')}</Link></li>
                             <li><Link href="/news" className="hover:text-primary-400 transition-colors">{t('nav', 'news')}</Link></li>
                         </ul>
                     </div>

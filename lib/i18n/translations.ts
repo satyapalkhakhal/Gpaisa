@@ -9,7 +9,7 @@ export const translations = {
         commodities: { en: 'Commodities', hi: 'कमोडिटी' },
         agriculture: { en: 'Agriculture', hi: 'कृषि' },
         calculators: { en: 'Calculators', hi: 'कैलकुलेटर' },
-        personalFinance: { en: 'Personal Finance', hi: 'व्यक्तिगत वित्त' },
+        personalFinance: { en: 'Business News', hi: 'व्यापार समाचार' },
         news: { en: 'News', hi: 'समाचार' },
     },
 

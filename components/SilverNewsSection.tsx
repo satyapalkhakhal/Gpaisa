@@ -79,7 +79,7 @@ export default function SilverNewsSection() {
                             <div className="w-20 h-16 bg-gray-100 rounded-lg shrink-0 overflow-hidden">
                                 {article.image_url ? (
                                     <div className="relative w-full h-full">
-                                        <Image src={article.image_url} alt="" fill className="object-cover" sizes="80px" />
+                                        <Image src={article.image_url} alt={article.title} fill className="object-cover" sizes="80px" />
                                     </div>
                                 ) : (
                                     <div className="w-full h-full bg-gradient-to-br from-gray-200 to-slate-300 flex items-center justify-center text-gray-500 text-xs font-bold">SILVER</div>

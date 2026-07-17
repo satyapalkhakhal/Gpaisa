@@ -269,7 +269,15 @@ export default function GoldPriceHistoryChart({ cityName }: GoldPriceHistoryChar
                     <p className="text-xs text-gray-500 leading-relaxed">
                         <strong>Data Source:</strong> RBI Handbook of Statistics, IBJA (India Bullion and Jewellers Association),
                         and MCX historical records. Prices reflect average annual 24K gold rate per 10 grams in INR.
-                        Past performance is not indicative of future returns. Gold prices are subject to market risks.
+                        Past performance is not indicative of future returns. Gold prices are subject to market risks.{' '}
+                        <a
+                            href="/gold_prices_india_1964_2026.csv"
+                            download
+                            className="text-amber-700 font-semibold underline hover:text-amber-800"
+                        >
+                            Download the full 1964–2026 dataset (CSV)
+                        </a>
+                        .
                     </p>
                 </div>
             </div>

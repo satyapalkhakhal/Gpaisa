@@ -13,6 +13,8 @@ interface DynamicGoldRate {
 
 interface DynamicGoldRatesProps {
     simpleView?: boolean;
+    initialRates?: DynamicGoldRate[];
+    initialLastUpdated?: string | null;
 }
 
 /** Format a number as Indian currency without decimals */
@@ -34,11 +36,11 @@ function formatTimestamp(date: Date): string {
     return `${day} ${month} ${year}, ${time} IST`;
 }
 
-export default function DynamicGoldRates({ simpleView = false }: DynamicGoldRatesProps) {
-    const [goldRates, setGoldRates] = useState<DynamicGoldRate[]>([]);
-    const [loading, setLoading] = useState(true);
+export default function DynamicGoldRates({ simpleView = false, initialRates = [], initialLastUpdated = null }: DynamicGoldRatesProps) {
+    const [goldRates, setGoldRates] = useState<DynamicGoldRate[]>(initialRates);
+    const [loading, setLoading] = useState(initialRates.length === 0);
     const [error, setError] = useState<string | null>(null);
-    const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+    const [lastUpdated, setLastUpdated] = useState<Date | null>(initialLastUpdated ? new Date(initialLastUpdated) : null);
 
     useEffect(() => {
         const fetchGoldRates = async () => {

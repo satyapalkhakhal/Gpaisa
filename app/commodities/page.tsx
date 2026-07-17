@@ -5,6 +5,7 @@ import CityWiseGoldRates from '@/components/CityWiseGoldRates';
 import DynamicGoldRates from '@/components/DynamicGoldRates';
 import DynamicGoldChart from '@/components/DynamicGoldChart';
 import LastUpdatedTime from '@/components/LastUpdatedTime';
+import { fetchGoldRatesAllCarats } from '@/lib/angelOneApi';
 import { Coins, History } from 'lucide-react';
 
 export const metadata: Metadata = {
@@ -22,7 +23,8 @@ export const metadata: Metadata = {
 
 export const dynamic = 'force-static'; // Static page with client-side data fetching
 
-export default function CommoditiesPage() {
+export default async function CommoditiesPage() {
+    const goldRates = await fetchGoldRatesAllCarats();
     // Generate JSON-LD structured data for gold rates
     const structuredData = {
         "@context": "https://schema.org",
@@ -76,7 +78,7 @@ export default function CommoditiesPage() {
                             <Coins className="h-7 w-7 text-primary-600" aria-hidden="true" />
                             <h2 id="gold-rates-heading" className="text-2xl font-display font-semibold text-gray-900">Gold Rates</h2>
                         </div>
-                        <DynamicGoldRates />
+                        <DynamicGoldRates initialRates={goldRates} initialLastUpdated={goldRates.length ? new Date().toISOString() : null} />
                     </section>
 
                     {/* Gold Calculator */}

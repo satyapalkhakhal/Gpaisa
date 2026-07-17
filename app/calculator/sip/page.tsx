@@ -7,6 +7,8 @@ export const metadata: Metadata = {
     title: 'SIP Calculator Online - Calculate SIP Returns & Investment Growth | Gpaisa',
     description: 'Free SIP Calculator to calculate mutual fund SIP returns. Plan your systematic investment with our step-up SIP calculator, lump sum calculator, and SIP return calculator. Get accurate projections for your wealth creation journey.',
 
+    authors: [{ name: 'Satyapal Khakhal' }],
+
     openGraph: {
         title: 'SIP Calculator - Calculate Your Mutual Fund Returns | Gpaisa',
         description: 'Plan your investments with our advanced SIP Calculator. Calculate returns, set financial goals, and visualize your wealth growth with step-up SIP options.',

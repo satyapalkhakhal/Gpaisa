@@ -40,7 +40,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
 
 
     return {
-        title: `Silver Rate in ${cityName} Today — ${todayDate} | Live Price Per Gram/Kg${tagline ? ` | ${tagline}` : ''} | gpaisa.in`,
+        title: `Silver Rate in ${cityName} Today — ${todayDate} | gpaisa.in`,
         description: `Check today's silver rate in ${cityName}, ${state} on ${todayDate}. Live 999 & 925 silver prices per gram and kg.${tagline ? ` ${tagline}.` : ''} ${mainMarkets.length ? `Silver markets at ${mainMarkets.join(' & ')}.` : ''} Calculator, history & buying guide.`,
         robots: {
             index: true,
@@ -83,6 +83,13 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
 
     const calculatorData = await fetchSilverCalculator(symbol);
     const currentPrice = calculatorData?.data?.silver?.today || 0;
+    const silverRateData = calculatorData?.data?.silver
+        ? {
+            price: calculatorData.data.silver.today,
+            change: calculatorData.data.silver.differenceAmount,
+            changePercent: calculatorData.data.silver.differencePercentage,
+        }
+        : null;
 
     const validUntil = new Date();
     validUntil.setDate(validUntil.getDate() + 1);
@@ -267,7 +274,7 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
                             Today&apos;s Silver Rates in {cityName}
                         </h2>
                     </div>
-                    <DynamicSilverRates symbol={symbol} city={cityName} />
+                    <DynamicSilverRates symbol={symbol} city={cityName} initialRateData={silverRateData} initialLastUpdated={silverRateData ? new Date().toISOString() : null} />
                 </section>
 
                 {/* ── Silver Calculator ──────────────────────────────────── */}
