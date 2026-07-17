@@ -198,7 +198,7 @@ export default function HRAContent() {
         <div>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Related Calculators</p>
           <div className="flex flex-wrap gap-2">
-            {[['EPF Calculator', '/calculator/epf'], ['SIP Calculator', '/calculator/sip'], ['Home Loan Calculator', '/calculator/home-loan'], ['NPS Calculator', '/calculator/nps']].map(([l, h]) => (
+            {[['Income Tax Calculator', '/calculator/income-tax'], ['EPF Calculator', '/calculator/epf'], ['SIP Calculator', '/calculator/sip'], ['Home Loan Calculator', '/calculator/home-loan'], ['NPS Calculator', '/calculator/nps']].map(([l, h]) => (
               <Link key={h} href={h} className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-sky-50 border border-sky-100 text-sm font-medium text-sky-700 hover:bg-sky-100 transition-colors">{l}</Link>
             ))}
           </div>

@@ -11,6 +11,7 @@ import { getBankBySlug, getAllBankSlugs } from '@/lib/bankData';
 import { getSipAmcDataBySlug } from '@/lib/sipAmcData';
 import { getHomeLoanBankBySlug, getAllHomeLoanBankSlugs } from '@/lib/homeLoanBankData';
 import { getBankHomeLoanDataBySlug } from '@/lib/bankHomeLoanData';
+import { CALCULATORS } from '@/lib/calculatorsList';
 import {
     calculateEMI,
     generateSchedule,
@@ -25,23 +26,6 @@ type Props = {
 };
 
 // ─── Calculator Hub Data ─────────────────────────────────────────────
-
-const CALCULATORS = [
-    { name: 'SIP Calculator', href: '/calculator/sip', icon: '📊', description: 'Plan your mutual fund SIP investments. Calculate future value of monthly investments with expected returns.' },
-    { name: 'PPF Calculator', href: '/calculator/ppf', icon: '🏛️', description: 'Calculate Public Provident Fund maturity amount with current interest rates and tax benefits.' },
-    { name: 'SWP Calculator', href: '/calculator/swp', icon: '💸', description: 'Plan systematic withdrawals from your mutual fund investments. Calculate monthly income from your corpus.' },
-    { name: 'EPF Calculator', href: '/calculator/epf', icon: '🏢', description: 'Estimate your Employee Provident Fund corpus at retirement including employer contributions.' },
-    { name: 'EMI Calculator', href: '/calculator/emi', icon: '🏠', description: 'Calculate Equated Monthly Installments for home loans, car loans, and personal loans.' },
-    { name: 'Home Loan Calculator', href: '/calculator/home-loan', icon: '🏡', description: 'Plan your home loan with detailed EMI breakdowns, amortization schedules, and prepayment analysis.' },
-    { name: 'GST Calculator', href: '/calculator/gst', icon: '🧾', description: 'Calculate GST amount for any goods or services. Supports all GST slabs — 5%, 12%, 18%, 28%.' },
-    { name: 'CAGR Calculator', href: '/calculator/cagr', icon: '📈', description: 'Calculate Compound Annual Growth Rate for your investments to measure performance over time.' },
-    { name: 'FD Calculator', href: '/calculator/fd', icon: '💰', description: 'Compare fixed deposit returns across banks. Calculate maturity value with quarterly compounding.' },
-    { name: 'NPS Calculator', href: '/calculator/nps', icon: '🔐', description: 'Estimate your National Pension System corpus and monthly pension at retirement.' },
-    { name: 'HRA Calculator', href: '/calculator/hra', icon: '🏘️', description: 'Calculate HRA exemption under Section 10(13A). Find out your taxable HRA component.' },
-    { name: 'Gratuity Calculator', href: '/calculator/gratuity', icon: '🎁', description: 'Calculate gratuity amount based on your last drawn salary and years of service.' },
-    { name: 'Simple Interest Calculator', href: '/calculator/simple-interest', icon: '🧮', description: 'Calculate simple interest on deposits and loans. Compare with compound interest side by side.' },
-    { name: 'Mutual Fund Calculator', href: '/calculator/mutual-fund', icon: '📊', description: 'Estimate mutual fund returns for lumpsum and SIP investments with various fund categories.' },
-];
 
 // ─── Static Params ───────────────────────────────────────────────────
 
@@ -68,14 +52,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             authors: [{ name: 'Satyapal Khakhal' }],
             openGraph: {
                 title: 'Financial Calculators India — SIP, FD, EMI, Home Loan, GST & More',
-                description: '14 free financial calculators for Indian investors. SIP, FD, EMI, home loan, GST, PPF, NPS, CAGR and more.',
+                description: '16 free financial calculators for Indian investors. SIP, FD, EMI, home loan, GST, PPF, NPS, CAGR and more.',
                 type: 'website',
                 url: 'https://www.gpaisa.in/calculator',
             },
             twitter: {
                 card: 'summary_large_image',
                 title: 'Financial Calculators India | gpaisa.in',
-                description: '14 free financial calculators — SIP, FD, EMI, Home Loan, GST & more.',
+                description: '16 free financial calculators — SIP, FD, EMI, Home Loan, GST & more.',
                 creator: '@gpaisa_in',
             },
             alternates: {

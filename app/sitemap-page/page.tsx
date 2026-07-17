@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { fetchLatestArticles } from '@/lib/supabaseApi';
-import { FileText, TrendingUp, Newspaper, MapPin } from 'lucide-react';
+import { CALCULATORS } from '@/lib/calculatorsList';
+import { FileText, TrendingUp, Newspaper, MapPin, Calculator } from 'lucide-react';
 
 const CITIES = [
     'Delhi', 'Chennai', 'Mumbai', 'Pune', 'Hyderabad',
@@ -82,10 +83,44 @@ export default async function SitemapPage() {
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/calculator/car-loan" className="text-primary-600 hover:text-primary-700 hover:underline">
-                                    Car Loan Calculator
+                                <Link href="/privacy-policy" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    Privacy Policy
                                 </Link>
                             </li>
+                            <li>
+                                <Link href="/terms" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    Terms of Service
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="/disclaimer" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    Disclaimer
+                                </Link>
+                            </li>
+                        </ul>
+                    </section>
+
+                    {/* Financial Calculators */}
+                    <section className="card">
+                        <div className="flex items-center space-x-3 mb-6">
+                            <Calculator className="h-6 w-6 text-primary-600" />
+                            <h2 className="text-2xl font-display font-semibold text-gray-900">
+                                Financial Calculators
+                            </h2>
+                        </div>
+                        <ul className="space-y-3">
+                            <li>
+                                <Link href="/calculator" className="text-primary-600 hover:text-primary-700 hover:underline font-semibold">
+                                    All Calculators
+                                </Link>
+                            </li>
+                            {CALCULATORS.map((calc) => (
+                                <li key={calc.href}>
+                                    <Link href={calc.href} className="text-primary-600 hover:text-primary-700 hover:underline">
+                                        {calc.name}
+                                    </Link>
+                                </li>
+                            ))}
                         </ul>
                     </section>
 

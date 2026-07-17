@@ -1,0 +1,18 @@
+export const CALCULATORS = [
+    { name: 'SIP Calculator', href: '/calculator/sip', icon: '📊', description: 'Plan your mutual fund SIP investments. Calculate future value of monthly investments with expected returns.' },
+    { name: 'PPF Calculator', href: '/calculator/ppf', icon: '🏛️', description: 'Calculate Public Provident Fund maturity amount with current interest rates and tax benefits.' },
+    { name: 'SWP Calculator', href: '/calculator/swp', icon: '💸', description: 'Plan systematic withdrawals from your mutual fund investments. Calculate monthly income from your corpus.' },
+    { name: 'EPF Calculator', href: '/calculator/epf', icon: '🏢', description: 'Estimate your Employee Provident Fund corpus at retirement including employer contributions.' },
+    { name: 'EMI Calculator', href: '/calculator/emi', icon: '🏠', description: 'Calculate Equated Monthly Installments for home loans, car loans, and personal loans.' },
+    { name: 'Home Loan Calculator', href: '/calculator/home-loan', icon: '🏡', description: 'Plan your home loan with detailed EMI breakdowns, amortization schedules, and prepayment analysis.' },
+    { name: 'GST Calculator', href: '/calculator/gst', icon: '🧾', description: 'Calculate GST amount for any goods or services. Supports all GST 2.0 slabs — 5%, 18%, 40%.' },
+    { name: 'CAGR Calculator', href: '/calculator/cagr', icon: '📈', description: 'Calculate Compound Annual Growth Rate for your investments to measure performance over time.' },
+    { name: 'FD Calculator', href: '/calculator/fd', icon: '💰', description: 'Compare fixed deposit returns across banks. Calculate maturity value with quarterly compounding.' },
+    { name: 'NPS Calculator', href: '/calculator/nps', icon: '🔐', description: 'Estimate your National Pension System corpus and monthly pension at retirement.' },
+    { name: 'HRA Calculator', href: '/calculator/hra', icon: '🏘️', description: 'Calculate HRA exemption under Section 10(13A). Find out your taxable HRA component.' },
+    { name: 'Gratuity Calculator', href: '/calculator/gratuity', icon: '🎁', description: 'Calculate gratuity amount based on your last drawn salary and years of service.' },
+    { name: 'Simple Interest Calculator', href: '/calculator/simple-interest', icon: '🧮', description: 'Calculate simple interest on deposits and loans. Compare with compound interest side by side.' },
+    { name: 'Mutual Fund Calculator', href: '/calculator/mutual-fund', icon: '📊', description: 'Estimate mutual fund returns for lumpsum and SIP investments with various fund categories.' },
+    { name: 'Car Loan Calculator', href: '/calculator/car-loan', icon: '🚗', description: 'Calculate car loan EMI with bank rate comparison, down payment, and prepayment simulator.' },
+    { name: 'Income Tax Calculator', href: '/calculator/income-tax', icon: '🧾', description: 'Compare old vs new tax regime and calculate your income tax liability for FY 2026-27.' },
+];

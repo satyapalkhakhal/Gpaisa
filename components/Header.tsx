@@ -24,6 +24,7 @@ export default function Header() {
             name: t('nav', 'calculators'),
             href: '/calculator',
             dropdown: [
+                { name: t('calculators', 'incomeTaxCalculator'), href: '/calculator/income-tax' },
                 { name: t('calculators', 'sipCalculator'), href: '/calculator/sip' },
                 { name: t('calculators', 'ppfCalculator'), href: '/calculator/ppf' },
                 { name: t('calculators', 'swpCalculator'), href: '/calculator/swp' },

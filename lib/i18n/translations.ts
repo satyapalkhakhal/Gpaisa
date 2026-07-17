@@ -30,6 +30,7 @@ export const translations = {
         simpleInterest: { en: 'Simple Interest', hi: 'साधारण ब्याज' },
         mutualFundCalculator: { en: 'Mutual Fund Calculator', hi: 'म्यूचुअल फंड कैलकुलेटर' },
         carLoanCalculator: { en: 'Car Loan Calculator', hi: 'कार लोन कैलकुलेटर' },
+        incomeTaxCalculator: { en: 'Income Tax Calculator', hi: 'आयकर कैलकुलेटर' },
     },
 
     // ─── Footer ─────────────────────────────────────────────────────

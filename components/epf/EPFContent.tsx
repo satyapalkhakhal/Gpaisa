@@ -320,6 +320,7 @@ export default function EPFContent({ first5Years }: Props) {
               { label: 'SWP Calculator', href: '/calculator/swp' },
               { label: 'SIP Calculator', href: '/calculator/sip' },
               { label: 'HRA Calculator', href: '/calculator/hra' },
+              { label: 'Income Tax Calculator', href: '/calculator/income-tax' },
             ].map((link) => (
               <a
                 key={link.href}
