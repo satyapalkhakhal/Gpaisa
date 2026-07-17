@@ -11,6 +11,7 @@ export const translations = {
         calculators: { en: 'Calculators', hi: 'कैलकुलेटर' },
         personalFinance: { en: 'Business News', hi: 'व्यापार समाचार' },
         news: { en: 'News', hi: 'समाचार' },
+        glossary: { en: 'Glossary', hi: 'शब्दकोश' },
     },
 
     // ─── Calculator Dropdown ────────────────────────────────────────

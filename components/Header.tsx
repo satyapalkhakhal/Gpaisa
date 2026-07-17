@@ -47,6 +47,7 @@ export default function Header() {
         },
         { name: t('nav', 'personalFinance'), href: '/category/business' },
         { name: t('nav', 'news'), href: '/news' },
+        { name: t('nav', 'glossary'), href: '/glossary' },
     ];
 
     // Close mobile menu on route change (resize)

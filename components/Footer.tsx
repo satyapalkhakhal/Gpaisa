@@ -50,6 +50,7 @@ export default function Footer() {
                             <li><Link href="/commodities" className="hover:text-primary-400 transition-colors">{t('footer', 'goldCommodities')}</Link></li>
                             <li><Link href="/category/business" className="hover:text-primary-400 transition-colors">{t('nav', 'personalFinance')}</Link></li>
                             <li><Link href="/news" className="hover:text-primary-400 transition-colors">{t('nav', 'news')}</Link></li>
+                            <li><Link href="/glossary" className="hover:text-primary-400 transition-colors">{t('nav', 'glossary')}</Link></li>
                         </ul>
                     </div>
 

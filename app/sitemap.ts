@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next';
 import { CATEGORIES, DROPPED_CATEGORY_DB_VALUES } from '@/lib/categories';
+import { GLOSSARY_TERMS } from '@/lib/glossaryData';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -178,7 +179,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'monthly',
             priority: 0.8,
         },
+        {
+            url: `${baseUrl}/glossary`,
+            lastModified: new Date('2026-07-18'),
+            changeFrequency: 'monthly',
+            priority: 0.7,
+        },
     ];
+
+    // Glossary term pages
+    const glossaryPages: MetadataRoute.Sitemap = GLOSSARY_TERMS.map((t) => ({
+        url: `${baseUrl}/glossary/${t.slug}`,
+        lastModified: new Date('2026-07-18'),
+        changeFrequency: 'monthly',
+        priority: 0.6,
+    }));
 
 
     // Category hub pages
@@ -255,6 +270,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
         ...staticPages,
         ...categoryPages,
+        ...glossaryPages,
         ...goldRateCityPages,
         ...silverRateCityPages,
         ...articlePages,
