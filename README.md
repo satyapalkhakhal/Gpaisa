@@ -2,7 +2,7 @@
     
 ## 🎨 Brand Colors 
 
-### Primary Green Theme  
+### Primary Green Theme   
 - **Brand Green**: `#1E7F43` - Main brand color for logo, buttons, links
 - **CTA Green**: `#2DBE60` - Call-to-action buttons and highlights 
 - **Success Green**: `#16A34A` - Positive price changes, gains
