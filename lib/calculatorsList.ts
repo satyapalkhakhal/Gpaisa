@@ -15,4 +15,7 @@ export const CALCULATORS = [
     { name: 'Mutual Fund Calculator', href: '/calculator/mutual-fund', icon: '📊', description: 'Estimate mutual fund returns for lumpsum and SIP investments with various fund categories.' },
     { name: 'Car Loan Calculator', href: '/calculator/car-loan', icon: '🚗', description: 'Calculate car loan EMI with bank rate comparison, down payment, and prepayment simulator.' },
     { name: 'Income Tax Calculator', href: '/calculator/income-tax', icon: '🧾', description: 'Compare old vs new tax regime and calculate your income tax liability for FY 2026-27.' },
+    { name: 'SSY Calculator', href: '/calculator/ssy', icon: '👧', description: 'Calculate Sukanya Samriddhi Yojana maturity value for your girl child\'s education and marriage corpus.' },
+    { name: 'NSC Calculator', href: '/calculator/nsc', icon: '📜', description: 'Calculate National Savings Certificate maturity value with Section 80C tax benefits.' },
+    { name: 'SCSS Calculator', href: '/calculator/scss', icon: '👴', description: 'Calculate Senior Citizens Savings Scheme quarterly payout and maturity value.' },
 ];

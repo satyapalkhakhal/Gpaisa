@@ -31,6 +31,9 @@ export const translations = {
         mutualFundCalculator: { en: 'Mutual Fund Calculator', hi: 'म्यूचुअल फंड कैलकुलेटर' },
         carLoanCalculator: { en: 'Car Loan Calculator', hi: 'कार लोन कैलकुलेटर' },
         incomeTaxCalculator: { en: 'Income Tax Calculator', hi: 'आयकर कैलकुलेटर' },
+        ssyCalculator: { en: 'SSY Calculator', hi: 'SSY कैलकुलेटर' },
+        nscCalculator: { en: 'NSC Calculator', hi: 'NSC कैलकुलेटर' },
+        scssCalculator: { en: 'SCSS Calculator', hi: 'SCSS कैलकुलेटर' },
     },
 
     // ─── Footer ─────────────────────────────────────────────────────

@@ -52,14 +52,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             authors: [{ name: 'Satyapal Khakhal' }],
             openGraph: {
                 title: 'Financial Calculators India — SIP, FD, EMI, Home Loan, GST & More',
-                description: '16 free financial calculators for Indian investors. SIP, FD, EMI, home loan, GST, PPF, NPS, CAGR and more.',
+                description: '19 free financial calculators for Indian investors. SIP, FD, EMI, home loan, GST, PPF, NPS, CAGR and more.',
                 type: 'website',
                 url: 'https://www.gpaisa.in/calculator',
             },
             twitter: {
                 card: 'summary_large_image',
                 title: 'Financial Calculators India | gpaisa.in',
-                description: '16 free financial calculators — SIP, FD, EMI, Home Loan, GST & more.',
+                description: '19 free financial calculators — SIP, FD, EMI, Home Loan, GST & more.',
                 creator: '@gpaisa_in',
             },
             alternates: {

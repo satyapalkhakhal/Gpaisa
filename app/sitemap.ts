@@ -160,6 +160,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'monthly',
             priority: 0.9,
         },
+        {
+            url: `${baseUrl}/calculator/ssy`,
+            lastModified: new Date('2026-07-17'),
+            changeFrequency: 'monthly',
+            priority: 0.8,
+        },
+        {
+            url: `${baseUrl}/calculator/nsc`,
+            lastModified: new Date('2026-07-17'),
+            changeFrequency: 'monthly',
+            priority: 0.8,
+        },
+        {
+            url: `${baseUrl}/calculator/scss`,
+            lastModified: new Date('2026-07-17'),
+            changeFrequency: 'monthly',
+            priority: 0.8,
+        },
     ];
 
 
