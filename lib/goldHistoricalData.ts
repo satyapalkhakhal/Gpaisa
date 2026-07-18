@@ -152,3 +152,31 @@ export function calculateAbsoluteReturn(data: GoldYearlyPrice[]): number {
     const last = data[data.length - 1];
     return ((last.price - first.price) / first.price) * 100;
 }
+
+// ─── Gold Affordability Index ────────────────────────────────────────
+// Measures how many grams of 24K gold a fixed ₹10,000 could buy in a given
+// year. This is a pure purchasing-power-of-gold metric derived entirely from
+// the verified GOLD_HISTORICAL_DATA series above — it does NOT incorporate
+// wage, salary, or inflation data (no reliably verifiable year-by-year Indian
+// income series exists for the full 1964–2026 span), so it should be read as
+// "what a fixed rupee amount buys in gold," not "affordability relative to
+// income."
+
+export const AFFORDABILITY_REFERENCE_AMOUNT = 10000; // ₹10,000, fixed nominal reference
+
+export interface GoldAffordabilityPoint {
+    year: number;
+    price: number; // 24K price per 10g, INR
+    gramsPerReference: number; // grams of 24K gold ₹10,000 could buy that year
+}
+
+export function calculateGoldAffordabilityIndex(
+    data: GoldYearlyPrice[] = GOLD_HISTORICAL_DATA,
+    referenceAmount: number = AFFORDABILITY_REFERENCE_AMOUNT
+): GoldAffordabilityPoint[] {
+    return data.map((d) => ({
+        year: d.year,
+        price: d.price,
+        gramsPerReference: Math.round((referenceAmount / d.price) * 10 * 1000) / 1000,
+    }));
+}

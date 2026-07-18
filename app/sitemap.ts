@@ -185,6 +185,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'monthly',
             priority: 0.7,
         },
+        {
+            url: `${baseUrl}/gold-affordability-index`,
+            lastModified: new Date('2026-07-18'),
+            changeFrequency: 'monthly',
+            priority: 0.7,
+        },
     ];
 
     // Glossary term pages

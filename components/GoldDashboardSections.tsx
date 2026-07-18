@@ -65,6 +65,7 @@ export function DecisionBlock() {
 export function InternalLinks() {
     const links = [
         { href: '/gold-vs-silver', label: 'Gold vs Silver Comparison', icon: '⚖️' },
+        { href: '/gold-affordability-index', label: 'Gold Affordability Index (1964–2026)', icon: '📉' },
         { href: '/silver-rate', label: 'Silver Rate Today', icon: '🥈' },
         { href: '/commodities', label: 'All Commodity Prices', icon: '📊' },
         { href: '/', label: 'gpaisa.in Homepage', icon: '🏠' },

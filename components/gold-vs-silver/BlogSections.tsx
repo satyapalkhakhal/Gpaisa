@@ -68,6 +68,7 @@ export function InvestmentOptions() {
 export function InternalLinks() {
     const links = [
         { href: '/gold-rate', text: "Check today's live gold rate →" },
+        { href: '/gold-affordability-index', text: 'Gold Affordability Index — 1964 vs 2026 →' },
         { href: '/gold-rate/mumbai', text: 'Gold rate in Mumbai today →' },
         { href: '/gold-rate/delhi', text: 'Gold rate in Delhi today →' },
         { href: '/silver-rate', text: "Today's silver rate across India →" },

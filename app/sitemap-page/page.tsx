@@ -78,6 +78,11 @@ export default async function SitemapPage() {
                                 </Link>
                             </li>
                             <li>
+                                <Link href="/gold-affordability-index" className="text-primary-600 hover:text-primary-700 hover:underline">
+                                    Gold Affordability Index
+                                </Link>
+                            </li>
+                            <li>
                                 <Link href="/about" className="text-primary-600 hover:text-primary-700 hover:underline">
                                     About Us
                                 </Link>
