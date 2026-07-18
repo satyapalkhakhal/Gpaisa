@@ -29,12 +29,19 @@ export async function generateMetadata({ params, searchParams }: {
         ? `https://www.gpaisa.in/category/${slug}?page=${currentPage}`
         : `https://www.gpaisa.in/category/${slug}`;
 
+    // A category hub with zero published articles is a soft-404 — Google penalizes
+    // thin/empty pages that return 200. Noindex it until it has real content.
+    const hasArticles = (await fetchArticlesByCategorySlug(slug, 1)).length > 0;
+
     return {
         title: currentPage > 1 ? `${category.name} — Page ${currentPage} | gpaisa.in` : `${category.name} | gpaisa.in`,
         description: category.description,
         alternates: {
             canonical: canonicalUrl
-        }
+        },
+        robots: hasArticles
+            ? { index: true, follow: true }
+            : { index: false, follow: true },
     };
 }
 

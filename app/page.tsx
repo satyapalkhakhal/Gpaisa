@@ -495,7 +495,6 @@ export default async function HomePage() {
                         <span>🏅 IBJA (India Bullion &amp; Jewellers Association)</span>
                         <span>🌍 LBMA (London Bullion Market Association)</span>
                         <span>📈 BSE &amp; NSE</span>
-                        <span>🌾 Agmarknet</span>
                         <span>🏦 RBI Historical Data</span>
                     </div>
                 </div>

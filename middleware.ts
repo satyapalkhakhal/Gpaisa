@@ -31,6 +31,20 @@ export async function middleware(request: NextRequest) {
         }
     }
 
+    // ── Agriculture vertical: permanently removed, not moved ──
+    // The agriculture/mandi-prices vertical was deleted 2026-06-14. There is no
+    // finance-equivalent page to redirect these URLs to, so we return 410 Gone
+    // rather than a plain 404 (or a redirect into unrelated finance content,
+    // which search engines treat as a soft-404/quality signal). This restores
+    // handling that existed briefly before being dropped along with the pages.
+    if (pathname === '/agriculture' || pathname.startsWith('/agriculture/') ||
+        pathname === '/api/agriculture' || pathname.startsWith('/api/agriculture/')) {
+        return new NextResponse('Gone', {
+            status: 410,
+            headers: { 'X-Robots-Tag': 'noindex' },
+        });
+    }
+
     // ── Non-www → www 301 redirect ──
     // Ensures all traffic uses the canonical www domain for SEO consistency.
     // Exclude /ads.txt so AdSense can verify it on the naked domain.

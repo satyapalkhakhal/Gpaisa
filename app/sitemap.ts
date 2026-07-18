@@ -202,14 +202,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
 
-    // Category hub pages
-    const categoryPages: MetadataRoute.Sitemap = CATEGORIES.map((c) => ({
-        url: `${baseUrl}/category/${c.slug}`,
-        lastModified: new Date(),
-        changeFrequency: 'daily',
-        priority: 0.6,
-    }));
-
     // City-specific gold rate pages
     const goldRateCityPages: MetadataRoute.Sitemap = CITIES.map((city) => ({
         url: `${baseUrl}/gold-rate/${city.toLowerCase()}`,
@@ -229,12 +221,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Fetch latest articles for dynamic article pages
     // Uses direct fetch with revalidate (not cache:'no-store') so sitemap can be statically generated
     let articlePages: MetadataRoute.Sitemap = [];
+    const categoriesWithArticles = new Set<string>();
     try {
         if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
             console.error('[SITEMAP] Missing Supabase env vars');
         } else {
             const response = await fetch(
-                `${SUPABASE_URL}/rest/v1/articles?select=slug,published_at,updated_at&status=eq.published&category=not.in.(${DROPPED_CATEGORY_DB_VALUES.join(',')})&order=published_at.desc&limit=1000`,
+                `${SUPABASE_URL}/rest/v1/articles?select=slug,published_at,updated_at,category&status=eq.published&category=not.in.(${DROPPED_CATEGORY_DB_VALUES.join(',')})&order=published_at.desc&limit=1000`,
                 {
                     headers: {
                         'apikey': SUPABASE_ANON_KEY,
@@ -249,22 +242,26 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                 console.error(`[SITEMAP] Fetch failed: HTTP ${response.status}`);
             } else {
                 const articles = await response.json();
-                articlePages = (Array.isArray(articles) ? articles : [])
-                    .filter((article: any) => article.slug)
-                    .map((article: any) => {
-                        const lastModified = article.updated_at
-                            ? new Date(article.updated_at)
-                            : article.published_at
-                                ? new Date(article.published_at)
-                                : new Date('2026-01-01');
+                const publishedArticles = (Array.isArray(articles) ? articles : []).filter((article: any) => article.slug);
 
-                        return {
-                            url: `${baseUrl}/articles/${article.slug}`,
-                            lastModified,
-                            changeFrequency: 'weekly' as const,
-                            priority: 0.6,
-                        };
-                    });
+                publishedArticles.forEach((article: any) => {
+                    if (article.category) categoriesWithArticles.add(article.category);
+                });
+
+                articlePages = publishedArticles.map((article: any) => {
+                    const lastModified = article.updated_at
+                        ? new Date(article.updated_at)
+                        : article.published_at
+                            ? new Date(article.published_at)
+                            : new Date('2026-01-01');
+
+                    return {
+                        url: `${baseUrl}/articles/${article.slug}`,
+                        lastModified,
+                        changeFrequency: 'weekly' as const,
+                        priority: 0.6,
+                    };
+                });
 
                 console.log(`Sitemap generated with ${articlePages.length} articles`);
             }
@@ -272,6 +269,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     } catch (error) {
         console.error('Error fetching articles for sitemap:', error);
     }
+
+    // Category hub pages — exclude categories with zero published articles.
+    // An empty category hub is a soft-404 (200 status, no content) that we
+    // noindex in app/category/[slug]/page.tsx; listing it in the sitemap would
+    // be the same noindex-vs-sitemap contradiction fixed elsewhere on this site.
+    const categoryPages: MetadataRoute.Sitemap = CATEGORIES
+        .filter((c) => categoriesWithArticles.has(c.dbValue))
+        .map((c) => ({
+            url: `${baseUrl}/category/${c.slug}`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 0.6,
+        }));
 
     return [
         ...staticPages,

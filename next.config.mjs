@@ -74,7 +74,7 @@ const nextConfig = {
             },
             {
                 // Dynamic pages (gold-rate, silver-rate, articles, news, etc.) - cache for 1 day
-                source: '/:path(gold-rate|silver-rate|news|finance|agriculture|commodities|markets|category)',
+                source: '/:path(gold-rate|silver-rate|news|commodities|markets|category)',
                 headers: [
                     {
                         key: 'Cache-Control',
@@ -84,7 +84,7 @@ const nextConfig = {
             },
             {
                 // Dynamic sub-pages - cache for 1 day
-                source: '/:section(gold-rate|silver-rate|articles|category|agriculture)/:path*',
+                source: '/:section(gold-rate|silver-rate|articles|category)/:path*',
                 headers: [
                     {
                         key: 'Cache-Control',

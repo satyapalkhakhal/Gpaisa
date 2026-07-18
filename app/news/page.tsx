@@ -98,7 +98,7 @@ export default async function NewsPage() {
                         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900">Latest News</h1>
                     </div>
                     <p className="text-base sm:text-lg text-gray-600 max-w-3xl">
-                        Latest updates on markets, economy, technology, and more. Stay ahead with our coverage.
+                        Latest updates on markets, business, and the economy. Stay ahead with our coverage.
                     </p>
                 </div>
 

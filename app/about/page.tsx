@@ -98,9 +98,9 @@ export default function AboutPage() {
                             </p>
                         </div>
                         <div className="border-l-4 border-primary-600 pl-4">
-                            <h3 className="text-xl font-bold text-gray-900 mb-2">Agricultural Market Prices</h3>
+                            <h3 className="text-xl font-bold text-gray-900 mb-2">Free Financial Calculators</h3>
                             <p className="text-gray-700">
-                                Up-to-date mandi prices and agricultural commodity rates to support farmers and agribusiness professionals.
+                                19 calculators covering SIP, PPF, EPF, NPS, income tax, home loans, and more — each built to give you an accurate, actionable number in seconds.
                             </p>
                         </div>
                     </div>
