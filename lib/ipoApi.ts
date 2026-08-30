@@ -205,6 +205,36 @@ export async function fetchListingPerformanceBoard(revalidateSeconds: number = 3
     return entries;
 }
 
+export interface IpoReviewSummary {
+    review: IpoReview;
+    ipoSlug: string;
+    ipoType: IpoType;
+    ipoStatus: IpoLifecycleStatus;
+    companyName: string;
+}
+
+/**
+ * Latest published IPO reviews across all IPOs, newest-first — for homepage/hub
+ * "featured reviews" surfaces. Embeds the parent IPO (and its company) via PostgREST's
+ * foreign-key embedding since ipo_reviews.ipo_id -> ipos.id.
+ */
+export async function fetchLatestIpoReviews(limit: number = 5, revalidateSeconds: number = 300): Promise<IpoReviewSummary[]> {
+    const rows = await ipoFetch(
+        `ipo_reviews?select=*,ipo:ipos(slug,ipo_type,status,publish_status,company:companies(name))&publish_status=eq.published&order=published_at.desc&limit=${limit}`,
+        'fetchLatestIpoReviews',
+        revalidateSeconds
+    );
+    return rows
+        .filter((r: any) => r.ipo && r.ipo.publish_status === 'published')
+        .map((r: any) => ({
+            review: r,
+            ipoSlug: r.ipo.slug,
+            ipoType: r.ipo.ipo_type,
+            ipoStatus: r.ipo.status,
+            companyName: r.ipo.company?.name || r.ipo.slug,
+        }));
+}
+
 /**
  * Minimal field set for sitemap generation.
  */

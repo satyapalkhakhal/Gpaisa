@@ -14,6 +14,8 @@ import {
 } from '@/lib/supabaseApi';
 import { fetchMarketIndices } from '@/lib/indicesApi';
 import { fetchSilverRateData } from '@/lib/angelOneApi';
+import { fetchLatestIpoReviews, IpoReviewSummary } from '@/lib/ipoApi';
+import { RECOMMENDATION_LABELS } from '@/lib/ipoTypes';
 
 export const metadata: Metadata = {
     title: "gpaisa.in — Live Gold Rates, Financial Calculators & Market Data India",
@@ -124,6 +126,42 @@ const NewsPanel = ({ title, accent, href, badge, articles }: { title: string; ac
     );
 };
 
+// A single IPO-review row — company, score, and recommendation, distinct from a news article row.
+const IpoReviewRow = ({ entry }: { entry: IpoReviewSummary }) => (
+    <Link href={`/ipo/${entry.ipoSlug}`} className="group flex items-center gap-3 px-4 py-2.5 hover:bg-gray-50/70 transition-colors">
+        <div className="w-11 h-11 rounded-lg shrink-0 bg-violet-50 flex flex-col items-center justify-center text-violet-700">
+            <span className="font-bold text-sm leading-none">{entry.review.overall_score != null ? entry.review.overall_score : '—'}</span>
+            <span className="text-[8px] font-semibold uppercase leading-none mt-0.5">/10</span>
+        </div>
+        <div className="flex-1 min-w-0">
+            <h3 className="text-[13px] font-semibold text-gray-900 leading-snug line-clamp-1 group-hover:text-primary-600 transition-colors">
+                {entry.companyName} IPO Review
+            </h3>
+            <div className="flex items-center gap-1.5 mt-0.5 text-[10px] text-gray-400">
+                {entry.review.recommendation && (
+                    <span className="font-bold uppercase text-violet-700 bg-violet-50 px-1.5 py-0.5 rounded">
+                        {RECOMMENDATION_LABELS[entry.review.recommendation]}
+                    </span>
+                )}
+                <span className="uppercase">{entry.ipoType}</span>
+            </div>
+        </div>
+        <ChevronRight className="w-3.5 h-3.5 text-gray-300 group-hover:text-primary-500 transition-colors shrink-0" />
+    </Link>
+);
+
+const IpoReviewPanel = ({ reviews }: { reviews: IpoReviewSummary[] }) => {
+    if (reviews.length === 0) return null;
+    return (
+        <section className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+            <PanelHeader title="IPO Reviews" accent="violet" href="/ipo" badge="NEW" />
+            <div className="divide-y divide-gray-50">
+                {reviews.map(entry => <IpoReviewRow key={entry.review.id} entry={entry} />)}
+            </div>
+        </section>
+    );
+};
+
 // Compact index tile for the "Markets at a Glance" strip.
 const IndexTile = ({ name, value, change, changePercent }: { name: string; value: number; change: number; changePercent: number }) => {
     const up = change >= 0;
@@ -151,6 +189,7 @@ export default async function HomePage() {
         trendingArticles,
         marketIndices,
         silverRateData,
+        ipoReviews,
     ] = await Promise.all([
         fetchArticlesByCategory('BUSINESS', 12),
         fetchArticlesByCategory('FINANCE', 12),
@@ -160,6 +199,7 @@ export default async function HomePage() {
         fetchTrendingArticles(5),
         fetchMarketIndices().catch(() => []),
         fetchSilverRateData('XAG').catch(() => null),
+        fetchLatestIpoReviews(4).catch(() => []),
     ]);
 
     const featuredArticle = allArticles[0] || null;
@@ -336,6 +376,8 @@ export default async function HomePage() {
                             </div>
 
                             <NewsPanel title="IPO News" accent="violet" href="/category/ipo" badge="IPO" articles={ipoArticles} />
+
+                            <IpoReviewPanel reviews={ipoReviews} />
 
                             <NewsPanel title="Credit Card &amp; Finance" accent="blue" href="/category/finance" articles={financeCards} />
 
