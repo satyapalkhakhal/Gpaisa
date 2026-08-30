@@ -6,6 +6,7 @@ import { LIFECYCLE_LABELS, RECOMMENDATION_LABELS } from '@/lib/ipoTypes';
 import StatusBadge from '@/components/ipo/StatusBadge';
 import DataSourceBadge from '@/components/ipo/DataSourceBadge';
 import FreshnessBadge from '@/components/ipo/FreshnessBadge';
+import CompareCheckbox from '@/components/ipo/CompareCheckbox';
 import LifecycleTimeline from '@/components/ipo/LifecycleTimeline';
 import GmpHistoryChart from '@/components/ipo/GmpHistoryChart';
 import SubscriptionChart from '@/components/ipo/SubscriptionChart';
@@ -84,7 +85,10 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                         <h1 className="text-2xl sm:text-3xl font-display font-bold text-gray-900">{companyName} IPO</h1>
                         <p className="text-sm text-gray-500 uppercase tracking-wide">{ipo.ipo_type} · {ipo.exchange?.toUpperCase() || 'NSE/BSE'}</p>
                     </div>
-                    <StatusBadge status={ipo.status} className="text-sm px-3 py-1.5" />
+                    <div className="flex items-center gap-2">
+                        <StatusBadge status={ipo.status} className="text-sm px-3 py-1.5" />
+                        <CompareCheckbox slug={ipo.slug} name={`${companyName} IPO`} />
+                    </div>
                 </div>
 
                 <div className="mb-5 overflow-x-auto">

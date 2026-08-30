@@ -47,6 +47,9 @@ export default function Footer() {
                             <li><Link href="/calculator" className="hover:text-primary-400 transition-colors">{t('nav', 'calculators')}</Link></li>
                             <li><Link href="/ipo" className="hover:text-primary-400 transition-colors">{t('nav', 'ipo')}</Link></li>
                             <li><Link href="/ipo/gmp" className="hover:text-primary-400 transition-colors">{t('ipoNav', 'gmp')}</Link></li>
+                            <li><Link href="/ncd" className="hover:text-primary-400 transition-colors">{t('investmentsNav', 'ncd')}</Link></li>
+                            <li><Link href="/rights-issue" className="hover:text-primary-400 transition-colors">{t('investmentsNav', 'rightsIssue')}</Link></li>
+                            <li><Link href="/buyback" className="hover:text-primary-400 transition-colors">{t('investmentsNav', 'buyback')}</Link></li>
                             <li><Link href="/gold-rate" className="hover:text-primary-400 transition-colors">{t('nav', 'goldRate')}</Link></li>
                             <li><Link href="/silver-rate" className="hover:text-primary-400 transition-colors">{t('nav', 'silverRate')}</Link></li>
                             <li><Link href="/commodities" className="hover:text-primary-400 transition-colors">{t('footer', 'goldCommodities')}</Link></li>

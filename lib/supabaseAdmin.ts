@@ -11,6 +11,7 @@ import {
     IpoSubscriptionUpdate,
     Registrar,
 } from './ipoTypes';
+import { Buyback, NcdIssue, NcdSeries, RightsIssue } from './otherInvestmentsTypes';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -498,4 +499,245 @@ export async function createDocument(ipoId: string, input: AdminDocumentInput): 
 
 export async function deleteDocument(id: string): Promise<void> {
     await supabaseAdminFetch(`ipo_documents?id=eq.${id}`, { method: 'DELETE' }, 'deleteDocument');
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Other Investments — NCD Issues, Rights Issues, Buybacks. Lighter CRUD than
+// the IPO vertical (no child sub-resources) — same supabaseAdminFetch pattern.
+// ─────────────────────────────────────────────────────────────────────────
+
+export interface AdminNcdIssueInput {
+    company_id: string;
+    slug: string;
+    status: string;
+    open_date?: string | null;
+    close_date?: string | null;
+    allotment_date?: string | null;
+    listing_date?: string | null;
+    issue_size?: number | null;
+    base_issue_size?: number | null;
+    shelf_limit?: number | null;
+    credit_rating?: string | null;
+    rating_agency?: string | null;
+    secured?: boolean;
+    series?: NcdSeries[];
+    registrar_id?: string | null;
+    lead_managers?: string[];
+    objects_of_issue?: string | null;
+    prospectus_url?: string | null;
+    subscription_times_overall?: number | null;
+    subscription_updated_at?: string | null;
+    is_featured?: boolean;
+    meta_title?: string | null;
+    meta_description?: string | null;
+    publish_status: string;
+}
+
+export async function listNcdIssuesAdmin(opts: { page?: number; pageSize?: number; search?: string; status?: string } = {}) {
+    const { page = 1, pageSize = 20, search, status } = opts;
+    const params = new URLSearchParams({ select: '*', order: 'created_at.desc' });
+    if (search) params.set('slug', `ilike.*${search}*`);
+    if (status) params.set('status', `eq.${status}`);
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+    const res = await supabaseAdminFetch(`ncd_issues?${params.toString()}`, {
+        headers: { Prefer: 'count=exact', Range: `${from}-${to}`, 'Range-Unit': 'items' },
+    }, 'listNcdIssuesAdmin');
+    const issues: NcdIssue[] = await res.json();
+    const contentRange = res.headers.get('content-range');
+    const total = contentRange ? parseInt(contentRange.split('/')[1], 10) : issues.length;
+    return { issues, total };
+}
+
+export async function getNcdIssueByIdAdmin(id: string): Promise<NcdIssue | null> {
+    const res = await supabaseAdminFetch(`ncd_issues?select=*&id=eq.${id}`, {}, 'getNcdIssueByIdAdmin');
+    const rows: NcdIssue[] = await res.json();
+    return rows[0] ?? null;
+}
+
+export async function getNcdIssueBySlugAdmin(slug: string): Promise<NcdIssue | null> {
+    const res = await supabaseAdminFetch(`ncd_issues?select=*&slug=eq.${encodeURIComponent(slug)}`, {}, 'getNcdIssueBySlugAdmin');
+    const rows: NcdIssue[] = await res.json();
+    return rows[0] ?? null;
+}
+
+export async function createNcdIssue(input: AdminNcdIssueInput): Promise<NcdIssue> {
+    const now = new Date().toISOString();
+    const res = await supabaseAdminFetch('ncd_issues', {
+        method: 'POST',
+        headers: { Prefer: 'return=representation' },
+        body: JSON.stringify({ ...input, created_at: now, updated_at: now }),
+    }, 'createNcdIssue');
+    const [row] = await res.json();
+    return row;
+}
+
+export async function updateNcdIssue(id: string, input: Partial<AdminNcdIssueInput>): Promise<NcdIssue> {
+    const res = await supabaseAdminFetch(`ncd_issues?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { Prefer: 'return=representation' },
+        body: JSON.stringify({ ...input, updated_at: new Date().toISOString() }),
+    }, 'updateNcdIssue');
+    const rows: NcdIssue[] = await res.json();
+    if (!rows.length) throw new Error('NCD issue not found');
+    return rows[0];
+}
+
+export async function deleteNcdIssue(id: string): Promise<void> {
+    await supabaseAdminFetch(`ncd_issues?id=eq.${id}`, { method: 'DELETE' }, 'deleteNcdIssue');
+}
+
+export interface AdminRightsIssueInput {
+    company_id: string;
+    slug: string;
+    status: string;
+    record_date?: string | null;
+    re_trading_start?: string | null;
+    re_trading_end?: string | null;
+    application_start?: string | null;
+    application_end?: string | null;
+    allotment_date?: string | null;
+    listing_date?: string | null;
+    rights_ratio?: string | null;
+    issue_price?: number | null;
+    face_value?: number | null;
+    issue_size?: number | null;
+    re_price?: number | null;
+    re_price_updated_at?: string | null;
+    registrar_id?: string | null;
+    objects_of_issue?: string | null;
+    letter_of_offer_url?: string | null;
+    is_featured?: boolean;
+    meta_title?: string | null;
+    meta_description?: string | null;
+    publish_status: string;
+}
+
+export async function listRightsIssuesAdmin(opts: { page?: number; pageSize?: number; search?: string; status?: string } = {}) {
+    const { page = 1, pageSize = 20, search, status } = opts;
+    const params = new URLSearchParams({ select: '*', order: 'created_at.desc' });
+    if (search) params.set('slug', `ilike.*${search}*`);
+    if (status) params.set('status', `eq.${status}`);
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+    const res = await supabaseAdminFetch(`rights_issues?${params.toString()}`, {
+        headers: { Prefer: 'count=exact', Range: `${from}-${to}`, 'Range-Unit': 'items' },
+    }, 'listRightsIssuesAdmin');
+    const issues: RightsIssue[] = await res.json();
+    const contentRange = res.headers.get('content-range');
+    const total = contentRange ? parseInt(contentRange.split('/')[1], 10) : issues.length;
+    return { issues, total };
+}
+
+export async function getRightsIssueByIdAdmin(id: string): Promise<RightsIssue | null> {
+    const res = await supabaseAdminFetch(`rights_issues?select=*&id=eq.${id}`, {}, 'getRightsIssueByIdAdmin');
+    const rows: RightsIssue[] = await res.json();
+    return rows[0] ?? null;
+}
+
+export async function getRightsIssueBySlugAdmin(slug: string): Promise<RightsIssue | null> {
+    const res = await supabaseAdminFetch(`rights_issues?select=*&slug=eq.${encodeURIComponent(slug)}`, {}, 'getRightsIssueBySlugAdmin');
+    const rows: RightsIssue[] = await res.json();
+    return rows[0] ?? null;
+}
+
+export async function createRightsIssue(input: AdminRightsIssueInput): Promise<RightsIssue> {
+    const now = new Date().toISOString();
+    const res = await supabaseAdminFetch('rights_issues', {
+        method: 'POST',
+        headers: { Prefer: 'return=representation' },
+        body: JSON.stringify({ ...input, created_at: now, updated_at: now }),
+    }, 'createRightsIssue');
+    const [row] = await res.json();
+    return row;
+}
+
+export async function updateRightsIssue(id: string, input: Partial<AdminRightsIssueInput>): Promise<RightsIssue> {
+    const res = await supabaseAdminFetch(`rights_issues?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { Prefer: 'return=representation' },
+        body: JSON.stringify({ ...input, updated_at: new Date().toISOString() }),
+    }, 'updateRightsIssue');
+    const rows: RightsIssue[] = await res.json();
+    if (!rows.length) throw new Error('Rights issue not found');
+    return rows[0];
+}
+
+export async function deleteRightsIssue(id: string): Promise<void> {
+    await supabaseAdminFetch(`rights_issues?id=eq.${id}`, { method: 'DELETE' }, 'deleteRightsIssue');
+}
+
+export interface AdminBuybackInput {
+    company_id: string;
+    slug: string;
+    status: string;
+    method: string;
+    buyback_price?: number | null;
+    buyback_price_max?: number | null;
+    record_date?: string | null;
+    tender_open_date?: string | null;
+    tender_close_date?: string | null;
+    buyback_size?: number | null;
+    acceptance_ratio?: string | null;
+    registrar_id?: string | null;
+    notes?: string | null;
+    letter_of_offer_url?: string | null;
+    is_featured?: boolean;
+    meta_title?: string | null;
+    meta_description?: string | null;
+    publish_status: string;
+}
+
+export async function listBuybacksAdmin(opts: { page?: number; pageSize?: number; search?: string; status?: string } = {}) {
+    const { page = 1, pageSize = 20, search, status } = opts;
+    const params = new URLSearchParams({ select: '*', order: 'created_at.desc' });
+    if (search) params.set('slug', `ilike.*${search}*`);
+    if (status) params.set('status', `eq.${status}`);
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+    const res = await supabaseAdminFetch(`buybacks?${params.toString()}`, {
+        headers: { Prefer: 'count=exact', Range: `${from}-${to}`, 'Range-Unit': 'items' },
+    }, 'listBuybacksAdmin');
+    const buybacks: Buyback[] = await res.json();
+    const contentRange = res.headers.get('content-range');
+    const total = contentRange ? parseInt(contentRange.split('/')[1], 10) : buybacks.length;
+    return { buybacks, total };
+}
+
+export async function getBuybackByIdAdmin(id: string): Promise<Buyback | null> {
+    const res = await supabaseAdminFetch(`buybacks?select=*&id=eq.${id}`, {}, 'getBuybackByIdAdmin');
+    const rows: Buyback[] = await res.json();
+    return rows[0] ?? null;
+}
+
+export async function getBuybackBySlugAdmin(slug: string): Promise<Buyback | null> {
+    const res = await supabaseAdminFetch(`buybacks?select=*&slug=eq.${encodeURIComponent(slug)}`, {}, 'getBuybackBySlugAdmin');
+    const rows: Buyback[] = await res.json();
+    return rows[0] ?? null;
+}
+
+export async function createBuyback(input: AdminBuybackInput): Promise<Buyback> {
+    const now = new Date().toISOString();
+    const res = await supabaseAdminFetch('buybacks', {
+        method: 'POST',
+        headers: { Prefer: 'return=representation' },
+        body: JSON.stringify({ ...input, created_at: now, updated_at: now }),
+    }, 'createBuyback');
+    const [row] = await res.json();
+    return row;
+}
+
+export async function updateBuyback(id: string, input: Partial<AdminBuybackInput>): Promise<Buyback> {
+    const res = await supabaseAdminFetch(`buybacks?id=eq.${id}`, {
+        method: 'PATCH',
+        headers: { Prefer: 'return=representation' },
+        body: JSON.stringify({ ...input, updated_at: new Date().toISOString() }),
+    }, 'updateBuyback');
+    const rows: Buyback[] = await res.json();
+    if (!rows.length) throw new Error('Buyback not found');
+    return rows[0];
+}
+
+export async function deleteBuyback(id: string): Promise<void> {
+    await supabaseAdminFetch(`buybacks?id=eq.${id}`, { method: 'DELETE' }, 'deleteBuyback');
 }

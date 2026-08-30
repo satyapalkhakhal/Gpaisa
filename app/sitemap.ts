@@ -3,6 +3,7 @@ import { CATEGORIES, DROPPED_CATEGORY_DB_VALUES } from '@/lib/categories';
 import { GLOSSARY_TERMS } from '@/lib/glossaryData';
 import { IPO_CALCULATORS } from '@/lib/ipoCalculatorsList';
 import { fetchAllPublishedIpoSlugs } from '@/lib/ipoApi';
+import { fetchAllPublishedBuybackSlugs, fetchAllPublishedNcdSlugs, fetchAllPublishedRightsIssueSlugs } from '@/lib/otherInvestmentsApi';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -217,7 +218,43 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'monthly',
             priority: 0.7,
         },
+        {
+            url: `${baseUrl}/ncd`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 0.7,
+        },
+        {
+            url: `${baseUrl}/rights-issue`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 0.7,
+        },
+        {
+            url: `${baseUrl}/buyback`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 0.7,
+        },
     ];
+
+    // Other Investments detail pages — same noindex-if-thin reasoning as IPOs:
+    // only published records get a sitemap entry.
+    let ncdPages: MetadataRoute.Sitemap = [];
+    let rightsIssuePages: MetadataRoute.Sitemap = [];
+    let buybackPages: MetadataRoute.Sitemap = [];
+    try {
+        const [ncds, rightsIssues, buybacks] = await Promise.all([
+            fetchAllPublishedNcdSlugs(),
+            fetchAllPublishedRightsIssueSlugs(),
+            fetchAllPublishedBuybackSlugs(),
+        ]);
+        ncdPages = ncds.map((n) => ({ url: `${baseUrl}/ncd/${n.slug}`, lastModified: new Date(n.updated_at), changeFrequency: 'daily' as const, priority: 0.65 }));
+        rightsIssuePages = rightsIssues.map((r) => ({ url: `${baseUrl}/rights-issue/${r.slug}`, lastModified: new Date(r.updated_at), changeFrequency: 'daily' as const, priority: 0.65 }));
+        buybackPages = buybacks.map((b) => ({ url: `${baseUrl}/buyback/${b.slug}`, lastModified: new Date(b.updated_at), changeFrequency: 'daily' as const, priority: 0.65 }));
+    } catch (error) {
+        console.error('Error fetching Other Investments for sitemap:', error);
+    }
 
     // IPO calculator tool pages
     const ipoCalculatorPages: MetadataRoute.Sitemap = IPO_CALCULATORS.map((c) => ({
@@ -342,5 +379,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...articlePages,
         ...ipoCalculatorPages,
         ...ipoPages,
+        ...ncdPages,
+        ...rightsIssuePages,
+        ...buybackPages,
     ];
 }

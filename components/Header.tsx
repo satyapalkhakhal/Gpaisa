@@ -56,6 +56,15 @@ export default function Header() {
                 { name: t('ipoNav', 'calculators'), href: '/ipo-calculator' },
             ]
         },
+        {
+            name: t('nav', 'otherInvestments'),
+            href: '/ncd',
+            dropdown: [
+                { name: t('investmentsNav', 'ncd'), href: '/ncd' },
+                { name: t('investmentsNav', 'rightsIssue'), href: '/rights-issue' },
+                { name: t('investmentsNav', 'buyback'), href: '/buyback' },
+            ]
+        },
         { name: t('nav', 'personalFinance'), href: '/category/business' },
         { name: t('nav', 'news'), href: '/news' },
         { name: t('nav', 'glossary'), href: '/glossary' },

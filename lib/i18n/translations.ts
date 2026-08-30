@@ -10,9 +10,17 @@ export const translations = {
         agriculture: { en: 'Agriculture', hi: 'कृषि' },
         calculators: { en: 'Calculators', hi: 'कैलकुलेटर' },
         ipo: { en: 'IPO', hi: 'आईपीओ' },
+        otherInvestments: { en: 'Other Investments', hi: 'अन्य निवेश' },
         personalFinance: { en: 'Business News', hi: 'व्यापार समाचार' },
         news: { en: 'News', hi: 'समाचार' },
         glossary: { en: 'Glossary', hi: 'शब्दकोश' },
+    },
+
+    // ─── Other Investments Dropdown ─────────────────────────────────
+    investmentsNav: {
+        ncd: { en: 'NCD Issues', hi: 'एनसीडी इश्यू' },
+        rightsIssue: { en: 'Rights Issues', hi: 'राइट्स इश्यू' },
+        buyback: { en: 'Buybacks', hi: 'बायबैक' },
     },
 
     // ─── IPO Dropdown ───────────────────────────────────────────────
