@@ -9,9 +9,19 @@ export const translations = {
         commodities: { en: 'Commodities', hi: 'कमोडिटी' },
         agriculture: { en: 'Agriculture', hi: 'कृषि' },
         calculators: { en: 'Calculators', hi: 'कैलकुलेटर' },
+        ipo: { en: 'IPO', hi: 'आईपीओ' },
         personalFinance: { en: 'Business News', hi: 'व्यापार समाचार' },
         news: { en: 'News', hi: 'समाचार' },
         glossary: { en: 'Glossary', hi: 'शब्दकोश' },
+    },
+
+    // ─── IPO Dropdown ───────────────────────────────────────────────
+    ipoNav: {
+        mainboard: { en: 'Mainboard IPO', hi: 'मेनबोर्ड आईपीओ' },
+        sme: { en: 'SME IPO', hi: 'एसएमई आईपीओ' },
+        gmp: { en: 'IPO GMP', hi: 'आईपीओ जीएमपी' },
+        listingPerformance: { en: 'Listing Performance', hi: 'लिस्टिंग प्रदर्शन' },
+        calculators: { en: 'IPO Calculators', hi: 'आईपीओ कैलकुलेटर' },
     },
 
     // ─── Calculator Dropdown ────────────────────────────────────────

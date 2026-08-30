@@ -10,6 +10,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         <Link href="/admin/articles" className="font-bold">gpaisa Admin</Link>
                         <Link href="/admin/articles" className="text-sm text-gray-300 hover:text-white transition-colors">Articles</Link>
                         <Link href="/admin/articles/new" className="text-sm text-gray-300 hover:text-white transition-colors">New Article</Link>
+                        <Link href="/admin/ipos" className="text-sm text-gray-300 hover:text-white transition-colors">IPOs</Link>
+                        <Link href="/admin/ipos/new" className="text-sm text-gray-300 hover:text-white transition-colors">New IPO</Link>
                     </div>
                     <LogoutButton />
                 </div>

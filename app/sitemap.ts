@@ -1,6 +1,8 @@
 import { MetadataRoute } from 'next';
 import { CATEGORIES, DROPPED_CATEGORY_DB_VALUES } from '@/lib/categories';
 import { GLOSSARY_TERMS } from '@/lib/glossaryData';
+import { IPO_CALCULATORS } from '@/lib/ipoCalculatorsList';
+import { fetchAllPublishedIpoSlugs } from '@/lib/ipoApi';
 
 const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
@@ -191,7 +193,55 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'monthly',
             priority: 0.7,
         },
+        {
+            url: `${baseUrl}/ipo`,
+            lastModified: new Date(), // IPO statuses change frequently
+            changeFrequency: 'hourly',
+            priority: 0.9,
+        },
+        {
+            url: `${baseUrl}/ipo/gmp`,
+            lastModified: new Date(),
+            changeFrequency: 'hourly',
+            priority: 0.85,
+        },
+        {
+            url: `${baseUrl}/ipo/listing-performance`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 0.75,
+        },
+        {
+            url: `${baseUrl}/ipo-calculator`,
+            lastModified: new Date(),
+            changeFrequency: 'monthly',
+            priority: 0.7,
+        },
     ];
+
+    // IPO calculator tool pages
+    const ipoCalculatorPages: MetadataRoute.Sitemap = IPO_CALCULATORS.map((c) => ({
+        url: `${baseUrl}/ipo-calculator/${c.slug}`,
+        lastModified: new Date('2026-08-30'),
+        changeFrequency: 'monthly',
+        priority: 0.6,
+    }));
+
+    // IPO detail pages — only published IPOs, mirroring the noindex-if-thin
+    // pattern used for category hubs: an IPO with no published record shouldn't
+    // appear in the sitemap even though the dynamic route technically exists.
+    let ipoPages: MetadataRoute.Sitemap = [];
+    try {
+        const ipos = await fetchAllPublishedIpoSlugs();
+        ipoPages = ipos.map((ipo) => ({
+            url: `${baseUrl}/ipo/${ipo.slug}`,
+            lastModified: new Date(ipo.updated_at),
+            changeFrequency: 'daily' as const,
+            priority: 0.75,
+        }));
+    } catch (error) {
+        console.error('Error fetching IPOs for sitemap:', error);
+    }
 
     // Glossary term pages
     const glossaryPages: MetadataRoute.Sitemap = GLOSSARY_TERMS.map((t) => ({
@@ -290,5 +340,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...goldRateCityPages,
         ...silverRateCityPages,
         ...articlePages,
+        ...ipoCalculatorPages,
+        ...ipoPages,
     ];
 }

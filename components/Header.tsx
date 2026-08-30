@@ -9,7 +9,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [calculatorDropdownOpen, setCalculatorDropdownOpen] = useState(false);
+    const [openDropdown, setOpenDropdown] = useState<string | null>(null);
     const [menuAnimating, setMenuAnimating] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
     const { t } = useLanguage();
@@ -43,6 +43,17 @@ export default function Header() {
                 { name: t('calculators', 'ssyCalculator'), href: '/calculator/ssy' },
                 { name: t('calculators', 'nscCalculator'), href: '/calculator/nsc' },
                 { name: t('calculators', 'scssCalculator'), href: '/calculator/scss' },
+            ]
+        },
+        {
+            name: t('nav', 'ipo'),
+            href: '/ipo',
+            dropdown: [
+                { name: t('ipoNav', 'mainboard'), href: '/ipo?tab=open&type=mainboard' },
+                { name: t('ipoNav', 'sme'), href: '/ipo?tab=open&type=sme' },
+                { name: t('ipoNav', 'gmp'), href: '/ipo/gmp' },
+                { name: t('ipoNav', 'listingPerformance'), href: '/ipo/listing-performance' },
+                { name: t('ipoNav', 'calculators'), href: '/ipo-calculator' },
             ]
         },
         { name: t('nav', 'personalFinance'), href: '/category/business' },
@@ -111,8 +122,8 @@ export default function Header() {
                                 <div
                                     key={item.name}
                                     className="relative"
-                                    onMouseEnter={() => setCalculatorDropdownOpen(true)}
-                                    onMouseLeave={() => setCalculatorDropdownOpen(false)}
+                                    onMouseEnter={() => setOpenDropdown(item.name)}
+                                    onMouseLeave={() => setOpenDropdown(null)}
                                 >
                                     <button
                                         className="px-2.5 xl:px-3.5 py-2 text-sm font-medium text-gray-700 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-colors duration-200 flex items-center gap-1 whitespace-nowrap"
@@ -120,7 +131,7 @@ export default function Header() {
                                         {item.name}
                                         <ChevronDown className="w-3.5 h-3.5" />
                                     </button>
-                                    {calculatorDropdownOpen && (
+                                    {openDropdown === item.name && (
                                         <div className="absolute left-0 mt-1 w-52 bg-white rounded-lg shadow-xl border border-gray-200 py-1 z-50 max-h-[70vh] overflow-y-auto">
                                             {item.dropdown.map((subItem) => (
                                                 <Link
@@ -183,14 +194,14 @@ export default function Header() {
                             item.dropdown ? (
                                 <div key={item.name}>
                                     <button
-                                        onClick={() => setCalculatorDropdownOpen(!calculatorDropdownOpen)}
+                                        onClick={() => setOpenDropdown(openDropdown === item.name ? null : item.name)}
                                         className="w-full flex items-center justify-between px-3 py-2.5 text-base font-medium text-gray-700 hover:bg-primary-50 hover:text-primary-600 rounded-lg transition-colors"
                                     >
                                         {item.name}
-                                        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${calculatorDropdownOpen ? 'rotate-180' : ''}`} />
+                                        <ChevronDown className={`w-4 h-4 transition-transform duration-200 ${openDropdown === item.name ? 'rotate-180' : ''}`} />
                                     </button>
                                     <div
-                                        className={`overflow-hidden transition-all duration-200 ease-in-out ${calculatorDropdownOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
+                                        className={`overflow-hidden transition-all duration-200 ease-in-out ${openDropdown === item.name ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}
                                     >
                                         <div className="ml-4 mt-1 space-y-0.5 border-l-2 border-primary-100 pl-3">
                                             {item.dropdown.map((subItem) => (
