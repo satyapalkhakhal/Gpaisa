@@ -9,10 +9,15 @@ git -C .. pull --ff-only
 # few values needed here instead of sourcing it.
 env_get() { grep -E "^$1=" .env | tail -n 1 | cut -d= -f2- | sed -E "s/^'(.*)'$/\\1/; s/^\"(.*)\"$/\\1/"; }
 BUILD_DATABASE_URL=$(env_get BUILD_DATABASE_URL)
-export BUILD_DATABASE_URL   # read by the build secret in docker-compose.yml
+export BUILD_DATABASE_URL   # passed to the build as a secret below
 
 docker compose up -d postgres
-docker compose build app
+# Built with buildx directly rather than `docker compose build`: newer Compose builds
+# via bake, which refuses host networking unless granted explicitly. Host network lets
+# `next build` prerender from Postgres on 127.0.0.1:5432.
+docker buildx build --allow network.host --network host \
+    --secret id=database_url,env=BUILD_DATABASE_URL \
+    -t gpaisa-app:latest --load ..
 docker compose up -d
 
 echo "Waiting for health check..."
