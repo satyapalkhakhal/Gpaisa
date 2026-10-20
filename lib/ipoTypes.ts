@@ -25,6 +25,8 @@ export interface Company {
     website: string | null;
     incorporated_year: number | null;
     registered_office: string | null;
+    phone: string | null;
+    email: string | null;
     created_at: string;
     updated_at: string;
 }
@@ -36,9 +38,28 @@ export interface Registrar {
     website: string | null;
     allotment_status_check_url: string | null;
     logo_url: string | null;
+    phone: string | null;
+    email: string | null;
     created_at: string;
     updated_at: string;
 }
+
+export interface ObjectsOfIssueItem {
+    purpose: string;
+    amount: number;
+}
+
+export interface PeerComparisonItem {
+    name: string;
+    eps: number | null;
+    pe_ratio: number | null;
+    ronw_percent: number | null;
+    nav: number | null;
+    income: number | null;
+}
+
+export type ReservationCategory = 'qib' | 'nii' | 'retail' | 'employee' | 'shareholder';
+export type ReservationPercentages = Partial<Record<ReservationCategory, number>>;
 
 export interface Ipo {
     id: string;
@@ -74,6 +95,19 @@ export interface Ipo {
     listing_day_close_price: number | null;
     current_market_price: number | null;
     current_price_updated_at: string | null;
+    // Content-depth fields — structured detail beyond the core lifecycle/price facts.
+    reservation_percentages: ReservationPercentages;
+    objects_of_issue_breakdown: ObjectsOfIssueItem[];
+    peer_comparison: PeerComparisonItem[];
+    promoter_holding_pre_percent: number | null;
+    promoter_holding_post_percent: number | null;
+    anchor_bidding_date: string | null;
+    anchor_shares: number | null;
+    anchor_allocation_amount: number | null;
+    anchor_lock_in_50pct_date: string | null;
+    anchor_lock_in_remaining_date: string | null;
+    anchor_list_url: string | null;
+    post_issue_shares_outstanding: number | null;
     created_at: string;
     updated_at: string;
     // Joined/expanded fields, present only when explicitly fetched with them.
@@ -167,6 +201,21 @@ export interface IpoDocument {
     created_at: string;
 }
 
+export interface IpoFinancials {
+    id: string;
+    ipo_id: string;
+    period_label: string;
+    period_end_date: string | null;
+    revenue: number | null;
+    expenses: number | null;
+    profit_after_tax: number | null;
+    total_assets: number | null;
+    ebitda: number | null;
+    net_worth: number | null;
+    total_debt: number | null;
+    created_at: string;
+}
+
 // Aggregate shape returned by fetchIpoBySlug — everything an IPO detail page needs in one call.
 export interface IpoDetail extends Ipo {
     gmp_history: IpoGmpUpdate[];
@@ -174,6 +223,7 @@ export interface IpoDetail extends Ipo {
     allotment: IpoAllotmentInfo | null;
     review: IpoReview | null;
     documents: IpoDocument[];
+    financials: IpoFinancials[];
 }
 
 export const LIFECYCLE_ORDER: IpoLifecycleStatus[] = [

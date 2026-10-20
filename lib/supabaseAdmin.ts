@@ -133,6 +133,8 @@ export interface AdminCompanyInput {
     website?: string | null;
     incorporated_year?: number | null;
     registered_office?: string | null;
+    phone?: string | null;
+    email?: string | null;
 }
 
 export async function listCompaniesAdmin(search?: string): Promise<Company[]> {
@@ -180,6 +182,8 @@ export interface AdminRegistrarInput {
     website?: string | null;
     allotment_status_check_url?: string | null;
     logo_url?: string | null;
+    phone?: string | null;
+    email?: string | null;
 }
 
 export async function listRegistrarsAdmin(): Promise<Registrar[]> {
@@ -245,6 +249,18 @@ export interface AdminIpoInput {
     listing_day_close_price?: number | null;
     current_market_price?: number | null;
     current_price_updated_at?: string | null;
+    reservation_percentages?: Record<string, number>;
+    objects_of_issue_breakdown?: { purpose: string; amount: number }[];
+    peer_comparison?: { name: string; eps: number | null; pe_ratio: number | null; ronw_percent: number | null; nav: number | null; income: number | null }[];
+    promoter_holding_pre_percent?: number | null;
+    promoter_holding_post_percent?: number | null;
+    anchor_bidding_date?: string | null;
+    anchor_shares?: number | null;
+    anchor_allocation_amount?: number | null;
+    anchor_lock_in_50pct_date?: string | null;
+    anchor_lock_in_remaining_date?: string | null;
+    anchor_list_url?: string | null;
+    post_issue_shares_outstanding?: number | null;
 }
 
 export async function listIposAdmin(opts: { page?: number; pageSize?: number; search?: string; status?: string; ipoType?: string } = {}) {
@@ -499,6 +515,43 @@ export async function createDocument(ipoId: string, input: AdminDocumentInput): 
 
 export async function deleteDocument(id: string): Promise<void> {
     await supabaseAdminFetch(`ipo_documents?id=eq.${id}`, { method: 'DELETE' }, 'deleteDocument');
+}
+
+// ── Financial statements (append-only per-period log) ───────────────────
+
+export interface AdminFinancialInput {
+    period_label: string;
+    period_end_date?: string | null;
+    revenue?: number | null;
+    expenses?: number | null;
+    profit_after_tax?: number | null;
+    total_assets?: number | null;
+    ebitda?: number | null;
+    net_worth?: number | null;
+    total_debt?: number | null;
+}
+
+export async function listFinancialsAdmin(ipoId: string): Promise<import('./ipoTypes').IpoFinancials[]> {
+    const res = await supabaseAdminFetch(
+        `ipo_financials?select=*&ipo_id=eq.${ipoId}&order=period_end_date.asc.nullslast`,
+        {},
+        'listFinancialsAdmin'
+    );
+    return res.json();
+}
+
+export async function createFinancial(ipoId: string, input: AdminFinancialInput) {
+    const res = await supabaseAdminFetch('ipo_financials', {
+        method: 'POST',
+        headers: { Prefer: 'return=representation' },
+        body: JSON.stringify({ ...input, ipo_id: ipoId, created_at: new Date().toISOString() }),
+    }, 'createFinancial');
+    const [row] = await res.json();
+    return row;
+}
+
+export async function deleteFinancial(id: string): Promise<void> {
+    await supabaseAdminFetch(`ipo_financials?id=eq.${id}`, { method: 'DELETE' }, 'deleteFinancial');
 }
 
 // ─────────────────────────────────────────────────────────────────────────

@@ -6,6 +6,7 @@ import {
     IpoAllotmentInfo,
     IpoDetail,
     IpoDocument,
+    IpoFinancials,
     IpoGmpUpdate,
     IpoLifecycleStatus,
     IpoReview,
@@ -115,7 +116,7 @@ export async function fetchIpoBySlug(slug: string, revalidateSeconds: number = 3
     const ipo: Ipo | undefined = ipoRows[0];
     if (!ipo) return null;
 
-    const [company, registrar, gmpHistory, subscriptionHistory, allotmentRows, reviewRows, documents] = await Promise.all([
+    const [company, registrar, gmpHistory, subscriptionHistory, allotmentRows, reviewRows, documents, financials] = await Promise.all([
         ipo.company_id ? fetchCompanyById(ipo.company_id, revalidateSeconds) : Promise.resolve(null),
         ipo.registrar_id ? fetchRegistrarById(ipo.registrar_id, revalidateSeconds) : Promise.resolve(null),
         ipoFetch(
@@ -139,6 +140,11 @@ export async function fetchIpoBySlug(slug: string, revalidateSeconds: number = 3
             `fetchDocuments(${ipo.id})`,
             revalidateSeconds
         ) as Promise<IpoDocument[]>,
+        ipoFetch(
+            `ipo_financials?select=*&ipo_id=eq.${ipo.id}&order=period_end_date.asc.nullslast`,
+            `fetchFinancials(${ipo.id})`,
+            revalidateSeconds
+        ) as Promise<IpoFinancials[]>,
     ]);
 
     return {
@@ -150,6 +156,12 @@ export async function fetchIpoBySlug(slug: string, revalidateSeconds: number = 3
         allotment: allotmentRows[0] ?? null,
         review: reviewRows[0] ?? null,
         documents,
+        financials: financials || [],
+        // Defensive defaults — these columns are undefined on any row fetched before
+        // migration 0005 has been applied, or from a stale ISR cache during rollout.
+        reservation_percentages: ipo.reservation_percentages || {},
+        objects_of_issue_breakdown: ipo.objects_of_issue_breakdown || [],
+        peer_comparison: ipo.peer_comparison || [],
     };
 }
 

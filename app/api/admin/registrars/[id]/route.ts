@@ -14,6 +14,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
             website: body.website,
             allotment_status_check_url: body.allotment_status_check_url,
             logo_url: body.logo_url,
+            phone: body.phone,
+            email: body.email,
         });
         return NextResponse.json({ registrar });
     } catch (error) {

@@ -31,6 +31,8 @@ export async function POST(request: NextRequest) {
             website: body.website || null,
             incorporated_year: body.incorporated_year ?? null,
             registered_office: body.registered_office || null,
+            phone: body.phone || null,
+            email: body.email || null,
         });
         return NextResponse.json({ company }, { status: 201 });
     } catch (error) {

@@ -67,6 +67,18 @@ export async function POST(request: NextRequest) {
             listing_day_close_price: body.listing_day_close_price ?? null,
             current_market_price: body.current_market_price ?? null,
             current_price_updated_at: body.current_market_price != null ? new Date().toISOString() : null,
+            reservation_percentages: body.reservation_percentages || {},
+            objects_of_issue_breakdown: Array.isArray(body.objects_of_issue_breakdown) ? body.objects_of_issue_breakdown : [],
+            peer_comparison: Array.isArray(body.peer_comparison) ? body.peer_comparison : [],
+            promoter_holding_pre_percent: body.promoter_holding_pre_percent ?? null,
+            promoter_holding_post_percent: body.promoter_holding_post_percent ?? null,
+            anchor_bidding_date: body.anchor_bidding_date || null,
+            anchor_shares: body.anchor_shares ?? null,
+            anchor_allocation_amount: body.anchor_allocation_amount ?? null,
+            anchor_lock_in_50pct_date: body.anchor_lock_in_50pct_date || null,
+            anchor_lock_in_remaining_date: body.anchor_lock_in_remaining_date || null,
+            anchor_list_url: body.anchor_list_url || null,
+            post_issue_shares_outstanding: body.post_issue_shares_outstanding ?? null,
         });
         return NextResponse.json({ ipo }, { status: 201 });
     } catch (error) {

@@ -14,6 +14,23 @@ export const translations = {
         personalFinance: { en: 'Business News', hi: 'व्यापार समाचार' },
         news: { en: 'News', hi: 'समाचार' },
         glossary: { en: 'Glossary', hi: 'शब्दकोश' },
+        goldSilver: { en: 'Gold & Silver', hi: 'सोना-चांदी' },
+        investments: { en: 'Cards & Investments', hi: 'कार्ड और निवेश' },
+    },
+
+    // ─── Grouped nav menus (header) ─────────────────────────────────
+    navMenu: {
+        goldVsSilver: { en: 'Gold vs Silver', hi: 'सोना बनाम चांदी' },
+        compareIpos: { en: 'Compare IPOs', hi: 'आईपीओ तुलना' },
+        creditCards: { en: 'Credit Cards', hi: 'क्रेडिट कार्ड' },
+        allCalculators: { en: 'All calculators', hi: 'सभी कैलकुलेटर' },
+        latestNews: { en: 'Latest News', hi: 'ताज़ा समाचार' },
+        financeNews: { en: 'Personal Finance', hi: 'व्यक्तिगत वित्त' },
+        ipoNews: { en: 'IPO News', hi: 'आईपीओ समाचार' },
+        invest: { en: 'Invest', hi: 'निवेश' },
+        save: { en: 'Save', hi: 'बचत' },
+        loans: { en: 'Loans', hi: 'लोन' },
+        taxRetirement: { en: 'Tax & Retirement', hi: 'टैक्स और रिटायरमेंट' },
     },
 
     // ─── Other Investments Dropdown ─────────────────────────────────

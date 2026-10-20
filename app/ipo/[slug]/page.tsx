@@ -10,6 +10,18 @@ import CompareCheckbox from '@/components/ipo/CompareCheckbox';
 import LifecycleTimeline from '@/components/ipo/LifecycleTimeline';
 import GmpHistoryChart from '@/components/ipo/GmpHistoryChart';
 import SubscriptionChart from '@/components/ipo/SubscriptionChart';
+import DatesTimelineTable from '@/components/ipo/DatesTimelineTable';
+import MarketLotTable from '@/components/ipo/MarketLotTable';
+import ReservationTable from '@/components/ipo/ReservationTable';
+import ObjectsOfIssueTable from '@/components/ipo/ObjectsOfIssueTable';
+import AnchorInvestorSection from '@/components/ipo/AnchorInvestorSection';
+import PromoterHoldingTable from '@/components/ipo/PromoterHoldingTable';
+import FinancialsTable from '@/components/ipo/FinancialsTable';
+import ValuationKpiTable from '@/components/ipo/ValuationKpiTable';
+import PeerComparisonTable from '@/components/ipo/PeerComparisonTable';
+import CompanyContactBlock from '@/components/ipo/CompanyContactBlock';
+import IpoFaq from '@/components/ipo/IpoFaq';
+import { computeValuationKpis } from '@/lib/ipoComputed';
 
 export const revalidate = 300;
 
@@ -53,6 +65,11 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
     const companyName = ipo.company?.name || ipo.slug;
     const investmentAtLot = ipo.price_band_max && ipo.lot_size ? ipo.price_band_max * ipo.lot_size : null;
     const latestGmp = ipo.gmp_history[0];
+    const latestFinancial = ipo.financials[ipo.financials.length - 1];
+    const valuationKpis = computeValuationKpis(latestFinancial, ipo);
+    const ownPeerRow = latestFinancial
+        ? { name: companyName, eps: valuationKpis.eps, pe_ratio: valuationKpis.peRatio, ronw_percent: valuationKpis.ronwPercent, nav: valuationKpis.nav, income: latestFinancial.revenue }
+        : null;
 
     const webPageSchema = {
         '@context': 'https://schema.org',
@@ -129,6 +146,18 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                         <p className="font-bold text-gray-900">{formatDate(ipo.listing_date)}</p>
                     </div>
                 </div>
+            </div>
+
+            {/* Key dates + market lot — literal tables in addition to the visual timeline above */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+                <section className="bg-white rounded-2xl border border-gray-100 p-6">
+                    <h2 className="text-lg font-bold text-gray-900 mb-3">IPO Timeline</h2>
+                    <DatesTimelineTable ipo={ipo} />
+                </section>
+                <section className="bg-white rounded-2xl border border-gray-100 p-6">
+                    <h2 className="text-lg font-bold text-gray-900 mb-3">Market Lot</h2>
+                    <MarketLotTable ipo={ipo} />
+                </section>
             </div>
 
             {/* GMP */}
@@ -211,7 +240,24 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                     <DataSourceBadge kind="official" />
                 </div>
                 <SubscriptionChart history={ipo.subscription_history} />
+                {Object.keys(ipo.reservation_percentages).length > 0 && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                        <h3 className="text-sm font-bold text-gray-900 mb-2">Category-wise Reservation</h3>
+                        <ReservationTable reservation={ipo.reservation_percentages} />
+                    </div>
+                )}
             </section>
+
+            {/* Anchor Investors */}
+            {ipo.anchor_bidding_date && (
+                <section className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
+                    <div className="flex items-center justify-between mb-3">
+                        <h2 className="text-lg font-bold text-gray-900">Anchor Investors</h2>
+                        <DataSourceBadge kind="official" />
+                    </div>
+                    <AnchorInvestorSection ipo={ipo} />
+                </section>
+            )}
 
             {/* Allotment */}
             {ipo.allotment && (
@@ -238,6 +284,40 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                             Estimate Allotment Probability →
                         </Link>
                     </div>
+                </section>
+            )}
+
+            {/* Financials & Valuation */}
+            {(ipo.financials.length > 0 || ipo.peer_comparison.length > 0 || ipo.promoter_holding_pre_percent != null) && (
+                <section className="bg-white rounded-2xl border border-gray-100 p-6 mb-6 space-y-6">
+                    <div className="flex items-center justify-between">
+                        <h2 className="text-lg font-bold text-gray-900">Financials &amp; Valuation</h2>
+                        <DataSourceBadge kind="official" />
+                    </div>
+                    {ipo.financials.length > 0 && (
+                        <div>
+                            <h3 className="text-sm font-bold text-gray-900 mb-2">Financial Performance</h3>
+                            <FinancialsTable financials={ipo.financials} />
+                        </div>
+                    )}
+                    {ipo.financials.length > 0 && (
+                        <div>
+                            <h3 className="text-sm font-bold text-gray-900 mb-2">Valuation &amp; KPIs</h3>
+                            <ValuationKpiTable kpis={valuationKpis} />
+                        </div>
+                    )}
+                    {ipo.peer_comparison.length > 0 && (
+                        <div>
+                            <h3 className="text-sm font-bold text-gray-900 mb-2">Comparison with Listed Peers</h3>
+                            <PeerComparisonTable peers={ipo.peer_comparison} companyName={companyName} ownRow={ownPeerRow} />
+                        </div>
+                    )}
+                    {ipo.promoter_holding_pre_percent != null && (
+                        <div>
+                            <h3 className="text-sm font-bold text-gray-900 mb-2">Promoter Holding</h3>
+                            <PromoterHoldingTable prePercent={ipo.promoter_holding_pre_percent} postPercent={ipo.promoter_holding_post_percent} />
+                        </div>
+                    )}
                 </section>
             )}
 
@@ -304,10 +384,9 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
             )}
 
             {/* Company / issue details */}
-            <section className="bg-white rounded-2xl border border-gray-100 p-6">
+            <section className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-3">About the Issue</h2>
-                {ipo.objects_of_issue && <p className="text-sm text-gray-700 mb-3">{ipo.objects_of_issue}</p>}
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm mb-4">
                     <div><p className="text-xs text-gray-400">Fresh issue</p><p className="font-semibold text-gray-900">{ipo.fresh_issue_amount ? `₹${ipo.fresh_issue_amount} Cr` : '—'}</p></div>
                     <div><p className="text-xs text-gray-400">Offer for sale</p><p className="font-semibold text-gray-900">{ipo.ofs_amount ? `₹${ipo.ofs_amount} Cr` : '—'}</p></div>
                     <div><p className="text-xs text-gray-400">Face value</p><p className="font-semibold text-gray-900">{ipo.face_value ? `₹${ipo.face_value}` : '—'}</p></div>
@@ -318,12 +397,26 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                         </div>
                     )}
                 </div>
+                <h3 className="text-sm font-bold text-gray-900 mb-2">Objects of the Issue</h3>
+                <ObjectsOfIssueTable breakdown={ipo.objects_of_issue_breakdown} fallbackText={ipo.objects_of_issue} />
                 {ipo.company?.about && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
                         <p className="text-xs text-gray-400 mb-1">About {companyName}</p>
                         <p className="text-sm text-gray-700">{ipo.company.about}</p>
                     </div>
                 )}
+            </section>
+
+            {/* Contact details */}
+            <section className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
+                <h2 className="text-lg font-bold text-gray-900 mb-3">Company &amp; Registrar Contact</h2>
+                <CompanyContactBlock company={ipo.company} registrar={ipo.registrar} />
+            </section>
+
+            {/* FAQ */}
+            <section className="bg-white rounded-2xl border border-gray-100 p-6">
+                <h2 className="text-lg font-bold text-gray-900 mb-3">Frequently Asked Questions</h2>
+                <IpoFaq ipo={ipo} companyName={companyName} />
             </section>
         </div>
     );

@@ -67,6 +67,18 @@ const config: Config = {
                 // Background Colors
                 bgMain: '#F9FAFB',
                 bgCard: '#FFFFFF',
+                // Groww-style tokens used by the homepage (components/home)
+                gw: {
+                    green: '#00b386',
+                    greenDark: '#00a07a',
+                    greenBg: '#ebf9f5',
+                    red: '#eb5b3c',
+                    redBg: '#fdefec',
+                    text: '#44475b',
+                    sub: '#7c7e8c',
+                    border: '#e9e9eb',
+                    bg: '#f8f8f8',
+                },
             },
             fontFamily: {
                 sans: ['Inter', 'system-ui', 'sans-serif'],

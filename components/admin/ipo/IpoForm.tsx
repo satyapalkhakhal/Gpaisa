@@ -4,13 +4,14 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { slugify } from '@/lib/slugify';
 import { validateIpoInput } from '@/lib/ipoValidation';
-import type { Company, Ipo, IpoLifecycleStatus, IpoType, Registrar } from '@/lib/ipoTypes';
+import type { Company, Ipo, IpoLifecycleStatus, IpoType, ObjectsOfIssueItem, PeerComparisonItem, Registrar } from '@/lib/ipoTypes';
 import { LIFECYCLE_LABELS, LIFECYCLE_ORDER } from '@/lib/ipoTypes';
 import GmpPanel from './GmpPanel';
 import SubscriptionPanel from './SubscriptionPanel';
 import AllotmentPanel from './AllotmentPanel';
 import ReviewPanel from './ReviewPanel';
 import DocumentsPanel from './DocumentsPanel';
+import FinancialsPanel from './FinancialsPanel';
 
 interface IpoFormProps {
     mode: 'create' | 'edit';
@@ -57,6 +58,21 @@ export default function IpoForm({ mode, initialIpo }: IpoFormProps) {
     const [listingPrice, setListingPrice] = useState(initialIpo?.listing_price?.toString() || '');
     const [listingDayClosePrice, setListingDayClosePrice] = useState(initialIpo?.listing_day_close_price?.toString() || '');
     const [currentMarketPrice, setCurrentMarketPrice] = useState(initialIpo?.current_market_price?.toString() || '');
+    const [postIssueShares, setPostIssueShares] = useState(initialIpo?.post_issue_shares_outstanding?.toString() || '');
+    const [reservationQib, setReservationQib] = useState(initialIpo?.reservation_percentages?.qib?.toString() || '');
+    const [reservationNii, setReservationNii] = useState(initialIpo?.reservation_percentages?.nii?.toString() || '');
+    const [reservationRetail, setReservationRetail] = useState(initialIpo?.reservation_percentages?.retail?.toString() || '');
+    const [reservationEmployee, setReservationEmployee] = useState(initialIpo?.reservation_percentages?.employee?.toString() || '');
+    const [promoterHoldingPre, setPromoterHoldingPre] = useState(initialIpo?.promoter_holding_pre_percent?.toString() || '');
+    const [promoterHoldingPost, setPromoterHoldingPost] = useState(initialIpo?.promoter_holding_post_percent?.toString() || '');
+    const [anchorBiddingDate, setAnchorBiddingDate] = useState(initialIpo?.anchor_bidding_date?.slice(0, 10) || '');
+    const [anchorShares, setAnchorShares] = useState(initialIpo?.anchor_shares?.toString() || '');
+    const [anchorAllocationAmount, setAnchorAllocationAmount] = useState(initialIpo?.anchor_allocation_amount?.toString() || '');
+    const [anchorLockIn50, setAnchorLockIn50] = useState(initialIpo?.anchor_lock_in_50pct_date?.slice(0, 10) || '');
+    const [anchorLockInRemaining, setAnchorLockInRemaining] = useState(initialIpo?.anchor_lock_in_remaining_date?.slice(0, 10) || '');
+    const [anchorListUrl, setAnchorListUrl] = useState(initialIpo?.anchor_list_url || '');
+    const [objectsBreakdown, setObjectsBreakdown] = useState<ObjectsOfIssueItem[]>(initialIpo?.objects_of_issue_breakdown?.length ? initialIpo.objects_of_issue_breakdown : []);
+    const [peerComparison, setPeerComparison] = useState<PeerComparisonItem[]>(initialIpo?.peer_comparison?.length ? initialIpo.peer_comparison : []);
 
     const [saving, setSaving] = useState(false);
     const [errors, setErrors] = useState<string[]>([]);
@@ -153,6 +169,23 @@ export default function IpoForm({ mode, initialIpo }: IpoFormProps) {
             listing_price: listingPrice ? Number(listingPrice) : null,
             listing_day_close_price: listingDayClosePrice ? Number(listingDayClosePrice) : null,
             current_market_price: currentMarketPrice ? Number(currentMarketPrice) : null,
+            post_issue_shares_outstanding: postIssueShares ? Number(postIssueShares) : null,
+            reservation_percentages: {
+                ...(reservationQib ? { qib: Number(reservationQib) } : {}),
+                ...(reservationNii ? { nii: Number(reservationNii) } : {}),
+                ...(reservationRetail ? { retail: Number(reservationRetail) } : {}),
+                ...(reservationEmployee ? { employee: Number(reservationEmployee) } : {}),
+            },
+            promoter_holding_pre_percent: promoterHoldingPre ? Number(promoterHoldingPre) : null,
+            promoter_holding_post_percent: promoterHoldingPost ? Number(promoterHoldingPost) : null,
+            anchor_bidding_date: anchorBiddingDate || null,
+            anchor_shares: anchorShares ? Number(anchorShares) : null,
+            anchor_allocation_amount: anchorAllocationAmount ? Number(anchorAllocationAmount) : null,
+            anchor_lock_in_50pct_date: anchorLockIn50 || null,
+            anchor_lock_in_remaining_date: anchorLockInRemaining || null,
+            anchor_list_url: anchorListUrl || null,
+            objects_of_issue_breakdown: objectsBreakdown.filter(o => o.purpose.trim()),
+            peer_comparison: peerComparison.filter(p => p.name.trim()),
         };
 
         const url = mode === 'create' ? '/api/admin/ipos' : `/api/admin/ipos/${initialIpo!.id}`;
@@ -252,6 +285,76 @@ export default function IpoForm({ mode, initialIpo }: IpoFormProps) {
                         <div><label className={labelClass}>Price band max (₹)</label><input type="number" value={priceBandMax} onChange={e => setPriceBandMax(e.target.value)} className={inputClass} /></div>
                         <div><label className={labelClass}>Face value (₹)</label><input type="number" value={faceValue} onChange={e => setFaceValue(e.target.value)} className={inputClass} /></div>
                         <div><label className={labelClass}>Lot size (shares)</label><input type="number" value={lotSize} onChange={e => setLotSize(e.target.value)} className={inputClass} /></div>
+                        <div className="col-span-2">
+                            <label className={labelClass}>Post-issue shares outstanding</label>
+                            <input type="number" value={postIssueShares} onChange={e => setPostIssueShares(e.target.value)} className={inputClass} />
+                            <p className="text-xs text-gray-400 mt-1">Drives the computed EPS/NAV/P-E table on the detail page — enter once financials are added below.</p>
+                        </div>
+                    </div>
+                </fieldset>
+
+                <fieldset className="border border-gray-200 rounded-lg p-3">
+                    <legend className="text-xs font-semibold text-gray-500 uppercase px-1">Category-wise reservation (%)</legend>
+                    <div className="grid grid-cols-4 gap-3">
+                        <div><label className={labelClass}>QIB</label><input type="number" value={reservationQib} onChange={e => setReservationQib(e.target.value)} className={inputClass} /></div>
+                        <div><label className={labelClass}>NII</label><input type="number" value={reservationNii} onChange={e => setReservationNii(e.target.value)} className={inputClass} /></div>
+                        <div><label className={labelClass}>Retail</label><input type="number" value={reservationRetail} onChange={e => setReservationRetail(e.target.value)} className={inputClass} /></div>
+                        <div><label className={labelClass}>Employee</label><input type="number" value={reservationEmployee} onChange={e => setReservationEmployee(e.target.value)} className={inputClass} /></div>
+                    </div>
+                </fieldset>
+
+                <fieldset className="border border-gray-200 rounded-lg p-3">
+                    <legend className="text-xs font-semibold text-gray-500 uppercase px-1">Promoter holding (%)</legend>
+                    <div className="grid grid-cols-2 gap-3">
+                        <div><label className={labelClass}>Pre-issue</label><input type="number" step="0.01" value={promoterHoldingPre} onChange={e => setPromoterHoldingPre(e.target.value)} className={inputClass} /></div>
+                        <div><label className={labelClass}>Post-issue</label><input type="number" step="0.01" value={promoterHoldingPost} onChange={e => setPromoterHoldingPost(e.target.value)} className={inputClass} /></div>
+                    </div>
+                </fieldset>
+
+                <fieldset className="border border-gray-200 rounded-lg p-3">
+                    <legend className="text-xs font-semibold text-gray-500 uppercase px-1">Anchor investors</legend>
+                    <div className="grid grid-cols-3 gap-3">
+                        <div><label className={labelClass}>Bidding date</label><input type="date" value={anchorBiddingDate} onChange={e => setAnchorBiddingDate(e.target.value)} className={inputClass} /></div>
+                        <div><label className={labelClass}>Shares offered</label><input type="number" value={anchorShares} onChange={e => setAnchorShares(e.target.value)} className={inputClass} /></div>
+                        <div><label className={labelClass}>Allocation (₹ cr)</label><input type="number" value={anchorAllocationAmount} onChange={e => setAnchorAllocationAmount(e.target.value)} className={inputClass} /></div>
+                        <div><label className={labelClass}>50% lock-in ends</label><input type="date" value={anchorLockIn50} onChange={e => setAnchorLockIn50(e.target.value)} className={inputClass} /></div>
+                        <div><label className={labelClass}>Remaining lock-in ends</label><input type="date" value={anchorLockInRemaining} onChange={e => setAnchorLockInRemaining(e.target.value)} className={inputClass} /></div>
+                        <div><label className={labelClass}>Anchor list URL</label><input type="url" value={anchorListUrl} onChange={e => setAnchorListUrl(e.target.value)} className={inputClass} /></div>
+                    </div>
+                </fieldset>
+
+                <fieldset className="border border-gray-200 rounded-lg p-3">
+                    <legend className="text-xs font-semibold text-gray-500 uppercase px-1">Objects of issue breakdown</legend>
+                    <div className="space-y-2">
+                        {objectsBreakdown.map((item, i) => (
+                            <div key={i} className="grid grid-cols-5 gap-2 items-end">
+                                <div className="col-span-3"><label className={labelClass}>Purpose</label><input type="text" value={item.purpose} onChange={e => setObjectsBreakdown(prev => prev.map((o, idx) => idx === i ? { ...o, purpose: e.target.value } : o))} className={inputClass} /></div>
+                                <div><label className={labelClass}>Amount (₹ cr)</label><input type="number" value={item.amount} onChange={e => setObjectsBreakdown(prev => prev.map((o, idx) => idx === i ? { ...o, amount: Number(e.target.value) } : o))} className={inputClass} /></div>
+                                <button type="button" onClick={() => setObjectsBreakdown(prev => prev.filter((_, idx) => idx !== i))} className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-500 hover:bg-gray-50">Remove</button>
+                            </div>
+                        ))}
+                        <button type="button" onClick={() => setObjectsBreakdown(prev => [...prev, { purpose: '', amount: 0 }])} className="text-sm font-semibold text-primary-600 hover:underline">
+                            + Add line item
+                        </button>
+                    </div>
+                </fieldset>
+
+                <fieldset className="border border-gray-200 rounded-lg p-3">
+                    <legend className="text-xs font-semibold text-gray-500 uppercase px-1">Peer comparison</legend>
+                    <div className="space-y-2">
+                        {peerComparison.map((peer, i) => (
+                            <div key={i} className="grid grid-cols-6 gap-2 items-end">
+                                <div><label className={labelClass}>Company</label><input type="text" value={peer.name} onChange={e => setPeerComparison(prev => prev.map((p, idx) => idx === i ? { ...p, name: e.target.value } : p))} className={inputClass} /></div>
+                                <div><label className={labelClass}>EPS</label><input type="number" value={peer.eps ?? ''} onChange={e => setPeerComparison(prev => prev.map((p, idx) => idx === i ? { ...p, eps: e.target.value ? Number(e.target.value) : null } : p))} className={inputClass} /></div>
+                                <div><label className={labelClass}>P/E</label><input type="number" value={peer.pe_ratio ?? ''} onChange={e => setPeerComparison(prev => prev.map((p, idx) => idx === i ? { ...p, pe_ratio: e.target.value ? Number(e.target.value) : null } : p))} className={inputClass} /></div>
+                                <div><label className={labelClass}>RoNW %</label><input type="number" value={peer.ronw_percent ?? ''} onChange={e => setPeerComparison(prev => prev.map((p, idx) => idx === i ? { ...p, ronw_percent: e.target.value ? Number(e.target.value) : null } : p))} className={inputClass} /></div>
+                                <div><label className={labelClass}>NAV</label><input type="number" value={peer.nav ?? ''} onChange={e => setPeerComparison(prev => prev.map((p, idx) => idx === i ? { ...p, nav: e.target.value ? Number(e.target.value) : null } : p))} className={inputClass} /></div>
+                                <button type="button" onClick={() => setPeerComparison(prev => prev.filter((_, idx) => idx !== i))} className="px-3 py-2 border border-gray-300 rounded-lg text-sm text-gray-500 hover:bg-gray-50">Remove</button>
+                            </div>
+                        ))}
+                        <button type="button" onClick={() => setPeerComparison(prev => [...prev, { name: '', eps: null, pe_ratio: null, ronw_percent: null, nav: null, income: null }])} className="text-sm font-semibold text-primary-600 hover:underline">
+                            + Add peer
+                        </button>
                     </div>
                 </fieldset>
 
@@ -337,6 +440,9 @@ export default function IpoForm({ mode, initialIpo }: IpoFormProps) {
                     <SubscriptionPanel ipoId={initialIpo.id} />
                     <AllotmentPanel ipoId={initialIpo.id} />
                     <DocumentsPanel ipoId={initialIpo.id} />
+                    <div className="lg:col-span-2">
+                        <FinancialsPanel ipoId={initialIpo.id} />
+                    </div>
                     <div className="lg:col-span-2">
                         <ReviewPanel ipoId={initialIpo.id} />
                     </div>

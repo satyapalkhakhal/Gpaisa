@@ -227,6 +227,19 @@ export async function fetchLoanNews(limit: number = 6, revalidateSeconds: number
 }
 
 /**
+ * Fetch credit card articles (reviews, comparisons, best-of lists) plus credit-score guides.
+ * Matched case-insensitively because the subcategory is stored as both "Credit Card" and "Credit card".
+ */
+export async function fetchCreditCardArticles(limit: number = 50, revalidateSeconds: number = 3600): Promise<Article[]> {
+    const articles = await supabaseFetch(
+        `articles?select=*&category=in.(BUSINESS,FINANCE)&status=eq.published&or=(subcategory.ilike.*credit*card*,title.ilike.*credit*card*,title.ilike.*cibil*,title.ilike.*credit*score*)&order=published_at.desc&limit=${limit}`,
+        'fetchCreditCardArticles',
+        revalidateSeconds
+    );
+    return articles.map(normalizeArticle);
+}
+
+/**
  * Get article by slug (SEO-friendly URLs)
  */
 export async function fetchArticleBySlug(slug: string, revalidateSeconds: number = 86400): Promise<Article | null> {

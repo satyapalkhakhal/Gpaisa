@@ -30,6 +30,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
             website: body.website,
             incorporated_year: body.incorporated_year,
             registered_office: body.registered_office,
+            phone: body.phone,
+            email: body.email,
         });
         return NextResponse.json({ company });
     } catch (error) {

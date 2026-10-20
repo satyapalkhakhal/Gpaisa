@@ -26,6 +26,8 @@ export async function POST(request: NextRequest) {
             website: body.website || null,
             allotment_status_check_url: body.allotment_status_check_url || null,
             logo_url: body.logo_url || null,
+            phone: body.phone || null,
+            email: body.email || null,
         });
         return NextResponse.json({ registrar }, { status: 201 });
     } catch (error) {
