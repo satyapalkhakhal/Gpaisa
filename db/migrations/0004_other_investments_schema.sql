@@ -1,7 +1,7 @@
 -- Other Investments — NCD Issues, Rights Issues, Buybacks.
 -- Lighter-weight than the IPO schema by design: current-snapshot fields instead of
 -- append-only history logs (no GMP-style time series here) since these are secondary
--- to the core IPO product. Run manually in Supabase Dashboard -> SQL Editor. Idempotent.
+-- to the core IPO product. Apply with deploy/migrate.sh (or psql -f). Idempotent.
 
 -- ── ncd_issues ───────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS ncd_issues (

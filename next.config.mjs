@@ -1,5 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+    // Self-contained server bundle (.next/standalone) for the Docker image in deploy/.
+    output: 'standalone',
     async redirects() {
         return [
             {

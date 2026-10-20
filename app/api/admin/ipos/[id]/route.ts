@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getIpoByIdAdmin, getIpoBySlugAdmin, updateIpo, deleteIpo } from '@/lib/supabaseAdmin';
+import { getIpoByIdAdmin, getIpoBySlugAdmin, updateIpo, deleteIpo } from '@/lib/adminDb';
 import { slugify } from '@/lib/slugify';
 import { validateIpoInput } from '@/lib/ipoValidation';
 

@@ -1,5 +1,5 @@
 -- IPO Listing Performance — actual outcomes vs. price band and GMP estimates.
--- Run manually in Supabase Dashboard -> SQL Editor. Idempotent -- safe to re-run.
+-- Apply with deploy/migrate.sh (or psql -f). Idempotent -- safe to re-run.
 
 ALTER TABLE ipos ADD COLUMN IF NOT EXISTS listing_price numeric;
 ALTER TABLE ipos ADD COLUMN IF NOT EXISTS listing_day_close_price numeric;

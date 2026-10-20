@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { listArticlesAdmin, createArticle } from '@/lib/supabaseAdmin';
-import { fetchArticleBySlug } from '@/lib/supabaseApi';
+import { listArticlesAdmin, createArticle } from '@/lib/adminDb';
+import { fetchArticleBySlug } from '@/lib/articlesApi';
 import { slugify } from '@/lib/slugify';
 import { validateArticleInput } from '@/lib/validateArticle';
 

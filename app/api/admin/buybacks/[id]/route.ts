@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getBuybackByIdAdmin, getBuybackBySlugAdmin, updateBuyback, deleteBuyback } from '@/lib/supabaseAdmin';
+import { getBuybackByIdAdmin, getBuybackBySlugAdmin, updateBuyback, deleteBuyback } from '@/lib/adminDb';
 import { slugify } from '@/lib/slugify';
 import { validateBuybackInput } from '@/lib/otherInvestmentsValidation';
 

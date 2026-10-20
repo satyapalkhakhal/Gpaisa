@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { updateRegistrar, deleteRegistrar } from '@/lib/supabaseAdmin';
+import { updateRegistrar, deleteRegistrar } from '@/lib/adminDb';
 import { slugify } from '@/lib/slugify';
 
 export const runtime = 'nodejs';

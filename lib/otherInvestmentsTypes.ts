@@ -1,5 +1,5 @@
 // NCD Issues, Rights Issues, Buybacks — "Other Investments" alongside the core IPO
-// vertical. Mirrors supabase/migrations/0004_other_investments_schema.sql.
+// vertical. Mirrors db/migrations/0004_other_investments_schema.sql.
 import { Company, PublishStatus, Registrar } from './ipoTypes';
 
 // ── NCD Issues ─────────────────────────────────────────────────────────────

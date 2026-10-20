@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { deleteGmpUpdate } from '@/lib/supabaseAdmin';
+import { deleteGmpUpdate } from '@/lib/adminDb';
 
 export const runtime = 'nodejs';
 

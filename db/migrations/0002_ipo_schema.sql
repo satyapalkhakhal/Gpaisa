@@ -1,5 +1,5 @@
 -- IPO Intelligence Platform — Phase 1 schema.
--- Run manually in Supabase Dashboard -> SQL Editor. Idempotent -- safe to re-run.
+-- Apply with deploy/migrate.sh (or psql -f). Idempotent -- safe to re-run.
 
 -- ── companies ──────────────────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS companies (

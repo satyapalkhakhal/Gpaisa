@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getIpoByIdAdmin } from '@/lib/supabaseAdmin';
+import { getIpoByIdAdmin } from '@/lib/adminDb';
 import IpoForm from '@/components/admin/ipo/IpoForm';
 
 export default async function EditIpoPage({ params }: { params: Promise<{ id: string }> }) {

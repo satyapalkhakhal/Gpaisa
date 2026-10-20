@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getBuybackByIdAdmin } from '@/lib/supabaseAdmin';
+import { getBuybackByIdAdmin } from '@/lib/adminDb';
 import BuybackForm from '@/components/admin/buyback/BuybackForm';
 
 export default async function EditBuybackPage({ params }: { params: Promise<{ id: string }> }) {

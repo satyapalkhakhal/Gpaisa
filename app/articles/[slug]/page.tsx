@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
-import { fetchArticleBySlug, fetchLatestArticles, fetchArticlesByCategory } from '@/lib/supabaseApi';
+import { fetchArticleBySlug, fetchLatestArticles, fetchArticlesByCategory } from '@/lib/articlesApi';
 import { DROPPED_CATEGORY_DB_VALUES } from '@/lib/categories';
 import { ChevronRight, Clock, User, Calendar, ArrowLeft, Share2, Bookmark } from 'lucide-react';
 import NewsletterSubscribe from '@/components/NewsletterSubscribe';

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { deleteFinancial } from '@/lib/supabaseAdmin';
+import { deleteFinancial } from '@/lib/adminDb';
 
 export const runtime = 'nodejs';
 

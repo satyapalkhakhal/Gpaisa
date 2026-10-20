@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { fetchCreditCardArticles, Article } from '@/lib/supabaseApi';
+import { fetchCreditCardArticles, Article } from '@/lib/articlesApi';
 import { formatArticleDate } from '@/components/home/HomeUi';
 
 export const revalidate = 3600;

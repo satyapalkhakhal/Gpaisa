@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { listGmpUpdatesAdmin, createGmpUpdate } from '@/lib/supabaseAdmin';
+import { listGmpUpdatesAdmin, createGmpUpdate } from '@/lib/adminDb';
 import { validateGmpUpdateInput } from '@/lib/ipoValidation';
 
 export const runtime = 'nodejs';

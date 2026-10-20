@@ -1,0 +1,14 @@
+# Caddy obtains and renews Let's Encrypt certificates for both hosts automatically.
+
+# Apex → www (replaces the redirect in vercel.json). ads.txt stays on the apex,
+# where ad networks look for it.
+gpaisa.in {
+	@notAdsTxt not path /ads.txt
+	redir @notAdsTxt https://www.gpaisa.in{uri} 308
+	reverse_proxy app:3000
+}
+
+www.gpaisa.in {
+	encode zstd gzip
+	reverse_proxy app:3000
+}

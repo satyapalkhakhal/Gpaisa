@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { listDocumentsAdmin, createDocument } from '@/lib/supabaseAdmin';
+import { listDocumentsAdmin, createDocument } from '@/lib/adminDb';
 
 export const runtime = 'nodejs';
 

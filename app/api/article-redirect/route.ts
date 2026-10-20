@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchArticleById } from '@/lib/supabaseApi';
+import { fetchArticleById } from '@/lib/articlesApi';
 
 /**
  * API Route to lookup article slug by ID
@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
     }
 
     try {
-        // Fetch article by ID from Supabase
+        // Fetch article by ID from the database
         const article = await fetchArticleById(id);
 
         if (article && article.slug) {

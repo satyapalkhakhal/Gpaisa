@@ -167,7 +167,7 @@ Created comprehensive sitemap including:
 ### ✅ Type System Updates
 Added `updated_at` field to Article interfaces:
 - `/types/index.ts`
-- `/lib/supabaseApi.ts`
+- `/lib/articlesApi.ts`
 
 ---
 
@@ -271,7 +271,7 @@ All pages now meet Google Discover requirements:
 
 ### Type Definitions
 1. `/types/index.ts` - Added `updated_at` field
-2. `/lib/supabaseApi.ts` - Added `updated_at` field
+2. `/lib/articlesApi.ts` - Added `updated_at` field
 
 ### Components
 1. `/components/GoldCalculator.tsx` - Fixed apostrophe escaping

@@ -1,5 +1,5 @@
 -- Admin CMS fields for articles table
--- Run manually in Supabase Dashboard -> SQL Editor. Idempotent -- safe to re-run.
+-- Apply with deploy/migrate.sh (or psql -f). Idempotent -- safe to re-run.
 
 ALTER TABLE articles ADD COLUMN IF NOT EXISTS meta_title text;
 ALTER TABLE articles ADD COLUMN IF NOT EXISTS meta_description text;

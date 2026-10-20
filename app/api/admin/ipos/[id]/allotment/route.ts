@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getAllotmentByIpoIdAdmin, upsertAllotment } from '@/lib/supabaseAdmin';
+import { getAllotmentByIpoIdAdmin, upsertAllotment } from '@/lib/adminDb';
 
 export const runtime = 'nodejs';
 

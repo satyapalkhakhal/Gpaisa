@@ -1,0 +1,12 @@
+.git
+.next
+node_modules
+.env
+.env.*
+!.env.production.example
+.claude
+seo-audit
+docs
+deploy/backups
+*.tsbuildinfo
+npm-debug.log*

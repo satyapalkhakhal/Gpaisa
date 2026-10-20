@@ -2,7 +2,7 @@
 // plain section titles with a green "See all", logo tiles, and green/red change text.
 import Link from 'next/link';
 import Image from 'next/image';
-import type { Article } from '@/lib/supabaseApi';
+import type { Article } from '@/lib/articlesApi';
 
 // ─── Formatting ──────────────────────────────────────────────────
 
@@ -29,7 +29,7 @@ export function formatArticleDate(article: Article): string {
     });
 }
 
-/** Today's date in IST as YYYY-MM-DD — comparable with the DATE columns stored in Supabase. */
+/** Today's date in IST as YYYY-MM-DD — comparable with the DATE columns stored in Postgres. */
 export function todayIsoIST(): string {
     return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' }).format(new Date());
 }

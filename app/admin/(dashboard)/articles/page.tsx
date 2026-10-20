@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { Pencil, Trash2, Plus, Search } from 'lucide-react';
 import { CATEGORIES } from '@/lib/categories';
-import type { Article } from '@/lib/supabaseApi';
+import type { Article } from '@/lib/articlesApi';
 
 const PAGE_SIZE = 20;
 

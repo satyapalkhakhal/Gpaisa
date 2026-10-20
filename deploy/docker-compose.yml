@@ -1,0 +1,86 @@
+# gpaisa.in on a single VM: Postgres + Next.js app + Caddy (HTTPS, redirects, compression).
+# Run from this directory; secrets come from deploy/.env (copy .env.example).
+#   docker compose up -d            start / apply changes
+#   ./deploy.sh                     pull, rebuild, restart, health-check
+
+name: gpaisa
+
+# Rotate container logs so they can't fill the disk.
+x-logging: &logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "5"
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    logging: *logging
+    environment:
+      POSTGRES_DB: gpaisa
+      POSTGRES_USER: gpaisa
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in deploy/.env}
+    command: >
+      postgres
+      -c shared_buffers=256MB
+      -c effective_cache_size=1GB
+      -c max_connections=50
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    # Loopback only: reachable by the app build (host network) and admin tools on the VM,
+    # never from the internet.
+    ports:
+      - "127.0.0.1:5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U gpaisa -d gpaisa"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build:
+      context: ..
+      # Host network so `next build` can prerender from Postgres on 127.0.0.1:5432.
+      network: host
+      secrets:
+        - database_url
+    image: gpaisa-app:latest
+    restart: unless-stopped
+    logging: *logging
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://gpaisa:${POSTGRES_PASSWORD}@postgres:5432/gpaisa
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    logging: *logging
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - app
+
+secrets:
+  database_url:
+    environment: BUILD_DATABASE_URL
+
+volumes:
+  pgdata:
+  caddy_data:
+  caddy_config:

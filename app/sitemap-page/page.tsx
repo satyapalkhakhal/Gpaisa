@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { fetchLatestArticles } from '@/lib/supabaseApi';
+import { fetchLatestArticles } from '@/lib/articlesApi';
 import { CALCULATORS } from '@/lib/calculatorsList';
 import { FileText, TrendingUp, Newspaper, MapPin, Calculator } from 'lucide-react';
 

@@ -7,7 +7,7 @@ import {
     fetchFeaturedArticles,
     fetchTrendingArticles,
     Article
-} from '@/lib/supabaseApi';
+} from '@/lib/articlesApi';
 
 export const revalidate = 86400; // Cache for 1 day (ISR)
 

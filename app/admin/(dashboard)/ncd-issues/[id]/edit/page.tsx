@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getNcdIssueByIdAdmin } from '@/lib/supabaseAdmin';
+import { getNcdIssueByIdAdmin } from '@/lib/adminDb';
 import NcdIssueForm from '@/components/admin/ncd/NcdIssueForm';
 
 export default async function EditNcdIssuePage({ params }: { params: Promise<{ id: string }> }) {

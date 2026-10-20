@@ -2,11 +2,10 @@ import { MetadataRoute } from 'next';
 import { CATEGORIES, DROPPED_CATEGORY_DB_VALUES } from '@/lib/categories';
 import { GLOSSARY_TERMS } from '@/lib/glossaryData';
 import { IPO_CALCULATORS } from '@/lib/ipoCalculatorsList';
+import { fetchArticleSitemapEntries } from '@/lib/articlesApi';
 import { fetchAllPublishedIpoSlugs } from '@/lib/ipoApi';
 import { fetchAllPublishedBuybackSlugs, fetchAllPublishedNcdSlugs, fetchAllPublishedRightsIssueSlugs } from '@/lib/otherInvestmentsApi';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 const CITIES = [
     'delhi',
@@ -312,53 +311,33 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     }));
 
     // Fetch latest articles for dynamic article pages
-    // Uses direct fetch with revalidate (not cache:'no-store') so sitemap can be statically generated
+    // Cached for a day (not uncached) so the sitemap can be statically generated
     let articlePages: MetadataRoute.Sitemap = [];
     const categoriesWithArticles = new Set<string>();
     try {
-        if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-            console.error('[SITEMAP] Missing Supabase env vars');
-        } else {
-            const response = await fetch(
-                `${SUPABASE_URL}/rest/v1/articles?select=slug,published_at,updated_at,category&status=eq.published&category=not.in.(${DROPPED_CATEGORY_DB_VALUES.join(',')})&order=published_at.desc&limit=1000`,
-                {
-                    headers: {
-                        'apikey': SUPABASE_ANON_KEY,
-                        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-                        'Content-Type': 'application/json',
-                    },
-                    next: { revalidate: 86400 }, // Revalidate daily — compatible with static generation
-                }
-            );
+        const articles = await fetchArticleSitemapEntries(DROPPED_CATEGORY_DB_VALUES, 86400);
+        const publishedArticles = articles.filter((article) => article.slug);
 
-            if (!response.ok) {
-                console.error(`[SITEMAP] Fetch failed: HTTP ${response.status}`);
-            } else {
-                const articles = await response.json();
-                const publishedArticles = (Array.isArray(articles) ? articles : []).filter((article: any) => article.slug);
+        publishedArticles.forEach((article) => {
+            if (article.category) categoriesWithArticles.add(article.category);
+        });
 
-                publishedArticles.forEach((article: any) => {
-                    if (article.category) categoriesWithArticles.add(article.category);
-                });
+        articlePages = publishedArticles.map((article) => {
+            const lastModified = article.updated_at
+                ? new Date(article.updated_at)
+                : article.published_at
+                    ? new Date(article.published_at)
+                    : new Date('2026-01-01');
 
-                articlePages = publishedArticles.map((article: any) => {
-                    const lastModified = article.updated_at
-                        ? new Date(article.updated_at)
-                        : article.published_at
-                            ? new Date(article.published_at)
-                            : new Date('2026-01-01');
+            return {
+                url: `${baseUrl}/articles/${article.slug}`,
+                lastModified,
+                changeFrequency: 'weekly' as const,
+                priority: 0.6,
+            };
+        });
 
-                    return {
-                        url: `${baseUrl}/articles/${article.slug}`,
-                        lastModified,
-                        changeFrequency: 'weekly' as const,
-                        priority: 0.6,
-                    };
-                });
-
-                console.log(`Sitemap generated with ${articlePages.length} articles`);
-            }
-        }
+        console.log(`Sitemap generated with ${articlePages.length} articles`);
     } catch (error) {
         console.error('Error fetching articles for sitemap:', error);
     }

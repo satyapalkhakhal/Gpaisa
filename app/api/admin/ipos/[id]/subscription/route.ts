@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { listSubscriptionUpdatesAdmin, createSubscriptionUpdate } from '@/lib/supabaseAdmin';
+import { listSubscriptionUpdatesAdmin, createSubscriptionUpdate } from '@/lib/adminDb';
 import { validateSubscriptionUpdateInput } from '@/lib/ipoValidation';
 
 export const runtime = 'nodejs';

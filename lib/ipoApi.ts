@@ -1,5 +1,6 @@
-// Public (anon-key) read API for the IPO vertical. Mirrors lib/supabaseApi.ts conventions:
-// server-side ISR fetch caching via `next.revalidate`, never throws, degrades to []/null.
+// Public read API for the IPO vertical (server-only — reads Postgres directly). Mirrors
+// lib/articlesApi.ts conventions: cached for `revalidateSeconds`, never throws, degrades to []/null.
+import { cachedRows } from './db';
 import {
     Company,
     Ipo,
@@ -15,40 +16,9 @@ import {
     Registrar,
 } from './ipoTypes';
 
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
-
-async function ipoFetch(endpoint: string, tag?: string, revalidateSeconds: number = 300): Promise<any[]> {
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
-        console.error(`[IPO_API] Cannot fetch "${tag || endpoint}" - missing env vars.`);
-        return [];
-    }
-
-    const url = `${SUPABASE_URL}/rest/v1/${endpoint}`;
-
-    try {
-        const response = await fetch(url, {
-            headers: {
-                apikey: SUPABASE_ANON_KEY,
-                Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-                'Content-Type': 'application/json',
-            },
-            next: { revalidate: revalidateSeconds },
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text().catch(() => 'unknown');
-            console.error(`[IPO_API] ❌ ${tag || endpoint} failed: HTTP ${response.status} - ${errorText}`);
-            return [];
-        }
-
-        const data = await response.json();
-        return Array.isArray(data) ? data : [data];
-    } catch (error) {
-        console.error(`[IPO_API] ❌ ${tag || endpoint} threw:`, error);
-        return [];
-    }
-}
+// `company` embedded as a nested object (null when unset), the shape PostgREST's
+// `select=*,company:companies(*)` used to return.
+const IPO_WITH_COMPANY = `SELECT i.*, (SELECT to_json(c) FROM companies c WHERE c.id = i.company_id) AS company FROM ipos i`;
 
 interface IpoListOpts {
     ipoType?: IpoType;
@@ -58,15 +28,14 @@ interface IpoListOpts {
 
 async function fetchIposByStatus(statuses: IpoLifecycleStatus[], opts: IpoListOpts = {}): Promise<Ipo[]> {
     const { ipoType, limit = 50, revalidateSeconds = 300 } = opts;
-    const params = new URLSearchParams({
-        select: '*,company:companies(*)',
-        publish_status: 'eq.published',
-        status: `in.(${statuses.join(',')})`,
-        order: 'open_date.asc.nullslast',
-        limit: String(limit),
-    });
-    if (ipoType) params.set('ipo_type', `eq.${ipoType}`);
-    return ipoFetch(`ipos?${params.toString()}`, `fetchIposByStatus(${statuses.join(',')})`, revalidateSeconds);
+    return cachedRows(
+        `${IPO_WITH_COMPANY}
+         WHERE i.publish_status = 'published' AND i.status = ANY($1::text[]) AND ($2::text IS NULL OR i.ipo_type = $2)
+         ORDER BY i.open_date ASC NULLS LAST LIMIT $3`,
+        [statuses, ipoType ?? null, limit],
+        revalidateSeconds,
+        `fetchIposByStatus(${statuses.join(',')})`
+    );
 }
 
 export function fetchUpcomingIpos(opts: IpoListOpts = {}): Promise<Ipo[]> {
@@ -86,20 +55,21 @@ export function fetchListedIpos(opts: IpoListOpts = {}): Promise<Ipo[]> {
 }
 
 export async function fetchFeaturedIpos(limit: number = 5, revalidateSeconds: number = 300): Promise<Ipo[]> {
-    return ipoFetch(
-        `ipos?select=*,company:companies(*)&publish_status=eq.published&is_featured=eq.true&order=open_date.desc&limit=${limit}`,
-        'fetchFeaturedIpos',
-        revalidateSeconds
+    return cachedRows(
+        `${IPO_WITH_COMPANY} WHERE i.publish_status = 'published' AND i.is_featured ORDER BY i.open_date DESC LIMIT $1`,
+        [limit],
+        revalidateSeconds,
+        'fetchFeaturedIpos'
     );
 }
 
 export async function fetchCompanyById(id: string, revalidateSeconds: number = 3600): Promise<Company | null> {
-    const rows = await ipoFetch(`companies?select=*&id=eq.${id}`, `fetchCompanyById(${id})`, revalidateSeconds);
+    const rows = await cachedRows<Company>(`SELECT * FROM companies WHERE id::text = $1`, [id], revalidateSeconds, `fetchCompanyById(${id})`);
     return rows[0] ?? null;
 }
 
 export async function fetchRegistrarById(id: string, revalidateSeconds: number = 3600): Promise<Registrar | null> {
-    const rows = await ipoFetch(`registrars?select=*&id=eq.${id}`, `fetchRegistrarById(${id})`, revalidateSeconds);
+    const rows = await cachedRows<Registrar>(`SELECT * FROM registrars WHERE id::text = $1`, [id], revalidateSeconds, `fetchRegistrarById(${id})`);
     return rows[0] ?? null;
 }
 
@@ -108,10 +78,11 @@ export async function fetchRegistrarById(id: string, revalidateSeconds: number =
  * GMP history (append-only log, newest first) + subscription history + allotment + review + documents.
  */
 export async function fetchIpoBySlug(slug: string, revalidateSeconds: number = 300): Promise<IpoDetail | null> {
-    const ipoRows = await ipoFetch(
-        `ipos?select=*&slug=eq.${encodeURIComponent(slug)}&publish_status=eq.published`,
-        `fetchIpoBySlug(${slug})`,
-        revalidateSeconds
+    const ipoRows = await cachedRows<Ipo>(
+        `SELECT * FROM ipos WHERE slug = $1 AND publish_status = 'published'`,
+        [slug],
+        revalidateSeconds,
+        `fetchIpoBySlug(${slug})`
     );
     const ipo: Ipo | undefined = ipoRows[0];
     if (!ipo) return null;
@@ -119,32 +90,37 @@ export async function fetchIpoBySlug(slug: string, revalidateSeconds: number = 3
     const [company, registrar, gmpHistory, subscriptionHistory, allotmentRows, reviewRows, documents, financials] = await Promise.all([
         ipo.company_id ? fetchCompanyById(ipo.company_id, revalidateSeconds) : Promise.resolve(null),
         ipo.registrar_id ? fetchRegistrarById(ipo.registrar_id, revalidateSeconds) : Promise.resolve(null),
-        ipoFetch(
-            `ipo_gmp_updates?select=*&ipo_id=eq.${ipo.id}&order=recorded_at.desc`,
-            `fetchGmpHistory(${ipo.id})`,
-            revalidateSeconds
-        ) as Promise<IpoGmpUpdate[]>,
-        ipoFetch(
-            `ipo_subscription_updates?select=*&ipo_id=eq.${ipo.id}&order=day_number.asc,category.asc`,
-            `fetchSubscriptionHistory(${ipo.id})`,
-            revalidateSeconds
-        ) as Promise<IpoSubscriptionUpdate[]>,
-        ipoFetch(`ipo_allotment_info?select=*&ipo_id=eq.${ipo.id}`, `fetchAllotment(${ipo.id})`, revalidateSeconds) as Promise<IpoAllotmentInfo[]>,
-        ipoFetch(
-            `ipo_reviews?select=*&ipo_id=eq.${ipo.id}&publish_status=eq.published`,
-            `fetchReview(${ipo.id})`,
-            revalidateSeconds
-        ) as Promise<IpoReview[]>,
-        ipoFetch(
-            `ipo_documents?select=*&ipo_id=eq.${ipo.id}&order=published_at.desc`,
-            `fetchDocuments(${ipo.id})`,
-            revalidateSeconds
-        ) as Promise<IpoDocument[]>,
-        ipoFetch(
-            `ipo_financials?select=*&ipo_id=eq.${ipo.id}&order=period_end_date.asc.nullslast`,
-            `fetchFinancials(${ipo.id})`,
-            revalidateSeconds
-        ) as Promise<IpoFinancials[]>,
+        cachedRows<IpoGmpUpdate>(
+            `SELECT * FROM ipo_gmp_updates WHERE ipo_id = $1 ORDER BY recorded_at DESC`,
+            [ipo.id],
+            revalidateSeconds,
+            `fetchGmpHistory(${ipo.id})`
+        ),
+        cachedRows<IpoSubscriptionUpdate>(
+            `SELECT * FROM ipo_subscription_updates WHERE ipo_id = $1 ORDER BY day_number ASC, category ASC`,
+            [ipo.id],
+            revalidateSeconds,
+            `fetchSubscriptionHistory(${ipo.id})`
+        ),
+        cachedRows<IpoAllotmentInfo>(`SELECT * FROM ipo_allotment_info WHERE ipo_id = $1`, [ipo.id], revalidateSeconds, `fetchAllotment(${ipo.id})`),
+        cachedRows<IpoReview>(
+            `SELECT * FROM ipo_reviews WHERE ipo_id = $1 AND publish_status = 'published'`,
+            [ipo.id],
+            revalidateSeconds,
+            `fetchReview(${ipo.id})`
+        ),
+        cachedRows<IpoDocument>(
+            `SELECT * FROM ipo_documents WHERE ipo_id = $1 ORDER BY published_at DESC`,
+            [ipo.id],
+            revalidateSeconds,
+            `fetchDocuments(${ipo.id})`
+        ),
+        cachedRows<IpoFinancials>(
+            `SELECT * FROM ipo_financials WHERE ipo_id = $1 ORDER BY period_end_date ASC NULLS LAST`,
+            [ipo.id],
+            revalidateSeconds,
+            `fetchFinancials(${ipo.id})`
+        ),
     ]);
 
     return {
@@ -178,12 +154,13 @@ export async function fetchLatestGmpBoard(revalidateSeconds: number = 300): Prom
     const ipos = await fetchIposByStatus(['announced', 'upcoming', 'open', 'closed', 'allotment'], { limit: 50, revalidateSeconds });
     const entries = await Promise.all(
         ipos.map(async (ipo) => {
-            const rows = await ipoFetch(
-                `ipo_gmp_updates?select=*&ipo_id=eq.${ipo.id}&order=recorded_at.desc&limit=1`,
-                `fetchLatestGmp(${ipo.id})`,
-                revalidateSeconds
+            const rows = await cachedRows<IpoGmpUpdate>(
+                `SELECT * FROM ipo_gmp_updates WHERE ipo_id = $1 ORDER BY recorded_at DESC LIMIT 1`,
+                [ipo.id],
+                revalidateSeconds,
+                `fetchLatestGmp(${ipo.id})`
             );
-            return { ipo, latestGmp: (rows[0] as IpoGmpUpdate) ?? null };
+            return { ipo, latestGmp: rows[0] ?? null };
         })
     );
     return entries;
@@ -227,14 +204,21 @@ export interface IpoReviewSummary {
 
 /**
  * Latest published IPO reviews across all IPOs, newest-first — for homepage/hub
- * "featured reviews" surfaces. Embeds the parent IPO (and its company) via PostgREST's
- * foreign-key embedding since ipo_reviews.ipo_id -> ipos.id.
+ * "featured reviews" surfaces. Embeds the parent IPO (and its company's name) as `r.ipo`.
  */
 export async function fetchLatestIpoReviews(limit: number = 5, revalidateSeconds: number = 300): Promise<IpoReviewSummary[]> {
-    const rows = await ipoFetch(
-        `ipo_reviews?select=*,ipo:ipos(slug,ipo_type,status,publish_status,company:companies(name))&publish_status=eq.published&order=published_at.desc&limit=${limit}`,
-        'fetchLatestIpoReviews',
-        revalidateSeconds
+    const rows = await cachedRows(
+        `SELECT r.*,
+                (SELECT json_build_object(
+                     'slug', i.slug, 'ipo_type', i.ipo_type, 'status', i.status, 'publish_status', i.publish_status,
+                     'company', (SELECT json_build_object('name', c.name) FROM companies c WHERE c.id = i.company_id))
+                 FROM ipos i WHERE i.id = r.ipo_id) AS ipo
+         FROM ipo_reviews r
+         WHERE r.publish_status = 'published'
+         ORDER BY r.published_at DESC LIMIT $1`,
+        [limit],
+        revalidateSeconds,
+        'fetchLatestIpoReviews'
     );
     return rows
         .filter((r: any) => r.ipo && r.ipo.publish_status === 'published')
@@ -251,9 +235,10 @@ export async function fetchLatestIpoReviews(limit: number = 5, revalidateSeconds
  * Minimal field set for sitemap generation.
  */
 export async function fetchAllPublishedIpoSlugs(revalidateSeconds: number = 86400): Promise<Pick<Ipo, 'slug' | 'updated_at'>[]> {
-    return ipoFetch(
-        `ipos?select=slug,updated_at&publish_status=eq.published&order=updated_at.desc`,
-        'fetchAllPublishedIpoSlugs',
-        revalidateSeconds
+    return cachedRows(
+        `SELECT slug, updated_at FROM ipos WHERE publish_status = 'published' ORDER BY updated_at DESC`,
+        [],
+        revalidateSeconds,
+        'fetchAllPublishedIpoSlugs'
     );
 }

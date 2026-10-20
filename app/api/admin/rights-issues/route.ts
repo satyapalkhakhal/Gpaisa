@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { listRightsIssuesAdmin, createRightsIssue, getRightsIssueBySlugAdmin } from '@/lib/supabaseAdmin';
+import { listRightsIssuesAdmin, createRightsIssue, getRightsIssueBySlugAdmin } from '@/lib/adminDb';
 import { slugify } from '@/lib/slugify';
 import { validateRightsIssueInput } from '@/lib/otherInvestmentsValidation';
 

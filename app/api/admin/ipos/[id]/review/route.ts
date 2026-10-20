@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getReviewByIpoIdAdmin, upsertReview } from '@/lib/supabaseAdmin';
+import { getReviewByIpoIdAdmin, upsertReview } from '@/lib/adminDb';
 
 export const runtime = 'nodejs';
 

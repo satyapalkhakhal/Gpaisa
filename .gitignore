@@ -34,3 +34,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# self-hosted deploy (deploy/)
+deploy/.env
+deploy/backups/

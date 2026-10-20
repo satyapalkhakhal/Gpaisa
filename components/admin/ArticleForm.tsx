@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { CATEGORIES } from '@/lib/categories';
 import { slugify } from '@/lib/slugify';
 import { validateArticleInput } from '@/lib/validateArticle';
-import type { Article } from '@/lib/supabaseApi';
+import type { Article } from '@/lib/articlesApi';
 import ArticleEditor from './ArticleEditor';
 import SeoScorePanel from './SeoScorePanel';
 import { UploadCloud } from 'lucide-react';

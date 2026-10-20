@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getArticleByIdAdmin } from '@/lib/supabaseAdmin';
+import { getArticleByIdAdmin } from '@/lib/adminDb';
 import ArticleForm from '@/components/admin/ArticleForm';
 
 export default async function EditArticlePage({ params }: { params: Promise<{ id: string }> }) {

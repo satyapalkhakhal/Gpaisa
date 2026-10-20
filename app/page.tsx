@@ -5,7 +5,7 @@ import {
     fetchTrendingArticles,
     fetchCreditCardArticles,
     Article
-} from '@/lib/supabaseApi';
+} from '@/lib/articlesApi';
 import { fetchMarketIndices } from '@/lib/indicesApi';
 import { fetchGoldRatesAllCarats, fetchSilverRateData, type GoldCaratRate } from '@/lib/angelOneApi';
 import { fetchLatestGmpBoard, fetchLatestIpoReviews, fetchListingPerformanceBoard } from '@/lib/ipoApi';

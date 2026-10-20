@@ -1,7 +1,5 @@
 import { NextResponse } from 'next/server';
-
-const SUPABASE_URL = 'https://rfuumgvtjfvxmhocxhfk.supabase.co/rest/v1';
-const SUPABASE_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+import { queryRows } from '@/lib/db';
 
 // In-memory cache
 let cachedData: any[] | null = null;
@@ -22,32 +20,16 @@ export async function GET() {
     }
 
     try {
-        // Fetch in desc order so Supabase's 1000-row free-tier limit
-        // returns the most recent data instead of ancient history
-        const url = `${SUPABASE_URL}/metal_price_history?select=price_date,gold_usd,silver_usd&order=price_date.desc&limit=1000`;
-        const res = await fetch(url, {
-            headers: {
-                apikey: SUPABASE_KEY,
-                Authorization: `Bearer ${SUPABASE_KEY}`,
-                'Content-Type': 'application/json',
-            },
-            cache: 'no-store',
-        });
-
-        if (!res.ok) {
-            throw new Error(`Supabase error: ${res.status}`);
-        }
-
-        const data = await res.json();
-
-        // Reverse to ascending order (oldest → newest) for chart rendering
-        const allRecords = data.reverse();
+        // Oldest → newest, the order the chart renders in
+        const allRecords = await queryRows(
+            'SELECT price_date, gold_usd, silver_usd FROM metal_price_history ORDER BY price_date ASC'
+        );
 
         // Update cache
         cachedData = allRecords;
         cacheTimestamp = now;
 
-        console.log(`[MetalPrices API] Fetched ${allRecords.length} records from Supabase`);
+        console.log(`[MetalPrices API] Fetched ${allRecords.length} records from the database`);
 
         return NextResponse.json(allRecords, {
             headers: {

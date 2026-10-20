@@ -2,7 +2,7 @@
 -- anchor investors, promoter holding, structured objects-of-issue, and contact
 -- details. Closes the gap vs. reference IPO sites that show far more per-IPO
 -- content than price band/GMP/subscription alone.
--- Run manually in Supabase Dashboard -> SQL Editor. Idempotent -- safe to re-run.
+-- Apply with deploy/migrate.sh (or psql -f). Idempotent -- safe to re-run.
 
 -- ── contact details ──────────────────────────────────────────────────────
 ALTER TABLE companies ADD COLUMN IF NOT EXISTS phone text;

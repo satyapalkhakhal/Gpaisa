@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { getRightsIssueByIdAdmin } from '@/lib/supabaseAdmin';
+import { getRightsIssueByIdAdmin } from '@/lib/adminDb';
 import RightsIssueForm from '@/components/admin/rights/RightsIssueForm';
 
 export default async function EditRightsIssuePage({ params }: { params: Promise<{ id: string }> }) {

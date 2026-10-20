@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { fetchArticlesByCategorySlug } from '@/lib/supabaseApi';
+import { fetchArticlesByCategorySlug } from '@/lib/articlesApi';
 import { getCategoryBySlug } from '@/lib/categories';
 import { ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
 

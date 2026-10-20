@@ -1,6 +1,6 @@
 // Groww "in the news" block: category chips over one list of headline rows.
 import Link from 'next/link';
-import type { Article } from '@/lib/supabaseApi';
+import type { Article } from '@/lib/articlesApi';
 import PillTabs from './PillTabs';
 import { Card, NewsRow, SectionTitle } from './HomeUi';
 

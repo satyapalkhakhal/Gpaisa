@@ -1,4 +1,4 @@
-// Shared IPO domain types. Mirrors the shape of supabase/migrations/0002_ipo_schema.sql.
+// Shared IPO domain types. Mirrors the shape of db/migrations/0002_ipo_schema.sql.
 
 export type IpoType = 'mainboard' | 'sme';
 

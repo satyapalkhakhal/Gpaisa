@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { listFinancialsAdmin, createFinancial } from '@/lib/supabaseAdmin';
+import { listFinancialsAdmin, createFinancial } from '@/lib/adminDb';
 
 export const runtime = 'nodejs';
 

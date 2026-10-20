@@ -17,7 +17,7 @@ export const CATEGORIES: CategoryDef[] = [
 // Off-topic categories dropped from a finance-authority site (2026-07-17).
 // Their category hub pages and sitemap/index entries were removed; individual
 // articles already published under these categories are set to noindex
-// rather than deleted, since the underlying content still exists in Supabase.
+// rather than deleted, since the underlying content still exists in the database.
 export const DROPPED_CATEGORY_DB_VALUES = ['TECHNOLOGY', 'TRAVEL', 'SPORTS', 'MOVIES', 'EDUCATION'];
 
 export function getCategoryBySlug(slug: string): CategoryDef | undefined {

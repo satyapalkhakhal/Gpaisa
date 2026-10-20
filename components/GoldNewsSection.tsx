@@ -25,24 +25,7 @@ export default function GoldNewsSection() {
     useEffect(() => {
         const fetchNews = async () => {
             try {
-                const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-                const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-                if (!supabaseUrl || !supabaseKey) {
-                    setLoading(false);
-                    return;
-                }
-
-                const response = await fetch(
-                    `${supabaseUrl}/rest/v1/articles?select=id,title,slug,excerpt,image_url,published_at,date,read_time,author,category&or=(content.ilike.*gold*,title.ilike.*gold*)&order=published_at.desc&limit=6`,
-                    {
-                        headers: {
-                            'apikey': supabaseKey,
-                            'Authorization': `Bearer ${supabaseKey}`,
-                            'Content-Type': 'application/json'
-                        },
-                    }
-                );
+                const response = await fetch('/api/metal-news?metal=gold');
 
                 if (response.ok) {
                     const data = await response.json();

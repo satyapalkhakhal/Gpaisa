@@ -5,7 +5,7 @@ import {
     Rocket, Activity, Landmark, RefreshCcw, FileSignature, Coins, Gem, Calculator, Scale, BarChart3, CreditCard,
     ChevronRight, type LucideIcon,
 } from 'lucide-react';
-import type { Article } from '@/lib/supabaseApi';
+import type { Article } from '@/lib/articlesApi';
 import type { IpoReviewSummary } from '@/lib/ipoApi';
 import type { IpoRecommendation } from '@/lib/ipoTypes';
 import { RECOMMENDATION_LABELS } from '@/lib/ipoTypes';

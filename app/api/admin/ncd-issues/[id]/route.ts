@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getNcdIssueByIdAdmin, getNcdIssueBySlugAdmin, updateNcdIssue, deleteNcdIssue } from '@/lib/supabaseAdmin';
+import { getNcdIssueByIdAdmin, getNcdIssueBySlugAdmin, updateNcdIssue, deleteNcdIssue } from '@/lib/adminDb';
 import { slugify } from '@/lib/slugify';
 import { validateNcdIssueInput } from '@/lib/otherInvestmentsValidation';
 
