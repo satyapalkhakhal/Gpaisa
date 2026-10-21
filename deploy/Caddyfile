@@ -10,5 +10,7 @@ gpaisa.in {
 
 www.gpaisa.in {
 	encode zstd gzip
+	# Cron endpoints are called from inside the VM (deploy/ipo-sync.sh), never from outside.
+	respond /api/cron/* 404
 	reverse_proxy app:3000
 }

@@ -38,3 +38,4 @@ next-env.d.ts
 # self-hosted deploy (deploy/)
 deploy/.env
 deploy/backups/
+deploy/*.log

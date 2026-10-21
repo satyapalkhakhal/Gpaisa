@@ -16,6 +16,7 @@ Internet → Caddy (80/443, auto HTTPS, gpaisa.in → www) → Next.js app (:300
 | `deploy.sh` | Pull, rebuild, restart, health-check |
 | `migrate.sh` | Applies `db/migrations/*.sql` (all idempotent) |
 | `backup.sh` | Nightly `pg_dump` → Cloud Storage |
+| `ipo-sync.sh` | Pulls Groww's IPO feeds into the database (cron) |
 
 > **Until cutover, don't merge this work into `main`.** Vercel still deploys `main`,
 > and this code needs `DATABASE_URL`, which Vercel doesn't have. Keep it on a branch
@@ -146,6 +147,21 @@ must be re-entered in Supabase.
 30 21 * * * /opt/gpaisa/deploy/backup.sh >> /opt/gpaisa/deploy/backups/backup.log 2>&1
 ```
 21:30 UTC is 03:00 IST. Run `./backup.sh` once by hand to confirm the upload works.
+
+**IPO data sync.** `ipo-sync.sh` pulls Groww's upcoming, open and closed IPO feeds.
+It fills only empty fields, moves `status` forward, records overall subscription, and adds
+IPOs that aren't in the database yet as **drafts**. Open those in `/admin/ipos` to review
+and publish them. One-time setup:
+```bash
+./migrate.sh                                   # adds ipos.groww_search_id (0007)
+# put CRON_SECRET in .env (openssl rand -hex 32), then: docker compose up -d app
+./ipo-sync.sh --dry-run                        # see what it would change; writes nothing
+./ipo-sync.sh
+```
+Then add to `crontab -e`, every 30 min, 08:30–19:00 IST on weekdays:
+```
+*/30 3-13 * * 1-5 /opt/gpaisa/deploy/ipo-sync.sh >> /opt/gpaisa/deploy/ipo-sync.log 2>&1
+```
 
 **Restore** a backup:
 ```bash

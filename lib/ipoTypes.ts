@@ -108,6 +108,8 @@ export interface Ipo {
     anchor_lock_in_remaining_date: string | null;
     anchor_list_url: string | null;
     post_issue_shares_outstanding: number | null;
+    // Set by lib/growwIpoSync.ts once this IPO is matched to a Groww feed entry.
+    groww_search_id: string | null;
     created_at: string;
     updated_at: string;
     // Joined/expanded fields, present only when explicitly fetched with them.
