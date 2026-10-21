@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import Link from 'next/link';
 import { BookOpen } from 'lucide-react';
 import { GLOSSARY_TERMS, getGlossaryTermsByCategory } from '@/lib/glossaryData';
@@ -9,10 +10,7 @@ export const metadata: Metadata = {
     alternates: {
         canonical: 'https://www.gpaisa.in/glossary',
     },
-    robots: {
-        index: true,
-        follow: true,
-    },
+    robots: INDEXABLE_ROBOTS,
 };
 
 export const dynamic = 'force-static';

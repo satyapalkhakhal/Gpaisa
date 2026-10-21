@@ -38,12 +38,17 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
             }
         }
 
+        // Only edits to what readers see count as a content update (not flags/SEO fields).
+        const title = body.title.trim();
+        const excerpt = body.excerpt.trim();
+        const contentChanged = title !== existing.title || excerpt !== existing.excerpt || body.content !== existing.content;
+
         const article = await updateArticle(id, {
-            title: body.title.trim(),
+            title,
             slug,
             category: body.category,
             subcategory: body.subcategory || null,
-            excerpt: body.excerpt.trim(),
+            excerpt,
             content: body.content,
             image_url: body.image_url || '',
             author: body.author?.trim() || 'Gpaisa Desk',
@@ -58,6 +63,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
             meta_description: body.meta_description || '',
             meta_keywords: body.meta_keywords || '',
             focus_keyword: body.focus_keyword || '',
+            ...(contentChanged ? { content_updated_at: new Date().toISOString() } : {}),
         });
         return NextResponse.json({ article });
     } catch (error) {

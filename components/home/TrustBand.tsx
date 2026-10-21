@@ -20,8 +20,9 @@ export default function TrustBand() {
             <div>
                 <h2 className="text-sm font-medium text-gw-text mb-1.5">Data sources</h2>
                 <p>
-                    MCX, IBJA, LBMA, BSE &amp; NSE, RBI and SEBI offer documents (DRHP/RHP). Index values may be delayed.
-                    Bullion rates are indicative. IPO GMP is unofficial grey-market data and is always labelled as such.
+                    Gold and silver rates are indicative and come from a third-party market data feed. Index values come
+                    from public market data pages and may be delayed. IPO details are taken from SEBI offer documents
+                    (DRHP/RHP). IPO GMP is unofficial grey-market data and is always labelled as such.
                 </p>
             </div>
             <div>

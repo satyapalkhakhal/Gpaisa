@@ -147,10 +147,10 @@ export default function AboutPage() {
                 <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 mb-8">
                     <div className="flex items-center mb-6">
                         <Users className="w-8 h-8 text-primary-600 mr-3" />
-                        <h2 className="text-3xl font-bold text-gray-900">Our Team</h2>
+                        <h2 className="text-3xl font-bold text-gray-900">Who Runs gpaisa.in</h2>
                     </div>
                     <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                        gpaisa.in is powered by a dedicated team of financial analysts, market researchers, and content specialists focused on making financial information accessible and easy to understand for Indian users.
+                        gpaisa.in is run by its founder, Satyapal Khakhal, who writes the articles and maintains the calculators and rate pages.
                     </p>
 
                     {/* Founder / Author */}
@@ -181,24 +181,6 @@ export default function AboutPage() {
                             </div>
                         </div>
                     </div>
-                    <ul className="space-y-3 text-gray-700">
-                        <li className="flex items-start">
-                            <span className="text-primary-600 mr-2">•</span>
-                            <span><strong>Financial Analysts:</strong> Experts who monitor markets and provide insightful analysis</span>
-                        </li>
-                        {/* <li className="flex items-start">
-                            <span className="text-primary-600 mr-2">•</span>
-                            <span><strong>Content Specialists:</strong> Writers who translate complex financial concepts into easy-to-understand articles</span>
-                        </li> */}
-                        {/* <li className="flex items-start">
-                            <span className="text-primary-600 mr-2">•</span>
-                            <span><strong>Data Researchers:</strong> Professionals who ensure accuracy and timeliness of all market data</span>
-                        </li>
-                        <li className="flex items-start">
-                            <span className="text-primary-600 mr-2">•</span>
-                            <span><strong>Technology Team:</strong> Developers who maintain our platform and ensure seamless user experience</span>
-                        </li> */}
-                    </ul>
                 </div>
 
                 {/* Why Choose Us */}

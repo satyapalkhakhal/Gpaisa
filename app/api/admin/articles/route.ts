@@ -58,6 +58,7 @@ export async function POST(request: NextRequest) {
             meta_keywords: body.meta_keywords || '',
             focus_keyword: body.focus_keyword || '',
             published_at: body.published_at || now,
+            content_updated_at: body.published_at || now,
             date: body.date || now,
         });
         return NextResponse.json({ article }, { status: 201 });

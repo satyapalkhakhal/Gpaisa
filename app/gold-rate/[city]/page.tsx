@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import DynamicGoldRates from '@/components/DynamicGoldRates';
 import GoldCalculator from '@/components/GoldCalculator';
@@ -43,11 +44,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
     return {
         title: `Gold Rate in ${cityName} Today — ${todayDate} | gpaisa.in`,
         description: `Check today's gold rate in ${cityName}, ${state} on ${todayDate}. Live 24K, 22K & 18K gold prices. ${tagline}. Gold markets at ${mainMarkets.join(' & ')}. Calculator, price history, buying tips & expert guide.`,
-        robots: {
-            index: true,
-            follow: true,
-            googleBot: { index: true, follow: true },
-        },
+        robots: INDEXABLE_ROBOTS,
         openGraph: {
             title: `Gold Rate in ${cityName} Today - 24K, 22K, 18K Live Prices | ${tagline}`,
             description: `Today's gold rate in ${cityName}, ${state}. ${tagline}. Live prices for 24K, 22K & 18K gold with calculator, history & buying guide.`,

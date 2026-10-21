@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import Link from 'next/link';
 import { TrendingDown, Info } from 'lucide-react';
 import {
@@ -21,7 +22,7 @@ export const metadata: Metadata = {
         url: 'https://www.gpaisa.in/gold-affordability-index',
         siteName: 'gpaisa.in',
     },
-    robots: { index: true, follow: true },
+    robots: INDEXABLE_ROBOTS,
 };
 
 export const dynamic = 'force-static';

@@ -1,0 +1,214 @@
+{
+  "site": {
+    "canonicalOrigin": "https://www.gpaisa.in",
+    "hostVariants": [
+      "http://gpaisa.in",
+      "https://gpaisa.in",
+      "http://www.gpaisa.in",
+      "https://www.gpaisa.in"
+    ],
+    "relatedDomains": [
+      "https://goldrate24.in",
+      "https://www.goldrate24.in"
+    ],
+    "sitemaps": [
+      "https://www.gpaisa.in/sitemap.xml"
+    ],
+    "defaultTitle": "Gpaisa - Live Market Updates, Gold Rates & Financial News"
+  },
+  "crawl": {
+    "userAgent": "GpaisaSEOAudit/1.0 (+read-only site audit; owner-run)",
+    "compareUserAgents": {
+      "googlebot-smartphone": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+      "google-inspectiontool": "Mozilla/5.0 (Linux; Android 6.0.1; Nexus 5X Build/MMB29P) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Mobile Safari/537.36 (compatible; Google-InspectionTool/1.0;)"
+    },
+    "uaCompareSample": 6,
+    "concurrency": 3,
+    "minDelayMs": 250,
+    "timeoutMs": 30000,
+    "maxRequests": 1200,
+    "maxPages": 600,
+    "maxDepth": 8,
+    "maxBodyBytes": 3000000,
+    "respectRobots": true,
+    "crawlDiscoveredLinks": true,
+    "excludePatterns": [
+      "^/admin",
+      "^/api/",
+      "^/_next/",
+      "\\.(png|jpe?g|gif|webp|svg|ico|pdf|csv|txt|xml|json|js|css|woff2?)$"
+    ],
+    "ignoreQueryParams": [
+      "utm_source",
+      "utm_medium",
+      "utm_campaign",
+      "utm_term",
+      "utm_content",
+      "gclid",
+      "fbclid"
+    ]
+  },
+  "probes": {
+    "softNotFound": [
+      "/this-page-should-not-exist-seo-audit",
+      "/articles/this-article-should-not-exist-seo-audit",
+      "/gold-rate/not-a-real-city-seo-audit",
+      "/silver-rate/not-a-real-city-seo-audit",
+      "/glossary/not-a-real-term-seo-audit",
+      "/calculator/not-a-real-calculator-seo-audit",
+      "/category/not-a-real-category-seo-audit",
+      "/ipo/not-a-real-ipo-seo-audit",
+      "/ncd/not-a-real-ncd-seo-audit",
+      "/ipo-calculator/not-a-real-tool-seo-audit"
+    ],
+    "urlVariantSamples": [
+      "/calculator/sip",
+      "/gold-rate/delhi",
+      "/glossary/sip"
+    ],
+    "legacyPaths": [
+      "/finance",
+      "/agriculture",
+      "/articles/1",
+      "/articles/999999999"
+    ]
+  },
+  "templates": [
+    {
+      "name": "home",
+      "pattern": "^/$",
+      "source": "app/page.tsx"
+    },
+    {
+      "name": "article",
+      "pattern": "^/articles/[^/]+$",
+      "source": "app/articles/[slug]/page.tsx"
+    },
+    {
+      "name": "category-hub",
+      "pattern": "^/category/[^/]+$",
+      "source": "app/category/[slug]/page.tsx"
+    },
+    {
+      "name": "news-hub",
+      "pattern": "^/news$",
+      "source": "app/news/page.tsx"
+    },
+    {
+      "name": "calculator-hub",
+      "pattern": "^/calculator$",
+      "source": "app/calculator/[[...slug]]/page.tsx"
+    },
+    {
+      "name": "calculator-bank-programmatic",
+      "pattern": "^/calculator/[^/]+-(sip|home-loan)-calculator$",
+      "source": "app/calculator/[[...slug]]/page.tsx"
+    },
+    {
+      "name": "calculator",
+      "pattern": "^/calculator/[^/]+$",
+      "source": "app/calculator/<name>/page.tsx"
+    },
+    {
+      "name": "ipo-calculator",
+      "pattern": "^/ipo-calculator(/[^/]+)?$",
+      "source": "app/ipo-calculator/[[...slug]]/page.tsx"
+    },
+    {
+      "name": "gold-rate-city",
+      "pattern": "^/gold-rate/[^/]+$",
+      "source": "app/gold-rate/[city]/page.tsx"
+    },
+    {
+      "name": "silver-rate-city",
+      "pattern": "^/silver-rate/[^/]+$",
+      "source": "app/silver-rate/[city]/page.tsx"
+    },
+    {
+      "name": "metal-rate-hub",
+      "pattern": "^/(gold-rate|silver-rate|commodities|gold-vs-silver|gold-affordability-index)$",
+      "source": "app/<section>/page.tsx"
+    },
+    {
+      "name": "glossary-term",
+      "pattern": "^/glossary/[^/]+$",
+      "source": "app/glossary/[slug]/page.tsx"
+    },
+    {
+      "name": "glossary-hub",
+      "pattern": "^/glossary$",
+      "source": "app/glossary/page.tsx"
+    },
+    {
+      "name": "ipo-detail",
+      "pattern": "^/ipo/(?!gmp$|compare$|listing-performance$)[^/]+$",
+      "source": "app/ipo/[slug]/page.tsx"
+    },
+    {
+      "name": "ipo-hub",
+      "pattern": "^/ipo(/(gmp|compare|listing-performance))?$",
+      "source": "app/ipo/**/page.tsx"
+    },
+    {
+      "name": "other-investments-detail",
+      "pattern": "^/(ncd|rights-issue|buyback)/[^/]+$",
+      "source": "app/<ncd|rights-issue|buyback>/[slug]/page.tsx"
+    },
+    {
+      "name": "other-investments-hub",
+      "pattern": "^/(ncd|rights-issue|buyback)$",
+      "source": "app/<ncd|rights-issue|buyback>/page.tsx"
+    },
+    {
+      "name": "credit-cards",
+      "pattern": "^/credit-cards",
+      "source": "app/credit-cards/page.tsx"
+    },
+    {
+      "name": "static-info",
+      "pattern": "^/(about|contact|terms|privacy-policy|disclaimer|sitemap-page)$",
+      "source": "app/<page>/page.tsx"
+    },
+    {
+      "name": "other",
+      "pattern": ".*",
+      "source": "app/"
+    }
+  ],
+  "thresholds": {
+    "titleMaxChars": 65,
+    "descriptionMinChars": 70,
+    "descriptionMaxChars": 165,
+    "thinContentWords": 250,
+    "nearDuplicateJaccard": 0.8,
+    "boilerplateShingleShare": 0.4,
+    "deepClickDepth": 4,
+    "slowTtfbMs": 1500,
+    "thinUniqueShingles": 80
+  },
+  "render": {
+    "enabled": false,
+    "executablePath": "/usr/bin/google-chrome",
+    "samplePerTemplate": 2,
+    "waitMs": 2500
+  },
+  "repo": {
+    "path": "..",
+    "framework": "nextjs-app",
+    "appDir": "app"
+  },
+  "gsc": {
+    "exportsDir": "gsc-exports",
+    "comment": "Drop Search Console CSV exports here. Each CSV must have a URL column (URL / Page / Top pages). Name the file after the reason (e.g. 'Crawled - currently not indexed.csv') or include a Reason/Status column."
+  },
+  "output": {
+    "runsDir": "runs"
+  },
+  "discover": {
+    "templates": [
+      "article"
+    ],
+    "checkImageSize": true,
+    "maxImages": 100
+  }
+}

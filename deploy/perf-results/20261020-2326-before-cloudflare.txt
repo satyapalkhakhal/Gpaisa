@@ -1,0 +1,24 @@
+gpaisa.in performance check — 2026-10-20 23:26:20 IST — label: before-cloudflare
+DNS: 34.47.163.51   NS: ns1.dns-parking.com.
+
+== Network timings from this machine (median of 5, ms; size in bytes) ==
+PATH                                             CODE    DNS   CONN    TLS   TTFB  TOTAL     SIZE  ENC   HTTP SERVER   CF-CACHE
+/                                                 200     11     15     52     75     93    35039  gzip  2    -        -
+/news                                             200      8     13     39     57     68    29663  gzip  2    -        -
+/ipo                                              200      7     12     34     72     76    11772  gzip  2    -        -
+/ipo/nova-industries-ipo                          200      7     12     40     56     61    14633  gzip  2    -        -
+/gold-rate                                        200      7     12     35     48     55    15455  gzip  2    -        -
+/calculator/sip                                   200      7     11     46     58     63    18520  gzip  2    -        -
+/articles/epfo-credits-8-25-percent-epf-interest  200      8     13     51     91    121    38465  gzip  2    -        -
+-- static assets --
+/_next/static/chunks/webpack-69ea070a44528498.js  200      6     10     41     48     49     2034  gzip  2    -        -
+/_next/static/css/983a1e833473c2b3.css            200      6     10     43     51     57    15741  gzip  2    -        -
+/_next/image?url=%2Fandroid-chrome-192x192.png&w  200      7     11     45     53     53      697  -     2    -        -
+
+== Google PageSpeed (lab test from Google's servers) ==
+mobile https://www.gpaisa.in/  PageSpeed error: Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'pagespeedonline.googleapis.com' for consumer 'project_number:583797351490'.
+desktop https://www.gpaisa.in/  PageSpeed error: Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'pagespeedonline.googleapis.com' for consumer 'project_number:583797351490'.
+mobile https://www.gpaisa.in/ipo/nova-industries-ipo  PageSpeed error: Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'pagespeedonline.googleapis.com' for consumer 'project_number:583797351490'.
+desktop https://www.gpaisa.in/ipo/nova-industries-ipo  PageSpeed error: Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'pagespeedonline.googleapis.com' for consumer 'project_number:583797351490'.
+mobile https://www.gpaisa.in/articles/epfo-credits-8-25-percent-epf-interest  PageSpeed error: Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'pagespeedonline.googleapis.com' for consumer 'project_number:583797351490'.
+desktop https://www.gpaisa.in/articles/epfo-credits-8-25-percent-epf-interest  PageSpeed error: Quota exceeded for quota metric 'Queries' and limit 'Queries per day' of service 'pagespeedonline.googleapis.com' for consumer 'project_number:583797351490'.

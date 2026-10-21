@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import { fetchSilverCities, fetchSilverCalculator } from '@/lib/angelOneApi';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
@@ -42,11 +43,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
     return {
         title: `Silver Rate in ${cityName} Today — ${todayDate} | gpaisa.in`,
         description: `Check today's silver rate in ${cityName}, ${state} on ${todayDate}. Live 999 & 925 silver prices per gram and kg.${tagline ? ` ${tagline}.` : ''} ${mainMarkets.length ? `Silver markets at ${mainMarkets.join(' & ')}.` : ''} Calculator, history & buying guide.`,
-        robots: {
-            index: true,
-            follow: true,
-            googleBot: { index: true, follow: true },
-        },
+        robots: INDEXABLE_ROBOTS,
         openGraph: {
             title: `Silver Rate in ${cityName} Today - Live Prices${tagline ? ` | ${tagline}` : ''}`,
             description: `Today's silver price in ${cityName}, ${state}. Live rate updates, historical trends & buying guide.`,

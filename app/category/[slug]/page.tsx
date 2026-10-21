@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -40,7 +41,7 @@ export async function generateMetadata({ params, searchParams }: {
             canonical: canonicalUrl
         },
         robots: hasArticles
-            ? { index: true, follow: true }
+            ? INDEXABLE_ROBOTS
             : { index: false, follow: true },
     };
 }

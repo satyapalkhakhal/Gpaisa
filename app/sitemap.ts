@@ -323,8 +323,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         });
 
         articlePages = publishedArticles.map((article) => {
-            const lastModified = article.updated_at
-                ? new Date(article.updated_at)
+            // content_updated_at, not updated_at: the latter changes on any row write.
+            const lastModified = article.content_updated_at
+                ? new Date(article.content_updated_at)
                 : article.published_at
                     ? new Date(article.published_at)
                     : new Date('2026-01-01');

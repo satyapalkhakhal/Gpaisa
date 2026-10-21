@@ -77,7 +77,7 @@ export default function GoldRatePageClient({ todayDate, initialHeroData = null }
                     <div>
                         <h3 className="text-sm font-semibold text-gray-900 mb-1">About Our Data</h3>
                         <p className="text-xs text-gray-500 leading-relaxed">
-                            Gold rates on gpaisa.in are sourced from MCX and IBJA data feeds, updated every market hour on weekdays. Rates reflect spot prices and may vary from retail jeweller prices due to making charges, GST (3%), and local taxes.
+                            Gold rates on gpaisa.in are indicative and come from a third-party market data feed. They may vary from retail jeweller prices due to making charges, GST (3%), and local taxes.
                         </p>
                     </div>
                 </div>

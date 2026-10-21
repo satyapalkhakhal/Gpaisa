@@ -2,6 +2,11 @@
 const nextConfig = {
     // Self-contained server bundle (.next/standalone) for the Docker image in deploy/.
     output: 'standalone',
+    // Emit generateMetadata output (title, canonical, robots, OG) in <head> for every
+    // user-agent. By default Next.js streams it into <body> on dynamic renders unless the
+    // UA is on its "HTML-limited bot" list — which matches Google-InspectionTool but not
+    // Googlebot, so real Googlebot got canonical/robots in <body> (ignored by Google).
+    htmlLimitedBots: /.*/,
     async redirects() {
         return [
             {

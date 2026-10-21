@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import EMICalculatorClient from '@/components/EMICalculatorClient';
 
 export const metadata: Metadata = {
@@ -14,10 +15,7 @@ export const metadata: Metadata = {
     alternates: {
         canonical: 'https://www.gpaisa.in/calculator/emi',
     },
-    robots: {
-        index: true,
-        follow: true,
-    },
+    robots: INDEXABLE_ROBOTS,
 };
 
 export default function EMICalculatorPage() {

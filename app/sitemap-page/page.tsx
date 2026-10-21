@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import { fetchLatestArticles } from '@/lib/articlesApi';
 import { CALCULATORS } from '@/lib/calculatorsList';
 import { FileText, TrendingUp, Newspaper, MapPin, Calculator } from 'lucide-react';
@@ -11,10 +12,7 @@ const CITIES = [
 export const metadata = {
     title: 'Sitemap - All Pages | gpaisa.in',
     description: 'Browse all pages on gpaisa.in including gold rates, silver rates, news articles, and financial information.',
-    robots: {
-        index: true,
-        follow: true,
-    },
+    robots: INDEXABLE_ROBOTS,
 };
 
 export const revalidate = 86400; // Cache for 1 day (ISR)

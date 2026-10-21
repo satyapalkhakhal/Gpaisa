@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import Link from 'next/link';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
@@ -26,6 +27,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     }
 
     const publishedTime = new Date(article.published_at || Date.now()).toISOString();
+    const modifiedTime = new Date(article.content_updated_at || article.published_at || Date.now()).toISOString();
 
     return {
         title: `${article.title} | gpaisa.in`,
@@ -36,16 +38,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             description: article.excerpt || article.title,
             type: 'article',
             publishedTime,
-            modifiedTime: publishedTime,
+            modifiedTime,
             authors: [article.author || 'Gpaisa Desk'],
-            images: article.image_url ? [
-                {
-                    url: article.image_url,
-                    width: 1200,
-                    height: 630,
-                    alt: article.title,
-                }
-            ] : [],
+            // Real dimensions vary per upload, so they are not declared here.
+            images: article.image_url ? [{ url: article.image_url, alt: article.title }] : [],
             siteName: 'gpaisa.in',
         },
         twitter: {
@@ -59,7 +55,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         },
         robots: isDroppedCategory(article.category)
             ? { index: false, follow: true }
-            : { index: true, follow: true },
+            : INDEXABLE_ROBOTS,
     };
 }
 
@@ -96,6 +92,15 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         year: 'numeric'
     });
 
+    // content_updated_at only moves when the title, excerpt or body is edited.
+    const modifiedDate = new Date(article.content_updated_at || article.published_at || Date.now());
+    const showUpdated = modifiedDate.getTime() - publishedDate.getTime() > 24 * 60 * 60 * 1000;
+    const formattedUpdatedDate = modifiedDate.toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+    });
+
     // Prepare JSON-LD structured data
     const articleSchema = {
         '@context': 'https://schema.org',
@@ -104,7 +109,7 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
         description: article.excerpt || article.title,
         image: article.image_url || 'https://www.gpaisa.in/android-chrome-512x512.png',
         datePublished: publishedDate.toISOString(),
-        dateModified: publishedDate.toISOString(),
+        dateModified: modifiedDate.toISOString(),
         author: {
             '@type': 'Person',
             name: article.author || 'Gpaisa Desk',
@@ -220,8 +225,13 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
                                     </span>
                                     <span className="flex items-center gap-1.5">
                                         <Calendar className="w-3.5 h-3.5" />
-                                        {formattedDate}
+                                        <time dateTime={publishedDate.toISOString()}>{formattedDate}</time>
                                     </span>
+                                    {showUpdated && (
+                                        <span className="flex items-center gap-1.5">
+                                            Updated <time dateTime={modifiedDate.toISOString()}>{formattedUpdatedDate}</time>
+                                        </span>
+                                    )}
                                     {article.read_time && (
                                         <span className="flex items-center gap-1.5">
                                             <Clock className="w-3.5 h-3.5" />

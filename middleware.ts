@@ -2,6 +2,25 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyAdminSession, ADMIN_SESSION_COOKIE } from '@/lib/auth';
 
+// Placeholder articles (25–175 words of off-topic tech/travel demo text) seeded on
+// 2026-03-24 while the site was being set up. They have no finance equivalent to
+// redirect to, so they return 410 Gone. The rows stay in the database.
+const REMOVED_SEED_ARTICLE_SLUGS = new Set([
+    'future-ai-agents-development',
+    'web3-decentralized-identity',
+    'postgresql-performance-tuning',
+    'complete-guide-rest-apis-nodejs',
+    'react-server-components-deep-dive',
+    'typescript-design-patterns',
+    'getting-started-docker-kubernetes',
+    'exploring-ancient-temples-cambodia',
+    'backpacking-patagonia-budget',
+    'solo-travel-japan-guide',
+    'hidden-gems-southeast-asia',
+    'hiking-inca-trail-machu-picchu',
+    'street-food-tour-bangkok',
+]);
+
 export async function middleware(request: NextRequest) {
     const { pathname } = request.nextUrl;
     const host = request.headers.get('host') || '';
@@ -39,6 +58,13 @@ export async function middleware(request: NextRequest) {
     // handling that existed briefly before being dropped along with the pages.
     if (pathname === '/agriculture' || pathname.startsWith('/agriculture/') ||
         pathname === '/api/agriculture' || pathname.startsWith('/api/agriculture/')) {
+        return new NextResponse('Gone', {
+            status: 410,
+            headers: { 'X-Robots-Tag': 'noindex' },
+        });
+    }
+
+    if (pathname.startsWith('/articles/') && REMOVED_SEED_ARTICLE_SLUGS.has(pathname.slice('/articles/'.length))) {
         return new NextResponse('Gone', {
             status: 410,
             headers: { 'X-Robots-Tag': 'noindex' },

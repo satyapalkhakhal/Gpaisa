@@ -79,6 +79,7 @@ export interface AdminArticleInput {
     focus_keyword?: string;
     published_at?: string;
     date?: string;
+    content_updated_at?: string;
 }
 
 // Unrestricted by category (unlike fetchAllArticles), paginated, filterable — for the admin listing page.

@@ -32,6 +32,7 @@ export interface Article {
     publishedAt?: string;
     category_id?: string;
     updated_at?: string;
+    content_updated_at?: string | null;
 }
 
 // Helper to normalize article data for backward compatibility
@@ -197,15 +198,26 @@ export async function fetchArticleById(id: string, revalidateSeconds: number = 3
 export async function fetchArticleSitemapEntries(
     excludedCategories: string[],
     revalidateSeconds: number = 86400
-): Promise<Pick<Article, 'slug' | 'published_at' | 'updated_at' | 'category'>[]> {
+): Promise<Pick<Article, 'slug' | 'published_at' | 'content_updated_at' | 'category'>[]> {
     return cachedRows(
-        `SELECT slug, published_at, updated_at, category FROM articles
+        `SELECT slug, published_at, content_updated_at, category FROM articles
          WHERE status = 'published' AND category <> ALL($1::text[])
          ORDER BY published_at DESC LIMIT 1000`,
         [excludedCategories],
         revalidateSeconds,
         'fetchArticleSitemapEntries'
     );
+}
+
+/**
+ * Latest published articles outside `excludedCategories`, for the RSS feed.
+ */
+export async function fetchFeedArticles(
+    excludedCategories: string[],
+    limit: number = 50,
+    revalidateSeconds: number = 3600
+): Promise<Article[]> {
+    return fetchArticles('category <> ALL($1::text[])', [excludedCategories], limit, 'fetchFeedArticles', revalidateSeconds);
 }
 
 /**

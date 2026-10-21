@@ -3,6 +3,7 @@ import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import { LanguageProvider } from "@/lib/i18n";
 import Script from "next/script";
+import { INDEXABLE_ROBOTS } from "@/lib/seo";
 
 export const metadata: Metadata = {
     metadataBase: new URL('https://www.gpaisa.in'),
@@ -10,6 +11,8 @@ export const metadata: Metadata = {
     description: "Track live stock markets (Sensex, Nifty), today's gold & silver rates, breaking financial news, commodity prices, and smart investment calculators (SIP, PPF, EPF, SWP). Your trusted Indian finance companion!",
     authors: [{ name: "Satyapal Khakhal" }],
     manifest: "/manifest.json",
+    // Default for routes that do not set their own robots metadata.
+    robots: INDEXABLE_ROBOTS,
     icons: {
         icon: [
             { url: '/favicon.ico', sizes: 'any' },
@@ -68,6 +71,9 @@ export default function RootLayout({
                 <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32" />
                 <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16" />
                 <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+
+                {/* RSS feed — used by Google Discover "Follow" and feed readers */}
+                <link rel="alternate" type="application/rss+xml" title="gpaisa.in — latest articles" href="https://www.gpaisa.in/feed.xml" />
 
                 {/* Google AdSense verification */}
                 <meta name="google-adsense-account" content="ca-pub-2757390342181644" />

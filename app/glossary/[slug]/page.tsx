@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { ChevronRight, ArrowLeft } from 'lucide-react';
@@ -31,10 +32,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
             url: `https://www.gpaisa.in/glossary/${term.slug}`,
             siteName: 'gpaisa.in',
         },
-        robots: {
-            index: true,
-            follow: true,
-        },
+        robots: INDEXABLE_ROBOTS,
     };
 }
 
