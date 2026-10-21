@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { fetchAllPublishedIpoSlugs, fetchIpoBySlug } from '@/lib/ipoApi';
+import { fetchAllPublishedIpoSlugs, fetchIpoBySlug, fetchListedIpos, fetchOpenIpos, fetchUpcomingIpos } from '@/lib/ipoApi';
+import { fetchArticlesForIpo } from '@/lib/articlesApi';
 import { LIFECYCLE_LABELS, RECOMMENDATION_LABELS } from '@/lib/ipoTypes';
 import StatusBadge from '@/components/ipo/StatusBadge';
 import DataSourceBadge from '@/components/ipo/DataSourceBadge';
@@ -21,7 +22,9 @@ import ValuationKpiTable from '@/components/ipo/ValuationKpiTable';
 import PeerComparisonTable from '@/components/ipo/PeerComparisonTable';
 import CompanyContactBlock from '@/components/ipo/CompanyContactBlock';
 import IpoFaq from '@/components/ipo/IpoFaq';
-import { computeValuationKpis } from '@/lib/ipoComputed';
+import GmpProfitCalculator from '@/components/ipo/GmpProfitCalculator';
+import RelatedIpos from '@/components/ipo/RelatedIpos';
+import { computeMarketLotTiers, computeValuationKpis } from '@/lib/ipoComputed';
 
 export const revalidate = 300;
 
@@ -71,6 +74,26 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
         ? { name: companyName, eps: valuationKpis.eps, pe_ratio: valuationKpis.peRatio, ronw_percent: valuationKpis.ronwPercent, nav: valuationKpis.nav, income: latestFinancial.revenue }
         : null;
 
+    const [openIpos, upcomingIpos, listedIpos, news] = await Promise.all([
+        fetchOpenIpos({ limit: 6 }),
+        fetchUpcomingIpos({ limit: 6 }),
+        fetchListedIpos({ limit: 6 }),
+        fetchArticlesForIpo(ipo.id, companyName),
+    ]);
+    const relatedCurrent = [...openIpos, ...upcomingIpos.filter(i => i.open_date)].filter(i => i.id !== ipo.id).slice(0, 5);
+    const relatedListed = listedIpos.filter(i => i.id !== ipo.id).slice(0, 5);
+
+    // Sections render only when they have something to show — IPOs synced from a feed
+    // start with little more than dates and price, and empty shells read as thin content.
+    const canCalculateGmp = ipo.price_band_max != null && ipo.lot_size != null;
+    const showMarketLot = computeMarketLotTiers(ipo.price_band_max, ipo.lot_size).length > 0;
+    const showGmp = !!latestGmp || (canCalculateGmp && ipo.status !== 'listed');
+    const showSubscription = ipo.subscription_history.length > 0 || Object.keys(ipo.reservation_percentages).length > 0;
+    const hasObjects = ipo.objects_of_issue_breakdown.length > 0 || !!ipo.objects_of_issue;
+    const showAboutIssue = !!(ipo.fresh_issue_amount || ipo.ofs_amount || ipo.face_value || ipo.lead_managers.length || hasObjects || ipo.company?.about);
+    const company = ipo.company;
+    const showContact = !!ipo.registrar || !!(company && (company.registered_office || company.phone || company.email || company.website));
+
     const webPageSchema = {
         '@context': 'https://schema.org',
         '@type': 'WebPage',
@@ -89,11 +112,28 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
             { '@type': 'ListItem', position: 3, name: `${companyName} IPO`, item: `https://www.gpaisa.in/ipo/${ipo.slug}` },
         ],
     };
+    const productSchema = ipo.price_band_max != null ? {
+        '@context': 'https://schema.org',
+        '@type': 'FinancialProduct',
+        name: `${companyName} IPO`,
+        category: ipo.ipo_type === 'sme' ? 'SME IPO' : 'Mainboard IPO',
+        url: `https://www.gpaisa.in/ipo/${ipo.slug}`,
+        provider: { '@type': 'Organization', name: companyName, ...(company?.website ? { url: company.website } : {}) },
+        offers: {
+            '@type': 'AggregateOffer',
+            priceCurrency: 'INR',
+            lowPrice: ipo.price_band_min ?? ipo.price_band_max,
+            highPrice: ipo.price_band_max,
+            ...(ipo.open_date ? { availabilityStarts: ipo.open_date } : {}),
+            ...(ipo.close_date ? { availabilityEnds: ipo.close_date } : {}),
+        },
+    } : null;
 
     return (
         <div className="max-w-5xl mx-auto px-4 py-10">
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema).replace(/</g, '\\u003c') }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema).replace(/</g, '\\u003c') }} />
+            {productSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema).replace(/</g, '\\u003c') }} />}
 
             {/* Above the fold: identity, status, price band, lot, key dates */}
             <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
@@ -101,6 +141,7 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                     <div>
                         <h1 className="text-2xl sm:text-3xl font-display font-bold text-gray-900">{companyName} IPO</h1>
                         <p className="text-sm text-gray-500 uppercase tracking-wide">{ipo.ipo_type} · {ipo.exchange?.toUpperCase() || 'NSE/BSE'}</p>
+                        <p className="text-xs text-gray-400 mt-1">Updated {formatDate(ipo.updated_at)}</p>
                     </div>
                     <div className="flex items-center gap-2">
                         <StatusBadge status={ipo.status} className="text-sm px-3 py-1.5" />
@@ -149,18 +190,21 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
             </div>
 
             {/* Key dates + market lot — literal tables in addition to the visual timeline above */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+            <div className={`grid grid-cols-1 gap-6 mb-6 ${showMarketLot ? 'sm:grid-cols-2' : ''}`}>
                 <section className="bg-white rounded-2xl border border-gray-100 p-6">
                     <h2 className="text-lg font-bold text-gray-900 mb-3">IPO Timeline</h2>
                     <DatesTimelineTable ipo={ipo} />
                 </section>
-                <section className="bg-white rounded-2xl border border-gray-100 p-6">
-                    <h2 className="text-lg font-bold text-gray-900 mb-3">Market Lot</h2>
-                    <MarketLotTable ipo={ipo} />
-                </section>
+                {showMarketLot && (
+                    <section className="bg-white rounded-2xl border border-gray-100 p-6">
+                        <h2 className="text-lg font-bold text-gray-900 mb-3">Market Lot</h2>
+                        <MarketLotTable ipo={ipo} />
+                    </section>
+                )}
             </div>
 
             {/* GMP */}
+            {showGmp && (
             <section className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
                 <div className="flex items-center justify-between mb-1">
                     <h2 className="text-lg font-bold text-gray-900">Grey Market Premium (GMP)</h2>
@@ -184,9 +228,13 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                         </p>
                     </>
                 ) : (
-                    <p className="text-sm text-gray-400">No GMP data available yet for this IPO.</p>
+                    <p className="text-sm text-gray-400">No GMP reported yet. Enter an expected GMP below to estimate returns.</p>
+                )}
+                {canCalculateGmp && (
+                    <GmpProfitCalculator priceBandMax={ipo.price_band_max!} lotSize={ipo.lot_size!} latestGmp={latestGmp?.gmp_value ?? null} />
                 )}
             </section>
+            )}
 
             {/* Listing performance — actual outcome, distinct from pre-listing GMP estimates */}
             {ipo.listing_price != null && (
@@ -234,6 +282,7 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
             )}
 
             {/* Subscription */}
+            {showSubscription && (
             <section className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
                 <div className="flex items-center justify-between mb-3">
                     <h2 className="text-lg font-bold text-gray-900">Subscription Status</h2>
@@ -247,6 +296,7 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                     </div>
                 )}
             </section>
+            )}
 
             {/* Anchor Investors */}
             {ipo.anchor_bidding_date && (
@@ -384,12 +434,13 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
             )}
 
             {/* Company / issue details */}
+            {showAboutIssue && (
             <section className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-3">About the Issue</h2>
-                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm mb-4">
-                    <div><p className="text-xs text-gray-400">Fresh issue</p><p className="font-semibold text-gray-900">{ipo.fresh_issue_amount ? `₹${ipo.fresh_issue_amount} Cr` : '—'}</p></div>
-                    <div><p className="text-xs text-gray-400">Offer for sale</p><p className="font-semibold text-gray-900">{ipo.ofs_amount ? `₹${ipo.ofs_amount} Cr` : '—'}</p></div>
-                    <div><p className="text-xs text-gray-400">Face value</p><p className="font-semibold text-gray-900">{ipo.face_value ? `₹${ipo.face_value}` : '—'}</p></div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 text-sm mb-4 empty:hidden">
+                    {!!ipo.fresh_issue_amount && <div><p className="text-xs text-gray-400">Fresh issue</p><p className="font-semibold text-gray-900">₹{ipo.fresh_issue_amount} Cr</p></div>}
+                    {!!ipo.ofs_amount && <div><p className="text-xs text-gray-400">Offer for sale</p><p className="font-semibold text-gray-900">₹{ipo.ofs_amount} Cr</p></div>}
+                    {!!ipo.face_value && <div><p className="text-xs text-gray-400">Face value</p><p className="font-semibold text-gray-900">₹{ipo.face_value}</p></div>}
                     {ipo.lead_managers.length > 0 && (
                         <div className="col-span-2 sm:col-span-3">
                             <p className="text-xs text-gray-400">Lead managers</p>
@@ -397,8 +448,12 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                         </div>
                     )}
                 </div>
-                <h3 className="text-sm font-bold text-gray-900 mb-2">Objects of the Issue</h3>
-                <ObjectsOfIssueTable breakdown={ipo.objects_of_issue_breakdown} fallbackText={ipo.objects_of_issue} />
+                {hasObjects && (
+                    <>
+                        <h3 className="text-sm font-bold text-gray-900 mb-2">Objects of the Issue</h3>
+                        <ObjectsOfIssueTable breakdown={ipo.objects_of_issue_breakdown} fallbackText={ipo.objects_of_issue} />
+                    </>
+                )}
                 {ipo.company?.about && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
                         <p className="text-xs text-gray-400 mb-1">About {companyName}</p>
@@ -406,12 +461,40 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                     </div>
                 )}
             </section>
+            )}
 
             {/* Contact details */}
+            {showContact && (
             <section className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-3">Company &amp; Registrar Contact</h2>
                 <CompanyContactBlock company={ipo.company} registrar={ipo.registrar} />
             </section>
+            )}
+
+            {/* News for this IPO */}
+            {news.length > 0 && (
+                <section className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
+                    <h2 className="text-lg font-bold text-gray-900 mb-3">{companyName} IPO News</h2>
+                    <ul className="divide-y divide-gray-100">
+                        {news.map(article => (
+                            <li key={article.id} className="py-2.5">
+                                <Link href={`/articles/${article.slug}`} className="text-sm font-semibold text-gray-900 hover:text-primary-600">
+                                    {article.title}
+                                </Link>
+                                <p className="text-xs text-gray-400 mt-0.5">{formatDate(article.published_at)}</p>
+                            </li>
+                        ))}
+                    </ul>
+                </section>
+            )}
+
+            {/* Related IPOs — internal links readers use to compare */}
+            {(relatedCurrent.length > 0 || relatedListed.length > 0) && (
+                <section className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
+                    <h2 className="text-lg font-bold text-gray-900 mb-3">Other IPOs</h2>
+                    <RelatedIpos current={relatedCurrent} listed={relatedListed} />
+                </section>
+            )}
 
             {/* FAQ */}
             <section className="bg-white rounded-2xl border border-gray-100 p-6">

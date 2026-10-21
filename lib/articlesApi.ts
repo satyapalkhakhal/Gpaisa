@@ -68,6 +68,15 @@ async function fetchArticles(
 const PUBLIC_CATEGORIES = `category IN ('BUSINESS', 'FINANCE')`;
 
 /**
+ * News for one IPO's detail page: articles linked to it via ipo_id, or whose title names
+ * "<company> IPO" (covers the many articles written before the link field existed).
+ */
+export async function fetchArticlesForIpo(ipoId: string, companyName: string, limit: number = 6, revalidateSeconds: number = 300): Promise<Article[]> {
+    const titlePattern = `%${companyName.replace(/[\\%_]/g, '\\$&')} IPO%`;
+    return fetchArticles('(ipo_id = $1 OR title ILIKE $2)', [ipoId, titlePattern], limit, `fetchArticlesForIpo(${ipoId})`, revalidateSeconds);
+}
+
+/**
  * Fetch all articles ordered by published_at desc
  */
 export async function fetchAllArticles(limit: number = 50, revalidateSeconds: number = 300): Promise<Article[]> {

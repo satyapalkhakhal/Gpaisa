@@ -1,10 +1,10 @@
-import type { Ipo } from '@/lib/ipoTypes';
+import type { IpoDetail } from '@/lib/ipoTypes';
 
 function formatDate(d: string | null): string {
-    return d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' }) : 'TBA';
+    return d ? new Date(d).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'Asia/Kolkata' }) : 'TBA';
 }
 
-function buildFaqs(ipo: Ipo, companyName: string): { question: string; answer: string }[] {
+function buildFaqs(ipo: IpoDetail, companyName: string): { question: string; answer: string }[] {
     const faqs: { question: string; answer: string }[] = [];
 
     if (ipo.price_band_min != null && ipo.price_band_max != null) {
@@ -43,6 +43,22 @@ function buildFaqs(ipo: Ipo, companyName: string): { question: string; answer: s
             answer: `${ipo.registrar.name} is the registrar for this IPO.${ipo.registrar.allotment_status_check_url ? ' You can check your allotment status on their official portal.' : ''}`,
         });
     }
+    // gmp_history is newest first.
+    const [latestGmp] = ipo.gmp_history;
+    if (latestGmp) {
+        faqs.push({
+            question: `What is the ${companyName} IPO GMP today?`,
+            answer: `The latest grey market premium is ₹${latestGmp.gmp_value} per share${latestGmp.gmp_percentage != null ? ` (${latestGmp.gmp_percentage}%)` : ''}${latestGmp.estimated_listing_price != null ? `, indicating an estimated listing price of ₹${latestGmp.estimated_listing_price}` : ''}, as of ${formatDate(latestGmp.recorded_at)} (source: ${latestGmp.source}).`,
+        });
+    }
+    if (ipo.gmp_history.length >= 2) {
+        const highest = ipo.gmp_history.reduce((a, b) => (b.gmp_value > a.gmp_value ? b : a));
+        const lowest = ipo.gmp_history.reduce((a, b) => (b.gmp_value < a.gmp_value ? b : a));
+        faqs.push({
+            question: `What is the highest GMP of the ${companyName} IPO?`,
+            answer: `The highest GMP recorded so far is ₹${highest.gmp_value} on ${formatDate(highest.recorded_at)}, and the lowest is ₹${lowest.gmp_value} on ${formatDate(lowest.recorded_at)}.`,
+        });
+    }
     faqs.push({
         question: `Is the ${companyName} IPO GMP a guarantee of listing gains?`,
         answer: `No. Grey Market Premium (GMP) is unofficial market sentiment, not an exchange-quoted or guaranteed price — actual listing performance can differ significantly.`,
@@ -51,7 +67,7 @@ function buildFaqs(ipo: Ipo, companyName: string): { question: string; answer: s
     return faqs;
 }
 
-export default function IpoFaq({ ipo, companyName }: { ipo: Ipo; companyName: string }) {
+export default function IpoFaq({ ipo, companyName }: { ipo: IpoDetail; companyName: string }) {
     const faqs = buildFaqs(ipo, companyName);
     if (faqs.length === 0) return null;
 
@@ -67,7 +83,7 @@ export default function IpoFaq({ ipo, companyName }: { ipo: Ipo; companyName: st
 
     return (
         <div>
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema).replace(/</g, '\\u003c') }} />
             <div className="divide-y divide-gray-100">
                 {faqs.map((faq, i) => (
                     <details key={i} className="group py-3">
