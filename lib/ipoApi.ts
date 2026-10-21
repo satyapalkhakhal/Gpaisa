@@ -152,7 +152,9 @@ export interface GmpBoardEntry {
  * N+1 by design — GMP is an append-only log, not a joinable column — acceptable at Phase-1 volumes.
  */
 export async function fetchLatestGmpBoard(revalidateSeconds: number = 300): Promise<GmpBoardEntry[]> {
-    const ipos = await fetchIposByStatus(['announced', 'upcoming', 'open', 'closed', 'allotment'], { limit: 50, revalidateSeconds });
+    // Newest first: old issues whose status was never advanced past 'closed'/'allotment'
+    // would otherwise fill the LIMIT and push out today's open and upcoming IPOs.
+    const ipos = await fetchIposByStatus(['announced', 'upcoming', 'open', 'closed', 'allotment'], { limit: 50, revalidateSeconds }, true);
     const entries = await Promise.all(
         ipos.map(async (ipo) => {
             const rows = await cachedRows<IpoGmpUpdate>(
