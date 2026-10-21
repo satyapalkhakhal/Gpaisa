@@ -34,6 +34,9 @@ export function ipoTimeline(ipo: Ipo, today: string): Timeline | null {
     const { open_date, close_date, allotment_date, listing_date } = ipo;
 
     if (!open_date) {
+        if (ipo.status === 'drhp' || ipo.status === 'rhp') {
+            return { phase: 'upcoming', label: `${ipo.status.toUpperCase()} filed`, urgent: false, sortDays: Number.MAX_SAFE_INTEGER };
+        }
         return ipo.status === 'announced' || ipo.status === 'upcoming'
             ? { phase: 'upcoming', label: 'Dates to be announced', urgent: false, sortDays: Number.MAX_SAFE_INTEGER }
             : null;

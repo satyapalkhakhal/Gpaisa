@@ -24,22 +24,28 @@ interface IpoListOpts {
     ipoType?: IpoType;
     limit?: number;
     revalidateSeconds?: number;
+    /** Drop issues that closed more than this many days ago (undated issues are kept). */
+    closedWithinDays?: number;
 }
 
+// Not yet open: filed with SEBI (drhp/rhp), announced, or dated — all shown as "Upcoming".
+const UPCOMING_STATUSES: IpoLifecycleStatus[] = ['drhp', 'rhp', 'announced', 'upcoming'];
+
 async function fetchIposByStatus(statuses: IpoLifecycleStatus[], opts: IpoListOpts = {}, newestFirst = false): Promise<Ipo[]> {
-    const { ipoType, limit = 50, revalidateSeconds = 300 } = opts;
+    const { ipoType, limit = 50, revalidateSeconds = 300, closedWithinDays } = opts;
     return cachedRows(
         `${IPO_WITH_COMPANY}
          WHERE i.publish_status = 'published' AND i.status = ANY($1::text[]) AND ($2::text IS NULL OR i.ipo_type = $2)
+           AND ($4::int IS NULL OR i.close_date IS NULL OR i.close_date >= current_date - $4::int OR i.listing_date >= current_date)
          ORDER BY i.open_date ${newestFirst ? 'DESC' : 'ASC'} NULLS LAST LIMIT $3`,
-        [statuses, ipoType ?? null, limit],
+        [statuses, ipoType ?? null, limit, closedWithinDays ?? null],
         revalidateSeconds,
         `fetchIposByStatus(${statuses.join(',')})`
     );
 }
 
 export function fetchUpcomingIpos(opts: IpoListOpts = {}): Promise<Ipo[]> {
-    return fetchIposByStatus(['announced', 'upcoming'], opts);
+    return fetchIposByStatus(UPCOMING_STATUSES, opts);
 }
 
 export function fetchOpenIpos(opts: IpoListOpts = {}): Promise<Ipo[]> {
@@ -152,9 +158,13 @@ export interface GmpBoardEntry {
  * N+1 by design — GMP is an append-only log, not a joinable column — acceptable at Phase-1 volumes.
  */
 export async function fetchLatestGmpBoard(revalidateSeconds: number = 300): Promise<GmpBoardEntry[]> {
-    // Newest first: old issues whose status was never advanced past 'closed'/'allotment'
-    // would otherwise fill the LIMIT and push out today's open and upcoming IPOs.
-    const ipos = await fetchIposByStatus(['announced', 'upcoming', 'open', 'closed', 'allotment'], { limit: 50, revalidateSeconds }, true);
+    // Long-closed issues (often never advanced past 'closed'/'allotment') are dropped, and the
+    // rest come newest first, so they can't fill the LIMIT and push out open/upcoming IPOs.
+    const ipos = await fetchIposByStatus(
+        [...UPCOMING_STATUSES, 'open', 'closed', 'allotment'],
+        { limit: 100, revalidateSeconds, closedWithinDays: 15 },
+        true
+    );
     const entries = await Promise.all(
         ipos.map(async (ipo) => {
             const rows = await cachedRows<IpoGmpUpdate>(
