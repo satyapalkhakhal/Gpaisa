@@ -10,6 +10,30 @@
 
 ---
 
+## Re-review 2026-10-22 — after the SEO deploy and the IPO sync work
+
+Live audit `runs/2026-10-22`: 318 URLs, compared with `runs/2026-10-21`.
+
+**Fixed and confirmed live (165 issues resolved):**
+- Metadata in `<head>` for Googlebot (58 URLs).
+- `max-image-preview:large` on all 39 articles.
+- RSS feed at `/feed.xml`, linked from every page.
+- Placeholder articles return 410.
+- Real per-article `lastmod` and `dateModified` (migration 0006 applied).
+
+**Not done:** the 5 fictitious IPO/NCD/rights/buyback records are still published, in the sitemap and linking to `example.com`. *Nova Industries* is also shown as "Open · closes 1 Sept" in the Other IPOs widget on every IPO page. Remove via `/admin` (set to Draft) or run `db/oneoff/2026-10-21-unpublish-sample-investment-records.sql` on the VM.
+
+**New problem from the IPO sync work:**
+- The sitemap grew from 139 to 247 URLs. **114 auto-published IPO/NCD/rights/buyback pages are thin data shells.**
+  - 13 DRHP-stage IPO pages are 94-word all-"TBA" pages, 0.85–0.89 identical to each other.
+  - 32 of 33 NCD/rights/buyback pages have under 100 words (as few as 14).
+  - All are indexable, with 1–3 internal links each.
+- The data comes from Groww, Investorgain and Chittorgarh, so Google already has it from those sites. These pages add the most to the "crawled, not indexed" problem.
+- **Recommended fix:** an index gate — noindex and leave out of the sitemap until a page has real content (`fix-roadmap.md` P1-9).
+- **Also:** "Official" badges sit on aggregator-sourced figures, and there's a dependency on those sites' internal APIs (MAN-15, MAN-16).
+
+---
+
 ## Update 2026-10-21 — read this first
 
 **Goal:** Google Discover, then Search. **Discover only shows pages that are already indexed in Search**, so Search indexing is the gate for both. Plan: `google-discover-readiness.md`.

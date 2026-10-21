@@ -6,6 +6,29 @@ Effort scale: **S** < 2 h · **M** ½–2 days · **L** > 2 days. Fixing these i
 
 ---
 
+## Re-review 2026-10-22
+
+- **Confirmed live:** P0-3/D0, D1, D2, D4 (partial), D5, P2-1, P2-2. The audit resolved 165 issue occurrences.
+- **Still open:** P1-1. The 5 sample records are still published.
+
+### P1-9 · Index gate for auto-synced IPO / NCD / rights / buyback pages — **new, do next**
+- **Root cause:** the Groww/Investorgain/Chittorgarh syncs (`2dff101`, `1298b25`, `f6f3bfa`) auto-publish every complete record. The detail templates mark every published record `index` and list it in the sitemap.
+- **Affected:** 114 URLs.
+  - 81 `/ipo/*`: median 212 words; 13 are 94-word "TBA" shells, 0.85–0.89 similar.
+  - 33 `/ncd|rights-issue|buyback/*`: median 46 words.
+- **Change:** add an `isIndexableIssue()` helper, used in both `generateMetadata` (`robots`) and `app/sitemap.ts`, the same pattern as the category-hub noindex.
+  - IPO: require a price band, open/close dates, and at least one substantive block (financials, objects of issue, or a review).
+  - NCD/rights/buyback: require page-specific explanatory content.
+  - Everything else stays live for users with `noindex, follow`.
+- **Risk:** low. Pages remain reachable, and indexing is restored automatically once the data fills in.
+- **Test:** re-run the audit. `CONTENT-THIN` and `CONTENT-NEAR-DUP` on these templates should appear only on noindex pages, and the sitemap should drop by ~100 URLs.
+- **Verify in GSC:** these URLs move to *Excluded by 'noindex' tag*, and the share of *Crawled – currently not indexed* should fall over the following weeks.
+- **Effort:** S.
+
+### P2-10 · Accurate provenance on synced data
+- Replace `DataSourceBadge kind="official"` on values imported from Groww/Investorgain with an accurate label, or verify them against the RHP/exchange filing.
+- Review the terms of use for the three data sources (MAN-15, MAN-16).
+
 ## Implementation status (2026-10-21)
 
 **Done in the working tree — not committed, not deployed:**
