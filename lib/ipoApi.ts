@@ -26,12 +26,12 @@ interface IpoListOpts {
     revalidateSeconds?: number;
 }
 
-async function fetchIposByStatus(statuses: IpoLifecycleStatus[], opts: IpoListOpts = {}): Promise<Ipo[]> {
+async function fetchIposByStatus(statuses: IpoLifecycleStatus[], opts: IpoListOpts = {}, newestFirst = false): Promise<Ipo[]> {
     const { ipoType, limit = 50, revalidateSeconds = 300 } = opts;
     return cachedRows(
         `${IPO_WITH_COMPANY}
          WHERE i.publish_status = 'published' AND i.status = ANY($1::text[]) AND ($2::text IS NULL OR i.ipo_type = $2)
-         ORDER BY i.open_date ASC NULLS LAST LIMIT $3`,
+         ORDER BY i.open_date ${newestFirst ? 'DESC' : 'ASC'} NULLS LAST LIMIT $3`,
         [statuses, ipoType ?? null, limit],
         revalidateSeconds,
         `fetchIposByStatus(${statuses.join(',')})`
@@ -47,11 +47,12 @@ export function fetchOpenIpos(opts: IpoListOpts = {}): Promise<Ipo[]> {
 }
 
 export function fetchClosedIpos(opts: IpoListOpts = {}): Promise<Ipo[]> {
-    return fetchIposByStatus(['closed', 'allotment'], opts);
+    // Past issues: newest first, so the LIMIT drops the oldest rather than the latest.
+    return fetchIposByStatus(['closed', 'allotment'], opts, true);
 }
 
 export function fetchListedIpos(opts: IpoListOpts = {}): Promise<Ipo[]> {
-    return fetchIposByStatus(['listed'], { ...opts, revalidateSeconds: opts.revalidateSeconds ?? 3600 });
+    return fetchIposByStatus(['listed'], { ...opts, revalidateSeconds: opts.revalidateSeconds ?? 3600 }, true);
 }
 
 export async function fetchFeaturedIpos(limit: number = 5, revalidateSeconds: number = 300): Promise<Ipo[]> {
