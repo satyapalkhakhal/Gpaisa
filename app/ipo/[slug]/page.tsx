@@ -24,7 +24,9 @@ import CompanyContactBlock from '@/components/ipo/CompanyContactBlock';
 import IpoFaq from '@/components/ipo/IpoFaq';
 import GmpProfitCalculator from '@/components/ipo/GmpProfitCalculator';
 import RelatedIpos from '@/components/ipo/RelatedIpos';
-import { computeMarketLotTiers, computeValuationKpis } from '@/lib/ipoComputed';
+import GmpDailyTable from '@/components/ipo/GmpDailyTable';
+import { computeMarketLotTiers, computeValuationKpis, dailyGmpHistory } from '@/lib/ipoComputed';
+import { GMP_SOURCE } from '@/lib/investorgainGmpSync';
 
 export const revalidate = 300;
 
@@ -68,6 +70,7 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
     const companyName = ipo.company?.name || ipo.slug;
     const investmentAtLot = ipo.price_band_max && ipo.lot_size ? ipo.price_band_max * ipo.lot_size : null;
     const latestGmp = ipo.gmp_history[0];
+    const dailyGmp = dailyGmpHistory(ipo.gmp_history);
     const latestFinancial = ipo.financials[ipo.financials.length - 1];
     const valuationKpis = computeValuationKpis(latestFinancial, ipo);
     const ownPeerRow = latestFinancial
@@ -222,9 +225,16 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                             )}
                             <FreshnessBadge timestamp={latestGmp.recorded_at} staleAfterMinutes={180} />
                         </div>
-                        <GmpHistoryChart history={ipo.gmp_history} />
+                        <GmpHistoryChart history={dailyGmp} />
+                        <h3 className="text-sm font-bold text-gray-900 mt-5 mb-2">Day-wise GMP</h3>
+                        <GmpDailyTable days={dailyGmp} issuePrice={ipo.price_band_max} />
                         <p className="text-xs text-gray-400 mt-2">
-                            GMP is unofficial grey market sentiment, not an exchange-quoted or guaranteed price. Source: {latestGmp.source}.
+                            GMP is unofficial grey market sentiment, not an exchange-quoted or guaranteed price. Source:{' '}
+                            {latestGmp.source === GMP_SOURCE ? (
+                                <a href="https://www.investorgain.com/report/ipo-gmp-live/331/" target="_blank" rel="noopener noreferrer" className="underline hover:text-gray-600">
+                                    {GMP_SOURCE}
+                                </a>
+                            ) : latestGmp.source}.
                         </p>
                     </>
                 ) : (

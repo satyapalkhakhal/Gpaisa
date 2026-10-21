@@ -1,7 +1,7 @@
 // Pure computation helpers for values derived from raw stored figures (never stored
 // themselves) — keeps EPS/P-E/NAV/etc. always in sync with the underlying financials
 // instead of risking drift from a separately-entered, staleable number.
-import type { Ipo, IpoFinancials } from './ipoTypes';
+import type { Ipo, IpoFinancials, IpoGmpUpdate } from './ipoTypes';
 
 const CRORE = 1e7;
 
@@ -61,4 +61,21 @@ export function computeMarketLotTiers(priceBandMax: number | null, lotSize: numb
         tier('S-HNI (Minimum)', sHniMinLots),
         tier('B-HNI (Minimum)', bHniMinLots),
     ];
+}
+
+const istDayFormat = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' });
+
+/**
+ * One GMP reading per IST calendar day — that day's latest, whichever source it came from —
+ * newest first, like the raw history. The day-wise table and the trend chart both use this,
+ * so a day with several readings (live updates, or desk + feed) shows up once.
+ */
+export function dailyGmpHistory(history: IpoGmpUpdate[]): (IpoGmpUpdate & { day: string })[] {
+    const byDay = new Map<string, IpoGmpUpdate & { day: string }>();
+    for (const u of history) {
+        const day = istDayFormat.format(new Date(u.recorded_at));
+        const seen = byDay.get(day);
+        if (!seen || Date.parse(u.recorded_at) > Date.parse(seen.recorded_at)) byDay.set(day, { ...u, day });
+    }
+    return [...byDay.values()].sort((a, b) => b.day.localeCompare(a.day));
 }

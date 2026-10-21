@@ -1,24 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidateTag } from 'next/cache';
-import { timingSafeEqual } from 'crypto';
+import { isCronAuthorized } from '@/lib/cronAuth';
 import { syncGrowwIpos } from '@/lib/growwIpoSync';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
 
-// Called by deploy/ipo-sync.sh from inside the app container; Caddy blocks /api/cron/*
-// from the internet, and the bearer secret guards it regardless.
-function authorized(request: NextRequest): boolean {
-    const secret = process.env.CRON_SECRET;
-    if (!secret) return false;
-    const given = Buffer.from(request.headers.get('authorization') || '');
-    const expected = Buffer.from(`Bearer ${secret}`);
-    return given.length === expected.length && timingSafeEqual(given, expected);
-}
-
 // POST /api/cron/groww-ipo-sync[?dryRun=1]
 export async function POST(request: NextRequest) {
-    if (!authorized(request)) {
+    if (!isCronAuthorized(request)) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     const dryRun = request.nextUrl.searchParams.get('dryRun') === '1';

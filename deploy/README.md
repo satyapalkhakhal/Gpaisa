@@ -16,7 +16,7 @@ Internet → Caddy (80/443, auto HTTPS, gpaisa.in → www) → Next.js app (:300
 | `deploy.sh` | Pull, rebuild, restart, health-check |
 | `migrate.sh` | Applies `db/migrations/*.sql` (all idempotent) |
 | `backup.sh` | Nightly `pg_dump` → Cloud Storage |
-| `ipo-sync.sh` | Pulls Groww's IPO feeds into the database (cron) |
+| `ipo-sync.sh` | Pulls Groww's IPO feeds and Investorgain GMP into the database (cron) |
 
 > **Until cutover, don't merge this work into `main`.** Vercel still deploys `main`,
 > and this code needs `DATABASE_URL`, which Vercel doesn't have. Keep it on a branch
@@ -151,16 +151,20 @@ must be re-entered in Supabase.
 **IPO data sync.** `ipo-sync.sh` pulls Groww's upcoming, open and closed IPO feeds.
 It fills only empty fields, moves `status` forward, records overall subscription, and adds
 IPOs that aren't in the database yet as **drafts**. Open those in `/admin/ipos` to review
-and publish them. One-time setup:
+and publish them. It then records grey market premium (GMP) from Investorgain: one reading
+per IPO per day (today's is refreshed each run), plus a one-time backfill of earlier days
+the first time an IPO is matched. Only rows with source `Investorgain` are written, so GMP
+entered in the admin is left alone. One-time setup:
 ```bash
-./migrate.sh                                   # adds ipos.groww_search_id (0007)
+./migrate.sh                                   # adds ipos.groww_search_id (0007), ipos.investorgain_id (0008)
 # put CRON_SECRET in .env (openssl rand -hex 32), then: docker compose up -d app
 ./ipo-sync.sh --dry-run                        # see what it would change; writes nothing
 ./ipo-sync.sh
 ```
-Then add to `crontab -e`, every 30 min, 08:30–19:00 IST on weekdays:
+Then add to `crontab -e`, every 30 min from 08:00 to 00:00 IST, every day (the grey market
+trades evenings and weekends too):
 ```
-*/30 3-13 * * 1-5 /opt/gpaisa/deploy/ipo-sync.sh >> /opt/gpaisa/deploy/ipo-sync.log 2>&1
+*/30 2-18 * * * /opt/gpaisa/deploy/ipo-sync.sh >> /opt/gpaisa/deploy/ipo-sync.log 2>&1
 ```
 
 **Restore** a backup:
