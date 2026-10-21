@@ -3,6 +3,7 @@ import { CATEGORIES, DROPPED_CATEGORY_DB_VALUES } from '@/lib/categories';
 import { GLOSSARY_TERMS } from '@/lib/glossaryData';
 import { IPO_CALCULATORS } from '@/lib/ipoCalculatorsList';
 import { fetchArticleSitemapEntries } from '@/lib/articlesApi';
+import { HREFLANG, articlePath, toArticleLanguage } from '@/lib/articleLocale';
 import { fetchAllPublishedIpoSlugs } from '@/lib/ipoApi';
 import { fetchAllPublishedBuybackSlugs, fetchAllPublishedNcdSlugs, fetchAllPublishedRightsIssueSlugs } from '@/lib/otherInvestmentsApi';
 
@@ -313,16 +314,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Fetch latest articles for dynamic article pages
     // Cached for a day (not uncached) so the sitemap can be statically generated
     let articlePages: MetadataRoute.Sitemap = [];
+    let hindiHubPages: MetadataRoute.Sitemap = [];
     const categoriesWithArticles = new Set<string>();
     try {
         const articles = await fetchArticleSitemapEntries(DROPPED_CATEGORY_DB_VALUES, 86400);
         const publishedArticles = articles.filter((article) => article.slug);
 
+        // Category hubs are English-only, so only English articles make one non-empty.
         publishedArticles.forEach((article) => {
-            if (article.category) categoriesWithArticles.add(article.category);
+            if (article.category && toArticleLanguage(article.language) === 'en') categoriesWithArticles.add(article.category);
         });
 
+        // Translation pairs (Hindi article → the English article it translates), both published.
+        const englishById = new Map(publishedArticles.filter((a) => toArticleLanguage(a.language) === 'en').map((a) => [a.id, a]));
+        const hindiByEnglishId = new Map(
+            publishedArticles
+                .filter((a) => toArticleLanguage(a.language) === 'hi' && a.translation_of && englishById.has(a.translation_of))
+                .map((a) => [a.translation_of as string, a])
+        );
+
         articlePages = publishedArticles.map((article) => {
+            const lang = toArticleLanguage(article.language);
+            const english = lang === 'en' ? article : article.translation_of ? englishById.get(article.translation_of) : undefined;
+            const hindi = lang === 'hi' ? article : hindiByEnglishId.get(article.id);
             // content_updated_at, not updated_at: the latter changes on any row write.
             const lastModified = article.content_updated_at
                 ? new Date(article.content_updated_at)
@@ -330,15 +344,36 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
                     ? new Date(article.published_at)
                     : new Date('2026-01-01');
 
+            // hreflang alternates only for a published pair; each entry lists both versions.
+            const alternates = english && hindi ? {
+                languages: {
+                    [HREFLANG.en]: `${baseUrl}${articlePath('en', english.slug)}`,
+                    [HREFLANG.hi]: `${baseUrl}${articlePath('hi', hindi.slug)}`,
+                    'x-default': `${baseUrl}${articlePath('en', english.slug)}`,
+                },
+            } : undefined;
+
             return {
-                url: `${baseUrl}/articles/${article.slug}`,
+                url: `${baseUrl}${articlePath(lang, article.slug)}`,
                 lastModified,
                 changeFrequency: 'weekly' as const,
                 priority: 0.6,
+                ...(alternates ? { alternates } : {}),
             };
         });
 
-        console.log(`Sitemap generated with ${articlePages.length} articles`);
+        // The Hindi hub is noindex while empty (app/hi/page.tsx), so it is only listed once it has articles.
+        const hindiArticles = publishedArticles.filter((a) => toArticleLanguage(a.language) === 'hi');
+        if (hindiArticles.length) {
+            hindiHubPages = [{
+                url: `${baseUrl}/hi`,
+                lastModified: new Date(hindiArticles[0].published_at),
+                changeFrequency: 'daily',
+                priority: 0.8,
+            }];
+        }
+
+        console.log(`Sitemap generated with ${articlePages.length} articles (${hindiArticles.length} Hindi)`);
     } catch (error) {
         console.error('Error fetching articles for sitemap:', error);
     }
@@ -359,6 +394,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     return [
         ...staticPages,
         ...categoryPages,
+        ...hindiHubPages,
         ...glossaryPages,
         ...goldRateCityPages,
         ...silverRateCityPages,

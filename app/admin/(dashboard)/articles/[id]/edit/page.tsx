@@ -6,11 +6,12 @@ export default async function EditArticlePage({ params }: { params: Promise<{ id
     const { id } = await params;
     const article = await getArticleByIdAdmin(id);
     if (!article) notFound();
+    const original = article.translation_of ? await getArticleByIdAdmin(article.translation_of) : null;
 
     return (
         <div>
             <h1 className="text-2xl font-bold text-gray-900 mb-6">Edit Article</h1>
-            <ArticleForm mode="edit" initialArticle={article} />
+            <ArticleForm mode="edit" initialArticle={article} initialTranslationOfSlug={original?.slug} />
         </div>
     );
 }

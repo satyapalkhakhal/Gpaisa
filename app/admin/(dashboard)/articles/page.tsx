@@ -138,7 +138,12 @@ export default function AdminArticlesPage() {
                         <tbody className="divide-y divide-gray-100">
                             {articles.map(article => (
                                 <tr key={article.id} className="hover:bg-gray-50">
-                                    <td className="px-4 py-3 font-medium text-gray-900 max-w-xs truncate">{article.title}</td>
+                                    <td className="px-4 py-3 font-medium text-gray-900 max-w-xs truncate">
+                                        {article.language === 'hi' && (
+                                            <span className="mr-2 text-[10px] font-bold px-1.5 py-0.5 rounded bg-orange-100 text-orange-700 align-middle">HI</span>
+                                        )}
+                                        {article.title}
+                                    </td>
                                     <td className="px-4 py-3 text-gray-600">{article.category}</td>
                                     <td className="px-4 py-3">
                                         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${article.status === 'draft' ? 'bg-yellow-100 text-yellow-700' : 'bg-green-100 text-green-700'}`}>

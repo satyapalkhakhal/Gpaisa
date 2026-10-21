@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { getArticleByIdAdmin, updateArticle, deleteArticle } from '@/lib/adminDb';
-import { fetchArticleBySlug } from '@/lib/articlesApi';
-import { slugify } from '@/lib/slugify';
+import { resolveArticleLanguage } from '@/lib/adminArticleLanguage';
 import { validateArticleInput } from '@/lib/validateArticle';
 
 export const runtime = 'nodejs';
@@ -30,13 +30,11 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         const existing = await getArticleByIdAdmin(id);
         if (!existing) return NextResponse.json({ error: 'Article not found' }, { status: 404 });
 
-        const slug = slugify(body.slug || body.title);
-        if (slug !== existing.slug) {
-            const collision = await fetchArticleBySlug(slug);
-            if (collision && collision.id !== id) {
-                return NextResponse.json({ error: `Slug "${slug}" is already in use.` }, { status: 409 });
-            }
+        const resolved = await resolveArticleLanguage(body, id);
+        if (!resolved.ok) {
+            return NextResponse.json({ error: resolved.error }, { status: resolved.status });
         }
+        const { slug, language, translation_of } = resolved;
 
         // Only edits to what readers see count as a content update (not flags/SEO fields).
         const title = body.title.trim();
@@ -46,6 +44,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         const article = await updateArticle(id, {
             title,
             slug,
+            language,
+            translation_of,
             category: body.category,
             subcategory: body.subcategory || null,
             excerpt,
@@ -65,6 +65,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
             focus_keyword: body.focus_keyword || '',
             ...(contentChanged ? { content_updated_at: new Date().toISOString() } : {}),
         });
+        // Public pages read through cachedRows (tag 'db'); refresh them now instead of at TTL.
+        revalidateTag('db');
         return NextResponse.json({ article });
     } catch (error) {
         console.error('[ADMIN_ARTICLE] PATCH failed:', error);
@@ -78,6 +80,7 @@ export async function DELETE(_request: NextRequest, { params }: { params: Promis
         const existing = await getArticleByIdAdmin(id);
         if (!existing) return NextResponse.json({ error: 'Article not found' }, { status: 404 });
         await deleteArticle(id);
+        revalidateTag('db');
         return NextResponse.json({ success: true });
     } catch (error) {
         console.error('[ADMIN_ARTICLE] DELETE failed:', error);

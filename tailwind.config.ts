@@ -81,8 +81,9 @@ const config: Config = {
                 },
             },
             fontFamily: {
-                sans: ['Inter', 'system-ui', 'sans-serif'],
-                display: ['Outfit', 'Inter', 'sans-serif'],
+                // Noto Sans Devanagari renders Hindi text (Inter/Outfit have no Devanagari glyphs).
+                sans: ['Inter', 'Noto Sans Devanagari', 'system-ui', 'sans-serif'],
+                display: ['Outfit', 'Inter', 'Noto Sans Devanagari', 'sans-serif'],
             },
         },
     },

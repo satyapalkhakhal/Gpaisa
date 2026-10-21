@@ -1,6 +1,7 @@
 // Public read API for News Articles (server-only — reads Postgres directly).
-import { CATEGORIES } from './categories';
+import { CATEGORIES, DROPPED_CATEGORY_DB_VALUES } from './categories';
 import { cachedRows } from './db';
+import type { ArticleLanguage } from './articleLocale';
 
 export interface Article {
     id: string;
@@ -33,6 +34,8 @@ export interface Article {
     category_id?: string;
     updated_at?: string;
     content_updated_at?: string | null;
+    language?: ArticleLanguage;
+    translation_of?: string | null;
 }
 
 // Helper to normalize article data for backward compatibility
@@ -48,16 +51,20 @@ function normalizeArticle(a: any): Article {
 // Published articles matching `where`, newest first. `revalidateSeconds` matches the
 // ISR window of the calling page (see each wrapper's default below), so the CDN
 // caching already configured in next.config.mjs for these routes actually takes effect.
+// `language` defaults to English so existing listings never pick up Hindi articles;
+// null means any language.
 async function fetchArticles(
     where: string,
     params: unknown[],
     limit: number | null,
     tag: string,
-    revalidateSeconds: number
+    revalidateSeconds: number,
+    language: ArticleLanguage | null = 'en'
 ): Promise<Article[]> {
     const limitSql = limit == null ? '' : ` LIMIT ${Math.max(0, Math.floor(limit))}`;
+    const languageSql = language ? ` AND language = '${language === 'hi' ? 'hi' : 'en'}'` : '';
     const rows = await cachedRows(
-        `SELECT * FROM articles WHERE status = 'published' AND ${where} ORDER BY published_at DESC${limitSql}`,
+        `SELECT * FROM articles WHERE status = 'published'${languageSql} AND ${where} ORDER BY published_at DESC${limitSql}`,
         params,
         revalidateSeconds,
         tag
@@ -96,9 +103,21 @@ export async function fetchLatestArticles(limit: number = 20, revalidateSeconds:
 export async function fetchArticlesByCategory(
     category: string,
     limit: number = 10,
+    revalidateSeconds: number = 300,
+    language: ArticleLanguage = 'en'
+): Promise<Article[]> {
+    return fetchArticles('category ILIKE $1', [category], limit, `fetchByCategory(${category})`, revalidateSeconds, language);
+}
+
+/**
+ * Latest on-topic articles in one language (all categories except the dropped ones).
+ */
+export async function fetchArticlesByLanguage(
+    language: ArticleLanguage,
+    limit: number = 50,
     revalidateSeconds: number = 300
 ): Promise<Article[]> {
-    return fetchArticles('category ILIKE $1', [category], limit, `fetchByCategory(${category})`, revalidateSeconds);
+    return fetchArticles('category <> ALL($1::text[])', [DROPPED_CATEGORY_DB_VALUES], limit, `fetchByLanguage(${language})`, revalidateSeconds, language);
 }
 
 /**
@@ -188,28 +207,47 @@ export async function fetchCreditCardArticles(limit: number = 50, revalidateSeco
 /**
  * Get article by slug (SEO-friendly URLs)
  */
-export async function fetchArticleBySlug(slug: string, revalidateSeconds: number = 86400): Promise<Article | null> {
-    const articles = await fetchArticles('slug = $1', [slug], null, `fetchBySlug(${slug})`, revalidateSeconds);
+export async function fetchArticleBySlug(
+    slug: string,
+    revalidateSeconds: number = 86400,
+    language: ArticleLanguage = 'en'
+): Promise<Article | null> {
+    const articles = await fetchArticles('slug = $1', [slug], null, `fetchBySlug(${slug})`, revalidateSeconds, language);
     return articles[0] ?? null;
+}
+
+/**
+ * The published counterpart of an article in the other language, if any:
+ * a Hindi article's English original, or an English article's Hindi translation.
+ */
+export async function fetchArticleTranslation(article: Article, revalidateSeconds: number = 86400): Promise<Article | null> {
+    if (article.language === 'hi') {
+        if (!article.translation_of) return null;
+        const rows = await fetchArticles('id::text = $1', [article.translation_of], 1, `fetchTranslationOf(${article.id})`, revalidateSeconds, 'en');
+        return rows[0] ?? null;
+    }
+    const rows = await fetchArticles('translation_of::text = $1', [article.id], 1, `fetchTranslationFor(${article.id})`, revalidateSeconds, 'hi');
+    return rows[0] ?? null;
 }
 
 /**
  * Get article by ID
  */
 export async function fetchArticleById(id: string, revalidateSeconds: number = 300): Promise<Article | null> {
-    const articles = await fetchArticles('id::text = $1', [id], null, `fetchById(${id})`, revalidateSeconds);
+    const articles = await fetchArticles('id::text = $1', [id], null, `fetchById(${id})`, revalidateSeconds, null);
     return articles[0] ?? null;
 }
 
 /**
- * Minimal field set for sitemap generation — every published article outside `excludedCategories`.
+ * Minimal field set for sitemap generation — every published article (both languages)
+ * outside `excludedCategories`, with what's needed to pair translations.
  */
 export async function fetchArticleSitemapEntries(
     excludedCategories: string[],
     revalidateSeconds: number = 86400
-): Promise<Pick<Article, 'slug' | 'published_at' | 'content_updated_at' | 'category'>[]> {
+): Promise<Pick<Article, 'id' | 'slug' | 'published_at' | 'content_updated_at' | 'category' | 'language' | 'translation_of'>[]> {
     return cachedRows(
-        `SELECT slug, published_at, content_updated_at, category FROM articles
+        `SELECT id, slug, published_at, content_updated_at, category, language, translation_of FROM articles
          WHERE status = 'published' AND category <> ALL($1::text[])
          ORDER BY published_at DESC LIMIT 1000`,
         [excludedCategories],
@@ -224,9 +262,10 @@ export async function fetchArticleSitemapEntries(
 export async function fetchFeedArticles(
     excludedCategories: string[],
     limit: number = 50,
-    revalidateSeconds: number = 3600
+    revalidateSeconds: number = 3600,
+    language: ArticleLanguage = 'en'
 ): Promise<Article[]> {
-    return fetchArticles('category <> ALL($1::text[])', [excludedCategories], limit, 'fetchFeedArticles', revalidateSeconds);
+    return fetchArticles('category <> ALL($1::text[])', [excludedCategories], limit, `fetchFeedArticles(${language})`, revalidateSeconds, language);
 }
 
 /**
@@ -235,7 +274,7 @@ export async function fetchFeedArticles(
 export async function fetchMetalNewsCards(metal: 'gold' | 'silver', limit: number = 6, revalidateSeconds: number = 3600) {
     return cachedRows(
         `SELECT id, title, slug, excerpt, image_url, published_at, date, read_time, author, category FROM articles
-         WHERE status = 'published' AND (content ILIKE $1 OR title ILIKE $1)
+         WHERE status = 'published' AND language = 'en' AND (content ILIKE $1 OR title ILIKE $1)
          ORDER BY published_at DESC LIMIT ${Math.max(0, Math.floor(limit))}`,
         [`%${metal}%`],
         revalidateSeconds,

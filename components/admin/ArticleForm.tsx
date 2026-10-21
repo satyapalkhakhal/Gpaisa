@@ -27,14 +27,18 @@ function readImageWidth(file: File): Promise<number | null> {
 interface ArticleFormProps {
     mode: 'create' | 'edit';
     initialArticle?: Article;
+    /** Slug of the English article this (Hindi) article translates, when editing. */
+    initialTranslationOfSlug?: string;
 }
 
-export default function ArticleForm({ mode, initialArticle }: ArticleFormProps) {
+export default function ArticleForm({ mode, initialArticle, initialTranslationOfSlug }: ArticleFormProps) {
     const router = useRouter();
 
     const [title, setTitle] = useState(initialArticle?.title || '');
     const [slug, setSlug] = useState(initialArticle?.slug || '');
     const [slugTouched, setSlugTouched] = useState(mode === 'edit');
+    const [language, setLanguage] = useState<'en' | 'hi'>(initialArticle?.language === 'hi' ? 'hi' : 'en');
+    const [translationOfSlug, setTranslationOfSlug] = useState(initialTranslationOfSlug || '');
     const [category, setCategory] = useState(initialArticle?.category || CATEGORIES[0].dbValue);
     const [subcategory, setSubcategory] = useState(initialArticle?.subcategory || '');
     const [excerpt, setExcerpt] = useState(initialArticle?.excerpt || '');
@@ -59,6 +63,12 @@ export default function ArticleForm({ mode, initialArticle }: ArticleFormProps) 
 
     function handleTitleChange(value: string) {
         setTitle(value);
+        // Hindi titles have no Latin letters to slugify; Hindi slugs come from the English version or are typed in.
+        if (!slugTouched && language === 'en') setSlug(slugify(value));
+    }
+
+    function handleTranslationOfChange(value: string) {
+        setTranslationOfSlug(value);
         if (!slugTouched) setSlug(slugify(value));
     }
 
@@ -106,6 +116,7 @@ export default function ArticleForm({ mode, initialArticle }: ArticleFormProps) 
 
         const body = {
             title, slug, category, subcategory: subcategory || null, excerpt, content,
+            language, translation_of_slug: language === 'hi' ? translationOfSlug : '',
             image_url: imageUrl, author, tags: tags.split(',').map(t => t.trim()).filter(Boolean),
             is_featured: isFeatured, is_editors_pick: isEditorsPick, is_trending: isTrending, status,
             meta_title: metaTitle, meta_description: metaDescription, meta_keywords: metaKeywords, focus_keyword: focusKeyword,
@@ -146,6 +157,31 @@ export default function ArticleForm({ mode, initialArticle }: ArticleFormProps) 
                         </div>
                     )}
 
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label className={labelClass}>Language</label>
+                            <select value={language} onChange={(e) => setLanguage(e.target.value === 'hi' ? 'hi' : 'en')} className={inputClass}>
+                                <option value="en">English — /articles/…</option>
+                                <option value="hi">हिन्दी (Hindi) — /hi/articles/…</option>
+                            </select>
+                        </div>
+                        {language === 'hi' && (
+                            <div>
+                                <label className={labelClass}>English version (slug, optional)</label>
+                                <input
+                                    type="text"
+                                    value={translationOfSlug}
+                                    onChange={(e) => handleTranslationOfChange(e.target.value)}
+                                    placeholder="e.g. best-fd-rates-in-india"
+                                    className={inputClass}
+                                />
+                                <p className="mt-1 text-xs text-gray-500">
+                                    Links the two versions for Google (hreflang). Leave empty for a Hindi-only article.
+                                </p>
+                            </div>
+                        )}
+                    </div>
+
                     <div>
                         <label className={labelClass}>Title</label>
                         <input type="text" value={title} onChange={(e) => handleTitleChange(e.target.value)} className={inputClass} required />
@@ -154,6 +190,11 @@ export default function ArticleForm({ mode, initialArticle }: ArticleFormProps) 
                     <div>
                         <label className={labelClass}>Slug</label>
                         <input type="text" value={slug} onChange={(e) => handleSlugChange(e.target.value)} className={inputClass} required />
+                        {language === 'hi' && (
+                            <p className="mt-1 text-xs text-gray-500">
+                                English letters only, e.g. sone-ka-bhav-aaj-delhi. A translation can reuse its English slug.
+                            </p>
+                        )}
                         {slugError && <p className="text-xs text-red-600 mt-1">{slugError}</p>}
                     </div>
 

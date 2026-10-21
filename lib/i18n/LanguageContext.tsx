@@ -1,35 +1,28 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import React, { createContext, useContext, useEffect, useCallback } from 'react';
+import { usePathname } from 'next/navigation';
 import { Language, translations } from './translations';
+import { isHindiPath } from '@/lib/articleLocale';
 
 interface LanguageContextType {
     language: Language;
-    setLanguage: (lang: Language) => void;
     t: (section: string, key: string) => string;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+// The UI language follows the URL: /hi/* renders Hindi chrome (server-rendered, so
+// crawlers see it too), everything else English. Switching language means navigating
+// to the other language's URL — see components/LanguageSwitcher.tsx.
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-    const [language, setLanguageState] = useState<Language>('en');
-    const [mounted, setMounted] = useState(false);
+    const pathname = usePathname() || '/';
+    const language: Language = isHindiPath(pathname) ? 'hi' : 'en';
 
+    // The root layout renders <html lang="en">; correct it for Hindi pages in the browser.
     useEffect(() => {
-        // Read saved language from localStorage
-        const saved = localStorage.getItem('gpaisa-lang') as Language;
-        if (saved && (saved === 'en' || saved === 'hi')) {
-            setLanguageState(saved);
-        }
-        setMounted(true);
-    }, []);
-
-    const setLanguage = useCallback((lang: Language) => {
-        setLanguageState(lang);
-        localStorage.setItem('gpaisa-lang', lang);
-        // Update the html lang attribute
-        document.documentElement.lang = lang;
-    }, []);
+        document.documentElement.lang = language;
+    }, [language]);
 
     const t = useCallback((section: string, key: string): string => {
         const sectionObj = (translations as Record<string, Record<string, Record<string, string>>>)[section];
@@ -39,10 +32,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         return entry[language] || entry['en'] || key;
     }, [language]);
 
-    // Prevent hydration mismatch by rendering children only after mount
-    // But we still render immediately with 'en' default to avoid layout shift
     return (
-        <LanguageContext.Provider value={{ language: mounted ? language : 'en', setLanguage, t }}>
+        <LanguageContext.Provider value={{ language, t }}>
             {children}
         </LanguageContext.Provider>
     );

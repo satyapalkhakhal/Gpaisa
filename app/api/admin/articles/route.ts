@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
+import { revalidateTag } from 'next/cache';
 import { listArticlesAdmin, createArticle } from '@/lib/adminDb';
-import { fetchArticleBySlug } from '@/lib/articlesApi';
-import { slugify } from '@/lib/slugify';
+import { resolveArticleLanguage } from '@/lib/adminArticleLanguage';
 import { validateArticleInput } from '@/lib/validateArticle';
 
 export const runtime = 'nodejs';
@@ -31,15 +31,18 @@ export async function POST(request: NextRequest) {
             return NextResponse.json({ error: errors.join(' ') }, { status: 400 });
         }
 
-        const slug = slugify(body.slug || body.title);
-        if (await fetchArticleBySlug(slug)) {
-            return NextResponse.json({ error: `Slug "${slug}" is already in use.` }, { status: 409 });
+        const resolved = await resolveArticleLanguage(body);
+        if (!resolved.ok) {
+            return NextResponse.json({ error: resolved.error }, { status: resolved.status });
         }
+        const { slug, language, translation_of } = resolved;
 
         const now = new Date().toISOString();
         const article = await createArticle({
             title: body.title.trim(),
             slug,
+            language,
+            translation_of,
             category: body.category,
             subcategory: body.subcategory || null,
             excerpt: body.excerpt.trim(),
@@ -61,6 +64,8 @@ export async function POST(request: NextRequest) {
             content_updated_at: body.published_at || now,
             date: body.date || now,
         });
+        // Public pages read through cachedRows (tag 'db'); refresh them now instead of at TTL.
+        revalidateTag('db');
         return NextResponse.json({ article }, { status: 201 });
     } catch (error) {
         console.error('[ADMIN_ARTICLES] POST failed:', error);

@@ -1,6 +1,7 @@
 // Server-only. Never import this into a client component — it writes straight to
 // Postgres via lib/db.ts, bypassing every public read filter.
 import { Article } from './articlesApi';
+import type { ArticleLanguage } from './articleLocale';
 import {
     Company,
     Ipo,
@@ -80,6 +81,8 @@ export interface AdminArticleInput {
     published_at?: string;
     date?: string;
     content_updated_at?: string;
+    language?: ArticleLanguage;
+    translation_of?: string | null;
 }
 
 // Unrestricted by category (unlike fetchAllArticles), paginated, filterable — for the admin listing page.
@@ -95,6 +98,18 @@ export async function listArticlesAdmin(opts: { page?: number; pageSize?: number
 
 export async function getArticleByIdAdmin(id: string): Promise<Article | null> {
     return getOne<Article>('articles', 'id', id);
+}
+
+// Any status. Slugs are unique per language, so a translation can reuse its original's slug.
+export async function getArticleBySlugAdmin(slug: string, language: ArticleLanguage): Promise<Article | null> {
+    const [row] = await queryRows<Article>(`SELECT * FROM articles WHERE slug = $1 AND language = $2 LIMIT 1`, [slug, language]);
+    return row ?? null;
+}
+
+// The Hindi article (any status) that translates the given English article, if any.
+export async function getTranslationOfAdmin(englishId: string): Promise<Article | null> {
+    const [row] = await queryRows<Article>(`SELECT * FROM articles WHERE translation_of = $1 LIMIT 1`, [englishId]);
+    return row ?? null;
 }
 
 export async function createArticle(input: AdminArticleInput): Promise<Article> {
