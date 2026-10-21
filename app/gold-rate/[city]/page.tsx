@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { goldRateLanguageAlternates } from '@/lib/goldRateLocale';
 import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import DynamicGoldRates from '@/components/DynamicGoldRates';
@@ -61,6 +62,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
         },
         alternates: {
             canonical: `https://www.gpaisa.in/gold-rate/${citySlug}`,
+            languages: goldRateLanguageAlternates(citySlug),
         },
     };
 }

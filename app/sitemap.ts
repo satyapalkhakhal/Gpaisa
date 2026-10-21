@@ -4,6 +4,8 @@ import { GLOSSARY_TERMS } from '@/lib/glossaryData';
 import { IPO_CALCULATORS } from '@/lib/ipoCalculatorsList';
 import { fetchArticleSitemapEntries } from '@/lib/articlesApi';
 import { HREFLANG, articlePath, toArticleLanguage } from '@/lib/articleLocale';
+import { HINDI_CITY_NAMES, isHindiGoldPageReviewed } from '@/lib/cityGoldDataHi';
+import { goldRateLanguageAlternates } from '@/lib/goldRateLocale';
 import { fetchAllPublishedIpoSlugs } from '@/lib/ipoApi';
 import { fetchAllPublishedBuybackSlugs, fetchAllPublishedNcdSlugs, fetchAllPublishedRightsIssueSlugs } from '@/lib/otherInvestmentsApi';
 
@@ -296,12 +298,37 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
 
     // City-specific gold rate pages
+    // hreflang pairs for gold rate pages — only once the Hindi page has passed review
+    // (unreviewed Hindi pages are noindex, so they are neither listed nor paired).
+    const goldAlternates = (citySlug?: string) => {
+        const languages = goldRateLanguageAlternates(citySlug);
+        return languages ? { alternates: { languages } } : {};
+    };
+
     const goldRateCityPages: MetadataRoute.Sitemap = CITIES.map((city) => ({
         url: `${baseUrl}/gold-rate/${city.toLowerCase()}`,
         lastModified: new Date(), // City rates update daily
         changeFrequency: 'daily',
         priority: 0.8,
+        ...goldAlternates(city.toLowerCase()),
     }));
+
+    const hindiGoldRatePages: MetadataRoute.Sitemap = [
+        ...(isHindiGoldPageReviewed('hub') ? [{
+            url: `${baseUrl}/hi/gold-rate`,
+            lastModified: new Date(),
+            changeFrequency: 'daily' as const,
+            priority: 0.8,
+            ...goldAlternates(),
+        }] : []),
+        ...Object.keys(HINDI_CITY_NAMES).filter((slug) => isHindiGoldPageReviewed(slug)).map((slug) => ({
+            url: `${baseUrl}/hi/gold-rate/${slug}`,
+            lastModified: new Date(),
+            changeFrequency: 'daily' as const,
+            priority: 0.7,
+            ...goldAlternates(slug),
+        })),
+    ];
 
     // City-specific silver rate pages
     const silverRateCityPages: MetadataRoute.Sitemap = CITIES.map((city) => ({
@@ -392,11 +419,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }));
 
     return [
-        ...staticPages,
+        ...staticPages.map((p) => (p.url === `${baseUrl}/gold-rate` ? { ...p, ...goldAlternates() } : p)),
         ...categoryPages,
         ...hindiHubPages,
         ...glossaryPages,
         ...goldRateCityPages,
+        ...hindiGoldRatePages,
         ...silverRateCityPages,
         ...articlePages,
         ...ipoCalculatorPages,

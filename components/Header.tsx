@@ -29,21 +29,26 @@ interface NavItem {
     footer?: NavLink;
 }
 
+// Hindi counterparts of nav destinations (see components/LanguageSwitcher.tsx for page-level switching).
+const HINDI_NAV_HREFS: Record<string, string> = { '/gold-rate': '/hi/gold-rate', '/news': '/hi' };
+
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [openMobileItem, setOpenMobileItem] = useState<string | null>(null);
     const pathname = usePathname() || '/';
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
+    // On Hindi pages, nav entries that have a Hindi version point to it.
+    const local = (href: string) => (language === 'hi' ? HINDI_NAV_HREFS[href] ?? href : href);
 
     const calc = (key: string, slug: string): NavLink => ({ name: t('calculators', key), href: `/calculator/${slug}` });
 
     const navigation: NavItem[] = [
         {
             name: t('nav', 'goldSilver'),
-            href: '/gold-rate',
-            match: ['/gold-rate', '/silver-rate', '/gold-vs-silver', '/commodities', '/gold-affordability-index'],
+            href: local('/gold-rate'),
+            match: ['/gold-rate', '/hi/gold-rate', '/silver-rate', '/gold-vs-silver', '/commodities', '/gold-affordability-index'],
             links: [
-                { name: t('nav', 'goldRate'), href: '/gold-rate' },
+                { name: t('nav', 'goldRate'), href: local('/gold-rate') },
                 { name: t('nav', 'silverRate'), href: '/silver-rate' },
                 { name: t('navMenu', 'goldVsSilver'), href: '/gold-vs-silver' },
                 { name: t('nav', 'commodities'), href: '/commodities' },
@@ -99,10 +104,10 @@ export default function Header() {
         },
         {
             name: t('nav', 'news'),
-            href: '/news',
-            match: ['/news', '/category', '/articles', '/glossary'],
+            href: local('/news'),
+            match: ['/news', '/hi/articles', '/category', '/articles', '/glossary'],
             links: [
-                { name: t('navMenu', 'latestNews'), href: '/news' },
+                { name: t('navMenu', 'latestNews'), href: local('/news') },
                 { name: t('nav', 'personalFinance'), href: '/category/business' },
                 { name: t('navMenu', 'financeNews'), href: '/category/finance' },
                 { name: t('navMenu', 'ipoNews'), href: '/category/ipo' },

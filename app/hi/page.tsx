@@ -49,6 +49,12 @@ export default async function HindiHomePage() {
                         सोने-चांदी के भाव, आईपीओ, बचत योजनाएं, लोन और निवेश — आसान हिंदी में, ताकि आप अपने पैसों से जुड़े
                         फैसले समझदारी से ले सकें।
                     </p>
+                    <Link
+                        href="/hi/gold-rate"
+                        className="inline-flex items-center gap-2 mt-5 px-4 py-2.5 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 font-semibold hover:bg-amber-100 transition-colors"
+                    >
+                        🪙 आज सोने का भाव — 24K, 22K, 18K और शहरवार भाव →
+                    </Link>
                 </header>
 
                 {articles.length === 0 ? (

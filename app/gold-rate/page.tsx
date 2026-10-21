@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { goldRateLanguageAlternates } from '@/lib/goldRateLocale';
 import GoldRatePageClient from '@/components/GoldRatePageClient';
 import { getTodayIST } from '@/lib/dateUtils';
 import { fetchGoldHistory } from '@/lib/angelOneApi';
@@ -64,7 +65,8 @@ export async function generateMetadata(): Promise<Metadata> {
             images: ['https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg'],
         },
         alternates: {
-            canonical: 'https://www.gpaisa.in/gold-rate'
+            canonical: 'https://www.gpaisa.in/gold-rate',
+            languages: goldRateLanguageAlternates(),
         },
         robots: {
             index: true,

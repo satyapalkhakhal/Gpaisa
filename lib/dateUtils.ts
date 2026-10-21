@@ -14,3 +14,15 @@ export function getTodayIST(): string {
         timeZone: 'Asia/Kolkata',
     }).format(now);
 }
+
+/**
+ * Hindi equivalent of getTodayIST for /hi pages. Example: "22 अक्तूबर 2026"
+ */
+export function getTodayISTHindi(): string {
+    return new Intl.DateTimeFormat('hi-IN', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric',
+        timeZone: 'Asia/Kolkata',
+    }).format(new Date());
+}
