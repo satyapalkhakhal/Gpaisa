@@ -1,16 +1,13 @@
 // Server-only. Shared plumbing for the Investorgain syncs (lib/investorgainGmpSync.ts,
-// lib/investorgainIssuesSync.ts): fetching their JSON reports and pages, and turning
-// their HTML snippets into plain values.
+// lib/investorgainIssuesSync.ts) and Investorgain's sister site Chittorgarh (buybacks):
+// fetching their JSON reports and pages, and turning their HTML snippets into plain values.
 
 export const INVESTORGAIN_SITE = 'https://www.investorgain.com';
-const REPORT_API = 'https://webnodejs.investorgain.com/cloud/v2/report/data-read';
+export const CHITTORGARH_SITE = 'https://www.chittorgarh.com';
+const INVESTORGAIN_REPORT_API = 'https://webnodejs.investorgain.com/cloud/v2/report/data-read';
+const CHITTORGARH_REPORT_API = 'https://webnodejs.chittorgarh.com/cloud/report/data-read';
 
-const HEADERS = {
-    Accept: 'application/json, text/html',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36',
-    Origin: INVESTORGAIN_SITE,
-    Referer: `${INVESTORGAIN_SITE}/`,
-};
+const USER_AGENT = 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36';
 
 export const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
 
@@ -19,32 +16,51 @@ const istDayFormat = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata'
 /** A moment → its IST calendar day, 'YYYY-MM-DD'. */
 export const istDay = (d: Date) => istDayFormat.format(d);
 
-export async function fetchWithRetry(url: string, attempt = 1): Promise<Response> {
+/** GET with the browser-like headers these sites expect; `site` is sent as Origin/Referer. */
+export async function fetchWithRetry(url: string, site = INVESTORGAIN_SITE, attempt = 1): Promise<Response> {
     try {
-        const res = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(20_000), headers: HEADERS });
+        const res = await fetch(url, {
+            cache: 'no-store',
+            signal: AbortSignal.timeout(20_000),
+            headers: { Accept: 'application/json, text/html', 'User-Agent': USER_AGENT, Origin: site, Referer: `${site}/` },
+        });
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         return res;
     } catch (error) {
         // One retry for network blips; a run is cheap, but a missed fetch waits for the next one.
-        if (attempt < 2) return fetchWithRetry(url, attempt + 1);
+        if (attempt < 2) return fetchWithRetry(url, site, attempt + 1);
         throw new Error(`${url}: ${(error as Error).message}`);
     }
 }
 
-/** Rows of one of Investorgain's reports (331 GMP, 399 rights issues, 400 NCDs), `all` view. */
-export async function fetchReport<T>(reportId: number): Promise<T[]> {
+/** The report API's period path: "{month}/{year}/{financial year}", e.g. "10/2026/2026-27". */
+function reportPeriod(): string {
     const [year, month] = istDay(new Date()).split('-').map(Number);
     const fyStart = month >= 4 ? year : year - 1;
-    const fy = `${fyStart}-${String(fyStart + 1).slice(2)}`;
-    const res = await fetchWithRetry(`${REPORT_API}/${reportId}/1/${month}/${year}/${fy}/0/all?search=`);
+    return `${month}/${year}/${fyStart}-${String(fyStart + 1).slice(2)}`;
+}
+
+async function readReport<T>(api: string, site: string, reportId: number): Promise<T[]> {
+    const res = await fetchWithRetry(`${api}/${reportId}/1/${reportPeriod()}/0/all?search=`, site);
     const body = await res.json();
-    if (!Array.isArray(body?.reportTableData)) throw new Error(`Investorgain report ${reportId}: unexpected response shape`);
+    if (!Array.isArray(body?.reportTableData)) throw new Error(`${site} report ${reportId}: unexpected response shape`);
     return body.reportTableData;
 }
 
-/** An HTML snippet's visible text, with the entities Investorgain uses decoded. */
-export function htmlText(htmlish: string | null | undefined): string {
-    return (htmlish ?? '')
+/** Rows of one of Investorgain's reports (331 GMP, 399 rights issues, 400 NCDs), `all` view. */
+export function fetchReport<T>(reportId: number): Promise<T[]> {
+    return readReport<T>(INVESTORGAIN_REPORT_API, INVESTORGAIN_SITE, reportId);
+}
+
+/** Rows of one of Chittorgarh's reports (80 buybacks), `all` view. */
+export function fetchChittorgarhReport<T>(reportId: number): Promise<T[]> {
+    return readReport<T>(CHITTORGARH_REPORT_API, CHITTORGARH_SITE, reportId);
+}
+
+/** An HTML snippet's visible text, with the entities Investorgain uses decoded. Report cells are
+ *  usually strings but some arrive as JSON numbers, so any value is accepted. */
+export function htmlText(htmlish: unknown): string {
+    return String(htmlish ?? '')
         .replace(/<[^>]+>/g, ' ')
         .replace(/&#8377;|&#x20b9;/gi, '₹')
         .replace(/&nbsp;|&#160;/g, ' ')
@@ -64,7 +80,8 @@ export function parseLongDate(raw: string | null | undefined): string | null {
 }
 
 /** "₹ 1,119.50" / "₹25.00 Cr" → 1119.5 / 25; anything without a number → null. */
-export function parseAmount(raw: string | null | undefined): number | null {
+export function parseAmount(raw: unknown): number | null {
+    if (typeof raw === 'number') return Number.isFinite(raw) ? raw : null;
     const m = htmlText(raw).match(/-?[\d,]+(?:\.\d+)?/);
     if (!m) return null;
     const n = Number(m[0].replace(/,/g, ''));

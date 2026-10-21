@@ -122,6 +122,8 @@ export interface Buyback {
     meta_title: string | null;
     meta_description: string | null;
     publish_status: PublishStatus;
+    // Set by lib/investorgainIssuesSync.ts once matched to a Chittorgarh buyback.
+    chittorgarh_id: number | null;
     created_at: string;
     updated_at: string;
     company?: Company | null;

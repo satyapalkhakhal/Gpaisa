@@ -1,19 +1,22 @@
 // Server-only. Keeps NCD issues and rights issues current from Investorgain's NCD and
-// rights-issue reports. Run on a schedule through app/api/cron/issues-sync (see
-// deploy/ipo-sync.sh).
+// rights-issue reports, and buybacks from its sister site Chittorgarh (Investorgain's own
+// buyback report stopped updating in 2024). Run on a schedule through
+// app/api/cron/issues-sync (see deploy/ipo-sync.sh).
 //
 // Same rules as lib/growwIpoSync.ts: only empty fields are filled and status only moves
 // forward, so anything an editor entered is kept. Issues not in the database yet are
 // created (recent ones only), published straight away when they carry the facts a reader
-// needs (NCD: dates + coupon series; rights: price + ratio + a date), otherwise as drafts.
-// Detail pages (coupon series, issue size, registrar, …) are fetched only when a record is
-// created or still lacks those details.
+// needs (NCD: dates + coupon series; rights: price + ratio + a date; buyback: price + a
+// date), otherwise as drafts. Detail pages (coupon series, issue size, registrar, …) are
+// fetched only when a record is created or still lacks those details.
 import { insertRow, queryRows, updateRowById } from './db';
 import { slugify } from './slugify';
 import {
+    CHITTORGARH_SITE,
     INVESTORGAIN_SITE,
     MONTHS,
     baseDomain,
+    fetchChittorgarhReport,
     fetchReport,
     fetchWithRetry,
     firstHref,
@@ -23,11 +26,14 @@ import {
     parseAmount,
     parseLongDate,
 } from './investorgain';
-import { NCD_LIFECYCLE_ORDER, RIGHTS_LIFECYCLE_ORDER } from './otherInvestmentsTypes';
+import { BUYBACK_LIFECYCLE_ORDER, NCD_LIFECYCLE_ORDER, RIGHTS_LIFECYCLE_ORDER } from './otherInvestmentsTypes';
 import type { NcdSeries } from './otherInvestmentsTypes';
 
 const NCD_REPORT = 400;
 const RIGHTS_REPORT = 399;
+const BUYBACK_REPORT = 80; // Chittorgarh
+// Tender-offer payouts and share extinguishment finish within ~10 days of closing.
+const TENDER_SETTLEMENT_DAYS = 10;
 // The reports reach back months; only issues with a date this recent (or later) are created.
 const CREATE_WITHIN_DAYS = 30;
 // Detail pages are ~150 KB each; cap them per run so a first run can't hammer the site.
@@ -56,14 +62,27 @@ interface RightsRow {
     '~URLRewrite_Folder_Name': string;
 }
 
-type Kind = 'ncd' | 'rights';
+/** A row of Chittorgarh's buyback report; dates come as ISO strings in the `~` columns. */
+interface BuybackRow {
+    '~id': number;
+    'Company Name': string;
+    '~URLRewrite_Folder_Name': string;
+    'Buyback Type': string;
+    'BuyBack price (Rs. Per Share)': string;
+    'Issue Size - Amount (Rs. Cr.)': string;
+    '~record_dt': string;
+    '~offer_open_date': string;
+    '~offer_closure_date': string;
+}
+
+type Kind = 'ncd' | 'rights' | 'buyback';
 type Fields = Record<string, unknown>;
 
 /** One Investorgain issue, normalized to our columns. */
 interface Candidate {
-    investorgainId: number;
+    sourceId: number;
     companyName: string;
-    detailPath: string;
+    detailUrl: string;
     fields: Fields;
 }
 
@@ -71,7 +90,6 @@ interface DbRow {
     id: string;
     slug: string;
     status: string;
-    investorgain_id: number | null;
     company_name: string | null;
     [column: string]: unknown;
 }
@@ -88,11 +106,15 @@ export interface IssuesSyncReport {
     dryRun: boolean;
     ncd: KindReport;
     rights: KindReport;
+    buyback: KindReport;
 }
 
+// idColumn links a record to its source issue; matchDates are the dates an unlinked record
+// must share (with the company name) to be treated as the same issue.
 const KINDS = {
-    ncd: { table: 'ncd_issues', order: NCD_LIFECYCLE_ORDER as readonly string[], keyDate: 'open_date', label: 'NCD' },
-    rights: { table: 'rights_issues', order: RIGHTS_LIFECYCLE_ORDER as readonly string[], keyDate: 'record_date', label: 'Rights Issue' },
+    ncd: { table: 'ncd_issues', order: NCD_LIFECYCLE_ORDER as readonly string[], idColumn: 'investorgain_id', matchDates: ['open_date'], label: 'NCD' },
+    rights: { table: 'rights_issues', order: RIGHTS_LIFECYCLE_ORDER as readonly string[], idColumn: 'investorgain_id', matchDates: ['record_date'], label: 'Rights Issue' },
+    buyback: { table: 'buybacks', order: BUYBACK_LIFECYCLE_ORDER as readonly string[], idColumn: 'chittorgarh_id', matchDates: ['record_date', 'tender_open_date'], label: 'Buyback' },
 } as const;
 
 // ── Parsing helpers ─────────────────────────────────────────────────────
@@ -193,7 +215,19 @@ function parseLeadManagers(html: string): string[] {
 }
 
 function parseRegistrarWebsite(html: string): string | null {
-    return html.match(/ipo-acc-registrar-html[\s\S]*?Website:<\/strong>\s*<a[^>]*href="([^"]+)"/i)?.[1] ?? null;
+    return (
+        html.match(/ipo-acc-registrar-html[\s\S]*?Website:<\/strong>\s*<a[^>]*href="([^"]+)"/i)?.[1] ?? // Investorgain
+        // Chittorgarh: the company contact card uses the same link class, so start at the registrar's heading.
+        html.match(/Registrar<\/h2>[\s\S]*?class="registrar-website"[^>]*href="([^"]+)"/i)?.[1] ??
+        null
+    );
+}
+
+/** Chittorgarh's "Buyback Ratio" table → "Entitlement ratio: Small Shareholders 32:257; General Category 25:418." */
+function parseEntitlement(html: string): string | null {
+    const table = tables(html).find((rows) => rows[0]?.some((c) => /entitlement ratio/i.test(c)));
+    const parts = table?.slice(1).filter((r) => r[0] && r[1]).map((r) => `${r[0]} ${r[1].replace(/\s+/g, '')}`);
+    return parts?.length ? `Entitlement ratio: ${parts.join('; ')}.` : null;
 }
 
 // ── Normalization ─────────────────────────────────────────────────────────
@@ -209,6 +243,20 @@ function ncdStatus(f: Fields, statusText: string, today: string): string {
     return /upcoming/i.test(statusText) ? 'upcoming' : 'announced';
 }
 
+function buybackStatus(f: Fields, today: string): string {
+    const open = f.tender_open_date as string | null;
+    const close = f.tender_close_date as string | null;
+    if (close && close < today) {
+        // Open-market buybacks end with the window; tender offers still have to settle.
+        if (f.method === 'open_market') return 'completed';
+        const settled = istDay(new Date(Date.parse(`${close}T00:00:00Z`) + TENDER_SETTLEMENT_DAYS * 86_400_000));
+        return settled < today ? 'completed' : 'closed';
+    }
+    if (open && open <= today) return 'open';
+    if (f.record_date && (f.record_date as string) <= today) return 'record_date';
+    return 'announced';
+}
+
 function rightsStatus(f: Fields, today: string): string {
     const due = (column: string) => (f[column] as string | null) != null && (f[column] as string) <= today;
     if (due('listing_date')) return 'listed';
@@ -220,8 +268,8 @@ function rightsStatus(f: Fields, today: string): string {
 }
 
 function fromNcdRow(row: NcdRow, today: string): Candidate | null {
-    const investorgainId = idFromPath(row['~URLRewrite_Folder_Name']);
-    if (!investorgainId) return null;
+    const sourceId = idFromPath(row['~URLRewrite_Folder_Name']);
+    if (!sourceId) return null;
     const name = issueName(row.Issue);
     const fields: Fields = {
         open_date: parseLongDate(row['Open Date']),
@@ -232,12 +280,12 @@ function fromNcdRow(row: NcdRow, today: string): Candidate | null {
         min_investment: parseAmount(row['Min Order Amount']), // folded into each series, not a column
     };
     fields.status = ncdStatus(fields, htmlText(row.Status), today);
-    return { investorgainId, companyName: companyNameOf(name), detailPath: row['~URLRewrite_Folder_Name'], fields };
+    return { sourceId, companyName: companyNameOf(name), detailUrl: `${INVESTORGAIN_SITE}${row['~URLRewrite_Folder_Name']}`, fields };
 }
 
 function fromRightsRow(row: RightsRow, today: string): Candidate | null {
-    const investorgainId = idFromPath(row['~URLRewrite_Folder_Name']);
-    if (!investorgainId) return null;
+    const sourceId = idFromPath(row['~URLRewrite_Folder_Name']);
+    if (!sourceId) return null;
     const ratio = htmlText(row.Entitlement);
     const fields: Fields = {
         issue_price: parseAmount(row.Price),
@@ -252,7 +300,30 @@ function fromRightsRow(row: RightsRow, today: string): Candidate | null {
         fields.listing_date = null;
     }
     fields.status = rightsStatus(fields, today);
-    return { investorgainId, companyName: companyNameOf(issueName(row.Issue)), detailPath: row['~URLRewrite_Folder_Name'], fields };
+    return { sourceId, companyName: companyNameOf(issueName(row.Issue)), detailUrl: `${INVESTORGAIN_SITE}${row['~URLRewrite_Folder_Name']}`, fields };
+}
+
+function fromBuybackRow(row: BuybackRow, today: string): Candidate | null {
+    const sourceId = Number(row['~id']);
+    const folder = row['~URLRewrite_Folder_Name'];
+    if (!sourceId || !folder) return null;
+    const isoDay = (v: string) => (/^\d{4}-\d{2}-\d{2}/.test(v ?? '') ? v.slice(0, 10) : null);
+    const fields: Fields = {
+        method: /tender/i.test(row['Buyback Type']) ? 'tender' : 'open_market',
+        buyback_price: parseAmount(row['BuyBack price (Rs. Per Share)']),
+        buyback_size: parseAmount(row['Issue Size - Amount (Rs. Cr.)']),
+        record_date: isoDay(row['~record_dt']),
+        tender_open_date: isoDay(row['~offer_open_date']),
+        tender_close_date: isoDay(row['~offer_closure_date']),
+    };
+    fields.status = buybackStatus(fields, today);
+    return {
+        sourceId,
+        // "Pvr Inox Ltd." / "Great Eastern Shipping Co.Ltd." → without the Ltd suffix.
+        companyName: htmlText(row['Company Name']).replace(/[\s.]*(ltd\.?|limited)$/i, '').trim(),
+        detailUrl: `${CHITTORGARH_SITE}/buyback/${folder}/${sourceId}/`,
+        fields,
+    };
 }
 
 /** Columns read from the issue's detail page. */
@@ -269,6 +340,9 @@ function detailFields(kind: Kind, html: string, candidate: Candidate, registrarB
         const managers = parseLeadManagers(html);
         if (managers.length) detail.lead_managers = managers;
         detail.prospectus_url = firstHref(kv.get('RHP')) ?? firstHref(kv.get('DRHP'));
+    } else if (kind === 'buyback') {
+        detail.notes = parseEntitlement(html);
+        detail.letter_of_offer_url = html.match(/<a[^>]*href="(https?:\/\/[^"]+)"[^>]*title="[^"]*Letter of Offer"/i)?.[1] ?? null;
     } else {
         detail.issue_size = parseAmount(kv.get('Issue Size (Amount)'));
         detail.face_value = parseAmount(kv.get('Face Value'));
@@ -297,23 +371,24 @@ function fillMissing(row: DbRow, fields: Fields, order: readonly string[]): Fiel
 }
 
 function isComplete(kind: Kind, f: Fields): boolean {
-    return kind === 'ncd'
-        ? !!(f.open_date && f.close_date && Array.isArray(f.series) && f.series.length)
-        : !!(f.issue_price && f.rights_ratio && (f.record_date || f.application_start));
+    if (kind === 'ncd') return !!(f.open_date && f.close_date && Array.isArray(f.series) && f.series.length);
+    if (kind === 'rights') return !!(f.issue_price && f.rights_ratio && (f.record_date || f.application_start));
+    return !!(f.buyback_price && (f.record_date || f.tender_open_date));
 }
 
 /** Latest date we know for the issue — decides whether it's recent enough to create. */
 function latestDate(f: Fields): string | null {
-    const dates = ['open_date', 'close_date', 'record_date', 'application_start', 'application_end', 'listing_date']
+    const dates = ['open_date', 'close_date', 'record_date', 'application_start', 'application_end', 'listing_date', 'tender_open_date', 'tender_close_date']
         .map((c) => f[c] as string | null)
         .filter((d): d is string => !!d);
     return dates.length ? dates.sort().at(-1)! : null;
 }
 
 function slugFor(kind: Kind, c: Candidate, taken: Set<string>): string {
-    const date = ((kind === 'ncd' ? c.fields.open_date : c.fields.record_date ?? c.fields.application_start) as string | null) ?? istDay(new Date());
+    const f = c.fields;
+    const date = ((kind === 'ncd' ? f.open_date : f.record_date ?? f.application_start ?? f.tender_open_date) as string | null) ?? istDay(new Date());
     const base = slugify(`${c.companyName} ${KINDS[kind].label} ${MONTHS[Number(date.slice(5, 7)) - 1]} ${date.slice(0, 4)}`);
-    return taken.has(base) ? `${base}-${c.investorgainId}` : base;
+    return taken.has(base) ? `${base}-${c.sourceId}` : base;
 }
 
 async function syncKind(kind: Kind, candidates: Candidate[], ctx: {
@@ -323,7 +398,7 @@ async function syncKind(kind: Kind, candidates: Candidate[], ctx: {
     companyBySlug: Map<string, string>;
     detailBudget: { left: number };
 }, report: KindReport): Promise<void> {
-    const { table, order, keyDate } = KINDS[kind];
+    const { table, order, idColumn, matchDates } = KINDS[kind];
     const rows = await queryRows<DbRow>(`SELECT t.*, c.name AS company_name FROM ${table} t LEFT JOIN companies c ON c.id = t.company_id`);
     const slugs = new Set(rows.map((r) => r.slug));
     const cutoff = istDay(new Date(Date.parse(`${ctx.today}T00:00:00Z`) - CREATE_WITHIN_DAYS * 86_400_000));
@@ -331,26 +406,29 @@ async function syncKind(kind: Kind, candidates: Candidate[], ctx: {
     const fetchDetail = async (c: Candidate): Promise<Fields> => {
         if (ctx.detailBudget.left <= 0) return {};
         ctx.detailBudget.left--;
-        const page = await fetchWithRetry(`${INVESTORGAIN_SITE}${c.detailPath}`);
+        const page = await fetchWithRetry(c.detailUrl, kind === 'buyback' ? CHITTORGARH_SITE : INVESTORGAIN_SITE);
         return detailFields(kind, await page.text(), c, ctx.registrarByDomain, ctx.today);
     };
 
     for (const c of candidates) {
         try {
-            const key = c.fields[keyDate] as string | null;
+            const sameIssueDate = (r: DbRow) => matchDates.some((d) => c.fields[d] != null && r[d] === c.fields[d]);
             const existing =
-                rows.find((r) => r.investorgain_id === c.investorgainId) ??
-                rows.find((r) => !r.investorgain_id && r.company_name && key && r[keyDate] === key && compact(r.company_name) === compact(c.companyName));
+                rows.find((r) => r[idColumn] === c.sourceId) ??
+                rows.find((r) => !r[idColumn] && r.company_name && sameIssueDate(r) && compact(r.company_name) === compact(c.companyName));
             const recent = (latestDate(c.fields) ?? '') >= cutoff;
 
             if (existing) {
                 let fields = c.fields;
-                const lacksDetail = kind === 'ncd' ? isEmpty(existing.series) : existing.issue_size == null && existing.face_value == null;
+                const lacksDetail =
+                    kind === 'ncd' ? isEmpty(existing.series)
+                    : kind === 'rights' ? existing.issue_size == null && existing.face_value == null
+                    : existing.letter_of_offer_url == null && existing.registrar_id == null;
                 if (lacksDetail && recent) fields = { ...fields, ...(await fetchDetail(c)) };
 
                 const patch = fillMissing(existing, fields, order);
                 const changed = Object.keys(patch);
-                if (!existing.investorgain_id) patch.investorgain_id = c.investorgainId;
+                if (!existing[idColumn]) patch[idColumn] = c.sourceId;
                 if (Object.keys(patch).length && !ctx.dryRun) {
                     await updateRowById(table, existing.id, { ...patch, updated_at: new Date().toISOString() });
                 }
@@ -384,7 +462,7 @@ async function syncKind(kind: Kind, candidates: Candidate[], ctx: {
                 ...values,
                 company_id: companyId,
                 slug,
-                investorgain_id: c.investorgainId,
+                [idColumn]: c.sourceId,
                 publish_status: published ? 'published' : 'draft',
                 created_at: now,
                 updated_at: now,
@@ -398,7 +476,7 @@ async function syncKind(kind: Kind, candidates: Candidate[], ctx: {
 
 export async function syncInvestorgainIssues({ dryRun = false } = {}): Promise<IssuesSyncReport> {
     const blank = (): KindReport => ({ fetched: 0, created: [], updated: [], ignoredOld: 0, errors: [] });
-    const report: IssuesSyncReport = { dryRun, ncd: blank(), rights: blank() };
+    const report: IssuesSyncReport = { dryRun, ncd: blank(), rights: blank(), buyback: blank() };
     const today = istDay(new Date());
 
     const [registrars, companies] = await Promise.all([
@@ -416,13 +494,15 @@ export async function syncInvestorgainIssues({ dryRun = false } = {}): Promise<I
     }
     const ctx = { dryRun, today, registrarByDomain, companyBySlug: new Map(companies.map((c) => [c.slug, c.id])), detailBudget: { left: MAX_DETAIL_FETCHES } };
 
-    const feeds: [Kind, number, (row: never, today: string) => Candidate | null][] = [
-        ['ncd', NCD_REPORT, fromNcdRow as (row: never, today: string) => Candidate | null],
-        ['rights', RIGHTS_REPORT, fromRightsRow as (row: never, today: string) => Candidate | null],
+    type Normalize = (row: never, today: string) => Candidate | null;
+    const feeds: [Kind, () => Promise<never[]>, Normalize][] = [
+        ['ncd', () => fetchReport<never>(NCD_REPORT), fromNcdRow as Normalize],
+        ['rights', () => fetchReport<never>(RIGHTS_REPORT), fromRightsRow as Normalize],
+        ['buyback', () => fetchChittorgarhReport<never>(BUYBACK_REPORT), fromBuybackRow as Normalize],
     ];
-    for (const [kind, reportId, normalize] of feeds) {
+    for (const [kind, fetchRows, normalize] of feeds) {
         try {
-            const rows = await fetchReport<never>(reportId);
+            const rows = await fetchRows();
             report[kind].fetched = rows.length;
             const candidates = rows.map((r) => normalize(r, today)).filter((c): c is Candidate => !!c);
             await syncKind(kind, candidates, ctx, report[kind]);

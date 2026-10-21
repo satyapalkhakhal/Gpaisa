@@ -35,6 +35,7 @@ export default async function BuybackDetailPage({ params }: { params: Promise<{ 
     const buyback = await fetchBuybackBySlug(slug);
     if (!buyback) notFound();
     const companyName = buyback.company?.name || buyback.slug;
+    const isOpenMarket = buyback.method === 'open_market';
 
     const webPageSchema = {
         '@context': 'https://schema.org',
@@ -48,7 +49,7 @@ export default async function BuybackDetailPage({ params }: { params: Promise<{ 
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-10">
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema).replace(/</g, '\\u003c') }} />
 
             <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
                 <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
@@ -60,12 +61,15 @@ export default async function BuybackDetailPage({ params }: { params: Promise<{ 
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div>
-                        <p className="text-xs text-gray-400">Buyback price</p>
+                        {/* Open-market buybacks quote a ceiling: shares are bought on the exchange at up to this price. */}
+                        <p className="text-xs text-gray-400">{isOpenMarket ? 'Max. buyback price' : 'Buyback price'}</p>
                         <p className="font-bold text-gray-900">{buyback.buyback_price ? `₹${buyback.buyback_price}${buyback.buyback_price_max ? ` – ₹${buyback.buyback_price_max}` : ''}` : 'TBA'}</p>
                     </div>
                     <div><p className="text-xs text-gray-400">Buyback size</p><p className="font-bold text-gray-900">{buyback.buyback_size ? `₹${buyback.buyback_size} Cr` : 'TBA'}</p></div>
-                    <div><p className="text-xs text-gray-400">Record date</p><p className="font-bold text-gray-900">{formatDate(buyback.record_date)}</p></div>
-                    <div><p className="text-xs text-gray-400">Tender window</p><p className="font-bold text-gray-900">{formatDate(buyback.tender_open_date)} – {formatDate(buyback.tender_close_date)}</p></div>
+                    {!(isOpenMarket && !buyback.record_date) && (
+                        <div><p className="text-xs text-gray-400">Record date</p><p className="font-bold text-gray-900">{formatDate(buyback.record_date)}</p></div>
+                    )}
+                    <div><p className="text-xs text-gray-400">{isOpenMarket ? 'Buyback window' : 'Tender window'}</p><p className="font-bold text-gray-900">{formatDate(buyback.tender_open_date)} – {formatDate(buyback.tender_close_date)}</p></div>
                 </div>
                 {buyback.acceptance_ratio && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
@@ -75,6 +79,7 @@ export default async function BuybackDetailPage({ params }: { params: Promise<{ 
                 )}
             </div>
 
+            {(buyback.notes || buyback.letter_of_offer_url) && (
             <section className="bg-white rounded-2xl border border-gray-100 p-6">
                 <h2 className="text-lg font-bold text-gray-900 mb-3">Buyback Details</h2>
                 {buyback.notes && <p className="text-sm text-gray-700 mb-3">{buyback.notes}</p>}
@@ -84,6 +89,7 @@ export default async function BuybackDetailPage({ params }: { params: Promise<{ 
                     </a>
                 )}
             </section>
+            )}
         </div>
     );
 }

@@ -2,7 +2,7 @@
 # Syncs IPO data into the database through the app's /api/cron/* routes:
 #   groww-ipo-sync  Groww's upcoming/open/closed feeds (creates and updates IPOs)
 #   gmp-sync        Investorgain grey market premium, one reading per IPO per day
-#   issues-sync     Investorgain NCD issues and rights issues
+#   issues-sync     NCD issues and rights issues (Investorgain), buybacks (Chittorgarh)
 # Installed via cron — see deploy/README.md.
 # Usage: ./ipo-sync.sh [--dry-run]   (--dry-run reports what would change, writes nothing)
 set -euo pipefail

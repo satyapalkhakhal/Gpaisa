@@ -16,7 +16,7 @@ Internet → Caddy (80/443, auto HTTPS, gpaisa.in → www) → Next.js app (:300
 | `deploy.sh` | Pull, rebuild, restart, health-check |
 | `migrate.sh` | Applies `db/migrations/*.sql` (all idempotent) |
 | `backup.sh` | Nightly `pg_dump` → Cloud Storage |
-| `ipo-sync.sh` | Pulls Groww's IPO feeds, Investorgain GMP, NCDs and rights issues into the database (cron) |
+| `ipo-sync.sh` | Pulls Groww's IPO feeds, Investorgain GMP, NCDs and rights issues, and Chittorgarh buybacks into the database (cron) |
 
 > **Until cutover, don't merge this work into `main`.** Vercel still deploys `main`,
 > and this code needs `DATABASE_URL`, which Vercel doesn't have. Keep it on a branch
@@ -155,11 +155,11 @@ and publish them. It then records grey market premium (GMP) from Investorgain: o
 per IPO per day (today's is refreshed each run), plus a one-time backfill of earlier days
 the first time an IPO is matched. Only rows with source `Investorgain` are written, so GMP
 entered in the admin is left alone. Last, it syncs NCD issues and rights issues from
-Investorgain the same way: empty fields filled, status moved forward, and new issues from
-the last 30 days created — published when complete (NCD: dates + coupon series; rights:
-price + ratio + a date), otherwise as drafts. One-time setup:
+Investorgain, and buybacks from Chittorgarh, the same way: empty fields filled, status moved
+forward, and new issues from the last 30 days created — published when complete (NCD: dates +
+coupon series; rights: price + ratio + a date; buyback: price + a date), otherwise as drafts. One-time setup:
 ```bash
-./migrate.sh                                   # 0007–0009: Groww / Investorgain link columns
+./migrate.sh                                   # 0007–0010: Groww / Investorgain / Chittorgarh link columns
 # put CRON_SECRET in .env (openssl rand -hex 32), then: docker compose up -d app
 ./ipo-sync.sh --dry-run                        # see what it would change; writes nothing
 ./ipo-sync.sh
