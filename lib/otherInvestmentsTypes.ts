@@ -10,8 +10,10 @@ export interface NcdSeries {
     name: string;
     tenure_months: number;
     coupon_rate: number;
-    frequency: 'monthly' | 'annual' | 'cumulative';
+    frequency: 'monthly' | 'quarterly' | 'half_yearly' | 'annual' | 'cumulative';
     min_investment: number | null;
+    /** Annualised yield including compounding/payout timing, when the offer document gives it. */
+    effective_yield?: number | null;
 }
 
 export interface NcdIssue {
@@ -40,6 +42,8 @@ export interface NcdIssue {
     meta_title: string | null;
     meta_description: string | null;
     publish_status: PublishStatus;
+    // Set by lib/investorgainIssuesSync.ts once matched to an Investorgain issue.
+    investorgain_id: number | null;
     created_at: string;
     updated_at: string;
     company?: Company | null;
@@ -80,6 +84,8 @@ export interface RightsIssue {
     meta_title: string | null;
     meta_description: string | null;
     publish_status: PublishStatus;
+    // Set by lib/investorgainIssuesSync.ts once matched to an Investorgain issue.
+    investorgain_id: number | null;
     created_at: string;
     updated_at: string;
     company?: Company | null;

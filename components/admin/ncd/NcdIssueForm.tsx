@@ -194,6 +194,8 @@ export default function NcdIssueForm({ mode, initialIssue }: NcdIssueFormProps) 
                                 <label className={labelClass}>Frequency</label>
                                 <select value={s.frequency} onChange={e => updateSeriesField(i, 'frequency', e.target.value)} className={inputClass}>
                                     <option value="monthly">Monthly</option>
+                                    <option value="quarterly">Quarterly</option>
+                                    <option value="half_yearly">Half-yearly</option>
                                     <option value="annual">Annual</option>
                                     <option value="cumulative">Cumulative</option>
                                 </select>

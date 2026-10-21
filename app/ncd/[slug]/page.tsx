@@ -37,6 +37,7 @@ export default async function NcdDetailPage({ params }: { params: Promise<{ slug
     const issue = await fetchNcdIssueBySlug(slug);
     if (!issue) notFound();
     const companyName = issue.company?.name || issue.slug;
+    const hasEffectiveYield = issue.series.some(s => s.effective_yield != null);
 
     const webPageSchema = {
         '@context': 'https://schema.org',
@@ -50,7 +51,7 @@ export default async function NcdDetailPage({ params }: { params: Promise<{ slug
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-10">
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema).replace(/</g, '\\u003c') }} />
 
             <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
                 <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
@@ -75,7 +76,7 @@ export default async function NcdDetailPage({ params }: { params: Promise<{ slug
                     <h2 className="text-lg font-bold text-gray-900 mb-3">Series (Tenure &amp; Coupon Options)</h2>
                     <table className="w-full text-sm min-w-[500px]">
                         <thead className="text-left text-gray-500">
-                            <tr><th className="py-2">Series</th><th>Tenure</th><th>Coupon</th><th>Frequency</th><th>Min. investment</th></tr>
+                            <tr><th className="py-2">Series</th><th>Tenure</th><th>Coupon</th>{hasEffectiveYield && <th>Effective yield</th>}<th>Frequency</th><th>Min. investment</th></tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {issue.series.map((s, i) => (
@@ -83,7 +84,8 @@ export default async function NcdDetailPage({ params }: { params: Promise<{ slug
                                     <td className="py-2 font-medium text-gray-900">{s.name}</td>
                                     <td>{s.tenure_months} months</td>
                                     <td className="font-semibold text-gray-900">{s.coupon_rate}% p.a.</td>
-                                    <td className="capitalize">{s.frequency}</td>
+                                    {hasEffectiveYield && <td>{s.effective_yield != null ? `${s.effective_yield}%` : '—'}</td>}
+                                    <td className="capitalize">{s.frequency.replace('_', '-')}</td>
                                     <td>{s.min_investment ? `₹${s.min_investment.toLocaleString('en-IN')}` : '—'}</td>
                                 </tr>
                             ))}

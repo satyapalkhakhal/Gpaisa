@@ -50,7 +50,7 @@ export default async function RightsIssueDetailPage({ params }: { params: Promis
 
     return (
         <div className="max-w-4xl mx-auto px-4 py-10">
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(webPageSchema).replace(/</g, '\\u003c') }} />
 
             <div className="bg-white rounded-2xl border border-gray-100 p-6 mb-6">
                 <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
@@ -63,7 +63,10 @@ export default async function RightsIssueDetailPage({ params }: { params: Promis
                     <div><p className="text-xs text-gray-400">Face value</p><p className="font-bold text-gray-900">{issue.face_value ? `₹${issue.face_value}` : 'TBA'}</p></div>
                     <div><p className="text-xs text-gray-400">Issue size</p><p className="font-bold text-gray-900">{issue.issue_size ? `₹${issue.issue_size} Cr` : 'TBA'}</p></div>
                     <div><p className="text-xs text-gray-400">Record date</p><p className="font-bold text-gray-900">{formatDate(issue.record_date)}</p></div>
-                    <div><p className="text-xs text-gray-400">RE trading window</p><p className="font-bold text-gray-900">{formatDate(issue.re_trading_start)} – {formatDate(issue.re_trading_end)}</p></div>
+                    {(issue.re_trading_start || issue.re_trading_end) && (
+                        <div><p className="text-xs text-gray-400">RE trading window</p><p className="font-bold text-gray-900">{formatDate(issue.re_trading_start)} – {formatDate(issue.re_trading_end)}</p></div>
+                    )}
+                    {issue.allotment_date && <div><p className="text-xs text-gray-400">Allotment date</p><p className="font-bold text-gray-900">{formatDate(issue.allotment_date)}</p></div>}
                     <div><p className="text-xs text-gray-400">Application window</p><p className="font-bold text-gray-900">{formatDate(issue.application_start)} – {formatDate(issue.application_end)}</p></div>
                     <div><p className="text-xs text-gray-400">Listing date</p><p className="font-bold text-gray-900">{formatDate(issue.listing_date)}</p></div>
                 </div>

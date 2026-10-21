@@ -11,18 +11,10 @@
 import { insertRow, queryRows, updateRowById } from './db';
 import { slugify } from './slugify';
 import type { IpoLifecycleStatus } from './ipoTypes';
+import { INVESTORGAIN_SITE, MONTHS, fetchReport, fetchWithRetry, htmlText as text, istDay } from './investorgain';
 
 export const GMP_SOURCE = 'Investorgain';
-const SITE = 'https://www.investorgain.com';
-const LIST_API = 'https://webnodejs.investorgain.com/cloud/v2/report/data-read/331/1';
-
-const MONTHS = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
-const HEADERS = {
-    Accept: 'application/json, text/html',
-    'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36',
-    Origin: SITE,
-    Referer: `${SITE}/`,
-};
+const GMP_REPORT = 331;
 
 /** One row of Investorgain's live GMP report (only the fields we use). */
 interface ListRow {
@@ -65,19 +57,6 @@ export interface GmpSyncReport {
 
 // ── Parsing ──────────────────────────────────────────────────────────────
 
-const istDayFormat = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata' });
-const istDay = (d: Date) => istDayFormat.format(d);
-
-function text(htmlish: string): string {
-    return htmlish
-        .replace(/<[^>]+>/g, ' ')
-        .replace(/&#8377;|&#x20b9;/gi, '₹')
-        .replace(/&nbsp;/g, ' ')
-        .replace(/&amp;/g, '&')
-        .replace(/\s+/g, ' ')
-        .trim();
-}
-
 /** "₹ 135 (23.04%)" → 135; "₹ --" → null. */
 function parseGmp(htmlish: string): number | null {
     const m = text(htmlish).match(/₹\s*(-?\s*[\d,]+(?:\.\d+)?)/);
@@ -115,28 +94,6 @@ function parseHistoryPage(html: string): Reading[] {
         if (recordedAt && gmp != null) readings.push({ day: istDay(new Date(recordedAt)), recordedAt, gmp });
     }
     return readings;
-}
-
-async function fetchWithRetry(url: string, attempt = 1): Promise<Response> {
-    try {
-        const res = await fetch(url, { cache: 'no-store', signal: AbortSignal.timeout(20_000), headers: HEADERS });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        return res;
-    } catch (error) {
-        if (attempt < 2) return fetchWithRetry(url, attempt + 1);
-        throw new Error(`${url}: ${(error as Error).message}`);
-    }
-}
-
-async function fetchList(): Promise<ListRow[]> {
-    const now = new Date();
-    const [year, month] = istDay(now).split('-').map(Number);
-    const fyStart = month >= 4 ? year : year - 1;
-    const fy = `${fyStart}-${String(fyStart + 1).slice(2)}`;
-    const res = await fetchWithRetry(`${LIST_API}/${month}/${year}/${fy}/0/all?search=`);
-    const body = await res.json();
-    if (!Array.isArray(body?.reportTableData)) throw new Error('Investorgain list: unexpected response shape');
-    return body.reportTableData;
 }
 
 // ── Matching ─────────────────────────────────────────────────────────────
@@ -234,7 +191,7 @@ export async function syncInvestorgainGmp({ dryRun = false } = {}): Promise<GmpS
 
     let rows: ListRow[];
     try {
-        rows = await fetchList();
+        rows = await fetchReport<ListRow>(GMP_REPORT);
     } catch (error) {
         report.errors.push({ message: (error as Error).message });
         return report;
@@ -266,7 +223,7 @@ export async function syncInvestorgainGmp({ dryRun = false } = {}): Promise<GmpS
                 [ipo.id, GMP_SOURCE]
             );
             if (count === 0) {
-                const page = await fetchWithRetry(`${SITE}${row['~urlrewrite_folder_name']}`);
+                const page = await fetchWithRetry(`${INVESTORGAIN_SITE}${row['~urlrewrite_folder_name']}`);
                 const history = parseHistoryPage(await page.text());
                 if (history.length) {
                     if (!dryRun) await writeReadings(ipo, price, history);
