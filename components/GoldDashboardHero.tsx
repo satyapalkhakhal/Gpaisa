@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { TrendingUp, TrendingDown, Minus, Clock, ArrowRight } from 'lucide-react';
+import { goldHistoryRatePer10g } from '@/lib/goldUnits';
 
 interface HeroData {
     price24k10g: number;
@@ -41,8 +42,8 @@ export default function GoldDashboardHero({ todayDate, initialData = null }: Gol
                 if (json.success && json.data?.length >= 2) {
                     const today = json.data[0];
                     const yesterday = json.data[1];
-                    const rate = parseFloat(today.rate);
-                    const prevRate = parseFloat(yesterday.rate);
+                    const rate = goldHistoryRatePer10g(today.rate);
+                    const prevRate = goldHistoryRatePer10g(yesterday.rate);
                     const diff = rate - prevRate;
                     const pct = prevRate > 0 ? (diff / prevRate) * 100 : 0;
                     const trend: 'Bullish' | 'Bearish' | 'Neutral' =

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import { goldHistoryRatePerGram } from '@/lib/goldUnits';
 
 interface DynamicGoldRate {
     purity: '24K' | '22K' | '18K';
@@ -66,20 +67,20 @@ export default function DynamicGoldRates({ simpleView = false, initialRates = []
                     const rates: DynamicGoldRate[] = [
                         {
                             purity: '24K',
-                            pricePerGram: parseFloat(latest24k.rate) / 10, // Rate is per 10g, divide by 10 for per gram
-                            change: parseFloat(latest24k.change) * (parseFloat(latest24k.rate) / 10) / 100,
+                            pricePerGram: goldHistoryRatePerGram(latest24k.rate),
+                            change: parseFloat(latest24k.change) * goldHistoryRatePerGram(latest24k.rate) / 100,
                             changePercent: parseFloat(latest24k.change)
                         },
                         {
                             purity: '22K',
-                            pricePerGram: parseFloat(latest22k.rate) / 10,
-                            change: parseFloat(latest22k.change) * (parseFloat(latest22k.rate) / 10) / 100,
+                            pricePerGram: goldHistoryRatePerGram(latest22k.rate),
+                            change: parseFloat(latest22k.change) * goldHistoryRatePerGram(latest22k.rate) / 100,
                             changePercent: parseFloat(latest22k.change)
                         },
                         {
                             purity: '18K',
-                            pricePerGram: parseFloat(latest18k.rate) / 10,
-                            change: parseFloat(latest18k.change) * (parseFloat(latest18k.rate) / 10) / 100,
+                            pricePerGram: goldHistoryRatePerGram(latest18k.rate),
+                            change: parseFloat(latest18k.change) * goldHistoryRatePerGram(latest18k.rate) / 100,
                             changePercent: parseFloat(latest18k.change)
                         }
                     ];

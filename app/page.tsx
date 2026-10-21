@@ -97,10 +97,6 @@ export default async function HomePage() {
         fetchRightsIssues(10).catch(() => []),
     ]);
 
-    // AngelOne's goldhistory `rate` is per GRAM (24K ≈ ₹13,700 vs silver ≈ ₹171/g — a ~80 gold–silver
-    // ratio), but fetchGoldRatesAllCarats divides it by 10 as if it were per 10g. Undo that here so the
-    // homepage shows real per-gram/per-10g prices. TODO: fix the shared helper + DynamicGoldRates site-wide.
-    const goldPerGram = goldRates.map(r => ({ ...r, pricePerGram: r.pricePerGram * 10, change: r.change * 10 }));
 
     const today = todayIsoIST();
 
@@ -191,12 +187,12 @@ export default async function HomePage() {
                     {/* Kept for SEO (matches the page title) but not shown */}
                     <h1 className="sr-only">Live Gold Rates, Financial Calculators &amp; Market Data for India</h1>
 
-                    <IndexStrip indices={marketIndices} gold={goldPerGram} silver={silverRateData} />
+                    <IndexStrip indices={marketIndices} gold={goldRates} silver={silverRateData} />
 
                     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-8 lg:gap-10 mt-8">
                         <div className="space-y-10 min-w-0">
                             <IpoSection board={gmpBoard} listings={listingBoard} today={today} />
-                            <BullionSection gold={goldPerGram} silver={silverRateData} />
+                            <BullionSection gold={goldRates} silver={silverRateData} />
                             <NewsSection tabs={newsTabs} />
                             <CalculatorSection />
                         </div>

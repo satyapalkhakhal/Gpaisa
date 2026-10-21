@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { goldHistoryRatePerGram } from '@/lib/goldUnits';
 
 interface RateRow {
     purity: string;
@@ -27,9 +28,9 @@ export default function GoldPriceTable() {
                     fetch('/api/gold-history?city=India&carat=18k').then(r => r.json()),
                 ]);
                 const rows: RateRow[] = [];
-                if (r24.success && r24.data?.length) rows.push({ purity: '24K', label: '99.9% Pure', pricePerGram: parseFloat(r24.data[0].rate) / 10 });
-                if (r22.success && r22.data?.length) rows.push({ purity: '22K', label: '91.6% (916)', pricePerGram: parseFloat(r22.data[0].rate) / 10 });
-                if (r18.success && r18.data?.length) rows.push({ purity: '18K', label: '75% Pure', pricePerGram: parseFloat(r18.data[0].rate) / 10 });
+                if (r24.success && r24.data?.length) rows.push({ purity: '24K', label: '99.9% Pure', pricePerGram: goldHistoryRatePerGram(r24.data[0].rate) });
+                if (r22.success && r22.data?.length) rows.push({ purity: '22K', label: '91.6% (916)', pricePerGram: goldHistoryRatePerGram(r22.data[0].rate) });
+                if (r18.success && r18.data?.length) rows.push({ purity: '18K', label: '75% Pure', pricePerGram: goldHistoryRatePerGram(r18.data[0].rate) });
                 setRates(rows);
             } catch (e) { console.error(e); }
             finally { setLoading(false); }

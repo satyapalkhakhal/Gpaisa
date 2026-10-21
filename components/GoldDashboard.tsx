@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { TrendingUp, TrendingDown, ArrowUpRight, ArrowDownRight, Clock, RefreshCw } from 'lucide-react';
+import { goldHistoryRatePerGram, goldHistoryRatePer10g } from '@/lib/goldUnits';
 
 interface GoldHistoryItem {
     date: string;
@@ -80,22 +81,22 @@ export default function GoldDashboard() {
                         {
                             purity: '24K',
                             label: '99.9% Pure',
-                            pricePerGram: parseFloat(latest24k.rate) / 10,
-                            change: parseFloat(latest24k.change) * (parseFloat(latest24k.rate) / 10) / 100,
+                            pricePerGram: goldHistoryRatePerGram(latest24k.rate),
+                            change: parseFloat(latest24k.change) * goldHistoryRatePerGram(latest24k.rate) / 100,
                             changePercent: parseFloat(latest24k.change),
                         },
                         {
                             purity: '22K',
                             label: '91.6% (916)',
-                            pricePerGram: parseFloat(latest22k.rate) / 10,
-                            change: parseFloat(latest22k.change) * (parseFloat(latest22k.rate) / 10) / 100,
+                            pricePerGram: goldHistoryRatePerGram(latest22k.rate),
+                            change: parseFloat(latest22k.change) * goldHistoryRatePerGram(latest22k.rate) / 100,
                             changePercent: parseFloat(latest22k.change),
                         },
                         {
                             purity: '18K',
                             label: '75% Pure',
-                            pricePerGram: parseFloat(latest18k.rate) / 10,
-                            change: parseFloat(latest18k.change) * (parseFloat(latest18k.rate) / 10) / 100,
+                            pricePerGram: goldHistoryRatePerGram(latest18k.rate),
+                            change: parseFloat(latest18k.change) * goldHistoryRatePerGram(latest18k.rate) / 100,
                             changePercent: parseFloat(latest18k.change),
                         },
                     ];
@@ -163,8 +164,8 @@ export default function GoldDashboard() {
     const trend = isPositive ? 'Bullish' : 'Bearish';
 
     // Today vs Yesterday
-    const todayRate = history24k.length > 0 ? parseFloat(history24k[0].rate) : 0;
-    const yesterdayRate = history24k.length > 1 ? parseFloat(history24k[1].rate) : 0;
+    const todayRate = history24k.length > 0 ? goldHistoryRatePer10g(history24k[0].rate) : 0;
+    const yesterdayRate = history24k.length > 1 ? goldHistoryRatePer10g(history24k[1].rate) : 0;
     const todayVsYesterday = todayRate - yesterdayRate;
 
     // 7-day + 10-day data
@@ -372,7 +373,7 @@ export default function GoldDashboard() {
                                         return (
                                             <tr key={i} className={`hover:bg-gray-50/50 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{formatDateShort(item.date)}</td>
-                                                <td className="px-4 py-3 text-right font-semibold text-gray-900 tabular-nums whitespace-nowrap">{formatINR(parseFloat(item.rate))}</td>
+                                                <td className="px-4 py-3 text-right font-semibold text-gray-900 tabular-nums whitespace-nowrap">{formatINR(goldHistoryRatePer10g(item.rate))}</td>
                                                 <td className="px-4 py-3 text-right whitespace-nowrap">
                                                     <span className={`inline-flex items-center gap-1 text-xs font-bold ${isUp ? 'text-green-600' : 'text-red-600'}`}>
                                                         {isUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
@@ -416,7 +417,7 @@ export default function GoldDashboard() {
                                         return (
                                             <tr key={i} className={`hover:bg-gray-50/50 transition-colors ${i % 2 === 0 ? 'bg-white' : 'bg-gray-50/30'}`}>
                                                 <td className="px-4 py-3 font-medium text-gray-900 whitespace-nowrap">{formatDateShort(item.date)}</td>
-                                                <td className="px-4 py-3 text-right font-semibold text-gray-900 tabular-nums whitespace-nowrap">{formatINR(parseFloat(item.rate))}</td>
+                                                <td className="px-4 py-3 text-right font-semibold text-gray-900 tabular-nums whitespace-nowrap">{formatINR(goldHistoryRatePer10g(item.rate))}</td>
                                                 <td className="px-4 py-3 text-right whitespace-nowrap">
                                                     <span className={`inline-flex items-center gap-1 text-xs font-bold ${isUp ? 'text-green-600' : 'text-red-600'}`}>
                                                         {isUp ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}

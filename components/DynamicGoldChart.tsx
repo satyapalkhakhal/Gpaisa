@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import ChartCard from './ChartCard';
 import { ChartDataPoint, GoldHistoryItem } from '@/types';
+import { goldHistoryRatePer10g } from '@/lib/goldUnits';
 
 interface DynamicGoldChartProps {
     carat?: '24k' | '22k' | '18k';
@@ -30,7 +31,7 @@ export default function DynamicGoldChart({ carat = '24k', city = 'India' }: Dyna
                         .reverse()
                         .map((item: GoldHistoryItem) => ({
                             time: formatDateForChart(item.date),
-                            value: parseFloat(item.rate) // Keep as per 10g price (API native format)
+                            value: goldHistoryRatePer10g(item.rate) // per 10 g
                         }));
 
                     setChartData(chartPoints);

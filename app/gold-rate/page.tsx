@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import GoldRatePageClient from '@/components/GoldRatePageClient';
 import { getTodayIST } from '@/lib/dateUtils';
 import { fetchGoldHistory } from '@/lib/angelOneApi';
+import { goldHistoryRatePer10g } from '@/lib/goldUnits';
 
 function formatHeroTime(d: Date): string {
     return d.toLocaleString('en-IN', {
@@ -18,8 +19,8 @@ async function fetchGoldHeroData() {
     }
     const today = history.data[0];
     const yesterday = history.data[1];
-    const rate = parseFloat(today.rate);
-    const prevRate = parseFloat(yesterday.rate);
+    const rate = goldHistoryRatePer10g(today.rate);
+    const prevRate = goldHistoryRatePer10g(yesterday.rate);
     const diff = rate - prevRate;
     const pct = prevRate > 0 ? (diff / prevRate) * 100 : 0;
     const trend: 'Bullish' | 'Bearish' | 'Neutral' =

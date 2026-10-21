@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { goldHistoryRatePer10g } from '@/lib/goldUnits';
 
 interface CompRow { metric: string; today: number; yesterday: number; }
 
@@ -21,7 +22,7 @@ export default function GoldTodayVsYesterday() {
                 const result: CompRow[] = [];
                 for (const [label, d] of [['24K Gold (10g)', r24], ['22K Gold (10g)', r22], ['18K Gold (10g)', r18]] as const) {
                     if (d.success && d.data?.length >= 2) {
-                        result.push({ metric: label, today: parseFloat(d.data[0].rate), yesterday: parseFloat(d.data[1].rate) });
+                        result.push({ metric: label, today: goldHistoryRatePer10g(d.data[0].rate), yesterday: goldHistoryRatePer10g(d.data[1].rate) });
                     }
                 }
                 setRows(result);

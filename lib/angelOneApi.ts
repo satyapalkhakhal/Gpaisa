@@ -1,4 +1,5 @@
 import { SilverCity, SilverCalculatorResponse, SilverHistoryResponse, GoldHistoryResponse } from '@/types';
+import { goldHistoryRatePerGram } from '@/lib/goldUnits';
 
 const BASE_URL = 'https://kp-hl-httpapi-prod.angelone.in';
 
@@ -41,8 +42,8 @@ export async function fetchGoldRatesAllCarats(): Promise<GoldCaratRate[]> {
         const latest = history.data[0];
         return {
             purity,
-            pricePerGram: parseFloat(latest.rate) / 10,
-            change: parseFloat(latest.change) * (parseFloat(latest.rate) / 10) / 100,
+            pricePerGram: goldHistoryRatePerGram(latest.rate),
+            change: parseFloat(latest.change) * goldHistoryRatePerGram(latest.rate) / 100,
             changePercent: parseFloat(latest.change),
         };
     };

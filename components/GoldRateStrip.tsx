@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { Coins } from 'lucide-react';
+import { goldHistoryRatePerGram, goldHistoryRatePer10g } from '@/lib/goldUnits';
 
 interface GoldRates {
     '24K': number;
@@ -27,9 +28,9 @@ export default function GoldRateStrip() {
                 if (data24k.success && data22k.success && data18k.success &&
                     data24k.data.length > 0 && data22k.data.length > 0 && data18k.data.length > 0) {
 
-                    const rate24k = parseFloat(data24k.data[0].rate) / 10; // per gram
-                    const rate22k = parseFloat(data22k.data[0].rate) / 10;
-                    const rate18k = parseFloat(data18k.data[0].rate) / 10;
+                    const rate24k = goldHistoryRatePerGram(data24k.data[0].rate);
+                    const rate22k = goldHistoryRatePerGram(data22k.data[0].rate);
+                    const rate18k = goldHistoryRatePerGram(data18k.data[0].rate);
 
                     setGoldRates({
                         '24K': Math.round(rate24k),
@@ -39,8 +40,8 @@ export default function GoldRateStrip() {
 
                     // Calculate change for 10g
                     if (data24k.data.length > 1) {
-                        const todayRate = parseFloat(data24k.data[0].rate);
-                        const yesterdayRate = parseFloat(data24k.data[1].rate);
+                        const todayRate = goldHistoryRatePer10g(data24k.data[0].rate);
+                        const yesterdayRate = goldHistoryRatePer10g(data24k.data[1].rate);
                         setGoldChange(Math.round(todayRate - yesterdayRate));
                     }
                 }

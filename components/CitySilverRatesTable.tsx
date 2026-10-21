@@ -15,23 +15,25 @@ interface CityRate {
     loaded: boolean;
 }
 
+// Cities to show, in order. Symbols (e.g. XAG-MUMB) come from /api/silver/cities — the same
+// list the /silver-rate/[city] routes are built from — so only cities with a live page are shown.
 const SILVER_CITIES = [
-    // { city: 'Delhi', slug: 'delhi', symbol: 'SILVER_Delhi' },
-    { city: 'Mumbai', slug: 'mumbai', symbol: 'SILVER_Mumbai' },
-    { city: 'Chennai', slug: 'chennai', symbol: 'SILVER_Chennai' },
-    { city: 'Bangalore', slug: 'bangalore', symbol: 'SILVER_Bangalore' },
-    { city: 'Hyderabad', slug: 'hyderabad', symbol: 'SILVER_Hyderabad' },
-    { city: 'Kolkata', slug: 'kolkata', symbol: 'SILVER_Kolkata' },
-    { city: 'Pune', slug: 'pune', symbol: 'SILVER_Pune' },
-    { city: 'Ahmedabad', slug: 'ahmedabad', symbol: 'SILVER_Ahmedabad' },
-    { city: 'Jaipur', slug: 'jaipur', symbol: 'SILVER_Jaipur' },
-    { city: 'Lucknow', slug: 'lucknow', symbol: 'SILVER_Lucknow' },
+    { city: 'Mumbai', slug: 'mumbai' },
+    { city: 'Chennai', slug: 'chennai' },
+    { city: 'Bangalore', slug: 'bangalore' },
+    { city: 'Hyderabad', slug: 'hyderabad' },
+    { city: 'Kolkata', slug: 'kolkata' },
+    { city: 'Pune', slug: 'pune' },
+    { city: 'Ahmedabad', slug: 'ahmedabad' },
+    { city: 'Jaipur', slug: 'jaipur' },
+    { city: 'Lucknow', slug: 'lucknow' },
 ];
 
 export default function CitySilverRatesTable() {
     const [cityRates, setCityRates] = useState<CityRate[]>(
         SILVER_CITIES.map(c => ({
             ...c,
+            symbol: '',
             pricePerKg: 0,
             pricePerGram: 0,
             change: 0,
@@ -43,17 +45,30 @@ export default function CitySilverRatesTable() {
 
     useEffect(() => {
         const fetchRates = async () => {
+            let symbols = new Map<string, string>();
+            try {
+                const res = await fetch('/api/silver/cities');
+                const json = await res.json();
+                if (json.success && Array.isArray(json.data)) {
+                    symbols = new Map(json.data.map((c: { slug: string; symbol: string }) => [c.slug, c.symbol]));
+                }
+            } catch (err) {
+                console.error('Failed to load silver city list:', err);
+            }
+            const cities = SILVER_CITIES.filter(c => symbols.has(c.slug)).map(c => ({ ...c, symbol: symbols.get(c.slug)! }));
+
             const results = await Promise.allSettled(
-                SILVER_CITIES.map(async (cityObj) => {
+                cities.map(async (cityObj) => {
                     const res = await fetch(`/api/silver/calculator?symbol=${cityObj.symbol}`);
                     const data = await res.json();
 
                     if (data.success && data.data?.silver) {
                         const s = data.data.silver;
+                        // The calculator's `today` is INR per gram (≈ ₹210 in October 2026).
                         return {
                             ...cityObj,
-                            pricePerKg: s.today || 0,
-                            pricePerGram: (s.today || 0) / 1000,
+                            pricePerGram: s.today || 0,
+                            pricePerKg: (s.today || 0) * 1000,
                             change: s.differenceAmount || 0,
                             changePercent: s.differencePercentage || 0,
                             loaded: true,
@@ -64,7 +79,7 @@ export default function CitySilverRatesTable() {
             );
 
             const rates = results.map((r, idx) =>
-                r.status === 'fulfilled' ? r.value : { ...cityRates[idx], loaded: true }
+                r.status === 'fulfilled' ? r.value : { ...cities[idx], pricePerKg: 0, pricePerGram: 0, change: 0, changePercent: 0, loaded: true }
             );
             setCityRates(rates);
             setLoading(false);

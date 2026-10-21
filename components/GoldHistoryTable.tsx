@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { GoldHistoryItem } from '@/types';
 import { TrendingDown, TrendingUp } from 'lucide-react';
+import { goldHistoryRatePer10g } from '@/lib/goldUnits';
 
 interface GoldHistoryTableProps {
     city?: string;
@@ -79,7 +80,7 @@ export default function GoldHistoryTable({ city = 'India', carat = '24k' }: Gold
                         {historyData.map((item, index) => {
                             const changeValue = parseFloat(item.change);
                             const isPositive = changeValue >= 0;
-                            const rate = parseFloat(item.rate);
+                            const rate = goldHistoryRatePer10g(item.rate);
 
                             return (
                                 <tr key={index} className="hover:bg-gray-50 transition-colors">

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
+import { goldHistoryRatePer10g } from '@/lib/goldUnits';
 
 interface TrendRow { date: string; rate: number; change: number; }
 
@@ -19,8 +20,8 @@ export default function GoldTrendTable({ days = 7, title }: { days?: number; tit
                 if (json.success && json.data?.length) {
                     const sliced = json.data.slice(0, days);
                     const mapped: TrendRow[] = sliced.map((item: { date: string; rate: string; }, idx: number) => {
-                        const rate = parseFloat(item.rate);
-                        const prev = idx < sliced.length - 1 ? parseFloat(sliced[idx + 1].rate) : rate;
+                        const rate = goldHistoryRatePer10g(item.rate);
+                        const prev = idx < sliced.length - 1 ? goldHistoryRatePer10g(sliced[idx + 1].rate) : rate;
                         return { date: item.date, rate, change: rate - prev };
                     });
                     setRows(mapped);
