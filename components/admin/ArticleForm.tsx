@@ -6,10 +6,23 @@ import Image from 'next/image';
 import { CATEGORIES } from '@/lib/categories';
 import { slugify } from '@/lib/slugify';
 import { validateArticleInput } from '@/lib/validateArticle';
+import { LEAD_IMAGE_MIN_WIDTH } from '@/lib/imageDimensions';
 import type { Article } from '@/lib/articlesApi';
 import ArticleEditor from './ArticleEditor';
 import SeoScorePanel from './SeoScorePanel';
 import { UploadCloud } from 'lucide-react';
+
+// Natural width of a local image file, or null if the browser can't decode it
+// (the upload route then makes the final call).
+function readImageWidth(file: File): Promise<number | null> {
+    return new Promise((resolve) => {
+        const url = URL.createObjectURL(file);
+        const img = new window.Image();
+        img.onload = () => { URL.revokeObjectURL(url); resolve(img.naturalWidth); };
+        img.onerror = () => { URL.revokeObjectURL(url); resolve(null); };
+        img.src = url;
+    });
+}
 
 interface ArticleFormProps {
     mode: 'create' | 'edit';
@@ -58,9 +71,18 @@ export default function ArticleForm({ mode, initialArticle }: ArticleFormProps) 
         const file = e.target.files?.[0];
         e.target.value = '';
         if (!file) return;
+
+        // Instant feedback; the upload route enforces the same minimum.
+        const width = await readImageWidth(file);
+        if (width !== null && width < LEAD_IMAGE_MIN_WIDTH) {
+            setErrors([`Featured image is ${width}px wide. It must be at least ${LEAD_IMAGE_MIN_WIDTH}px wide (16:9, e.g. 1200×675, works best).`]);
+            return;
+        }
+
         setUploading(true);
         const formData = new FormData();
         formData.append('file', file);
+        formData.append('purpose', 'lead');
         const res = await fetch('/api/admin/upload', { method: 'POST', body: formData });
         const data = await res.json();
         setUploading(false);
@@ -167,6 +189,9 @@ export default function ArticleForm({ mode, initialArticle }: ArticleFormProps) 
                                 <input type="file" accept="image/*" className="hidden" onChange={handleImageUpload} disabled={uploading} />
                             </label>
                         </div>
+                        <p className="mt-1 text-xs text-gray-500">
+                            At least {LEAD_IMAGE_MIN_WIDTH}px wide, 16:9 recommended (e.g. 1200×675). No logos or text-heavy banners.
+                        </p>
                         {imageUrl && (
                             <input
                                 type="text"

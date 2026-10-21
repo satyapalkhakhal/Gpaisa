@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import crypto from 'crypto';
+import { LEAD_IMAGE_MIN_WIDTH, readImageDimensions } from '@/lib/imageDimensions';
 
 export const runtime = 'nodejs';
 
@@ -23,6 +24,20 @@ export async function POST(request: NextRequest) {
         }
         if (file.size > MAX_BYTES) {
             return NextResponse.json({ error: 'Image must be smaller than 4MB.' }, { status: 400 });
+        }
+
+        // Article lead images must be wide enough for Google Discover's large cards.
+        // Checked before uploading so rejected files never reach Cloudinary.
+        if (formData.get('purpose') === 'lead') {
+            const dims = readImageDimensions(new Uint8Array(await file.arrayBuffer()));
+            if (!dims) {
+                return NextResponse.json({ error: 'Could not read the image size. Use a JPEG, PNG, WebP or AVIF image.' }, { status: 400 });
+            }
+            if (dims.width < LEAD_IMAGE_MIN_WIDTH) {
+                return NextResponse.json({
+                    error: `Featured image is ${dims.width}×${dims.height}px. It must be at least ${LEAD_IMAGE_MIN_WIDTH}px wide (16:9, e.g. 1200×675, works best).`,
+                }, { status: 400 });
+            }
         }
 
         const timestamp = Math.floor(Date.now() / 1000);
