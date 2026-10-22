@@ -73,7 +73,7 @@ async function fetchArticles(
     return rows.map(normalizeArticle);
 }
 
-const PUBLIC_CATEGORIES = `category IN ('BUSINESS', 'FINANCE')`;
+const PUBLIC_CATEGORIES = `category IN ('BUSINESS', 'FINANCE', 'CREDIT_CARDS')`;
 
 /**
  * News for one IPO's detail page: articles linked to it via ipo_id, or whose title names
@@ -212,7 +212,7 @@ export async function fetchLoanNews(limit: number = 6, revalidateSeconds: number
  */
 export async function fetchCreditCardArticles(limit: number = 50, revalidateSeconds: number = 3600): Promise<Article[]> {
     return fetchArticles(
-        `${PUBLIC_CATEGORIES} AND (subcategory ILIKE '%credit%card%' OR title ILIKE '%credit%card%' OR title ILIKE '%cibil%' OR title ILIKE '%credit%score%')`,
+        `${PUBLIC_CATEGORIES} AND (category = 'CREDIT_CARDS' OR subcategory ILIKE '%credit%card%' OR title ILIKE '%credit%card%' OR title ILIKE '%cibil%' OR title ILIKE '%credit%score%')`,
         [],
         limit,
         'fetchCreditCardArticles',

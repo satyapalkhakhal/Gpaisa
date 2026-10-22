@@ -1,10 +1,10 @@
 import { Metadata } from 'next';
 import { INDEXABLE_ROBOTS } from '@/lib/seo';
-import { notFound } from 'next/navigation';
+import { notFound, permanentRedirect } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { fetchArticlesByCategorySlug } from '@/lib/articlesApi';
-import { getCategoryBySlug } from '@/lib/categories';
+import { fetchArticlesByCategory, fetchArticlesByCategorySlug } from '@/lib/articlesApi';
+import { categoryLanguageAlternates, categoryPath, getCategoryBySlug } from '@/lib/categories';
 import { ChevronLeft, ChevronRight, Newspaper } from 'lucide-react';
 
 const ITEMS_PER_PAGE = 15;
@@ -32,13 +32,18 @@ export async function generateMetadata({ params, searchParams }: {
 
     // A category hub with zero published articles is a soft-404 — Google penalizes
     // thin/empty pages that return 200. Noindex it until it has real content.
-    const hasArticles = (await fetchArticlesByCategorySlug(slug, 1)).length > 0;
+    const [hasArticles, hasHindi] = await Promise.all([
+        fetchArticlesByCategorySlug(slug, 1).then(a => a.length > 0),
+        fetchArticlesByCategory(category.dbValue, 1, 3600, 'hi').then(a => a.length > 0),
+    ]);
+    const languages = currentPage === 1 ? categoryLanguageAlternates(category, hasArticles, hasHindi) : undefined;
 
     return {
         title: currentPage > 1 ? `${category.name} — Page ${currentPage} | gpaisa.in` : `${category.name} | gpaisa.in`,
         description: category.description,
         alternates: {
-            canonical: canonicalUrl
+            canonical: canonicalUrl,
+            ...(languages ? { languages } : {}),
         },
         robots: hasArticles
             ? INDEXABLE_ROBOTS
@@ -59,6 +64,9 @@ export default async function CategoryPage({ params, searchParams }: {
     if (!category) {
         notFound();
     }
+    // Some categories have an older dedicated English hub (credit cards -> /credit-cards).
+    const englishHub = categoryPath(category, 'en');
+    if (englishHub !== `/category/${slug}`) permanentRedirect(englishHub);
 
     // Fetch all articles for this category
     const allArticles = await fetchArticlesByCategorySlug(slug, 1000);

@@ -4,10 +4,12 @@ import Link from 'next/link';
 import { Mail } from 'lucide-react';
 import { getCurrentYear } from '@/lib/utils';
 import { useLanguage } from '@/lib/i18n';
+import { localizedNavHref } from '@/lib/articleLocale';
 
 export default function Footer() {
     const currentYear = getCurrentYear();
-    const { t } = useLanguage();
+    const { t, language } = useLanguage();
+    const local = (href: string) => localizedNavHref(href, language);
 
     return (
         <footer className="bg-gray-900 text-gray-300">
@@ -48,11 +50,11 @@ export default function Footer() {
                             <li><Link href="/ipo" className="hover:text-primary-400 transition-colors">{t('nav', 'ipo')}</Link></li>
                             <li><Link href="/ipo/gmp" className="hover:text-primary-400 transition-colors">{t('ipoNav', 'gmp')}</Link></li>
                             <li><Link href="/credit-cards" className="hover:text-primary-400 transition-colors">{t('navMenu', 'creditCards')}</Link></li>
-                            <li><Link href="/gold-rate" className="hover:text-primary-400 transition-colors">{t('nav', 'goldRate')}</Link></li>
+                            <li><Link href={local('/gold-rate')} className="hover:text-primary-400 transition-colors">{t('nav', 'goldRate')}</Link></li>
                             <li><Link href="/silver-rate" className="hover:text-primary-400 transition-colors">{t('nav', 'silverRate')}</Link></li>
                             <li><Link href="/commodities" className="hover:text-primary-400 transition-colors">{t('footer', 'goldCommodities')}</Link></li>
-                            <li><Link href="/category/business" className="hover:text-primary-400 transition-colors">{t('nav', 'personalFinance')}</Link></li>
-                            <li><Link href="/news" className="hover:text-primary-400 transition-colors">{t('nav', 'news')}</Link></li>
+                            <li><Link href={local('/category/business')} className="hover:text-primary-400 transition-colors">{t('nav', 'personalFinance')}</Link></li>
+                            <li><Link href={local('/news')} className="hover:text-primary-400 transition-colors">{t('nav', 'news')}</Link></li>
                             <li><Link href="/glossary" className="hover:text-primary-400 transition-colors">{t('nav', 'glossary')}</Link></li>
                         </ul>
                     </div>

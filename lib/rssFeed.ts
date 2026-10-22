@@ -1,5 +1,5 @@
 import { fetchFeedArticles } from './articlesApi';
-import { DROPPED_CATEGORY_DB_VALUES, getCategoryByDbValue } from './categories';
+import { DROPPED_CATEGORY_DB_VALUES, categoryName, getCategoryByDbValue } from './categories';
 import { SITE_URL, articlePath, type ArticleLanguage } from './articleLocale';
 
 // RSS 2.0 feeds of the latest on-topic articles, one per language (/feed.xml, /hi/feed.xml).
@@ -44,7 +44,8 @@ export async function articleFeedResponse(lang: ArticleLanguage): Promise<Respon
         .filter((a) => a.slug)
         .map((a) => {
             const url = `${SITE_URL}${articlePath(lang, a.slug)}`;
-            const category = getCategoryByDbValue(a.category)?.name || a.category;
+            const def = getCategoryByDbValue(a.category);
+            const category = def ? categoryName(def, lang) : a.category;
             return [
                 '    <item>',
                 `      <title>${escapeXml(a.title)}</title>`,

@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { CATEGORIES, DROPPED_CATEGORY_DB_VALUES } from '@/lib/categories';
+import { CATEGORIES, DROPPED_CATEGORY_DB_VALUES, categoryLanguageAlternates, categoryPath } from '@/lib/categories';
 import { GLOSSARY_TERMS } from '@/lib/glossaryData';
 import { IPO_CALCULATORS } from '@/lib/ipoCalculatorsList';
 import { fetchArticleSitemapEntries } from '@/lib/articlesApi';
@@ -352,6 +352,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     let newestCreditCardDate: Date | undefined;
     const newestByCategory = new Map<string, Date>();
     const categoriesWithArticles = new Set<string>();
+    const hindiCategoriesWithArticles = new Set<string>();
+    const newestHindiByCategory = new Map<string, Date>();
     try {
         const articles = await fetchArticleSitemapEntries(DROPPED_CATEGORY_DB_VALUES, 86400);
         const publishedArticles = articles.filter((article) => article.slug);
@@ -421,6 +423,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
         // The Hindi hub is noindex while empty (app/hi/page.tsx), so it is only listed once it has articles.
         const hindiArticles = publishedArticles.filter((a) => toArticleLanguage(a.language) === 'hi');
+        for (const a of hindiArticles) {
+            if (!a.category) continue;
+            hindiCategoriesWithArticles.add(a.category);
+            if (!newestHindiByCategory.has(a.category)) newestHindiByCategory.set(a.category, dateOf(a)!);
+        }
         if (hindiArticles.length) {
             hindiHubPages = [{
                 url: `${baseUrl}/hi`,
@@ -439,14 +446,29 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // An empty category hub is a soft-404 (200 status, no content) that we
     // noindex in app/category/[slug]/page.tsx; listing it in the sitemap would
     // be the same noindex-vs-sitemap contradiction fixed elsewhere on this site.
-    const categoryPages: MetadataRoute.Sitemap = CATEGORIES
-        .filter((c) => categoriesWithArticles.has(c.dbValue))
-        .map((c) => ({
-            url: `${baseUrl}/category/${c.slug}`,
+    // English and Hindi hubs, each listed once it has articles in its language; pairs carry hreflang.
+    // A category whose English hub is a separate page (credit cards -> /credit-cards) has no English entry here.
+    const categoryPages: MetadataRoute.Sitemap = CATEGORIES.flatMap((c) => {
+        const hasEnglish = categoriesWithArticles.has(c.dbValue) && categoryPath(c, 'en') === `/category/${c.slug}`;
+        const hasHindi = hindiCategoriesWithArticles.has(c.dbValue);
+        const languages = categoryLanguageAlternates(c, hasEnglish, hasHindi);
+        const entries: MetadataRoute.Sitemap = [];
+        if (hasEnglish) entries.push({
+            url: `${baseUrl}${categoryPath(c, 'en')}`,
             lastModified: newestByCategory.get(c.dbValue) ?? new Date(),
             changeFrequency: 'daily',
             priority: 0.6,
-        }));
+            ...(languages ? { alternates: { languages } } : {}),
+        });
+        if (hasHindi) entries.push({
+            url: `${baseUrl}${categoryPath(c, 'hi')}`,
+            lastModified: newestHindiByCategory.get(c.dbValue) ?? new Date(),
+            changeFrequency: 'daily',
+            priority: 0.6,
+            ...(languages ? { alternates: { languages } } : {}),
+        });
+        return entries;
+    });
 
     return [
         ...staticPages.map((p) => {

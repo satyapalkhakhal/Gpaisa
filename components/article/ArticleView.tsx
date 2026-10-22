@@ -5,6 +5,7 @@ import NewsletterSubscribe from '@/components/NewsletterSubscribe';
 import type { Article } from '@/lib/articlesApi';
 import { HREFLANG, SITE_URL, articleHubPath, articlePath, toArticleLanguage, type ArticleLanguage } from '@/lib/articleLocale';
 import { authorPath, authorPersonId, findAuthorByName } from '@/lib/authors';
+import { categoryName, categoryPath, getCategoryByDbValue } from '@/lib/categories';
 
 // Server component shared by /articles/[slug] (English) and /hi/articles/[slug] (Hindi).
 
@@ -22,11 +23,10 @@ const LABELS: Record<ArticleLanguage, {
     },
 };
 
-const HINDI_CATEGORY_NAMES: Record<string, string> = { BUSINESS: 'बिज़नेस', FINANCE: 'वित्त', IPO: 'आईपीओ', WORLD: 'दुनिया' };
-
 function categoryLabel(lang: ArticleLanguage, category?: string | null): string {
     if (!category) return '';
-    return lang === 'hi' ? HINDI_CATEGORY_NAMES[category.toUpperCase()] || category : category;
+    const def = getCategoryByDbValue(category);
+    return def ? categoryName(def, lang) : category;
 }
 
 interface ArticleViewProps {
@@ -43,6 +43,9 @@ export default function ArticleView({ article, translation, relatedArticles, sid
     const homePath = lang === 'hi' ? '/hi' : '/';
     const hubPath = articleHubPath(lang);
     const category = categoryLabel(lang, article.category);
+    // The category hub in this article's language (/hi/category/... for Hindi articles).
+    const categoryDef = getCategoryByDbValue(article.category);
+    const categoryHref = categoryDef ? categoryPath(categoryDef, lang) : hubPath;
     // Known authors get one spelling of their name and a link to their profile page.
     const author = findAuthorByName(article.author);
     const authorName = author?.name || article.author?.trim() || 'Gpaisa Desk';
@@ -95,7 +98,7 @@ export default function ArticleView({ article, translation, relatedArticles, sid
         '@type': 'BreadcrumbList',
         itemListElement: [
             { '@type': 'ListItem', position: 1, name: t.home, item: `${SITE_URL}${lang === 'hi' ? '/hi' : ''}` },
-            { '@type': 'ListItem', position: 2, name: category || t.news, item: `${SITE_URL}${hubPath}` },
+            { '@type': 'ListItem', position: 2, name: category || t.news, item: `${SITE_URL}${categoryHref}` },
             { '@type': 'ListItem', position: 3, name: article.title, item: url },
         ],
     };
@@ -132,7 +135,7 @@ export default function ArticleView({ article, translation, relatedArticles, sid
                                 {category && (
                                     <>
                                         <ChevronRight className="w-4 h-4 mx-2 flex-shrink-0 text-gray-300" />
-                                        <span className="text-gray-400 whitespace-nowrap">{category}</span>
+                                        <Link href={categoryHref} className="hover:text-primary-600 whitespace-nowrap">{category}</Link>
                                     </>
                                 )}
                             </nav>
@@ -141,9 +144,9 @@ export default function ArticleView({ article, translation, relatedArticles, sid
                             <div className="px-5 sm:px-6 pt-5 pb-4">
                                 {/* Category Badge */}
                                 <div className="flex items-center gap-2 mb-3">
-                                    <span className="text-[10px] font-bold uppercase tracking-widest text-primary-700 bg-primary-50 px-2.5 py-1 rounded-full">
+                                    <Link href={categoryHref} className="text-[10px] font-bold uppercase tracking-widest text-primary-700 bg-primary-50 hover:bg-primary-100 px-2.5 py-1 rounded-full">
                                         {category}
-                                    </span>
+                                    </Link>
                                     {article.subcategory && (
                                         <span className="text-[10px] font-bold uppercase tracking-widest text-gray-500 bg-gray-100 px-2.5 py-1 rounded-full">
                                             {article.subcategory}

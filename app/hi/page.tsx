@@ -1,12 +1,16 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
-import Image from 'next/image';
-import { Clock } from 'lucide-react';
-import { fetchArticlesByLanguage } from '@/lib/articlesApi';
+import { fetchArticlesByLanguage, type Article } from '@/lib/articlesApi';
 import { INDEXABLE_ROBOTS } from '@/lib/seo';
-import { SITE_URL, articlePath } from '@/lib/articleLocale';
+import { SITE_URL } from '@/lib/articleLocale';
+import { CATEGORIES, categoryPath } from '@/lib/categories';
+import HindiArticleGrid from '@/components/article/HindiArticleGrid';
+import HindiCategoryTabs from '@/components/article/HindiCategoryTabs';
 
-// Hindi home: every published Hindi article, newest first.
+// Hindi home: published Hindi articles grouped by category (newest category first), each
+// section linking to its /hi/category hub.
+
+const PER_SECTION = 6;
 
 export const revalidate = 3600;
 
@@ -36,7 +40,20 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HindiHomePage() {
-    const articles = await fetchArticlesByLanguage('hi', 60, 3600);
+    const articles = await fetchArticlesByLanguage('hi', 500, 3600);
+    // Articles are newest first, so sections are ordered by each category's latest article.
+    const sections: { slug: string; name: string; href: string; items: Article[]; total: number }[] = [];
+    for (const article of articles) {
+        const category = CATEGORIES.find(c => c.dbValue === (article.category || '').toUpperCase());
+        if (!category) continue;
+        let section = sections.find(s => s.slug === category.slug);
+        if (!section) {
+            section = { slug: category.slug, name: category.hiName, href: categoryPath(category, 'hi'), items: [], total: 0 };
+            sections.push(section);
+        }
+        section.total += 1;
+        if (section.items.length < PER_SECTION) section.items.push(article);
+    }
 
     return (
         <div className="bg-gray-50 py-6 sm:py-8 min-h-screen">
@@ -63,42 +80,22 @@ export default async function HindiHomePage() {
                         <Link href="/news" className="text-primary-600 hover:underline">English articles पढ़ें</Link>
                     </p>
                 ) : (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {articles.map((article, i) => (
-                            <Link
-                                key={article.id}
-                                href={articlePath('hi', article.slug)}
-                                className="group block bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg hover:border-gray-200 transition-all duration-300"
-                            >
-                                <div className="relative h-44 bg-gray-100 overflow-hidden">
-                                    {article.image_url && (
-                                        <Image
-                                            src={article.image_url}
-                                            alt={article.title}
-                                            fill
-                                            className="object-cover group-hover:scale-105 transition-transform duration-500"
-                                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                                            priority={i < 3}
-                                        />
-                                    )}
-                                </div>
-                                <div className="p-4">
-                                    <h2 className="font-bold text-base text-gray-900 line-clamp-2 group-hover:text-primary-600 transition-colors leading-snug mb-2">
-                                        {article.title}
+                    <>
+                        <HindiCategoryTabs articles={articles} />
+                        {sections.map((section, i) => (
+                            <section key={section.slug} className="mb-10">
+                                <div className="flex items-baseline justify-between mb-4">
+                                    <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+                                        <Link href={section.href} className="hover:text-primary-600">{section.name}</Link>
                                     </h2>
-                                    <p className="text-sm text-gray-500 line-clamp-2 mb-3">{article.excerpt}</p>
-                                    <div className="flex items-center gap-3 text-xs text-gray-400">
-                                        <time dateTime={new Date(article.published_at).toISOString()}>
-                                            {new Date(article.published_at).toLocaleDateString('hi-IN', { day: 'numeric', month: 'long', year: 'numeric' })}
-                                        </time>
-                                        {article.read_time && (
-                                            <span className="flex items-center gap-1"><Clock className="w-3 h-3" />{article.read_time}</span>
-                                        )}
-                                    </div>
+                                    <Link href={section.href} className="text-sm font-semibold text-primary-600 hover:underline whitespace-nowrap">
+                                        सभी देखें ({section.total}) →
+                                    </Link>
                                 </div>
-                            </Link>
+                                <HindiArticleGrid articles={section.items} priorityCount={i === 0 ? 3 : 0} />
+                            </section>
                         ))}
-                    </div>
+                    </>
                 )}
             </div>
         </div>

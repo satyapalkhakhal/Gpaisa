@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import LanguageSwitcher from './LanguageSwitcher';
+import { localizedNavHref } from '@/lib/articleLocale';
 
 interface NavLink {
     name: string;
@@ -29,16 +30,13 @@ interface NavItem {
     footer?: NavLink;
 }
 
-// Hindi counterparts of nav destinations (see components/LanguageSwitcher.tsx for page-level switching).
-const HINDI_NAV_HREFS: Record<string, string> = { '/gold-rate': '/hi/gold-rate', '/news': '/hi' };
-
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [openMobileItem, setOpenMobileItem] = useState<string | null>(null);
     const pathname = usePathname() || '/';
     const { t, language } = useLanguage();
     // On Hindi pages, nav entries that have a Hindi version point to it.
-    const local = (href: string) => (language === 'hi' ? HINDI_NAV_HREFS[href] ?? href : href);
+    const local = (href: string) => localizedNavHref(href, language);
 
     const calc = (key: string, slug: string): NavLink => ({ name: t('calculators', key), href: `/calculator/${slug}` });
 
@@ -104,12 +102,12 @@ export default function Header() {
         {
             name: t('nav', 'news'),
             href: local('/news'),
-            match: ['/news', '/hi/articles', '/category', '/articles', '/glossary'],
+            match: ['/news', '/hi/articles', '/hi/category', '/category', '/articles', '/glossary'],
             links: [
                 { name: t('navMenu', 'latestNews'), href: local('/news') },
-                { name: t('nav', 'personalFinance'), href: '/category/business' },
-                { name: t('navMenu', 'financeNews'), href: '/category/finance' },
-                { name: t('navMenu', 'ipoNews'), href: '/category/ipo' },
+                { name: t('nav', 'personalFinance'), href: local('/category/business') },
+                { name: t('navMenu', 'financeNews'), href: local('/category/finance') },
+                { name: t('navMenu', 'ipoNews'), href: local('/category/ipo') },
                 { name: t('nav', 'glossary'), href: '/glossary' },
             ],
         },
