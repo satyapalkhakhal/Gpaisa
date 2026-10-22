@@ -1,7 +1,8 @@
 import type { GoldCaratRate } from '@/lib/angelOneApi';
 
 // Server-rendered Hindi gold rate table (no client fetch, so crawlers see the rates).
-// Rates are the indicative all-India rates also shown on the English pages.
+// `scope` says whose rate it is: the indicative all-India rate (hub) or the city's own rate
+// (city pages) — the same source as the matching English page.
 
 const PURITY_LABEL: Record<GoldCaratRate['purity'], string> = {
     '24K': '24 कैरेट (99.9% शुद्ध)',
@@ -11,7 +12,7 @@ const PURITY_LABEL: Record<GoldCaratRate['purity'], string> = {
 
 const inr = (value: number) => `₹${Math.round(value).toLocaleString('en-IN')}`;
 
-export default function HindiGoldRateTable({ rates, placeLabel }: { rates: GoldCaratRate[]; placeLabel: string }) {
+export default function HindiGoldRateTable({ rates, placeLabel, scope = 'india' }: { rates: GoldCaratRate[]; placeLabel: string; scope?: 'india' | 'city' }) {
     if (!rates.length) {
         return (
             <p className="bg-white rounded-xl border border-gray-200 p-6 text-gray-600">
@@ -53,8 +54,10 @@ export default function HindiGoldRateTable({ rates, placeLabel }: { rates: GoldC
                 </table>
             </div>
             <p className="px-4 py-3 text-xs text-gray-500 bg-gray-50 border-t border-gray-100">
-                ये सांकेतिक अखिल भारतीय भाव हैं। {placeLabel} के जौहरियों के भाव में मेकिंग चार्ज, 3% GST और स्थानीय
-                अंतर के कारण फ़र्क हो सकता है। ख़रीदने से पहले दुकान पर उस दिन का भाव ज़रूर पूछें।
+                {scope === 'city'
+                    ? `ये ${placeLabel} के सांकेतिक भाव हैं। जौहरियों के भाव में मेकिंग चार्ज, 3% GST और दुकान के मार्जिन के कारण फ़र्क हो सकता है।`
+                    : `ये सांकेतिक अखिल भारतीय भाव हैं। ${placeLabel} के जौहरियों के भाव में मेकिंग चार्ज, 3% GST और स्थानीय अंतर के कारण फ़र्क हो सकता है।`}{' '}
+                ख़रीदने से पहले दुकान पर उस दिन का भाव ज़रूर पूछें।
             </p>
         </div>
     );

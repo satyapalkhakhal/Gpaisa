@@ -24,7 +24,7 @@ interface BullionCard {
     tone: string;
 }
 
-export default function BullionSection({ gold, silver }: { gold: GoldCaratRate[]; silver: SilverRateData | null }) {
+export default function BullionSection({ gold, silver, silverCity }: { gold: GoldCaratRate[]; silver: SilverRateData | null; silverCity?: string }) {
     const cards: BullionCard[] = gold.map(rate => ({
         symbol: 'Au',
         name: `Gold ${rate.purity}`,
@@ -40,7 +40,7 @@ export default function BullionSection({ gold, silver }: { gold: GoldCaratRate[]
         cards.push({
             symbol: 'Ag',
             name: 'Silver',
-            note: '99.9% · bars & coins',
+            note: silverCity ? `99.9% · ${silverCity} rate` : '99.9% · bars & coins',
             price: silver.price * 1000,
             unit: 'kg',
             change: silver.change * 1000,

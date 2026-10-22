@@ -21,10 +21,11 @@ const INDEX_LABELS: Record<string, string> = {
     'USD/INR': 'USD/INR',
 };
 
-export default function IndexStrip({ indices, gold, silver }: {
+export default function IndexStrip({ indices, gold, silver, silverCity }: {
     indices: MarketIndex[];
     gold: GoldCaratRate[];
     silver: SilverRateData | null;
+    silverCity?: string;
 }) {
     const items: StripItem[] = indices.map(idx => ({
         label: INDEX_LABELS[idx.name] || idx.name,
@@ -48,7 +49,7 @@ export default function IndexStrip({ indices, gold, silver }: {
     }
     if (silver) {
         items.push({
-            label: 'SILVER · 1kg',
+            label: silverCity ? `SILVER · 1kg · ${silverCity.toUpperCase()}` : 'SILVER · 1kg',
             value: '₹' + Math.round(silver.price * 1000).toLocaleString('en-IN'),
             change: silver.change * 1000,
             changePercent: silver.changePercent,

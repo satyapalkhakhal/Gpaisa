@@ -8,6 +8,11 @@ import {
 } from '@/lib/articlesApi';
 import { fetchMarketIndices } from '@/lib/indicesApi';
 import { fetchGoldRatesAllCarats, fetchSilverRateData, type GoldCaratRate } from '@/lib/angelOneApi';
+import { SILVER_CITIES } from '@/lib/silverCityList';
+
+// Homepage silver uses a city rate (same source as the /silver-rate/[city] pages) rather than the
+// lower national XAG figure, so the homepage and city pages agree. Mumbai: India's main bullion market.
+const HOME_SILVER_CITY = SILVER_CITIES.find(c => c.slug === 'mumbai')!;
 import { fetchLatestGmpBoard, fetchLatestIpoReviews, fetchListingPerformanceBoard } from '@/lib/ipoApi';
 import { fetchBuybacks, fetchNcdIssues, fetchRightsIssues } from '@/lib/otherInvestmentsApi';
 import { CALCULATORS } from '@/lib/calculatorsList';
@@ -88,7 +93,7 @@ export default async function HomePage() {
         fetchCreditCardArticles(6),
         fetchMarketIndices().catch(() => []),
         fetchGoldRatesAllCarats().catch(() => [] as GoldCaratRate[]),
-        fetchSilverRateData('XAG').catch(() => null),
+        fetchSilverRateData(HOME_SILVER_CITY.symbol).catch(() => null),
         fetchLatestGmpBoard().catch(() => []),
         fetchListingPerformanceBoard().catch(() => []),
         fetchLatestIpoReviews(3).catch(() => []),
@@ -187,12 +192,12 @@ export default async function HomePage() {
                     {/* Kept for SEO (matches the page title) but not shown */}
                     <h1 className="sr-only">Live Gold Rates, Financial Calculators &amp; Market Data for India</h1>
 
-                    <IndexStrip indices={marketIndices} gold={goldRates} silver={silverRateData} />
+                    <IndexStrip indices={marketIndices} gold={goldRates} silver={silverRateData} silverCity={HOME_SILVER_CITY.city} />
 
                     <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-8 lg:gap-10 mt-8">
                         <div className="space-y-10 min-w-0">
                             <IpoSection board={gmpBoard} listings={listingBoard} today={today} />
-                            <BullionSection gold={goldRates} silver={silverRateData} />
+                            <BullionSection gold={goldRates} silver={silverRateData} silverCity={HOME_SILVER_CITY.city} />
                             <NewsSection tabs={newsTabs} />
                             <CalculatorSection />
                         </div>

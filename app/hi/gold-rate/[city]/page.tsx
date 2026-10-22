@@ -7,6 +7,7 @@ import { fetchGoldRatesAllCarats } from '@/lib/angelOneApi';
 import { getTodayISTHindi } from '@/lib/dateUtils';
 import { HREFLANG, SITE_URL } from '@/lib/articleLocale';
 import { HINDI_CITY_NAMES, getCityGoldDataHi, isHindiGoldPageReviewed } from '@/lib/cityGoldDataHi';
+import { getCityGoldData } from '@/lib/cityGoldData';
 import { goldRateLanguageAlternates, goldRatePath } from '@/lib/goldRateLocale';
 import HindiGoldRateTable from '@/components/gold/HindiGoldRateTable';
 import { HindiGoldDisclaimer, HindiPurityGuide } from '@/components/gold/HindiGoldSections';
@@ -54,7 +55,8 @@ export default async function HindiCityGoldRatePage(props: { params: Promise<{ c
     const data = getCityGoldDataHi(citySlug);
     if (!data || !CITY_SLUGS.includes(citySlug)) notFound();
 
-    const rates = await fetchGoldRatesAllCarats();
+    // The city's own rate (AngelOne takes the English city name), same as /gold-rate/[city].
+    const rates = await fetchGoldRatesAllCarats(getCityGoldData(citySlug)?.city ?? 'India');
     const today = getTodayISTHindi();
     const url = `${SITE_URL}${goldRatePath('hi', citySlug)}`;
     const {
@@ -144,7 +146,7 @@ export default async function HindiCityGoldRatePage(props: { params: Promise<{ c
                                 {cityName} में आज का सोने का भाव
                             </h2>
                         </div>
-                        <HindiGoldRateTable rates={rates} placeLabel={cityName} />
+                        <HindiGoldRateTable rates={rates} placeLabel={cityName} scope="city" />
                         <Link
                             href={goldRatePath('en', citySlug)}
                             hrefLang={HREFLANG.en}

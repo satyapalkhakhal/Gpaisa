@@ -80,7 +80,7 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
 
     // Loaded here (not in the browser) so tables and links are in the server HTML.
     const [goldRates, cityHistory, goldNews] = await Promise.all([
-        fetchGoldRatesAllCarats(),
+        fetchGoldRatesAllCarats(cityData.city), // the city's own rate, same source as its history table
         fetchGoldHistory(cityData.city, '24k'),
         fetchMetalNewsCards('gold', 6).catch(() => []),
     ]);
@@ -226,7 +226,7 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                                 Today&apos;s Gold Rates in {cityName}
                             </h2>
                         </div>
-                        <DynamicGoldRates initialRates={goldRates} initialLastUpdated={goldRates.length ? new Date().toISOString() : null} />
+                        <DynamicGoldRates city={cityName} initialRates={goldRates} initialLastUpdated={goldRates.length ? new Date().toISOString() : null} />
                     </section>
 
                     {/* ── Gold Calculator ────────────────────────────────────── */}

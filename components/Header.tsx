@@ -63,8 +63,8 @@ export default function Header() {
                 { name: t('ipoNav', 'sme'), href: '/ipo?tab=open&type=sme' },
                 { name: t('ipoNav', 'gmp'), href: '/ipo/gmp' },
                 { name: t('ipoNav', 'listingPerformance'), href: '/ipo/listing-performance' },
-                { name: t('navMenu', 'compareIpos'), href: '/ipo/compare' },
-                { name: t('ipoNav', 'calculators'), href: '/ipo-calculator' },
+                // IPO compare and IPO calculators are reachable from /ipo; kept out of the
+                // site-wide menu while they are thin (see seo-audit fix-roadmap P1-8).
             ],
         },
         {
@@ -73,9 +73,8 @@ export default function Header() {
             match: ['/credit-cards', '/ncd', '/rights-issue', '/buyback'],
             links: [
                 { name: t('navMenu', 'creditCards'), href: '/credit-cards' },
-                { name: t('investmentsNav', 'ncd'), href: '/ncd' },
-                { name: t('investmentsNav', 'rightsIssue'), href: '/rights-issue' },
-                { name: t('investmentsNav', 'buyback'), href: '/buyback' },
+                // NCD, rights issue and buyback hubs are linked from the homepage sidebar; kept
+                // out of the site-wide menu until they have editorial content (fix-roadmap P1-8).
             ],
         },
         {

@@ -33,12 +33,15 @@ export async function fetchGoldHistoryBundle(city: string = 'India', carats: Gol
     return Object.fromEntries(entries.filter(([, data]) => Array.isArray(data) && data.length)) as GoldHistoryBundle;
 }
 
-/** National (India-wide) 24K/22K/18K gold rates per gram, for seeding SSR initial state. */
-export async function fetchGoldRatesAllCarats(): Promise<GoldCaratRate[]> {
+/**
+ * 24K/22K/18K gold rates per gram for seeding SSR initial state. 'India' is the indicative
+ * all-India rate; a city name (e.g. 'Delhi') gives that city's rate, as used by its history table.
+ */
+export async function fetchGoldRatesAllCarats(city: string = 'India'): Promise<GoldCaratRate[]> {
     const [h24k, h22k, h18k] = await Promise.all([
-        fetchGoldHistory('India', '24k'),
-        fetchGoldHistory('India', '22k'),
-        fetchGoldHistory('India', '18k'),
+        fetchGoldHistory(city, '24k'),
+        fetchGoldHistory(city, '22k'),
+        fetchGoldHistory(city, '18k'),
     ]);
 
     if (!h24k?.data?.length || !h22k?.data?.length || !h18k?.data?.length) {

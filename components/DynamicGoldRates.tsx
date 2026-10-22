@@ -16,6 +16,8 @@ interface DynamicGoldRatesProps {
     simpleView?: boolean;
     initialRates?: DynamicGoldRate[];
     initialLastUpdated?: string | null;
+    /** 'India' (all-India indicative rate) or a city name; must match the city of initialRates. */
+    city?: string;
 }
 
 /** Format a number as Indian currency without decimals */
@@ -37,7 +39,7 @@ function formatTimestamp(date: Date): string {
     return `${day} ${month} ${year}, ${time} IST`;
 }
 
-export default function DynamicGoldRates({ simpleView = false, initialRates = [], initialLastUpdated = null }: DynamicGoldRatesProps) {
+export default function DynamicGoldRates({ simpleView = false, initialRates = [], initialLastUpdated = null, city = 'India' }: DynamicGoldRatesProps) {
     const [goldRates, setGoldRates] = useState<DynamicGoldRate[]>(initialRates);
     const [loading, setLoading] = useState(initialRates.length === 0);
     const [error, setError] = useState<string | null>(null);
@@ -49,11 +51,11 @@ export default function DynamicGoldRates({ simpleView = false, initialRates = []
                 setLoading(true);
                 setError(null);
 
-                // Fetch history for all three carats (using India for nationwide rates)
+                // Fetch history for all three carats for this city ('India' = nationwide)
                 const [data24k, data22k, data18k] = await Promise.all([
-                    fetch('/api/gold-history?city=India&carat=24k').then(r => r.json()),
-                    fetch('/api/gold-history?city=India&carat=22k').then(r => r.json()),
-                    fetch('/api/gold-history?city=India&carat=18k').then(r => r.json())
+                    fetch(`/api/gold-history?city=${encodeURIComponent(city)}&carat=24k`).then(r => r.json()),
+                    fetch(`/api/gold-history?city=${encodeURIComponent(city)}&carat=22k`).then(r => r.json()),
+                    fetch(`/api/gold-history?city=${encodeURIComponent(city)}&carat=18k`).then(r => r.json())
                 ]);
 
                 if (data24k.success && data22k.success && data18k.success &&
@@ -99,7 +101,7 @@ export default function DynamicGoldRates({ simpleView = false, initialRates = []
         };
 
         fetchGoldRates();
-    }, []);
+    }, [city]);
 
     // ── Loading skeleton ──────────────────────────────────────────────────
     if (loading) {
