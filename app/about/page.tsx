@@ -2,6 +2,9 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Users, Target, Award, TrendingUp } from 'lucide-react';
+import { AUTHORS, authorPath, authorPersonId } from '@/lib/authors';
+
+const founder = AUTHORS[0];
 
 export const metadata: Metadata = {
     title: 'About Us - gpaisa.in | Your Trusted Financial Information Portal',
@@ -23,10 +26,11 @@ export default function AboutPage() {
     const personSchema = {
         '@context': 'https://schema.org',
         '@type': 'Person',
-        '@id': 'https://www.gpaisa.in/about#founder',
-        name: 'Satyapal Khakhal',
-        jobTitle: 'Founder & Financial Content Author',
-        url: 'https://www.gpaisa.in/about',
+        // Same Person node as the author page and article markup.
+        '@id': authorPersonId(founder),
+        name: founder.name,
+        jobTitle: founder.jobTitle,
+        url: `https://www.gpaisa.in${authorPath(founder)}`,
         image: 'https://res.cloudinary.com/dpqtibvzn/image/upload/v1779511268/thinkscope/merzsltgiiep9ebljs6d.png',
         worksFor: {
             '@type': 'Organization',
@@ -42,7 +46,7 @@ export default function AboutPage() {
         name: 'About gpaisa.in',
         url: 'https://www.gpaisa.in/about',
         description: "Learn about gpaisa.in - India's leading financial information portal providing real-time gold rates, silver prices, market updates, and expert financial insights.",
-        mainEntity: { '@id': 'https://www.gpaisa.in/about#founder' },
+        mainEntity: { '@id': authorPersonId(founder) },
         isPartOf: { '@type': 'WebSite', name: 'gpaisa.in', url: 'https://www.gpaisa.in' },
     };
 
@@ -175,9 +179,12 @@ export default function AboutPage() {
                                     Founder & Financial Content Author
                                 </p>
 
-                                <p className="text-gray-700 leading-relaxed">
+                                <p className="text-gray-700 leading-relaxed mb-3">
                                     Satyapal Khakhal is the founder of gpaisa.in and writes about personal finance, gold prices, investment trends, credit cards, and financial tools for Indian readers. His focus is on simplifying complex financial topics into practical, easy-to-understand insights backed by real market data and research.
                                 </p>
+                                <Link href={authorPath(founder)} className="text-primary-600 font-semibold hover:underline">
+                                    All articles by {founder.name} →
+                                </Link>
                             </div>
                         </div>
                     </div>

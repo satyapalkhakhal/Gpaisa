@@ -19,7 +19,22 @@ Done in the working tree; verified on a production build against a test database
 | **P1-2** | lib/silverCities.ts: owned list of 18 silver cities and symbols, used by the route, /api/silver/cities, the hub, the HTML sitemap and sitemap.xml. Only the 8 cities with their own content are indexable and in the sitemap; Delhi/Kerala (no price symbol) are out of the sitemap. |
 | **P1-5** | Sitemap `lastmod`: calculators and static guides use fixed content dates (bump when edited); /news, category hubs and /credit-cards use their newest article; rate pages keep the current date. |
 
-**Still open:** P1-6 (server-render gold/silver data), P1-8 (navigation — needs your decision), the two price-source inconsistencies, D3 (6 small lead images), D6 (author page, NewsArticle), Hindi silver pages.
+**Done since:**
+- P1-6: gold and silver tables, links and news are server-rendered (8dd4703).
+- P1-8: NCD, Rights Issue, Buyback, IPO Calculator and IPO Compare are out of the global navigation.
+- Price sources: gold city pages use the city's own rate, and homepage silver uses the Mumbai rate (bb91d2a).
+- D6:
+  - `/author/satyapal-khakhal` (ProfilePage + Person) is linked from every article byline.
+  - One Person `@id` is shared by the articles, `/about` and the author page.
+  - Byline spellings are normalised.
+  - A per-article "Article type" in the admin: News articles are marked up as `NewsArticle`, guides as `Article`.
+  - Needs migration `0012_article_type.sql`.
+
+**Still open:**
+- D3: 6 small lead images.
+- Hindi silver pages.
+- The author's credentials and public profiles (sameAs) for `lib/authors.ts`, from the author.
+- Marking existing time-sensitive articles as News in the admin.
 
 ## Re-review 2026-10-22
 

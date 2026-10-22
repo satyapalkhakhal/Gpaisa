@@ -60,6 +60,7 @@ export async function POST(request: NextRequest) {
             meta_description: body.meta_description || '',
             meta_keywords: body.meta_keywords || '',
             focus_keyword: body.focus_keyword || '',
+            article_type: body.article_type === 'news' ? 'news' : 'article',
             published_at: body.published_at || now,
             content_updated_at: body.published_at || now,
             date: body.date || now,

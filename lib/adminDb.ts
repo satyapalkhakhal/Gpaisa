@@ -83,6 +83,7 @@ export interface AdminArticleInput {
     content_updated_at?: string;
     language?: ArticleLanguage;
     translation_of?: string | null;
+    article_type?: 'article' | 'news';
 }
 
 // Unrestricted by category (unlike fetchAllArticles), paginated, filterable — for the admin listing page.

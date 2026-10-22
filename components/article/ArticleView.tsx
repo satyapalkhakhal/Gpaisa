@@ -4,6 +4,7 @@ import { ChevronRight, Clock, User, Calendar, ArrowLeft, Languages } from 'lucid
 import NewsletterSubscribe from '@/components/NewsletterSubscribe';
 import type { Article } from '@/lib/articlesApi';
 import { HREFLANG, SITE_URL, articleHubPath, articlePath, toArticleLanguage, type ArticleLanguage } from '@/lib/articleLocale';
+import { authorPath, authorPersonId, findAuthorByName } from '@/lib/authors';
 
 // Server component shared by /articles/[slug] (English) and /hi/articles/[slug] (Hindi).
 
@@ -42,6 +43,9 @@ export default function ArticleView({ article, translation, relatedArticles, sid
     const homePath = lang === 'hi' ? '/hi' : '/';
     const hubPath = articleHubPath(lang);
     const category = categoryLabel(lang, article.category);
+    // Known authors get one spelling of their name and a link to their profile page.
+    const author = findAuthorByName(article.author);
+    const authorName = author?.name || article.author?.trim() || 'Gpaisa Desk';
 
     const dateFormat: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long', year: 'numeric' };
     const publishedDate = new Date(article.published_at || Date.now());
@@ -54,16 +58,22 @@ export default function ArticleView({ article, translation, relatedArticles, sid
 
     const articleSchema = {
         '@context': 'https://schema.org',
-        '@type': 'Article',
+        // Set per article in the admin: time-sensitive news vs evergreen guides.
+        '@type': article.article_type === 'news' ? 'NewsArticle' : 'Article',
         headline: article.title,
         description: article.excerpt || article.title,
         inLanguage: HREFLANG[lang],
         image: article.image_url || `${SITE_URL}/android-chrome-512x512.png`,
         datePublished: publishedDate.toISOString(),
         dateModified: modifiedDate.toISOString(),
-        author: {
+        author: author ? {
             '@type': 'Person',
-            name: article.author || 'Gpaisa Desk',
+            '@id': authorPersonId(author),
+            name: author.name,
+            url: `${SITE_URL}${authorPath(author)}`,
+        } : {
+            '@type': 'Person',
+            name: authorName,
             url: `${SITE_URL}/about`,
         },
         publisher: {
@@ -157,7 +167,11 @@ export default function ArticleView({ article, translation, relatedArticles, sid
                                 <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-gray-500 pb-4 border-b border-gray-100">
                                     <span className="flex items-center gap-1.5">
                                         <User className="w-3.5 h-3.5" />
-                                        <span className="font-medium text-gray-700">{article.author || 'Gpaisa Desk'}</span>
+                                        {author ? (
+                                            <Link href={authorPath(author)} rel="author" className="font-medium text-gray-700 hover:text-primary-600">{authorName}</Link>
+                                        ) : (
+                                            <span className="font-medium text-gray-700">{authorName}</span>
+                                        )}
                                     </span>
                                     <span className="flex items-center gap-1.5">
                                         <Calendar className="w-3.5 h-3.5" />
@@ -234,10 +248,14 @@ export default function ArticleView({ article, translation, relatedArticles, sid
                             <div className="px-5 sm:px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between">
                                 <div className="flex items-center gap-3">
                                     <div className="w-10 h-10 rounded-full bg-gradient-to-br from-primary-400 to-primary-600 flex items-center justify-center text-white font-bold text-sm">
-                                        {(article.author || 'G')[0].toUpperCase()}
+                                        {authorName[0].toUpperCase()}
                                     </div>
                                     <div>
-                                        <div className="font-semibold text-sm text-gray-900">{article.author || 'Gpaisa Desk'}</div>
+                                        {author ? (
+                                            <Link href={authorPath(author)} className="font-semibold text-sm text-gray-900 hover:text-primary-600">{authorName}</Link>
+                                        ) : (
+                                            <div className="font-semibold text-sm text-gray-900">{authorName}</div>
+                                        )}
                                         <div className="text-xs text-gray-500">{formattedDate}</div>
                                     </div>
                                 </div>

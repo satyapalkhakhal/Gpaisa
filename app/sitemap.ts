@@ -9,6 +9,7 @@ import { INDEXABLE_SILVER_CITIES } from '@/lib/silverCities';
 import { goldRateLanguageAlternates } from '@/lib/goldRateLocale';
 import { fetchIndexableIpoSlugs } from '@/lib/ipoApi';
 import { fetchIndexableSlugs } from '@/lib/otherInvestmentsApi';
+import { AUTHORS, authorNameKey, authorPath } from '@/lib/authors';
 
 
 const CITIES = [
@@ -346,6 +347,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Cached for a day (not uncached) so the sitemap can be statically generated
     let articlePages: MetadataRoute.Sitemap = [];
     let hindiHubPages: MetadataRoute.Sitemap = [];
+    let authorPages: MetadataRoute.Sitemap = [];
     let newestNewsDate: Date | undefined;
     let newestCreditCardDate: Date | undefined;
     const newestByCategory = new Map<string, Date>();
@@ -406,6 +408,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             if (a.category && !newestByCategory.has(a.category)) newestByCategory.set(a.category, dateOf(a)!);
         }
 
+        // Author pages, dated by the author's newest article; authors with none are left out.
+        authorPages = AUTHORS.flatMap((author) => {
+            const newest = publishedArticles.find((a) => a.author?.trim().replace(/\s+/g, ' ').toLowerCase() === authorNameKey(author));
+            return newest ? [{
+                url: `${baseUrl}${authorPath(author)}`,
+                lastModified: dateOf(newest)!,
+                changeFrequency: 'weekly' as const,
+                priority: 0.5,
+            }] : [];
+        });
+
         // The Hindi hub is noindex while empty (app/hi/page.tsx), so it is only listed once it has articles.
         const hindiArticles = publishedArticles.filter((a) => toArticleLanguage(a.language) === 'hi');
         if (hindiArticles.length) {
@@ -444,6 +457,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         }),
         ...categoryPages,
         ...hindiHubPages,
+        ...authorPages,
         ...glossaryPages,
         ...goldRateCityPages,
         ...hindiGoldRatePages,

@@ -63,6 +63,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
             meta_description: body.meta_description || '',
             meta_keywords: body.meta_keywords || '',
             focus_keyword: body.focus_keyword || '',
+            article_type: body.article_type === 'news' ? 'news' : 'article',
             ...(contentChanged ? { content_updated_at: new Date().toISOString() } : {}),
         });
         // Public pages read through cachedRows (tag 'db'); refresh them now instead of at TTL.

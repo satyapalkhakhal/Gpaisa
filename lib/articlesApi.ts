@@ -36,6 +36,7 @@ export interface Article {
     content_updated_at?: string | null;
     language?: ArticleLanguage;
     translation_of?: string | null;
+    article_type?: 'article' | 'news';
 }
 
 // Helper to normalize article data for backward compatibility
@@ -149,6 +150,21 @@ export async function fetchArticlesByCategorySlug(
 }
 
 /**
+ * Published articles (both languages, on-topic categories) whose byline matches `nameKey`
+ * case- and space-insensitively — see authorNameKey() in lib/authors.ts.
+ */
+export async function fetchArticlesByAuthor(nameKey: string, limit: number = 200, revalidateSeconds: number = 3600): Promise<Article[]> {
+    return fetchArticles(
+        `lower(regexp_replace(btrim(author), '\\s+', ' ', 'g')) = $1 AND category <> ALL($2::text[])`,
+        [nameKey, DROPPED_CATEGORY_DB_VALUES],
+        limit,
+        `fetchByAuthor(${nameKey})`,
+        revalidateSeconds,
+        null
+    );
+}
+
+/**
  * Fetch featured articles
  */
 export async function fetchFeaturedArticles(limit: number = 5, revalidateSeconds: number = 300): Promise<Article[]> {
@@ -245,9 +261,9 @@ export async function fetchArticleById(id: string, revalidateSeconds: number = 3
 export async function fetchArticleSitemapEntries(
     excludedCategories: string[],
     revalidateSeconds: number = 86400
-): Promise<Pick<Article, 'id' | 'slug' | 'published_at' | 'content_updated_at' | 'category' | 'language' | 'translation_of'>[]> {
+): Promise<Pick<Article, 'id' | 'slug' | 'published_at' | 'content_updated_at' | 'category' | 'language' | 'translation_of' | 'author'>[]> {
     return cachedRows(
-        `SELECT id, slug, published_at, content_updated_at, category, language, translation_of FROM articles
+        `SELECT id, slug, published_at, content_updated_at, category, language, translation_of, author FROM articles
          WHERE status = 'published' AND category <> ALL($1::text[])
          ORDER BY published_at DESC LIMIT 1000`,
         [excludedCategories],

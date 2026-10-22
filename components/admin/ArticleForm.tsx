@@ -41,6 +41,7 @@ export default function ArticleForm({ mode, initialArticle, initialTranslationOf
     const [translationOfSlug, setTranslationOfSlug] = useState(initialTranslationOfSlug || '');
     const [category, setCategory] = useState(initialArticle?.category || CATEGORIES[0].dbValue);
     const [subcategory, setSubcategory] = useState(initialArticle?.subcategory || '');
+    const [articleType, setArticleType] = useState<'article' | 'news'>(initialArticle?.article_type === 'news' ? 'news' : 'article');
     const [excerpt, setExcerpt] = useState(initialArticle?.excerpt || '');
     const [content, setContent] = useState(initialArticle?.content || '');
     const [imageUrl, setImageUrl] = useState(initialArticle?.image_url || '');
@@ -115,7 +116,7 @@ export default function ArticleForm({ mode, initialArticle, initialTranslationOf
         setSaving(true);
 
         const body = {
-            title, slug, category, subcategory: subcategory || null, excerpt, content,
+            title, slug, category, subcategory: subcategory || null, excerpt, content, article_type: articleType,
             language, translation_of_slug: language === 'hi' ? translationOfSlug : '',
             image_url: imageUrl, author, tags: tags.split(',').map(t => t.trim()).filter(Boolean),
             is_featured: isFeatured, is_editors_pick: isEditorsPick, is_trending: isTrending, status,
@@ -209,6 +210,17 @@ export default function ArticleForm({ mode, initialArticle, initialTranslationOf
                             <label className={labelClass}>Subcategory (optional)</label>
                             <input type="text" value={subcategory} onChange={(e) => setSubcategory(e.target.value)} className={inputClass} />
                         </div>
+                    </div>
+
+                    <div>
+                        <label className={labelClass}>Article type</label>
+                        <select value={articleType} onChange={(e) => setArticleType(e.target.value === 'news' ? 'news' : 'article')} className={inputClass + ' w-auto'}>
+                            <option value="article">Guide / review (evergreen)</option>
+                            <option value="news">News (time-sensitive)</option>
+                        </select>
+                        <p className="mt-1 text-xs text-gray-500">
+                            News: RBI decisions, IPO updates, price moves, policy changes. Marked up as NewsArticle for Google News and Discover.
+                        </p>
                     </div>
 
                     <div>
