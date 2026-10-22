@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { fetchAllPublishedIpoSlugs, fetchIpoBySlug, fetchListedIpos, fetchOpenIpos, fetchUpcomingIpos } from '@/lib/ipoApi';
+import { fetchAllPublishedIpoSlugs, fetchIpoBySlug, fetchListedIpos, fetchOpenIpos, fetchUpcomingIpos, isIpoIndexable } from '@/lib/ipoApi';
 import { fetchArticlesForIpo } from '@/lib/articlesApi';
 import { LIFECYCLE_LABELS, RECOMMENDATION_LABELS } from '@/lib/ipoTypes';
 import StatusBadge from '@/components/ipo/StatusBadge';
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description,
         openGraph: { title, description, type: 'website', url: `https://www.gpaisa.in/ipo/${ipo.slug}`, siteName: 'gpaisa.in', locale: 'en_IN' },
         alternates: { canonical: `https://www.gpaisa.in/ipo/${ipo.slug}` },
-        robots: { index: ipo.publish_status === 'published', follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 },
+        robots: { index: isIpoIndexable(ipo), follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 },
     };
 }
 

@@ -114,11 +114,8 @@ export async function middleware(request: NextRequest) {
             console.error('Redirect middleware error:', error);
         }
 
-        // If slug not found or error occurred, redirect to news page
-        return NextResponse.redirect(
-            new URL('/news', request.url),
-            { status: 301 }
-        );
+        // Unknown ID: fall through so the article route returns a real 404. Redirecting
+        // every unknown ID to /news made Google treat them as soft 404s.
     }
 
     return NextResponse.next();

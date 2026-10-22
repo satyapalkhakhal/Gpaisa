@@ -16,6 +16,18 @@ const nextConfig = {
                 destination: '/category/business',
                 permanent: true,
             },
+            // Article slugs renamed in the CMS without a redirect; the old URLs are still
+            // linked from article bodies and were reported as 404s.
+            {
+                source: '/articles/gold-market-weekly-review-june-7-14-2026',
+                destination: '/articles/gold-market-weekly-review-why-gold-fell-13760-per-10-grams-in-2-weeks-and-what-happens-next',
+                permanent: true,
+            },
+            {
+                source: '/articles/gold-prices-nearly-doubled-from-2024-to-2026',
+                destination: '/articles/gold-prices-nearly-doubled-20242026-why-indian-buyers-are-now-hesitating-before-weddings-festivals',
+                permanent: true,
+            },
         ];
     },
     images: {

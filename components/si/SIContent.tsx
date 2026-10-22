@@ -225,7 +225,7 @@ export default function SIContent() {
         <div>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Related Calculators</p>
           <div className="flex flex-wrap gap-2">
-            {[['Compound Interest Calculator', '/calculator/compound-interest'], ['FD Calculator', '/calculator/fd'], ['EMI Calculator', '/calculator/home-loan'], ['SIP Calculator', '/calculator/sip']].map(([l, h]) => (
+            {[['CAGR Calculator', '/calculator/cagr'], ['FD Calculator', '/calculator/fd'], ['EMI Calculator', '/calculator/home-loan'], ['SIP Calculator', '/calculator/sip']].map(([l, h]) => (
               <Link key={h} href={h} className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-teal-50 border border-teal-100 text-sm font-medium text-teal-700 hover:bg-teal-100 transition-colors">{l}</Link>
             ))}
           </div>

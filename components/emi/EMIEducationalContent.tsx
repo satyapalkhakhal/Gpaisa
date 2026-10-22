@@ -230,7 +230,7 @@ export default function EMIEducationalContent() {
           Compare EMIs across different loan options and choose the best deal for your financial goals.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-3">
-          <Link href="/finance" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-blue-50 transition-colors shadow-lg text-sm flex items-center justify-center">
+          <Link href="/calculator" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-blue-50 transition-colors shadow-lg text-sm flex items-center justify-center">
             Explore More Tools
           </Link>
           <Link href="/calculator/sip" className="sip-touch-target bg-primary-500 text-white px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-primary-400 transition-colors border-2 border-white/30 text-sm flex items-center justify-center">

@@ -287,8 +287,8 @@ export default function PPFEducationalContent() {
           PPF is one of the safest and most tax-efficient investments in India. Plan your deposits and build a secure financial future.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-3">
-          <Link href="/finance" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-green-50 transition-colors shadow-lg text-sm flex items-center justify-center">
-            Learn More About PPF
+          <Link href="/articles/ppf-vs-elss-vs-tax-saving-fd-best-section-80c-investment-in-2026" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-green-50 transition-colors shadow-lg text-sm flex items-center justify-center">
+            Read: PPF vs ELSS vs Tax-Saving FD
           </Link>
           <Link href="/calculator/sip" className="sip-touch-target bg-primary-500 text-white px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-primary-400 transition-colors border-2 border-white/30 text-sm flex items-center justify-center">
             Try SIP Calculator

@@ -276,28 +276,13 @@ export default function FDContent() {
         </div>
       </section>
 
-      {/* 10. Bank-specific links + Related */}
+      {/* 10. Related */}
       <section className="border-t border-gray-100 pt-8 space-y-5">
-        <div>
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Calculate FD for Specific Banks</p>
-          <div className="flex flex-wrap gap-2">
-            {[
-              { label: 'SBI FD Calculator', href: '/calculator/fd/sbi' },
-              { label: 'HDFC FD Calculator', href: '/calculator/fd/hdfc' },
-              { label: 'ICICI FD Calculator', href: '/calculator/fd/icici' },
-              { label: 'Axis FD Calculator', href: '/calculator/fd/axis' },
-              { label: 'Post Office FD Calculator', href: '/calculator/fd/post-office' },
-              { label: 'Kotak FD Calculator', href: '/calculator/fd/kotak' },
-            ].map(({ label, href }) => (
-              <Link key={href} href={href} className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-blue-50 border border-blue-100 text-sm font-medium text-blue-700 hover:bg-blue-100 transition-colors">{label}</Link>
-            ))}
-          </div>
-        </div>
         <div>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Related Calculators</p>
           <div className="flex flex-wrap gap-2">
             {[
-              { label: 'RD Calculator', href: '/calculator/rd' },
+              { label: 'SCSS Calculator', href: '/calculator/scss' },
               { label: 'PPF Calculator', href: '/calculator/ppf' },
               { label: 'SIP Calculator', href: '/calculator/sip' },
               { label: 'CAGR Calculator', href: '/calculator/cagr' },

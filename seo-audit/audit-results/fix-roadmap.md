@@ -6,6 +6,21 @@ Effort scale: **S** < 2 h · **M** ½–2 days · **L** > 2 days. Fixing these i
 
 ---
 
+## Implementation status — batch 3 (2026-10-22)
+
+Done in the working tree; verified on a production build against a test database.
+
+| Item | Change |
+|---|---|
+| **P1-9** | `isIpoIndexable()` / `fetchIndexableIpoSlugs()` (lib/ipoApi.ts): an IPO page is indexed only with a price band, open/close dates and real content (financials, published review, subscription data or objects of issue). NCD/rights/buyback pages are indexed only with ≥300 characters of editorial text (`objects_of_issue` / `notes`, lib/otherInvestmentsApi.ts). Thin pages stay live, noindex, out of the sitemap. |
+| **P1-4** | FD page: removed 6 links to non-existent bank FD calculators; RD → SCSS calculator. Simple-interest and mutual-fund pages: Compound Interest → CAGR calculator. "Explore More Tools" (SIP, EMI) → /calculator; "Learn More About PPF" → the PPF vs ELSS vs tax-saving FD article. |
+| **P1-3** | 308 redirects for 2 renamed article slugs (next.config.mjs). Two more old slugs (`gold-falling-silver-slippingsmart-investors-are-doing-this-in-2026`, `gold-rate-buy-or-wait-2026`) have no certain successor: fix the links inside the gold-vs-silver April article in /admin. |
+| **P1-7** | Unknown `/articles/<numeric id>` now returns 404 instead of a 301 to /news. |
+| **P1-2** | lib/silverCities.ts: owned list of 18 silver cities and symbols, used by the route, /api/silver/cities, the hub, the HTML sitemap and sitemap.xml. Only the 8 cities with their own content are indexable and in the sitemap; Delhi/Kerala (no price symbol) are out of the sitemap. |
+| **P1-5** | Sitemap `lastmod`: calculators and static guides use fixed content dates (bump when edited); /news, category hubs and /credit-cards use their newest article; rate pages keep the current date. |
+
+**Still open:** P1-6 (server-render gold/silver data), P1-8 (navigation — needs your decision), the two price-source inconsistencies, D3 (6 small lead images), D6 (author page, NewsArticle), Hindi silver pages.
+
 ## Re-review 2026-10-22
 
 - **Confirmed live:** P0-3/D0, D1, D2, D4 (partial), D5, P2-1, P2-2. The audit resolved 165 issue occurrences.

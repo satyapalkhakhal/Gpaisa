@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { fetchAllPublishedNcdSlugs, fetchNcdIssueBySlug } from '@/lib/otherInvestmentsApi';
+import { fetchAllPublishedNcdSlugs, fetchNcdIssueBySlug, hasEditorialText } from '@/lib/otherInvestmentsApi';
 import { NCD_LIFECYCLE_LABELS } from '@/lib/otherInvestmentsTypes';
 import DataSourceBadge from '@/components/ipo/DataSourceBadge';
 import FreshnessBadge from '@/components/ipo/FreshnessBadge';
@@ -24,7 +24,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description,
         openGraph: { title, description, type: 'website', url: `https://www.gpaisa.in/ncd/${issue.slug}`, siteName: 'gpaisa.in', locale: 'en_IN' },
         alternates: { canonical: `https://www.gpaisa.in/ncd/${issue.slug}` },
-        robots: { index: issue.publish_status === 'published', follow: true },
+        robots: { index: issue.publish_status === 'published' && hasEditorialText(issue.objects_of_issue), follow: true },
     };
 }
 

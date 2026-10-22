@@ -1,5 +1,5 @@
 import { Metadata } from 'next';
-import { fetchSilverCities, fetchSilverRateData } from '@/lib/angelOneApi';
+import { fetchSilverRateData } from '@/lib/angelOneApi';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
 import SilverHistoryTable from '@/components/SilverHistoryTable';
 import SilverPriceHistoryChart from '@/components/SilverPriceHistoryChart';
@@ -55,7 +55,6 @@ export async function generateMetadata(): Promise<Metadata> {
 export const revalidate = 86400; // Cache for 1 day (ISR)
 
 export default async function SilverRatePage() {
-    const cities = await fetchSilverCities();
     const silverRateData = await fetchSilverRateData('XAG');
 
     const structuredData = {

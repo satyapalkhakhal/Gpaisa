@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
-import { fetchAllPublishedBuybackSlugs, fetchBuybackBySlug } from '@/lib/otherInvestmentsApi';
+import { fetchAllPublishedBuybackSlugs, fetchBuybackBySlug, hasEditorialText } from '@/lib/otherInvestmentsApi';
 import { BUYBACK_LIFECYCLE_LABELS } from '@/lib/otherInvestmentsTypes';
 
 export const revalidate = 300;
@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         description,
         openGraph: { title, description, type: 'website', url: `https://www.gpaisa.in/buyback/${buyback.slug}`, siteName: 'gpaisa.in', locale: 'en_IN' },
         alternates: { canonical: `https://www.gpaisa.in/buyback/${buyback.slug}` },
-        robots: { index: buyback.publish_status === 'published', follow: true },
+        robots: { index: buyback.publish_status === 'published' && hasEditorialText(buyback.notes), follow: true },
     };
 }
 

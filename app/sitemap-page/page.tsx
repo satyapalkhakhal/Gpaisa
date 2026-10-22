@@ -3,6 +3,7 @@ import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import { fetchLatestArticles } from '@/lib/articlesApi';
 import { CALCULATORS } from '@/lib/calculatorsList';
 import { FileText, TrendingUp, Newspaper, MapPin, Calculator } from 'lucide-react';
+import { INDEXABLE_SILVER_CITIES } from '@/lib/silverCities';
 
 const CITIES = [
     'Delhi', 'Chennai', 'Mumbai', 'Pune', 'Hyderabad',
@@ -173,10 +174,10 @@ export default async function SitemapPage() {
                                     All Silver Rates
                                 </Link>
                             </li>
-                            {CITIES.map((city) => (
+                            {INDEXABLE_SILVER_CITIES.map(({ city, slug }) => (
                                 <li key={city}>
                                     <Link
-                                        href={`/silver-rate/${city.toLowerCase()}`}
+                                        href={`/silver-rate/${slug}`}
                                         className="text-primary-600 hover:text-primary-700 hover:underline"
                                     >
                                         Silver Rate in {city}

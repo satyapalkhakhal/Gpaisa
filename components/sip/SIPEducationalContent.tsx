@@ -225,9 +225,9 @@ export default function SIPEducationalContent() {
           Use our free SIP calculator to plan your investments and achieve your financial dreams.
         </p>
         <div className="flex flex-col sm:flex-row justify-center gap-3">
-          <a href="/finance" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-green-50 transition-colors shadow-lg text-sm flex items-center justify-center">
+          <Link href="/calculator" className="sip-touch-target bg-white text-primary-600 px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-green-50 transition-colors shadow-lg text-sm flex items-center justify-center">
             Explore More Tools
-          </a>
+          </Link>
           <a href="/news" className="sip-touch-target bg-primary-500 text-white px-6 py-3.5 min-h-[48px] rounded-full font-bold active:bg-primary-400 transition-colors border-2 border-white/30 text-sm flex items-center justify-center">
             Read Finance News
           </a>

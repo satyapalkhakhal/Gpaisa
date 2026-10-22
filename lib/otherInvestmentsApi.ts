@@ -36,6 +36,33 @@ async function fetchSlugs<T>(table: Table, tag: string, revalidateSeconds: numbe
     return cachedRows<T>(`SELECT slug, updated_at FROM ${table} WHERE publish_status = 'published'`, [], revalidateSeconds, tag);
 }
 
+// ── Indexing gate ─────────────────────────────────────────────────────────
+// Synced NCD / rights / buyback records are data rows with a one-line synced summary,
+// i.e. the same facts other sites already publish. A page is indexed (and listed in the
+// sitemap) only once an editor has written a real explanation in its free-text field.
+
+export const MIN_EDITORIAL_CHARS = 300;
+
+const EDITORIAL_COLUMN: Record<Table, string> = {
+    ncd_issues: 'objects_of_issue',
+    rights_issues: 'objects_of_issue',
+    buybacks: 'notes',
+};
+
+export function hasEditorialText(text: string | null | undefined): boolean {
+    return (text?.trim().length ?? 0) >= MIN_EDITORIAL_CHARS;
+}
+
+export async function fetchIndexableSlugs(table: Table, revalidateSeconds: number = 86400): Promise<{ slug: string; updated_at: string }[]> {
+    return cachedRows(
+        `SELECT slug, updated_at FROM ${table}
+         WHERE publish_status = 'published' AND char_length(btrim(coalesce(${EDITORIAL_COLUMN[table]}, ''))) >= ${MIN_EDITORIAL_CHARS}`,
+        [],
+        revalidateSeconds,
+        `fetchIndexableSlugs(${table})`
+    );
+}
+
 // ── NCD Issues ─────────────────────────────────────────────────────────────
 
 export async function fetchNcdIssues(limit: number = 50, revalidateSeconds: number = 300): Promise<NcdIssue[]> {

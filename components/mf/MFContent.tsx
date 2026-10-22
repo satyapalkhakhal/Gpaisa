@@ -201,7 +201,7 @@ export default function MFContent() {
         <div>
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Related Calculators</p>
           <div className="flex flex-wrap gap-2">
-            {[['SIP Calculator','/calculator/sip'],['FD Calculator','/calculator/fd'],['Compound Interest','/calculator/compound-interest'],['EMI Calculator','/calculator/home-loan']].map(([l,h])=>(
+            {[['SIP Calculator','/calculator/sip'],['FD Calculator','/calculator/fd'],['CAGR Calculator','/calculator/cagr'],['EMI Calculator','/calculator/home-loan']].map(([l,h])=>(
               <Link key={h} href={h} className="inline-flex items-center px-3.5 py-1.5 rounded-full bg-emerald-50 border border-emerald-100 text-sm font-medium text-emerald-700 hover:bg-emerald-100 transition-colors">{l}</Link>
             ))}
           </div>

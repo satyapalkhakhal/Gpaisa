@@ -5,9 +5,10 @@ import { IPO_CALCULATORS } from '@/lib/ipoCalculatorsList';
 import { fetchArticleSitemapEntries } from '@/lib/articlesApi';
 import { HREFLANG, articlePath, toArticleLanguage } from '@/lib/articleLocale';
 import { HINDI_CITY_NAMES, isHindiGoldPageReviewed } from '@/lib/cityGoldDataHi';
+import { INDEXABLE_SILVER_CITIES } from '@/lib/silverCities';
 import { goldRateLanguageAlternates } from '@/lib/goldRateLocale';
-import { fetchAllPublishedIpoSlugs } from '@/lib/ipoApi';
-import { fetchAllPublishedBuybackSlugs, fetchAllPublishedNcdSlugs, fetchAllPublishedRightsIssueSlugs } from '@/lib/otherInvestmentsApi';
+import { fetchIndexableIpoSlugs } from '@/lib/ipoApi';
+import { fetchIndexableSlugs } from '@/lib/otherInvestmentsApi';
 
 
 const CITIES = [
@@ -26,7 +27,10 @@ const CITIES = [
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://www.gpaisa.in';
 
-    // Static pages - use more realistic lastModified dates
+    // Static pages. lastModified is when the page's content last changed — bump the date
+    // when you edit a calculator or guide. new Date() is only used for pages whose data
+    // changes daily (rates, IPO boards); the news, credit-card and category hubs use their
+    // newest article's date (applied below, once articles are loaded).
     const staticPages: MetadataRoute.Sitemap = [
         {
             url: baseUrl,
@@ -60,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
         {
             url: `${baseUrl}/gold-vs-silver`,
-            lastModified: new Date(), // Blog page
+            lastModified: new Date('2026-07-18'),
             changeFrequency: 'weekly',
             priority: 0.85,
         },
@@ -72,91 +76,91 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
         {
             url: `${baseUrl}/calculator`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-07-18'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/sip`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-10-22'),
             changeFrequency: 'daily',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/ppf`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-10-22'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/swp`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-07-17'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/epf`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-07-17'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/emi`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-10-22'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/home-loan`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-07-17'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/gst`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-07-17'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/cagr`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-07-17'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/fd`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-10-22'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/nps`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-07-17'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/hra`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-07-17'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/gratuity`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-07-17'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/simple-interest`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-10-22'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
         {
             url: `${baseUrl}/calculator/mutual-fund`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-10-22'),
             changeFrequency: 'weekly',
             priority: 0.9,
         },
@@ -222,7 +226,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
         {
             url: `${baseUrl}/ipo-calculator`,
-            lastModified: new Date(),
+            lastModified: new Date('2026-08-30'),
             changeFrequency: 'monthly',
             priority: 0.7,
         },
@@ -246,16 +250,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         },
     ];
 
-    // Other Investments detail pages — same noindex-if-thin reasoning as IPOs:
-    // only published records get a sitemap entry.
+    // Other Investments detail pages — only those with editorial text (see
+    // fetchIndexableSlugs); the rest are live but noindex, so not listed here.
     let ncdPages: MetadataRoute.Sitemap = [];
     let rightsIssuePages: MetadataRoute.Sitemap = [];
     let buybackPages: MetadataRoute.Sitemap = [];
     try {
         const [ncds, rightsIssues, buybacks] = await Promise.all([
-            fetchAllPublishedNcdSlugs(),
-            fetchAllPublishedRightsIssueSlugs(),
-            fetchAllPublishedBuybackSlugs(),
+            fetchIndexableSlugs('ncd_issues'),
+            fetchIndexableSlugs('rights_issues'),
+            fetchIndexableSlugs('buybacks'),
         ]);
         ncdPages = ncds.map((n) => ({ url: `${baseUrl}/ncd/${n.slug}`, lastModified: new Date(n.updated_at), changeFrequency: 'daily' as const, priority: 0.65 }));
         rightsIssuePages = rightsIssues.map((r) => ({ url: `${baseUrl}/rights-issue/${r.slug}`, lastModified: new Date(r.updated_at), changeFrequency: 'daily' as const, priority: 0.65 }));
@@ -272,12 +276,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
     }));
 
-    // IPO detail pages — only published IPOs, mirroring the noindex-if-thin
-    // pattern used for category hubs: an IPO with no published record shouldn't
-    // appear in the sitemap even though the dynamic route technically exists.
+    // IPO detail pages — only those that pass isIpoIndexable (published, with core
+    // facts and real content); thin ones are live but noindex, so not listed here.
     let ipoPages: MetadataRoute.Sitemap = [];
     try {
-        const ipos = await fetchAllPublishedIpoSlugs();
+        const ipos = await fetchIndexableIpoSlugs();
         ipoPages = ipos.map((ipo) => ({
             url: `${baseUrl}/ipo/${ipo.slug}`,
             lastModified: new Date(ipo.updated_at),
@@ -330,9 +333,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         })),
     ];
 
-    // City-specific silver rate pages
-    const silverRateCityPages: MetadataRoute.Sitemap = CITIES.map((city) => ({
-        url: `${baseUrl}/silver-rate/${city.toLowerCase()}`,
+    // City-specific silver rate pages — only cities with their own content (the rest are
+    // live but noindex; see lib/silverCities.ts).
+    const silverRateCityPages: MetadataRoute.Sitemap = INDEXABLE_SILVER_CITIES.map((city) => ({
+        url: `${baseUrl}/silver-rate/${city.slug}`,
         lastModified: new Date(), // City rates update daily
         changeFrequency: 'daily',
         priority: 0.7,
@@ -342,6 +346,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // Cached for a day (not uncached) so the sitemap can be statically generated
     let articlePages: MetadataRoute.Sitemap = [];
     let hindiHubPages: MetadataRoute.Sitemap = [];
+    let newestNewsDate: Date | undefined;
+    let newestCreditCardDate: Date | undefined;
+    const newestByCategory = new Map<string, Date>();
     const categoriesWithArticles = new Set<string>();
     try {
         const articles = await fetchArticleSitemapEntries(DROPPED_CATEGORY_DB_VALUES, 86400);
@@ -389,6 +396,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             };
         });
 
+        // Hub dates follow their newest English article (entries are newest first).
+        const english = publishedArticles.filter((a) => toArticleLanguage(a.language) === 'en');
+        const dateOf = (a?: { published_at: string; content_updated_at?: string | null }) =>
+            a ? new Date(a.content_updated_at || a.published_at) : undefined;
+        newestNewsDate = dateOf(english[0]);
+        newestCreditCardDate = dateOf(english.find((a) => /credit-card|cibil|credit-score/.test(a.slug)));
+        for (const a of english) {
+            if (a.category && !newestByCategory.has(a.category)) newestByCategory.set(a.category, dateOf(a)!);
+        }
+
         // The Hindi hub is noindex while empty (app/hi/page.tsx), so it is only listed once it has articles.
         const hindiArticles = publishedArticles.filter((a) => toArticleLanguage(a.language) === 'hi');
         if (hindiArticles.length) {
@@ -413,13 +430,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         .filter((c) => categoriesWithArticles.has(c.dbValue))
         .map((c) => ({
             url: `${baseUrl}/category/${c.slug}`,
-            lastModified: new Date(),
+            lastModified: newestByCategory.get(c.dbValue) ?? new Date(),
             changeFrequency: 'daily',
             priority: 0.6,
         }));
 
     return [
-        ...staticPages.map((p) => (p.url === `${baseUrl}/gold-rate` ? { ...p, ...goldAlternates() } : p)),
+        ...staticPages.map((p) => {
+            if (p.url === `${baseUrl}/gold-rate`) return { ...p, ...goldAlternates() };
+            if (p.url === `${baseUrl}/news` && newestNewsDate) return { ...p, lastModified: newestNewsDate };
+            if (p.url === `${baseUrl}/credit-cards` && newestCreditCardDate) return { ...p, lastModified: newestCreditCardDate };
+            return p;
+        }),
         ...categoryPages,
         ...hindiHubPages,
         ...glossaryPages,

@@ -245,6 +245,42 @@ export async function fetchLatestIpoReviews(limit: number = 5, revalidateSeconds
 }
 
 /**
+ * Whether an IPO page has enough real content to be indexed. Published pages that fail
+ * this (e.g. DRHP-stage shells where every field is "TBA") stay live but noindex, and out
+ * of the sitemap — thin, near-identical pages otherwise weigh on how Google rates the site.
+ * Keep in sync with INDEXABLE_IPO_SQL below.
+ */
+export function isIpoIndexable(ipo: IpoDetail): boolean {
+    if (ipo.publish_status !== 'published') return false;
+    const hasCoreFacts = ipo.price_band_max != null && !!ipo.open_date && !!ipo.close_date;
+    const hasSubstance = ipo.financials.length > 0 || !!ipo.review || ipo.subscription_history.length > 0 || !!ipo.objects_of_issue?.trim();
+    return hasCoreFacts && hasSubstance;
+}
+
+// SQL form of isIpoIndexable, for listing indexable IPOs without loading each one.
+const INDEXABLE_IPO_SQL = `
+    i.publish_status = 'published'
+    AND i.price_band_max IS NOT NULL AND i.open_date IS NOT NULL AND i.close_date IS NOT NULL
+    AND (
+        EXISTS (SELECT 1 FROM ipo_financials f WHERE f.ipo_id = i.id)
+        OR EXISTS (SELECT 1 FROM ipo_reviews r WHERE r.ipo_id = i.id AND r.publish_status = 'published')
+        OR EXISTS (SELECT 1 FROM ipo_subscription_updates s WHERE s.ipo_id = i.id)
+        OR btrim(coalesce(i.objects_of_issue, '')) <> ''
+    )`;
+
+/**
+ * Sitemap entries: only IPOs that pass isIpoIndexable.
+ */
+export async function fetchIndexableIpoSlugs(revalidateSeconds: number = 86400): Promise<Pick<Ipo, 'slug' | 'updated_at'>[]> {
+    return cachedRows(
+        `SELECT i.slug, i.updated_at FROM ipos i WHERE ${INDEXABLE_IPO_SQL} ORDER BY i.updated_at DESC`,
+        [],
+        revalidateSeconds,
+        'fetchIndexableIpoSlugs'
+    );
+}
+
+/**
  * Minimal field set for sitemap generation.
  */
 export async function fetchAllPublishedIpoSlugs(revalidateSeconds: number = 86400): Promise<Pick<Ipo, 'slug' | 'updated_at'>[]> {

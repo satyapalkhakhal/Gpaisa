@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { fetchSilverCities } from '@/lib/angelOneApi';
+import { SILVER_CITIES } from '@/lib/silverCities';
 
+// Same owned list the /silver-rate/[city] routes use (lib/silverCities.ts).
 export async function GET() {
-    const data = await fetchSilverCities();
-    return NextResponse.json({ success: true, data });
+    return NextResponse.json({ success: true, data: SILVER_CITIES });
 }

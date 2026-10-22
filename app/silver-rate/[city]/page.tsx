@@ -1,7 +1,8 @@
 import { Metadata } from 'next';
 import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import { notFound } from 'next/navigation';
-import { fetchSilverCities, fetchSilverCalculator } from '@/lib/angelOneApi';
+import { fetchSilverCalculator } from '@/lib/angelOneApi';
+import { INDEXABLE_SILVER_CITIES, SILVER_CITIES, getSilverCity, isSilverCityIndexable } from '@/lib/silverCities';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
 import SilverCalculator from '@/components/SilverCalculator';
 import SilverHistoryTable from '@/components/SilverHistoryTable';
@@ -14,8 +15,7 @@ import SilverPriceHistoryChart from '@/components/SilverPriceHistoryChart';
 import SilverNewsSection from '@/components/SilverNewsSection';
 
 export async function generateStaticParams() {
-    const cities = await fetchSilverCities();
-    return cities.map((city) => ({
+    return SILVER_CITIES.map((city) => ({
         city: city.slug,
     }));
 }
@@ -24,8 +24,7 @@ export const revalidate = 86400;
 
 export async function generateMetadata(props: { params: Promise<{ city: string }> }): Promise<Metadata> {
     const params = await props.params;
-    const cities = await fetchSilverCities();
-    const cityObj = cities.find(c => c.slug === params.city);
+    const cityObj = getSilverCity(params.city);
 
     if (!cityObj) {
         return { title: 'City Not Found | gpaisa.in' };
@@ -43,7 +42,8 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
     return {
         title: `Silver Rate in ${cityName} Today — ${todayDate} | gpaisa.in`,
         description: `Check today's silver rate in ${cityName}, ${state} on ${todayDate}. Live 999 & 925 silver prices per gram and kg.${tagline ? ` ${tagline}.` : ''} ${mainMarkets.length ? `Silver markets at ${mainMarkets.join(' & ')}.` : ''} Calculator, history & buying guide.`,
-        robots: INDEXABLE_ROBOTS,
+        // Cities without their own content render a near-identical template (see lib/silverCities.ts).
+        robots: isSilverCityIndexable(citySlug) ? INDEXABLE_ROBOTS : { index: false, follow: true },
         openGraph: {
             title: `Silver Rate in ${cityName} Today - Live Prices${tagline ? ` | ${tagline}` : ''}`,
             description: `Today's silver price in ${cityName}, ${state}. Live rate updates, historical trends & buying guide.`,
@@ -66,8 +66,7 @@ export async function generateMetadata(props: { params: Promise<{ city: string }
 
 export default async function CitySilverRatePage(props: { params: Promise<{ city: string }> }) {
     const params = await props.params;
-    const cities = await fetchSilverCities();
-    const cityObj = cities.find(c => c.slug === params.city);
+    const cityObj = getSilverCity(params.city);
 
     if (!cityObj) {
         notFound();
@@ -489,7 +488,7 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
                                 </tr>
                             </thead>
                             <tbody className="divide-y divide-gray-100">
-                                {cities.filter(c => c.slug !== params.city).slice(0, 10).map((city) => (
+                                {[...INDEXABLE_SILVER_CITIES, ...SILVER_CITIES.filter(c => !isSilverCityIndexable(c.slug))].filter(c => c.slug !== params.city).slice(0, 10).map((city) => (
                                     <tr key={city.slug} className="hover:bg-gray-50">
                                         <td className="px-4 py-3 font-medium text-gray-900">{city.city}</td>
                                         <td className="px-4 py-3 text-right">
