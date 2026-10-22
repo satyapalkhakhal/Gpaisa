@@ -337,7 +337,7 @@ export default function ArticleView({ article, translation, relatedArticles, sid
                                                         </span>
                                                         <span>•</span>
                                                         <span>
-                                                            {story.date || new Date(story.published_at).toLocaleDateString()}
+                                                            {new Date(story.published_at || story.date).toLocaleDateString(t.dateLocale, { day: 'numeric', month: 'short', year: 'numeric' })}
                                                         </span>
                                                     </div>
                                                 </div>

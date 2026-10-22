@@ -1,12 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 import { useLanguage } from '@/lib/i18n';
 import LanguageSwitcher from './LanguageSwitcher';
+import ThemeToggle from './ThemeToggle';
+import Logo from './Logo';
 import { localizedNavHref } from '@/lib/articleLocale';
 
 interface NavLink {
@@ -133,18 +134,8 @@ export default function Header() {
             <nav className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-14 sm:h-16 items-center justify-between gap-6">
                     {/* Logo */}
-                    <Link href="/" className="flex items-center gap-2 sm:gap-2.5 shrink-0">
-                        <Image
-                            src="/android-chrome-192x192.png"
-                            alt="gpaisa.in logo"
-                            width={36}
-                            height={36}
-                            className="rounded-lg"
-                            priority
-                        />
-                        <span className="text-xl sm:text-2xl font-display font-bold bg-gradient-to-r from-primary-600 to-primary-800 bg-clip-text text-transparent">
-                            Gpaisa
-                        </span>
+                    <Link href={language === 'hi' ? '/hi' : '/'} className="shrink-0" aria-label="gpaisa.in home">
+                        <Logo />
                     </Link>
 
                     {/* Desktop navigation — five grouped menus that open on hover or keyboard focus */}
@@ -205,14 +196,16 @@ export default function Header() {
                             );
                         })}
 
-                        <div className="ml-2 pl-3 border-l border-gw-border">
+                        <div className="ml-2 pl-3 border-l border-gw-border flex items-center gap-2">
                             <LanguageSwitcher />
+                            <ThemeToggle />
                         </div>
                     </div>
 
                     {/* Mobile: language + menu button */}
                     <div className="flex lg:hidden items-center gap-1.5 sm:gap-2">
                         <LanguageSwitcher />
+                        <ThemeToggle />
                         <button
                             type="button"
                             className="inline-flex items-center justify-center rounded-lg p-2 text-gw-text hover:bg-gw-bg transition-colors"

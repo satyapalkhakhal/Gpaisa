@@ -20,15 +20,15 @@ const GOAL_GROUPS: GoalGroup[] = [
         hrefs: ['/calculator/sip', '/calculator/mutual-fund', '/calculator/cagr', '/calculator/swp'],
     },
     {
-        key: 'save', label: 'Save', icon: PiggyBank, tone: 'bg-[#e0f2fe] text-[#0369a1]',
+        key: 'save', label: 'Save', icon: PiggyBank, tone: 'bg-sky-100 text-sky-700',
         hrefs: ['/calculator/fd', '/calculator/ppf', '/calculator/nsc', '/calculator/ssy', '/calculator/scss', '/calculator/simple-interest'],
     },
     {
-        key: 'borrow', label: 'Loans', icon: Home, tone: 'bg-[#fef3c7] text-[#b45309]',
+        key: 'borrow', label: 'Loans', icon: Home, tone: 'bg-amber-100 text-amber-700',
         hrefs: ['/calculator/emi', '/calculator/home-loan', '/calculator/car-loan'],
     },
     {
-        key: 'tax', label: 'Tax & retirement', icon: Receipt, tone: 'bg-[#f3e8ff] text-[#7e22ce]',
+        key: 'tax', label: 'Tax & retirement', icon: Receipt, tone: 'bg-purple-100 text-purple-700',
         hrefs: ['/calculator/income-tax', '/calculator/hra', '/calculator/epf', '/calculator/nps', '/calculator/gratuity', '/calculator/gst'],
     },
 ];

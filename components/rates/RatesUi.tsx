@@ -41,7 +41,7 @@ export function feedDate(value: string, lang: ArticleLanguage, style: 'short' | 
 export const Change = ({ value, percent, digits = 0 }: { value?: number; percent: number; digits?: number }) => {
     const up = percent > 0;
     const flat = Math.abs(percent) < 0.005;
-    const tone = flat ? 'text-gray-500' : up ? 'text-gw-green' : 'text-gw-red';
+    const tone = flat ? 'text-gray-500' : up ? 'text-gw-up' : 'text-gw-down';
     return (
         <span className={`tabular-nums whitespace-nowrap ${tone}`}>
             {flat ? '–' : up ? '▲' : '▼'}{' '}
@@ -118,7 +118,7 @@ export interface KeyRate { label: string; sub?: string; value: number; change?: 
 export const KeyRateCards = ({ rates }: { rates: KeyRate[] }) => (
     <div className={`grid ${rates.length >= 3 ? 'grid-cols-3' : 'grid-cols-2'} gap-2 sm:gap-3`}>
         {rates.map(r => (
-            <div key={r.label + r.sub} className="rounded-xl border border-gw-border bg-[#fffbeb]/60 px-2.5 py-2.5 sm:px-4 sm:py-3 min-w-0">
+            <div key={r.label + r.sub} className="rounded-xl border border-gw-border bg-amber-50/60 px-2.5 py-2.5 sm:px-4 sm:py-3 min-w-0">
                 <p className="text-[11px] sm:text-xs font-semibold text-gray-600 leading-tight">{r.label}{r.sub && <span className="block sm:inline font-normal text-gray-500"><span className="hidden sm:inline"> · </span>{r.sub}</span>}</p>
                 <p className="mt-1 text-[15px] sm:text-xl font-bold tabular-nums text-gw-text">{inr(r.value, r.digits ?? 0)}</p>
                 {/* Phones show the % only; the ₹ change joins from sm up. */}
@@ -211,7 +211,7 @@ export const RangeStats = ({ stats, grams, lang, days }: {
             <div className={cell}><p className="text-[11px] text-gray-500">{days} {t.days} · {t.low}</p><p className="text-sm font-bold tabular-nums">{inr(stats.low * grams)}</p></div>
             <div className={cell}>
                 <p className="text-[11px] text-gray-500">{t.net}</p>
-                <p className={`text-sm font-bold tabular-nums ${stats.change >= 0 ? 'text-gw-green' : 'text-gw-red'}`}>{stats.change >= 0 ? '▲' : '▼'} {inr(Math.abs(stats.change * grams))}</p>
+                <p className={`text-sm font-bold tabular-nums ${stats.change >= 0 ? 'text-gw-up' : 'text-gw-down'}`}>{stats.change >= 0 ? '▲' : '▼'} {inr(Math.abs(stats.change * grams))}</p>
                 <p className="text-[11px] text-gray-500 tabular-nums">{stats.changePercent >= 0 ? '+' : '−'}{Math.abs(stats.changePercent).toFixed(2)}%</p>
             </div>
         </div>
@@ -237,7 +237,7 @@ export const CityRateTable = ({ rows, columns, hrefFor, currentSlug, lang, capti
             </tr></thead>
             <tbody className="divide-y divide-gw-border">
                 {rows.map(r => (
-                    <tr key={r.slug} className={r.slug === currentSlug ? 'bg-[#fffbeb]' : undefined}>
+                    <tr key={r.slug} className={r.slug === currentSlug ? 'bg-amber-50' : undefined}>
                         <th scope="row" className={`${td} text-left font-semibold`}>
                             <Link href={hrefFor(r.slug)} className="text-gw-text hover:text-gw-green hover:underline">{r.city}</Link>
                         </th>

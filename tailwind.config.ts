@@ -1,4 +1,8 @@
 import type { Config } from "tailwindcss";
+import plugin from "tailwindcss/plugin";
+import { BRAND, tailwindColors, themeVariables } from "./lib/themePalette";
+
+const palette = tailwindColors();
 
 const config: Config = {
     content: [
@@ -6,88 +10,30 @@ const config: Config = {
         "./components/**/*.{js,ts,jsx,tsx,mdx}",
         "./app/**/*.{js,ts,jsx,tsx,mdx}",
     ],
+    // Theme follows the `dark` class on <html> (set before paint by the script in app/layout.tsx).
+    darkMode: 'class',
     theme: {
+        // Every colour is a CSS variable with light and dark values (lib/themePalette.ts),
+        // so existing classes switch theme without dark: variants.
+        colors: palette.colors,
+        textColor: palette.textColor,
         extend: {
-            colors: {
-                // Primary Green (Growth & Money) - #1E7F43
-                primary: {
-                    50: '#f0fdf4',
-                    100: '#dcfce7',
-                    200: '#bbf7d0',
-                    300: '#86efac',
-                    400: '#4ade80',
-                    500: '#2DBE60', // Light Green for CTAs
-                    600: '#1E7F43', // Main Brand Green
-                    700: '#15803d',
-                    800: '#166534',
-                    900: '#14532d',
-                },
-                // Success/Profit Green - #16A34A
-                success: {
-                    50: '#f0fdf4',
-                    100: '#dcfce7',
-                    200: '#bbf7d0',
-                    300: '#86efac',
-                    400: '#4ade80',
-                    500: '#22c55e',
-                    600: '#16A34A', // Profit/Positive indicator
-                    700: '#15803d',
-                    800: '#166534',
-                    900: '#14532d',
-                },
-                // Danger/Loss Red - #DC2626
-                danger: {
-                    50: '#fef2f2',
-                    100: '#fee2e2',
-                    200: '#fecaca',
-                    300: '#fca5a5',
-                    400: '#f87171',
-                    500: '#ef4444',
-                    600: '#DC2626', // Loss/Negative indicator
-                    700: '#b91c1c',
-                    800: '#991b1b',
-                    900: '#7f1d1d',
-                },
-                // Gold Accent - #D4AF37
-                gold: {
-                    50: '#fefce8',
-                    100: '#fef9c3',
-                    200: '#fef08a',
-                    300: '#fde047',
-                    400: '#facc15',
-                    500: '#eab308',
-                    600: '#D4AF37', // Gold accent for wealth
-                    700: '#a16207',
-                    800: '#854d0e',
-                    900: '#713f12',
-                },
-                // Text Colors
-                textPrimary: '#1F2937',
-                textSecondary: '#6B7280',
-                // Background Colors
-                bgMain: '#F9FAFB',
-                bgCard: '#FFFFFF',
-                // Groww-style tokens used by the homepage (components/home)
-                gw: {
-                    green: '#00b386',
-                    greenDark: '#00a07a',
-                    greenBg: '#ebf9f5',
-                    red: '#eb5b3c',
-                    redBg: '#fdefec',
-                    text: '#44475b',
-                    sub: '#7c7e8c',
-                    border: '#e9e9eb',
-                    bg: '#f8f8f8',
-                },
-            },
             fontFamily: {
                 // Noto Sans Devanagari renders Hindi text (Inter/Outfit have no Devanagari glyphs).
                 sans: ['Inter', 'Noto Sans Devanagari', 'system-ui', 'sans-serif'],
                 display: ['Outfit', 'Inter', 'Noto Sans Devanagari', 'sans-serif'],
             },
+            backgroundImage: {
+                brand: `linear-gradient(135deg, ${BRAND.from} 0%, ${BRAND.via} 55%, ${BRAND.to} 100%)`,
+            },
         },
     },
-    plugins: [],
+    plugins: [
+        plugin(({ addBase }) => {
+            const { light, dark, onDark } = themeVariables();
+            addBase({ ':root': light, '.dark': { ...dark, colorScheme: 'dark' }, '.dark .on-dark': onDark });
+        }),
+    ],
 };
 
 export default config;

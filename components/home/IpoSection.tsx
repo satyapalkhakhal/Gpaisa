@@ -134,7 +134,7 @@ const IssueTable = ({ rows, emptyTitle }: { rows: { entry: GmpBoardEntry; timeli
                                 <td className="px-4 py-3.5 text-right">
                                     {latestGmp ? (
                                         <>
-                                            <p className={`tabular-nums ${latestGmp.gmp_value > 0 ? 'text-gw-green' : latestGmp.gmp_value < 0 ? 'text-gw-red' : 'text-gw-text'}`}>
+                                            <p className={`tabular-nums ${latestGmp.gmp_value > 0 ? 'text-gw-up' : latestGmp.gmp_value < 0 ? 'text-gw-down' : 'text-gw-text'}`}>
                                                 ₹{latestGmp.gmp_value}{gmpPct != null && ` (${formatSignedPercent(gmpPct, 1)})`}
                                             </p>
                                             <p className="text-xs text-gw-sub">{formatShortDate(latestGmp.recorded_at)}</p>
@@ -189,10 +189,10 @@ const ListedTable = ({ listings }: { listings: ListingPerformanceEntry[] }) => {
                                 </td>
                                 <td className="px-4 py-3.5 text-right text-gw-text tabular-nums hidden sm:table-cell">{ipo.price_band_max != null ? `₹${ipo.price_band_max}` : '—'}</td>
                                 <td className="px-4 py-3.5 text-right text-gw-text tabular-nums hidden sm:table-cell">{ipo.listing_price != null ? `₹${ipo.listing_price}` : '—'}</td>
-                                <td className={`px-4 py-3.5 text-right tabular-nums ${listingGainPercent == null ? 'text-gw-sub' : listingGainPercent >= 0 ? 'text-gw-green' : 'text-gw-red'}`}>
+                                <td className={`px-4 py-3.5 text-right tabular-nums ${listingGainPercent == null ? 'text-gw-sub' : listingGainPercent >= 0 ? 'text-gw-up' : 'text-gw-down'}`}>
                                     {listingGainPercent != null ? formatSignedPercent(listingGainPercent, 1) : '—'}
                                 </td>
-                                <td className={`px-4 py-3.5 text-right tabular-nums hidden md:table-cell ${currentGainPercent == null ? 'text-gw-sub' : currentGainPercent >= 0 ? 'text-gw-green' : 'text-gw-red'}`}>
+                                <td className={`px-4 py-3.5 text-right tabular-nums hidden md:table-cell ${currentGainPercent == null ? 'text-gw-sub' : currentGainPercent >= 0 ? 'text-gw-up' : 'text-gw-down'}`}>
                                     {currentGainPercent != null ? formatSignedPercent(currentGainPercent, 1) : '—'}
                                 </td>
                             </tr>

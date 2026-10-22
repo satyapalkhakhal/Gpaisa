@@ -63,8 +63,17 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        // suppressHydrationWarning: the theme script below sets class/style on <html> before React loads.
+        <html lang="en" suppressHydrationWarning>
             <head>
+                {/* Theme before first paint (no flash): saved choice, else the system setting. See components/ThemeToggle.tsx. */}
+                <script
+                    dangerouslySetInnerHTML={{
+                        __html: `(function(){try{var t=localStorage.getItem('theme');var d=t?t==='dark':window.matchMedia('(prefers-color-scheme: dark)').matches;var e=document.documentElement;if(d)e.classList.add('dark');e.style.colorScheme=d?'dark':'light'}catch(e){}})()`,
+                    }}
+                />
+                <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+                <meta name="theme-color" content="#0B0612" media="(prefers-color-scheme: dark)" />
 
                 {/* Favicon for Google Search */}
                 <link rel="icon" href="/favicon.ico" sizes="48x48" />

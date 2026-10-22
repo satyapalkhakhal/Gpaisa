@@ -73,7 +73,7 @@ export default function CookieConsent() {
             <div className="pointer-events-auto mx-auto max-w-4xl">
                 <div className="relative overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-2xl shadow-gray-900/10">
                     {/* Subtle top accent bar */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600" />
+                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary-400 via-teal-500 to-primary-700" />
 
                     <div className="px-5 py-5 sm:px-6 sm:py-5">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-4">
@@ -89,7 +89,7 @@ export default function CookieConsent() {
                                         By clicking &quot;Accept All&quot;, you consent to our use of cookies.{' '}
                                         <Link
                                             href="/privacy-policy"
-                                            className="text-emerald-700 font-semibold underline underline-offset-2 hover:text-emerald-800 transition-colors"
+                                            className="text-primary-700 font-semibold underline underline-offset-2 hover:text-primary-800 transition-colors"
                                         >
                                             Privacy Policy
                                         </Link>
@@ -109,7 +109,7 @@ export default function CookieConsent() {
                                 <button
                                     id="cookie-accept-btn"
                                     onClick={() => dismiss(true)}
-                                    className="px-5 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg shadow-sm shadow-emerald-600/20 transition-all duration-200 whitespace-nowrap hover:shadow-md hover:shadow-emerald-600/25"
+                                    className="px-5 py-2 text-xs font-bold text-white bg-primary-600 hover:bg-primary-700 rounded-lg shadow-sm shadow-emerald-600/20 transition-all duration-200 whitespace-nowrap hover:shadow-md hover:shadow-emerald-600/25"
                                 >
                                     Accept All
                                 </button>

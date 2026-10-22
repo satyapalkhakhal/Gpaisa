@@ -34,7 +34,7 @@ export default function BullionSection({ gold, silver, silverCity }: { gold: Gol
         change: rate.change * 10,
         changePercent: rate.changePercent,
         href: '/gold-rate',
-        tone: 'bg-[#fef3c7] text-[#b45309]',
+        tone: 'bg-amber-100 text-amber-700',
     }));
     if (silver) {
         cards.push({
@@ -46,7 +46,7 @@ export default function BullionSection({ gold, silver, silverCity }: { gold: Gol
             change: silver.change * 1000,
             changePercent: silver.changePercent,
             href: '/silver-rate',
-            tone: 'bg-[#f1f5f9] text-[#475569]',
+            tone: 'bg-slate-100 text-slate-600',
         });
     }
 

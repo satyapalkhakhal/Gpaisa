@@ -67,12 +67,12 @@ export const CardTitle = ({ title, href, hrefLabel = 'See all' }: { title: strin
 );
 
 const LOGO_TONES = [
-    'bg-[#eef2ff] text-[#4f46e5]',
-    'bg-[#fef3c7] text-[#b45309]',
-    'bg-[#e0f2fe] text-[#0369a1]',
-    'bg-[#fce7f3] text-[#be185d]',
-    'bg-[#ebf9f5] text-[#00a07a]',
-    'bg-[#f3e8ff] text-[#7e22ce]',
+    'bg-indigo-50 text-indigo-600',
+    'bg-amber-100 text-amber-700',
+    'bg-sky-100 text-sky-700',
+    'bg-pink-100 text-pink-700',
+    'bg-emerald-50 text-emerald-600',
+    'bg-purple-100 text-purple-700',
 ];
 
 /** Rounded logo tile: the company logo when we have one, otherwise coloured initials. */
@@ -98,7 +98,7 @@ export const ChangeText = ({ value, percent, digits = 2, className = '' }: {
 }) => {
     const up = percent >= 0;
     return (
-        <span className={`tabular-nums ${up ? 'text-gw-green' : 'text-gw-red'} ${className}`}>
+        <span className={`tabular-nums ${up ? 'text-gw-up' : 'text-gw-down'} ${className}`}>
             {value != null && <>{up ? '+' : '−'}{Math.abs(value).toLocaleString('en-IN', { minimumFractionDigits: digits, maximumFractionDigits: digits })} </>}
             ({up ? '' : '−'}{Math.abs(percent).toFixed(2)}%)
         </span>

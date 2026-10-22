@@ -19,10 +19,10 @@ interface Product {
 }
 
 const RECOMMENDATION_STYLE: Record<IpoRecommendation, string> = {
-    subscribe: 'text-gw-green bg-gw-greenBg',
-    subscribe_long_term: 'text-[#0369a1] bg-[#e0f2fe]',
+    subscribe: 'text-gw-up bg-gw-upBg',
+    subscribe_long_term: 'text-sky-700 bg-sky-100',
     neutral: 'text-gw-sub bg-gw-bg',
-    avoid: 'text-gw-red bg-gw-redBg',
+    avoid: 'text-gw-down bg-gw-downBg',
 };
 
 export default function HomeSidebar({ openIpoCount, liveIssueCounts, reviews, trending }: {
