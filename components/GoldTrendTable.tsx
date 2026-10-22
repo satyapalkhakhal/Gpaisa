@@ -3,33 +3,37 @@
 import { useEffect, useState } from 'react';
 import { TrendingUp, TrendingDown } from 'lucide-react';
 import { goldHistoryRatePer10g } from '@/lib/goldUnits';
+import { fetchGoldHistoryBundleClient, hasCarats, type GoldHistoryBundle } from '@/lib/goldHistoryBundle';
+import type { GoldHistoryItem } from '@/types';
 
 interface TrendRow { date: string; rate: number; change: number; }
 
 function fmtINR(v: number) { return '₹' + Math.round(v).toLocaleString('en-IN'); }
 
-export default function GoldTrendTable({ days = 7, title }: { days?: number; title?: string }) {
-    const [rows, setRows] = useState<TrendRow[]>([]);
-    const [loading, setLoading] = useState(true);
+function trendRows(history: GoldHistoryItem[], days: number): TrendRow[] {
+    const sliced = history.slice(0, days);
+    return sliced.map((item, idx) => {
+        const rate = goldHistoryRatePer10g(item.rate);
+        const prev = idx < sliced.length - 1 ? goldHistoryRatePer10g(sliced[idx + 1].rate) : rate;
+        return { date: item.date, rate, change: rate - prev };
+    });
+}
+
+export default function GoldTrendTable({ days = 7, title, initialHistory }: { days?: number; title?: string; initialHistory?: GoldHistoryBundle }) {
+    const hasInitial = hasCarats(initialHistory, ['24k']);
+    const [rows, setRows] = useState<TrendRow[]>(() => (hasInitial ? trendRows(initialHistory!['24k']!, days) : []));
+    const [loading, setLoading] = useState(!hasInitial);
 
     useEffect(() => {
+        if (hasInitial) return;
         (async () => {
             try {
-                const res = await fetch('/api/gold-history?city=India&carat=24k');
-                const json = await res.json();
-                if (json.success && json.data?.length) {
-                    const sliced = json.data.slice(0, days);
-                    const mapped: TrendRow[] = sliced.map((item: { date: string; rate: string; }, idx: number) => {
-                        const rate = goldHistoryRatePer10g(item.rate);
-                        const prev = idx < sliced.length - 1 ? goldHistoryRatePer10g(sliced[idx + 1].rate) : rate;
-                        return { date: item.date, rate, change: rate - prev };
-                    });
-                    setRows(mapped);
-                }
+                const bundle = await fetchGoldHistoryBundleClient('India', ['24k']);
+                if (bundle['24k']?.length) setRows(trendRows(bundle['24k'], days));
             } catch (e) { console.error(e); }
             finally { setLoading(false); }
         })();
-    }, [days]);
+    }, [days]); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (loading) return <div className="card animate-pulse"><div className="h-40 bg-gray-100 rounded" /></div>;
     if (!rows.length) return null;

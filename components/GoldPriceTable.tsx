@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { goldHistoryRatePerGram } from '@/lib/goldUnits';
+import { fetchGoldHistoryBundleClient, hasCarats, type GoldCarat, type GoldHistoryBundle } from '@/lib/goldHistoryBundle';
 
 interface RateRow {
     purity: string;
@@ -15,27 +16,34 @@ function formatINR(v: number): string {
 
 const TOLA_GRAMS = 11.66;
 
-export default function GoldPriceTable() {
-    const [rates, setRates] = useState<RateRow[]>([]);
-    const [loading, setLoading] = useState(true);
+const CARATS: GoldCarat[] = ['24k', '22k', '18k'];
+
+function priceRows(bundle: GoldHistoryBundle): RateRow[] {
+    const rows: RateRow[] = [];
+    const add = (carat: GoldCarat, purity: string, label: string) => {
+        const data = bundle[carat];
+        if (data?.length) rows.push({ purity, label, pricePerGram: goldHistoryRatePerGram(data[0].rate) });
+    };
+    add('24k', '24K', '99.9% Pure');
+    add('22k', '22K', '91.6% (916)');
+    add('18k', '18K', '75% Pure');
+    return rows;
+}
+
+export default function GoldPriceTable({ initialHistory }: { initialHistory?: GoldHistoryBundle }) {
+    const hasInitial = hasCarats(initialHistory, CARATS);
+    const [rates, setRates] = useState<RateRow[]>(() => (hasInitial ? priceRows(initialHistory!) : []));
+    const [loading, setLoading] = useState(!hasInitial);
 
     useEffect(() => {
+        if (hasInitial) return;
         (async () => {
             try {
-                const [r24, r22, r18] = await Promise.all([
-                    fetch('/api/gold-history?city=India&carat=24k').then(r => r.json()),
-                    fetch('/api/gold-history?city=India&carat=22k').then(r => r.json()),
-                    fetch('/api/gold-history?city=India&carat=18k').then(r => r.json()),
-                ]);
-                const rows: RateRow[] = [];
-                if (r24.success && r24.data?.length) rows.push({ purity: '24K', label: '99.9% Pure', pricePerGram: goldHistoryRatePerGram(r24.data[0].rate) });
-                if (r22.success && r22.data?.length) rows.push({ purity: '22K', label: '91.6% (916)', pricePerGram: goldHistoryRatePerGram(r22.data[0].rate) });
-                if (r18.success && r18.data?.length) rows.push({ purity: '18K', label: '75% Pure', pricePerGram: goldHistoryRatePerGram(r18.data[0].rate) });
-                setRates(rows);
+                setRates(priceRows(await fetchGoldHistoryBundleClient('India', CARATS)));
             } catch (e) { console.error(e); }
             finally { setLoading(false); }
         })();
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (loading) {
         return (

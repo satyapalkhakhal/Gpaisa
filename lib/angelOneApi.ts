@@ -1,5 +1,6 @@
 import { SilverCity, SilverCalculatorResponse, SilverHistoryResponse, GoldHistoryResponse } from '@/types';
 import { goldHistoryRatePerGram } from '@/lib/goldUnits';
+import type { GoldCarat, GoldHistoryBundle } from '@/lib/goldHistoryBundle';
 
 const BASE_URL = 'https://kp-hl-httpapi-prod.angelone.in';
 
@@ -24,6 +25,12 @@ export interface GoldCaratRate {
     pricePerGram: number;
     change: number;
     changePercent: number;
+}
+
+/** Gold history for one city across carats, for seeding SSR initial state (see lib/goldHistoryBundle.ts). */
+export async function fetchGoldHistoryBundle(city: string = 'India', carats: GoldCarat[] = ['24k', '22k', '18k']): Promise<GoldHistoryBundle> {
+    const entries = await Promise.all(carats.map(async (carat) => [carat, (await fetchGoldHistory(city, carat))?.data] as const));
+    return Object.fromEntries(entries.filter(([, data]) => Array.isArray(data) && data.length)) as GoldHistoryBundle;
 }
 
 /** National (India-wide) 24K/22K/18K gold rates per gram, for seeding SSR initial state. */

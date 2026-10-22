@@ -8,14 +8,18 @@ import { goldHistoryRatePer10g } from '@/lib/goldUnits';
 interface GoldHistoryTableProps {
     city?: string;
     carat?: string;
+    /** Server-loaded history for this city/carat (latest first); skips the client fetch. */
+    initialHistory?: GoldHistoryItem[];
 }
 
-export default function GoldHistoryTable({ city = 'India', carat = '24k' }: GoldHistoryTableProps) {
-    const [historyData, setHistoryData] = useState<GoldHistoryItem[]>([]);
-    const [loading, setLoading] = useState(true);
+export default function GoldHistoryTable({ city = 'India', carat = '24k', initialHistory }: GoldHistoryTableProps) {
+    const hasInitial = !!initialHistory?.length;
+    const [historyData, setHistoryData] = useState<GoldHistoryItem[]>(initialHistory ?? []);
+    const [loading, setLoading] = useState(!hasInitial);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        if (hasInitial) return;
         const fetchGoldHistory = async () => {
             try {
                 setLoading(true);
@@ -36,7 +40,7 @@ export default function GoldHistoryTable({ city = 'India', carat = '24k' }: Gold
         };
 
         fetchGoldHistory();
-    }, [city, carat]);
+    }, [city, carat]); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (loading) {
         return (

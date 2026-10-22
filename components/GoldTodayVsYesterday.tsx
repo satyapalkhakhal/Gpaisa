@@ -2,34 +2,38 @@
 
 import { useEffect, useState } from 'react';
 import { goldHistoryRatePer10g } from '@/lib/goldUnits';
+import { fetchGoldHistoryBundleClient, hasCarats, type GoldCarat, type GoldHistoryBundle } from '@/lib/goldHistoryBundle';
 
 interface CompRow { metric: string; today: number; yesterday: number; }
 
 function fmtINR(v: number) { return '₹' + Math.round(v).toLocaleString('en-IN'); }
 
-export default function GoldTodayVsYesterday() {
-    const [rows, setRows] = useState<CompRow[]>([]);
-    const [loading, setLoading] = useState(true);
+const CARATS: GoldCarat[] = ['24k', '22k', '18k'];
+const LABELS: Record<GoldCarat, string> = { '24k': '24K Gold (10g)', '22k': '22K Gold (10g)', '18k': '18K Gold (10g)' };
+
+function compRows(bundle: GoldHistoryBundle): CompRow[] {
+    return CARATS.flatMap((carat) => {
+        const data = bundle[carat];
+        return data && data.length >= 2
+            ? [{ metric: LABELS[carat], today: goldHistoryRatePer10g(data[0].rate), yesterday: goldHistoryRatePer10g(data[1].rate) }]
+            : [];
+    });
+}
+
+export default function GoldTodayVsYesterday({ initialHistory }: { initialHistory?: GoldHistoryBundle }) {
+    const hasInitial = hasCarats(initialHistory, CARATS, 2);
+    const [rows, setRows] = useState<CompRow[]>(() => (hasInitial ? compRows(initialHistory!) : []));
+    const [loading, setLoading] = useState(!hasInitial);
 
     useEffect(() => {
+        if (hasInitial) return;
         (async () => {
             try {
-                const [r24, r22, r18] = await Promise.all([
-                    fetch('/api/gold-history?city=India&carat=24k').then(r => r.json()),
-                    fetch('/api/gold-history?city=India&carat=22k').then(r => r.json()),
-                    fetch('/api/gold-history?city=India&carat=18k').then(r => r.json()),
-                ]);
-                const result: CompRow[] = [];
-                for (const [label, d] of [['24K Gold (10g)', r24], ['22K Gold (10g)', r22], ['18K Gold (10g)', r18]] as const) {
-                    if (d.success && d.data?.length >= 2) {
-                        result.push({ metric: label, today: goldHistoryRatePer10g(d.data[0].rate), yesterday: goldHistoryRatePer10g(d.data[1].rate) });
-                    }
-                }
-                setRows(result);
+                setRows(compRows(await fetchGoldHistoryBundleClient('India', CARATS)));
             } catch (e) { console.error(e); }
             finally { setLoading(false); }
         })();
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (loading) return <div className="card animate-pulse"><div className="h-40 bg-gray-100 rounded" /></div>;
     if (!rows.length) return null;

@@ -12,7 +12,9 @@ import { Coins, MapPin, Calculator, TrendingUp, ShoppingBag, Landmark, BookOpen,
 import Link from 'next/link';
 import { getCityGoldData, CITY_GOLD_DATA } from '@/lib/cityGoldData';
 import { getTodayIST } from '@/lib/dateUtils';
-import { fetchGoldRatesAllCarats } from '@/lib/angelOneApi';
+import { fetchGoldHistory, fetchGoldRatesAllCarats } from '@/lib/angelOneApi';
+import { fetchMetalNewsCards } from '@/lib/articlesApi';
+import type { GoldNewsArticle } from '@/components/GoldNewsSection';
 import GoldPriceHistoryChart from '@/components/GoldPriceHistoryChart';
 import GoldNewsSection from '@/components/GoldNewsSection';
 
@@ -76,7 +78,13 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
         notFound();
     }
 
-    const goldRates = await fetchGoldRatesAllCarats();
+    // Loaded here (not in the browser) so tables and links are in the server HTML.
+    const [goldRates, cityHistory, goldNews] = await Promise.all([
+        fetchGoldRatesAllCarats(),
+        fetchGoldHistory(cityData.city, '24k'),
+        fetchMetalNewsCards('gold', 6).catch(() => []),
+    ]);
+    const cityHistory24k = cityHistory?.success ? cityHistory.data : undefined;
 
     const {
         city: cityName, state, mainMarkets, tagline, heroDescription,
@@ -240,15 +248,15 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
                                 Gold Rate History in {cityName} (24K)
                             </h2>
                         </div>
-                        <GoldHistoryTable city={cityName} carat="24k" />
+                        <GoldHistoryTable city={cityName} carat="24k" initialHistory={cityHistory24k} />
                     </section>
 
                     {/* ── Gold News ─────────────────────────────────────────── */}
-                    <GoldNewsSection />
+                    <GoldNewsSection initialArticles={goldNews as GoldNewsArticle[]} />
 
                     {/* ── Gold Price Trend Chart ─────────────────────────────── */}
                     <section className="mb-12" aria-labelledby="chart-heading">
-                        <DynamicGoldChart carat="24k" city={cityName} />
+                        <DynamicGoldChart carat="24k" city={cityName} initialHistory={cityHistory24k} />
                     </section>
 
                     {/* ── Historical Gold Prices — 62 Years ─────────────────── */}

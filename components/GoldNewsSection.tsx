@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Newspaper, Clock, ArrowRight } from 'lucide-react';
 
-interface GoldNewsArticle {
+export interface GoldNewsArticle {
     id: string;
     title: string;
     slug: string;
@@ -18,11 +18,14 @@ interface GoldNewsArticle {
     category: string;
 }
 
-export default function GoldNewsSection() {
-    const [articles, setArticles] = useState<GoldNewsArticle[]>([]);
-    const [loading, setLoading] = useState(true);
+// `initialArticles` is loaded on the server (fetchMetalNewsCards) so the links are in the
+// server HTML; crawlers can't fetch /api/metal-news (robots.txt). Undefined = fetch here.
+export default function GoldNewsSection({ initialArticles }: { initialArticles?: GoldNewsArticle[] }) {
+    const [articles, setArticles] = useState<GoldNewsArticle[]>(initialArticles ?? []);
+    const [loading, setLoading] = useState(initialArticles === undefined);
 
     useEffect(() => {
+        if (initialArticles !== undefined) return;
         const fetchNews = async () => {
             try {
                 const response = await fetch('/api/metal-news?metal=gold');
@@ -39,7 +42,7 @@ export default function GoldNewsSection() {
         };
 
         fetchNews();
-    }, []);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (loading) {
         return (

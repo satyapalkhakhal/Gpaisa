@@ -7,27 +7,9 @@
 // lib/citySilverData.ts but no AngelOne symbol, so they have no silver rate page.
 import type { SilverCity } from '@/types';
 import { getCitySilverData } from './citySilverData';
+import { SILVER_CITIES } from './silverCityList';
 
-export const SILVER_CITIES: SilverCity[] = [
-    { city: 'Ahmedabad', slug: 'ahmedabad', symbol: 'XAG-AHME' },
-    { city: 'Bangalore', slug: 'bangalore', symbol: 'XAG-BANG' },
-    { city: 'Chandigarh', slug: 'chandigarh', symbol: 'XAG-CHAN' },
-    { city: 'Chennai', slug: 'chennai', symbol: 'XAG-CHEN' },
-    { city: 'Coimbatore', slug: 'coimbatore', symbol: 'XAG-COIM' },
-    { city: 'Hyderabad', slug: 'hyderabad', symbol: 'XAG-HYDE' },
-    { city: 'Jaipur', slug: 'jaipur', symbol: 'XAG-JAIP' },
-    { city: 'Kolkata', slug: 'kolkata', symbol: 'XAG-KOLK' },
-    { city: 'Lucknow', slug: 'lucknow', symbol: 'XAG-LUCK' },
-    { city: 'Madurai', slug: 'madurai', symbol: 'XAG-MADU' },
-    { city: 'Mangalore', slug: 'mangalore', symbol: 'XAG-MANG' },
-    { city: 'Mumbai', slug: 'mumbai', symbol: 'XAG-MUMB' },
-    { city: 'Mysore', slug: 'mysore', symbol: 'XAG-MYSO' },
-    { city: 'Nagpur', slug: 'nagpur', symbol: 'XAG-NAGP' },
-    { city: 'Patna', slug: 'patna', symbol: 'XAG-PATN' },
-    { city: 'Pune', slug: 'pune', symbol: 'XAG-PUNE' },
-    { city: 'Salem', slug: 'salem', symbol: 'XAG-SALE' },
-    { city: 'Vijayawada', slug: 'vijayawada', symbol: 'XAG-VIJA' },
-];
+export { SILVER_CITIES };
 
 export function getSilverCity(slug: string): SilverCity | undefined {
     return SILVER_CITIES.find(c => c.slug === slug.toLowerCase());

@@ -1,7 +1,9 @@
 import { Metadata } from 'next';
 import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import { notFound } from 'next/navigation';
-import { fetchSilverCalculator } from '@/lib/angelOneApi';
+import { fetchSilverCalculator, fetchSilverHistory } from '@/lib/angelOneApi';
+import { fetchMetalNewsCards } from '@/lib/articlesApi';
+import type { SilverNewsArticle } from '@/components/SilverNewsSection';
 import { INDEXABLE_SILVER_CITIES, SILVER_CITIES, getSilverCity, isSilverCityIndexable } from '@/lib/silverCities';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
 import SilverCalculator from '@/components/SilverCalculator';
@@ -77,7 +79,12 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
     const citySlug = params.city;
     const silverInfo = getCitySilverData(citySlug);
 
-    const calculatorData = await fetchSilverCalculator(symbol);
+    // Loaded here (not in the browser) so tables and links are in the server HTML.
+    const [calculatorData, silverHistory, silverNews] = await Promise.all([
+        fetchSilverCalculator(symbol),
+        fetchSilverHistory(symbol, 10),
+        fetchMetalNewsCards('silver', 6).catch(() => []),
+    ]);
     const currentPrice = calculatorData?.data?.silver?.today || 0;
     const silverRateData = calculatorData?.data?.silver
         ? {
@@ -292,7 +299,7 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
                             Silver Rate History in {cityName}
                         </h2>
                     </div>
-                    <SilverHistoryTable symbol={symbol} />
+                    <SilverHistoryTable symbol={symbol} initialHistory={silverHistory?.success ? silverHistory.data : null} />
                 </section>
 
                 {/* ── Historical Silver Price Chart ─────────────────── */}
@@ -472,7 +479,7 @@ export default async function CitySilverRatePage(props: { params: Promise<{ city
                 )}
 
                 {/* ── Silver News ───────────────────────────────────────── */}
-                <SilverNewsSection />
+                <SilverNewsSection initialArticles={silverNews as SilverNewsArticle[]} />
 
                 {/* ── Other Cities ───────────────────────────────────────── */}
                 <section className="mb-10 card" aria-labelledby="other-cities-heading">

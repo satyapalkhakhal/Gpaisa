@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { MapPin, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { SILVER_CITIES } from '@/lib/silverCityList';
 
 interface CityRate {
     city: string;
@@ -15,25 +16,15 @@ interface CityRate {
     loaded: boolean;
 }
 
-// Cities to show, in order. Symbols (e.g. XAG-MUMB) come from /api/silver/cities — the same
-// list the /silver-rate/[city] routes are built from — so only cities with a live page are shown.
-const SILVER_CITIES = [
-    { city: 'Mumbai', slug: 'mumbai' },
-    { city: 'Chennai', slug: 'chennai' },
-    { city: 'Bangalore', slug: 'bangalore' },
-    { city: 'Hyderabad', slug: 'hyderabad' },
-    { city: 'Kolkata', slug: 'kolkata' },
-    { city: 'Pune', slug: 'pune' },
-    { city: 'Ahmedabad', slug: 'ahmedabad' },
-    { city: 'Jaipur', slug: 'jaipur' },
-    { city: 'Lucknow', slug: 'lucknow' },
-];
+// Cities to show, in order. Symbols come from the owned list the /silver-rate/[city] routes
+// are built from (lib/silverCityList.ts), so every row links to a live page.
+const SHOWN_CITY_SLUGS = ['mumbai', 'chennai', 'bangalore', 'hyderabad', 'kolkata', 'pune', 'ahmedabad', 'jaipur', 'lucknow'];
+const SHOWN_CITIES = SHOWN_CITY_SLUGS.flatMap(slug => SILVER_CITIES.filter(c => c.slug === slug));
 
 export default function CitySilverRatesTable() {
     const [cityRates, setCityRates] = useState<CityRate[]>(
-        SILVER_CITIES.map(c => ({
+        SHOWN_CITIES.map(c => ({
             ...c,
-            symbol: '',
             pricePerKg: 0,
             pricePerGram: 0,
             change: 0,
@@ -45,17 +36,7 @@ export default function CitySilverRatesTable() {
 
     useEffect(() => {
         const fetchRates = async () => {
-            let symbols = new Map<string, string>();
-            try {
-                const res = await fetch('/api/silver/cities');
-                const json = await res.json();
-                if (json.success && Array.isArray(json.data)) {
-                    symbols = new Map(json.data.map((c: { slug: string; symbol: string }) => [c.slug, c.symbol]));
-                }
-            } catch (err) {
-                console.error('Failed to load silver city list:', err);
-            }
-            const cities = SILVER_CITIES.filter(c => symbols.has(c.slug)).map(c => ({ ...c, symbol: symbols.get(c.slug)! }));
+            const cities = SHOWN_CITIES;
 
             const results = await Promise.allSettled(
                 cities.map(async (cityObj) => {
@@ -128,20 +109,14 @@ export default function CitySilverRatesTable() {
                                         className={`${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'} hover:bg-slate-50 transition-colors group`}
                                     >
                                         <td className="px-4 sm:px-6 py-3.5">
-                                            {loading ? (
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-4 h-4 bg-gray-200 rounded-full animate-pulse" />
-                                                    <div className="h-4 bg-gray-200 rounded w-20 animate-pulse" />
-                                                </div>
-                                            ) : (
-                                                <Link href={`/silver-rate/${r.slug}`} className="flex items-center gap-2 group/link">
+                                            {/* City links render immediately (also in the server HTML); only rates wait for data. */}
+                                            <Link href={`/silver-rate/${r.slug}`} className="flex items-center gap-2 group/link">
                                                     <MapPin className="h-4 w-4 text-slate-400 group-hover/link:text-slate-600 transition-colors flex-shrink-0" />
                                                     <span className="font-semibold text-gray-900 group-hover/link:text-slate-700 transition-colors whitespace-nowrap">
                                                         {r.city}
                                                     </span>
                                                     <span className="text-xs text-slate-500 opacity-0 group-hover/link:opacity-100 transition-opacity hidden sm:inline">→</span>
                                                 </Link>
-                                            )}
                                         </td>
                                         <td className="px-4 sm:px-6 py-3.5 text-right font-medium text-gray-700 whitespace-nowrap">
                                             {loading ? <div className="h-4 bg-gray-200 rounded w-14 ml-auto animate-pulse" /> : formatINR(Math.round(r.pricePerGram))}

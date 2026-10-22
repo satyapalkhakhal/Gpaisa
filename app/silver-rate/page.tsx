@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
-import { fetchSilverRateData } from '@/lib/angelOneApi';
+import { fetchSilverHistory, fetchSilverRateData } from '@/lib/angelOneApi';
+import { fetchMetalNewsCards } from '@/lib/articlesApi';
+import type { SilverNewsArticle } from '@/components/SilverNewsSection';
 import DynamicSilverRates from '@/components/DynamicSilverRates';
 import SilverHistoryTable from '@/components/SilverHistoryTable';
 import SilverPriceHistoryChart from '@/components/SilverPriceHistoryChart';
@@ -55,7 +57,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export const revalidate = 86400; // Cache for 1 day (ISR)
 
 export default async function SilverRatePage() {
-    const silverRateData = await fetchSilverRateData('XAG');
+    // Loaded here (not in the browser) so tables and links are in the server HTML.
+    const [silverRateData, silverHistory, silverNews] = await Promise.all([
+        fetchSilverRateData('XAG'),
+        fetchSilverHistory('XAG', 10),
+        fetchMetalNewsCards('silver', 6).catch(() => []),
+    ]);
 
     const structuredData = {
         "@context": "https://schema.org",
@@ -174,11 +181,11 @@ export default async function SilverRatePage() {
                     <p className="text-center text-gray-600 mb-6 max-w-2xl mx-auto">
                         Track the daily movement of silver prices across India. Historical price data helps identify trends and find the right time to buy silver or invest.
                     </p>
-                    <SilverHistoryTable symbol="XAG" gram={10} />
+                    <SilverHistoryTable symbol="XAG" gram={10} initialHistory={silverHistory?.success ? silverHistory.data : null} />
                 </section>
 
                 {/* 🪙 Silver News */}
-                <SilverNewsSection />
+                <SilverNewsSection initialArticles={silverNews as SilverNewsArticle[]} />
 
                 {/* 📈 Historical Silver Prices — 45 Years of Data */}
                 <SilverPriceHistoryChart />

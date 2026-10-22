@@ -2,7 +2,9 @@ import { Metadata } from 'next';
 import { goldRateLanguageAlternates } from '@/lib/goldRateLocale';
 import GoldRatePageClient from '@/components/GoldRatePageClient';
 import { getTodayIST } from '@/lib/dateUtils';
-import { fetchGoldHistory } from '@/lib/angelOneApi';
+import { fetchGoldHistory, fetchGoldHistoryBundle } from '@/lib/angelOneApi';
+import { fetchMetalNewsCards } from '@/lib/articlesApi';
+import type { GoldNewsArticle } from '@/components/GoldNewsSection';
 import { goldHistoryRatePer10g } from '@/lib/goldUnits';
 
 function formatHeroTime(d: Date): string {
@@ -82,7 +84,12 @@ export const revalidate = 86400; // Cache for 1 day (ISR) - static content is ca
 
 export default async function GoldRatePage() {
     const todayDate = getTodayIST();
-    const heroData = await fetchGoldHeroData();
+    // Loaded here (not in the browser) so tables and links are in the server HTML.
+    const [heroData, goldHistory, goldNews] = await Promise.all([
+        fetchGoldHeroData(),
+        fetchGoldHistoryBundle('India'),
+        fetchMetalNewsCards('gold', 6).catch(() => []),
+    ]);
 
     const webPageSchema = {
         '@context': 'https://schema.org',
@@ -173,7 +180,7 @@ export default async function GoldRatePage() {
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(datasetSchema) }} />
-            <GoldRatePageClient todayDate={todayDate} initialHeroData={heroData} />
+            <GoldRatePageClient todayDate={todayDate} initialHeroData={heroData} initialHistory={goldHistory} initialNews={goldNews as GoldNewsArticle[]} />
         </div>
     );
 }

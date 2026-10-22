@@ -7,15 +7,19 @@ import { TrendingDown, TrendingUp } from 'lucide-react';
 interface SilverHistoryTableProps {
     symbol?: string; // e.g. XAG or XAG-AHME
     gram?: number;
+    /** Server-loaded history (fetchSilverHistory) so the table is in the server HTML; skips the client fetch. */
+    initialHistory?: { gram: number; history: SilverHistoryItem[] } | null;
 }
 
-export default function SilverHistoryTable({ symbol = 'XAG', gram = 10 }: SilverHistoryTableProps) {
-    const [historyData, setHistoryData] = useState<SilverHistoryItem[]>([]);
-    const [loading, setLoading] = useState(true);
+export default function SilverHistoryTable({ symbol = 'XAG', gram = 10, initialHistory = null }: SilverHistoryTableProps) {
+    const hasInitial = !!initialHistory?.history?.length;
+    const [historyData, setHistoryData] = useState<SilverHistoryItem[]>(initialHistory?.history ?? []);
+    const [loading, setLoading] = useState(!hasInitial);
     const [error, setError] = useState<string | null>(null);
-    const [historyGram, setHistoryGram] = useState<number>(1);
+    const [historyGram, setHistoryGram] = useState<number>(initialHistory?.gram ?? 1);
 
     useEffect(() => {
+        if (hasInitial) return;
         const fetchHistory = async () => {
             try {
                 setLoading(true);
@@ -34,7 +38,7 @@ export default function SilverHistoryTable({ symbol = 'XAG', gram = 10 }: Silver
             }
         };
         fetchHistory();
-    }, [symbol, gram]);
+    }, [symbol, gram]); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (loading) {
         return (

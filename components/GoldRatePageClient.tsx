@@ -9,6 +9,8 @@ import CityGoldRatesTable from '@/components/CityGoldRatesTable';
 import GoldPriceHistoryChart from '@/components/GoldPriceHistoryChart';
 import GoldNewsSection from '@/components/GoldNewsSection';
 import { MarketInsight, DecisionBlock, InternalLinks, GoldFAQ } from '@/components/GoldDashboardSections';
+import type { GoldHistoryBundle } from '@/lib/goldHistoryBundle';
+import type { GoldNewsArticle } from '@/components/GoldNewsSection';
 
 interface GoldRatePageClientProps {
     todayDate: string;
@@ -19,32 +21,35 @@ interface GoldRatePageClientProps {
         trend: 'Bullish' | 'Bearish' | 'Neutral';
         lastUpdated: string;
     } | null;
+    /** Server-loaded India gold history and gold news, so the tables and links are in the server HTML. */
+    initialHistory?: GoldHistoryBundle;
+    initialNews?: GoldNewsArticle[];
 }
 
-export default function GoldRatePageClient({ todayDate, initialHeroData = null }: GoldRatePageClientProps) {
+export default function GoldRatePageClient({ todayDate, initialHeroData = null, initialHistory, initialNews }: GoldRatePageClientProps) {
     return (
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
             {/* SECTION 1: Hero — Live Price Above the Fold */}
             <GoldDashboardHero todayDate={todayDate} initialData={initialHeroData} />
 
             {/* SECTION 2: Gold Price Table — All Purities with Gram/Tola */}
-            <GoldPriceTable />
+            <GoldPriceTable initialHistory={initialHistory} />
 
             {/* SECTION 3: Today vs Yesterday Comparison */}
-            <GoldTodayVsYesterday />
+            <GoldTodayVsYesterday initialHistory={initialHistory} />
 
             {/* SECTION 4: 7-Day Trend Table */}
-            <GoldTrendTable days={7} title="📈 7-Day Gold Price Trend" />
+            <GoldTrendTable days={7} title="📈 7-Day Gold Price Trend" initialHistory={initialHistory} />
 
             {/* SECTION 5: 10-Day Trend Table (Extended) */}
-            <GoldTrendTable days={10} title="📈 10-Day Gold Price Trend (Extended)" />
+            <GoldTrendTable days={10} title="📈 10-Day Gold Price Trend (Extended)" initialHistory={initialHistory} />
 
             {/* Gold Price Trend Chart */}
             <section className="mb-8 sm:mb-12">
                 <h2 className="text-lg sm:text-2xl font-display font-bold text-gray-900 mb-4 flex items-center gap-2">
                     📊 Gold Price Trend Chart (24K)
                 </h2>
-                <DynamicGoldChart carat="24k" city="India" />
+                <DynamicGoldChart carat="24k" city="India" initialHistory={initialHistory?.['24k']} />
             </section>
 
             {/* Historical Gold Prices — 62 Years of Data */}
@@ -62,7 +67,7 @@ export default function GoldRatePageClient({ todayDate, initialHeroData = null }
             </div>
 
             {/* Gold News */}
-            <GoldNewsSection />
+            <GoldNewsSection initialArticles={initialNews} />
 
             {/* SECTION 8: Internal Links */}
             <InternalLinks />

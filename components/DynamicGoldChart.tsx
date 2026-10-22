@@ -8,14 +8,32 @@ import { goldHistoryRatePer10g } from '@/lib/goldUnits';
 interface DynamicGoldChartProps {
     carat?: '24k' | '22k' | '18k';
     city?: string;
+    /** Server-loaded history for this city/carat (latest first); skips the client fetch. */
+    initialHistory?: GoldHistoryItem[];
 }
 
-export default function DynamicGoldChart({ carat = '24k', city = 'India' }: DynamicGoldChartProps) {
-    const [chartData, setChartData] = useState<ChartDataPoint[]>([]);
-    const [loading, setLoading] = useState(true);
+// Convert "1 January 2026" to "2026-01-01" format for chart
+function formatDateForChart(dateStr: string): string {
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? dateStr : date.toISOString().split('T')[0];
+}
+
+// History arrives latest first; the chart wants oldest first. Copies, never mutates.
+function toChartPoints(history: GoldHistoryItem[]): ChartDataPoint[] {
+    return [...history].reverse().map((item) => ({
+        time: formatDateForChart(item.date),
+        value: goldHistoryRatePer10g(item.rate), // per 10 g
+    }));
+}
+
+export default function DynamicGoldChart({ carat = '24k', city = 'India', initialHistory }: DynamicGoldChartProps) {
+    const hasInitial = !!initialHistory?.length;
+    const [chartData, setChartData] = useState<ChartDataPoint[]>(() => (hasInitial ? toChartPoints(initialHistory!) : []));
+    const [loading, setLoading] = useState(!hasInitial);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        if (hasInitial) return;
         const fetchChartData = async () => {
             try {
                 setLoading(true);
@@ -25,16 +43,7 @@ export default function DynamicGoldChart({ carat = '24k', city = 'India' }: Dyna
                 const data = await response.json();
 
                 if (data.success && data.data.length > 0) {
-                    // Convert history data to chart format
-                    // Reverse the array so oldest date is first (for chart display)
-                    const chartPoints: ChartDataPoint[] = data.data
-                        .reverse()
-                        .map((item: GoldHistoryItem) => ({
-                            time: formatDateForChart(item.date),
-                            value: goldHistoryRatePer10g(item.rate) // per 10 g
-                        }));
-
-                    setChartData(chartPoints);
+                    setChartData(toChartPoints(data.data));
                 } else {
                     setError('Failed to load chart data');
                 }
@@ -47,20 +56,7 @@ export default function DynamicGoldChart({ carat = '24k', city = 'India' }: Dyna
         };
 
         fetchChartData();
-    }, [carat, city]);
-
-    // Convert "1 January 2026" to "2026-01-01" format for chart
-    const formatDateForChart = (dateStr: string): string => {
-        try {
-            const date = new Date(dateStr);
-            if (!isNaN(date.getTime())) {
-                return date.toISOString().split('T')[0];
-            }
-            return dateStr;
-        } catch {
-            return dateStr;
-        }
-    };
+    }, [carat, city]); // eslint-disable-line react-hooks/exhaustive-deps
 
     if (loading) {
         return (

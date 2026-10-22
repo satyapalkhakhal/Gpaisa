@@ -143,13 +143,8 @@ export default function CityGoldRatesTable() {
                                         className={`${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'} hover:bg-amber-50 transition-colors group`}
                                     >
                                         <td className="px-4 sm:px-6 py-3.5">
-                                            {loading ? (
-                                                <div className="flex items-center gap-2">
-                                                    <div className="w-4 h-4 bg-gray-200 rounded-full animate-pulse"></div>
-                                                    <div className="h-4 bg-gray-200 rounded w-20 animate-pulse"></div>
-                                                </div>
-                                            ) : (
-                                                <Link
+                                            {/* City links render immediately (also in the server HTML); only rates wait for data. */}
+                                            <Link
                                                     href={`/gold-rate/${cityRate.slug}`}
                                                     className="flex items-center gap-2 group/link"
                                                 >
@@ -161,7 +156,6 @@ export default function CityGoldRatesTable() {
                                                         →
                                                     </span>
                                                 </Link>
-                                            )}
                                         </td>
                                         <td className="px-4 sm:px-6 py-3.5 text-right font-medium text-gray-700 whitespace-nowrap">
                                             {loading ? (
