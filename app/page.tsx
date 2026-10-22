@@ -1,10 +1,9 @@
 import { Metadata } from 'next';
 import {
     fetchArticlesByCategory,
-    fetchAllArticles,
+    fetchArticlesByLanguage,
     fetchTrendingArticles,
     fetchCreditCardArticles,
-    Article
 } from '@/lib/articlesApi';
 import { fetchMarketIndices } from '@/lib/indicesApi';
 import { fetchGoldRatesAllCarats, fetchSilverRateData, type GoldCaratRate } from '@/lib/angelOneApi';
@@ -19,11 +18,12 @@ import { CALCULATORS } from '@/lib/calculatorsList';
 import IndexStrip from '@/components/home/IndexStrip';
 import IpoSection, { ipoTimeline } from '@/components/home/IpoSection';
 import BullionSection from '@/components/home/BullionSection';
-import NewsSection from '@/components/home/NewsSection';
 import CalculatorSection from '@/components/home/CalculatorSection';
 import HomeSidebar from '@/components/home/HomeSidebar';
 import TrustBand from '@/components/home/TrustBand';
 import { todayIsoIST } from '@/components/home/HomeUi';
+import { getCategoryBySlug } from '@/lib/categories';
+import { CategoryBlock, PillLinks, SectionHeader, StoryCard, StoryRow, TopStories, pickArticles } from '@/components/news/NewsBlocks';
 
 export const metadata: Metadata = {
     title: "gpaisa.in — Live Gold Rates, Financial Calculators & Market Data India",
@@ -69,7 +69,8 @@ export const revalidate = 300; // 5 min — dashboard data should feel reasonabl
 
 export default async function HomePage() {
     const [
-        allArticles,
+        latestArticles,
+        hindiArticles,
         trendingArticles,
         ipoArticles,
         businessArticles,
@@ -85,7 +86,8 @@ export default async function HomePage() {
         buybacks,
         rightsIssues,
     ] = await Promise.all([
-        fetchAllArticles(6),
+        fetchArticlesByLanguage('en', 12),
+        fetchArticlesByLanguage('hi', 6),
         fetchTrendingArticles(8),
         fetchArticlesByCategory('IPO', 6),
         fetchArticlesByCategory('BUSINESS', 6),
@@ -105,17 +107,28 @@ export default async function HomePage() {
 
     const today = todayIsoIST();
 
-    // News tabs: "Latest" across everything, then one tab per desk. The trending rail skips
-    // whatever the Latest tab already shows so the two never list the same headline.
-    const latest = allArticles.slice(0, 6);
-    const latestIds = new Set(latest.map(a => a.id));
-    const trending = trendingArticles.filter(a => !latestIds.has(a.id)).slice(0, 5);
-    const newsTabs = [
-        { key: 'latest', label: 'Latest', href: '/news', articles: latest },
-        { key: 'ipo', label: 'IPO', href: '/category/ipo', articles: ipoArticles.slice(0, 6) },
-        { key: 'gold', label: 'Gold & commodities', href: '/category/business', articles: businessArticles.slice(0, 6) },
-        { key: 'finance', label: 'Personal finance', href: '/category/finance', articles: financeArticles.slice(0, 6) },
-        { key: 'cards', label: 'Credit cards', href: '/credit-cards', articles: creditCardArticles },
+    // News first, like a business-news front page: lead + two secondary stories + a latest rail,
+    // then one block per desk. `shown` keeps a headline from repeating until a desk runs short.
+    const shown = new Set<string>();
+    const [lead, ...afterLead] = pickArticles(latestArticles.filter(a => a.image_url).concat(latestArticles.filter(a => !a.image_url)), shown, 3);
+    const secondary = afterLead;
+    const latestRail = pickArticles(latestArticles, shown, 6, false);
+    const desks = [
+        { category: getCategoryBySlug('ipo')!, articles: pickArticles(ipoArticles, shown, 4) },
+        { category: getCategoryBySlug('business')!, articles: pickArticles(businessArticles, shown, 4) },
+        { category: getCategoryBySlug('finance')!, articles: pickArticles(financeArticles, shown, 4) },
+    ];
+    const cardDesk = { category: getCategoryBySlug('credit-cards')!, articles: pickArticles(creditCardArticles, shown, 4) };
+    const trending = trendingArticles.filter(a => !shown.has(a.id)).slice(0, 5);
+    const quickLinks = [
+        { href: '/ipo/gmp', label: 'IPO GMP today' },
+        { href: '/gold-rate', label: 'Gold rate today' },
+        { href: '/silver-rate', label: 'Silver rate' },
+        { href: '/credit-cards', label: 'Credit cards' },
+        { href: '/calculator/sip', label: 'SIP calculator' },
+        { href: '/calculator/income-tax', label: 'Income tax calculator' },
+        { href: '/calculator/home-loan', label: 'Home loan EMI' },
+        { href: '/hi', label: 'हिंदी' },
     ];
 
     // Same date-based rules as the IPO table, so the sidebar's "n open" badges agree with it.
@@ -193,13 +206,18 @@ export default async function HomePage() {
                     <h1 className="sr-only">Live Gold Rates, Financial Calculators &amp; Market Data for India</h1>
 
                     <IndexStrip indices={marketIndices} gold={goldRates} silver={silverRateData} silverCity={HOME_SILVER_CITY.city} />
+                    <div className="mt-4"><PillLinks links={quickLinks} label="Quick links" /></div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-8 lg:gap-10 mt-8">
+                    {lead && (
+                        <div className="mt-6">
+                            <TopStories lead={lead} secondary={secondary} latest={latestRail} lang="en" latestHref="/news" />
+                        </div>
+                    )}
+
+                    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_340px] gap-8 lg:gap-10 mt-12">
                         <div className="space-y-10 min-w-0">
                             <IpoSection board={gmpBoard} listings={listingBoard} today={today} />
                             <BullionSection gold={goldRates} silver={silverRateData} silverCity={HOME_SILVER_CITY.city} />
-                            <NewsSection tabs={newsTabs} />
-                            <CalculatorSection />
                         </div>
                         <HomeSidebar
                             openIpoCount={openIpoCount}
@@ -207,6 +225,31 @@ export default async function HomePage() {
                             reviews={ipoReviews}
                             trending={trending}
                         />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10 mt-12">
+                        {desks.map(d => <CategoryBlock key={d.category.slug} category={d.category} articles={d.articles} lang="en" />)}
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 mt-12">
+                        <CategoryBlock category={cardDesk.category} articles={cardDesk.articles} lang="en" />
+                        {hindiArticles.length > 0 && (
+                            <section aria-labelledby="hindi-heading" className={cardDesk.articles.length > 0 ? 'lg:col-span-2' : 'lg:col-span-3'}>
+                                <SectionHeader id="hindi-heading" title="हिंदी में पढ़ें" href="/hi" lang="hi" />
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    {hindiArticles.slice(0, 2).map(a => <StoryCard key={a.id} article={a} lang="hi" />)}
+                                </div>
+                                {hindiArticles.length > 2 && (
+                                    <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 sm:gap-x-6 border-t border-gw-border">
+                                        {hindiArticles.slice(2, 6).map(a => <StoryRow key={a.id} article={a} lang="hi" />)}
+                                    </div>
+                                )}
+                            </section>
+                        )}
+                    </div>
+
+                    <div className="mt-12">
+                        <CalculatorSection />
                     </div>
 
                     <div className="mt-12">
