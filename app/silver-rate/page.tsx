@@ -1,16 +1,16 @@
 import { Metadata } from 'next';
-import { fetchSilverHistory, fetchSilverRateData } from '@/lib/angelOneApi';
-import { fetchMetalNewsCards } from '@/lib/articlesApi';
-import type { SilverNewsArticle } from '@/components/SilverNewsSection';
-import DynamicSilverRates from '@/components/DynamicSilverRates';
-import SilverHistoryTable from '@/components/SilverHistoryTable';
-import SilverPriceHistoryChart from '@/components/SilverPriceHistoryChart';
-import SilverNewsSection from '@/components/SilverNewsSection';
-import CitySilverRatesTable from '@/components/CitySilverRatesTable';
 import Link from 'next/link';
-import Image from 'next/image';
-import { MapPin, TrendingUp, Calculator, Globe, BarChart3, ArrowRight, Scale, Calendar } from 'lucide-react';
+import { fetchMetalNewsCards } from '@/lib/articlesApi';
 import { getTodayIST } from '@/lib/dateUtils';
+import { fetchGoldSnapshot, fetchSilverCityTable, fetchSilverSeries, seriesStats } from '@/lib/rates';
+import {
+    Breadcrumb, BulletList, CityRateTable, FaqList, HistoryTable, KeyRateCards, MetalTabs, Prose, RateLayout, RateMatrix,
+    RateNote, RangeStats, RateTitle, Section, feedDate, inr,
+} from '@/components/rates/RatesUi';
+import PriceLineChart from '@/components/rates/PriceLineChart';
+import { SilverPurityGuide } from '@/components/rates/CityGuide';
+import RateRail from '@/components/rates/RateRail';
+import SilverPriceHistoryChart from '@/components/SilverPriceHistoryChart';
 
 export async function generateMetadata(): Promise<Metadata> {
     const todayDate = getTodayIST();
@@ -54,15 +54,31 @@ export async function generateMetadata(): Promise<Metadata> {
     };
 }
 
-export const revalidate = 86400; // Cache for 1 day (ISR)
+export const revalidate = 3600;
 
 export default async function SilverRatePage() {
-    // Loaded here (not in the browser) so tables and links are in the server HTML.
-    const [silverRateData, silverHistory, silverNews] = await Promise.all([
-        fetchSilverRateData('XAG'),
-        fetchSilverHistory('XAG', 10),
+    // Loaded on the server so rates, tables and links are in the HTML.
+    const [series, cityRows, silverNews, gold] = await Promise.all([
+        fetchSilverSeries('XAG'),
+        fetchSilverCityTable(),
         fetchMetalNewsCards('silver', 6).catch(() => []),
+        fetchGoldSnapshot('India'),
     ]);
+    const latest = series[0];
+    const stats = seriesStats(series);
+    const days = series.length;
+
+    // One list drives both the visible FAQ and the FAQPage schema.
+    const faq = [
+        ...(latest ? [{
+            question: 'What is the silver rate today in India?',
+            answer: `The indicative all-India silver (999) rate for ${feedDate(latest.date, 'en')} is ${inr(latest.perGram * 1000)} per kg, or ${inr(latest.perGram * 10)} per 10 grams, before GST and making charges. City rates differ; see the city table on this page.`,
+        }] : []),
+        { question: 'Why do silver rates differ across cities?', answer: 'The base price follows the international silver price in rupees plus import duty. Cities differ by transport and dealer costs, local demand and jewellers’ margins.' },
+        { question: 'What affects silver prices in India?', answer: 'International silver prices, the dollar–rupee exchange rate, import duty, industrial demand (electronics, solar panels), inflation and festival demand.' },
+        { question: 'Is silver a good investment?', answer: 'Silver is more volatile than gold because a large share of demand is industrial, so prices can rise or fall sharply. It can diversify a portfolio but suits investors who can hold through big swings. This is general information, not investment advice.' },
+        { question: 'How does silver compare with gold?', answer: 'Gold is steadier and is mainly an investment and jewellery metal. Silver is cheaper per gram, swings more and depends more on industrial demand. Many investors hold both in small proportions.' },
+    ];
 
     const structuredData = {
         "@context": "https://schema.org",
@@ -89,13 +105,7 @@ export default async function SilverRatePage() {
     const faqSchema = {
         "@context": "https://schema.org",
         "@type": "FAQPage",
-        "mainEntity": [
-            { "@type": "Question", "name": "What is the silver rate today in India?", "acceptedAnswer": { "@type": "Answer", "text": "Silver rates in India vary by city. Check our live silver rate table above for current prices per gram and per kg in major Indian cities." } },
-            { "@type": "Question", "name": "Why do silver rates differ across cities?", "acceptedAnswer": { "@type": "Answer", "text": "Silver prices differ across Indian cities due to local taxes, transportation costs, demand-supply dynamics, and dealer margins." } },
-            { "@type": "Question", "name": "What factors affect silver prices in India?", "acceptedAnswer": { "@type": "Answer", "text": "Silver prices are influenced by international prices, USD/INR exchange rate, industrial demand (electronics, solar panels), inflation, and geopolitical tensions." } },
-            { "@type": "Question", "name": "Is silver a good investment in 2026?", "acceptedAnswer": { "@type": "Answer", "text": "Silver offers a unique combination of precious metal value and industrial demand. With growing solar panel and electronics production, silver demand is expected to rise, making it an attractive investment option." } },
-            { "@type": "Question", "name": "How does silver compare to gold as an investment?", "acceptedAnswer": { "@type": "Answer", "text": "Silver is more volatile than gold but has higher growth potential due to industrial demand. Gold is a safer, more stable investment. Many experts recommend holding both in a diversified portfolio." } },
-        ]
+        mainEntity: faq.map(f => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
     };
 
     const articleSchema = {
@@ -116,312 +126,160 @@ export default async function SilverRatePage() {
         "inLanguage": "en-IN",
     };
 
+    const th = 'px-3 py-2 text-left text-xs font-semibold text-gray-600 bg-gray-50';
+    const td = 'px-3 py-2.5 text-sm';
+
     return (
-        <div className="bg-gray-50 py-12">
+        <>
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
 
-            <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                {/* Header */}
-                <header className="mb-12 text-center">
-                    <h1 className="text-4xl md:text-5xl font-display font-bold text-gray-900 mb-4">
-                        Silver Rate Today in India — {getTodayIST()}
-                    </h1>
-                    <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                        Check live silver rates across major Indian cities. Updated in real-time with prices per gram and per kg.
-                    </p>
-                </header>
+            <RateLayout rail={
+                <RateRail
+                    lang="en"
+                    cityTitle="Silver rate in major cities"
+                    cityRows={cityRows}
+                    rateKey="silver"
+                    grams={1000}
+                    unitLabel="999 silver, per kg"
+                    hrefFor={slug => `/silver-rate/${slug}`}
+                    other={gold['22K'][0] ? { title: 'Gold rate today', href: '/gold-rate', label: '22K, per 10 grams', value: inr(gold['22K'][0].perGram * 10) } : undefined}
+                    tools={[
+                        { href: '/gold-vs-silver', label: 'Gold vs silver' },
+                        { href: '/commodities', label: 'Commodity prices' },
+                        { href: '/calculator/sip', label: 'SIP calculator' },
+                    ]}
+                    newsTitle="Silver news"
+                    news={silverNews}
+                />
+            }>
+                <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Silver Rate' }]} />
+                <MetalTabs active="silver" goldHref="/gold-rate" silverHref="/silver-rate" lang="en" />
+                <RateTitle
+                    lang="en"
+                    title={`Silver Rate Today in India — ${getTodayIST()}`}
+                    updated={latest ? feedDate(latest.date, 'en') : undefined}
+                    summary={latest ? (
+                        <>
+                            The indicative price of silver in India is <strong>{inr(latest.perGram * 1000)} per kg</strong> today ({inr(latest.perGram * 10)} per 10 grams),{' '}
+                            {Math.abs(latest.changePercent) < 0.005 ? 'unchanged from the previous day' : <>{latest.change > 0 ? 'up' : 'down'} {inr(Math.abs(latest.change * 1000))} per kg ({Math.abs(latest.changePercent).toFixed(2)}%) from the previous day</>}.
+                            {stats && days > 1 && <> Over the last {days} days silver has {stats.change >= 0 ? 'gained' : 'lost'} {Math.abs(stats.changePercent).toFixed(2)}%.</>}
+                        </>
+                    ) : <>Today&apos;s silver rates are temporarily unavailable. Please check again shortly.</>}
+                />
 
-                {/* 📊 Silver Rate Today in India - SEO Authority Section */}
-                <section className="mb-16">
-                    <div className="card bg-white rounded-2xl shadow-lg overflow-hidden">
-                        <div className="md:flex">
-                            <div className="md:w-1/2 p-8 md:p-10">
-                                <h2 className="text-3xl font-display font-bold text-gray-900 mb-5 flex items-center gap-2">
-                                    📊 Silver Rate Today in India
-                                </h2>
-                                <p className="text-gray-700 leading-relaxed mb-4">
-                                    Silver prices in India are driven by a unique combination of precious metal demand and industrial usage. Unlike gold, silver has significant industrial applications in electronics, solar panels, and medical devices, which heavily influence its pricing.
-                                </p>
-                                <p className="text-gray-700 leading-relaxed">
-                                    In 2026, silver prices have been particularly volatile due to the surge in green energy investments and the growing demand for solar panels worldwide. Understanding these dynamics is key for both investors and jewellery buyers.
-                                </p>
-                            </div>
-                            <div className="md:w-1/2 relative min-h-[280px]">
-                                <Image
-                                    src="https://res.cloudinary.com/dpqtibvzn/image/upload/v1776489180/thinkscope/rfjxaypw68ncjyc5plbz.jpg"
-                                    alt="Silver Rate Today in India - Live Silver Price Chart and Analysis"
-                                    fill
-                                    className="object-cover"
-                                    sizes="(max-width: 768px) 100vw, 50vw"
-                                    priority
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </section>
+                {latest && (
+                    <KeyRateCards rates={[
+                        { label: 'Silver 999', sub: '1 kg', value: latest.perGram * 1000, change: latest.change * 1000, changePercent: latest.changePercent },
+                        { label: 'Silver 999', sub: '10 grams', value: latest.perGram * 10, change: latest.change * 10, changePercent: latest.changePercent, digits: 2 },
+                        { label: 'Silver 925', sub: '10 grams', value: latest.perGram * 10 * 0.925, change: latest.change * 10 * 0.925, changePercent: latest.changePercent, digits: 2 },
+                    ]} />
+                )}
 
-                {/* National Rates */}
-                <section className="mb-16">
-                    <h2 className="text-2xl font-display font-semibold text-gray-900 mb-6 text-center">
-                        Current Silver Rates
-                    </h2>
-                    <DynamicSilverRates initialRateData={silverRateData} initialLastUpdated={silverRateData ? new Date().toISOString() : null} />
-                </section>
+                {latest && (
+                    <Section id="today-rates" title="Silver price today by purity and weight">
+                        <RateMatrix
+                            lang="en"
+                            caption="Silver price in India today by purity and weight"
+                            rows={[
+                                { label: '999 fine', sub: '99.9% pure', perGram: latest.perGram },
+                                { label: '925 sterling', sub: '92.5% (jewellery)', perGram: latest.perGram * 0.925 },
+                            ]}
+                            weights={[{ label: '1 gram', grams: 1 }, { label: '10 grams', grams: 10 }, { label: '100 grams', grams: 100 }, { label: '1 kg', grams: 1000 }]}
+                        />
+                        <RateNote lang="en">Rates are indicative, before GST (3%) and making charges. 925 is worked out from the 999 rate. Check with your jeweller before buying.</RateNote>
+                    </Section>
+                )}
 
-                {/* 📅 Silver Rate History - Last 10 Days */}
-                <section className="mb-16" aria-labelledby="silver-history-heading">
-                    <div className="flex items-center justify-center space-x-3 mb-6">
-                        <Calendar className="h-7 w-7 text-gray-600" aria-hidden="true" />
-                        <h2 id="silver-history-heading" className="text-2xl md:text-3xl font-display font-bold text-gray-900">
-                            Silver Rate History in India — Last 10 Days
-                        </h2>
-                    </div>
-                    <p className="text-center text-gray-600 mb-6 max-w-2xl mx-auto">
-                        Track the daily movement of silver prices across India. Historical price data helps identify trends and find the right time to buy silver or invest.
-                    </p>
-                    <SilverHistoryTable symbol="XAG" gram={10} initialHistory={silverHistory?.success ? silverHistory.data : null} />
-                </section>
+                {cityRows.length > 0 && (
+                    <Section id="cities" title="Silver rate today in major cities">
+                        <CityRateTable
+                            lang="en"
+                            caption="Silver rate today in major Indian cities"
+                            rows={cityRows}
+                            columns={[{ key: 'silver', label: '10 grams', grams: 10 }, { key: 'silver', label: '1 kg', grams: 1000 }]}
+                            hrefFor={slug => `/silver-rate/${slug}`}
+                        />
+                    </Section>
+                )}
 
-                {/* 🪙 Silver News */}
-                <SilverNewsSection initialArticles={silverNews as SilverNewsArticle[]} />
+                {days > 1 && (
+                    <Section id="history" title={`Silver rate in India: last ${days} days`}>
+                        <HistoryTable lang="en" caption={`Silver rate in India over the last ${days} days`} grams={1000} columns={[{ label: 'Silver 999 (1 kg)', series }]} />
+                    </Section>
+                )}
 
-                {/* 📈 Historical Silver Prices — 45 Years of Data */}
+                {days > 1 && (
+                    <Section id="trend" title="Silver price trend">
+                        <PriceLineChart series={series} grams={1000} lang="en" color="#64748b" label={`Silver price in India, per kg, last ${days} days`} />
+                        <RangeStats stats={stats} grams={1000} lang="en" days={days} />
+                    </Section>
+                )}
+
                 <SilverPriceHistoryChart />
 
-                {/* 🌍 What Affects Silver Prices in India? */}
-                <section className="mb-16">
-                    <div className="card bg-gradient-to-br from-gray-50 to-slate-100 border border-gray-200 rounded-2xl p-8 md:p-10">
-                        <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-6 flex items-center gap-2">
-                            <Globe className="h-7 w-7 text-gray-600" />
-                            What Affects Silver Prices in India?
-                        </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {[
-                                { icon: '🌐', title: 'International Silver Prices', desc: 'Global benchmark prices on COMEX and London markets directly influence Indian silver rates.' },
-                                { icon: '💱', title: 'USD to INR Exchange Rate', desc: 'A weaker rupee makes imported silver more expensive, increasing domestic prices.' },
-                                { icon: '🔬', title: 'Industrial Demand', desc: 'Growing demand from electronics, solar panels, and 5G technology significantly drives silver prices.' },
-                                { icon: '☀️', title: 'Green Energy Expansion', desc: 'Solar panel manufacturing uses massive amounts of silver, creating sustained upward pressure.' },
-                                { icon: '📈', title: 'Inflation & Interest Rates', desc: 'Higher inflation pushes investors toward precious metals including silver as a hedge.' },
-                                { icon: '🎉', title: 'Festival & Seasonal Demand', desc: 'Silverware and jewellery purchases spike during festive seasons and weddings in India.' },
-                            ].map((item, i) => (
-                                <div key={i} className="bg-white/80 backdrop-blur-sm rounded-xl p-5 border border-gray-100 hover:shadow-md transition-shadow">
-                                    <div className="text-2xl mb-2">{item.icon}</div>
-                                    <h3 className="font-semibold text-gray-900 mb-1">{item.title}</h3>
-                                    <p className="text-sm text-gray-600">{item.desc}</p>
-                                </div>
-                            ))}
-                        </div>
+                <Section id="drivers" title="What affects silver prices in India">
+                    <Prose>
+                        <p>Silver prices in India follow the international price, converted to rupees, plus import duty. Unlike gold, more than half of silver demand is industrial, so factory and green-energy demand moves the price as much as investors do.</p>
+                    </Prose>
+                    <div className="mt-3">
+                        <BulletList items={[
+                            'International silver prices (COMEX and London)',
+                            'The dollar–rupee exchange rate: a weaker rupee makes imported silver dearer',
+                            'Industrial demand from electronics, solar panels and electric vehicles',
+                            'Inflation and interest rates, which change investor demand for precious metals',
+                            'Festival and wedding season buying of jewellery and silverware',
+                        ]} />
                     </div>
-                </section>
+                </Section>
 
-                {/* 📈 Current Silver Market Trend */}
-                <section className="mb-16">
-                    <div className="card bg-gradient-to-r from-emerald-50 to-teal-50 border border-emerald-200 rounded-2xl p-8 md:p-10">
-                        <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-5 flex items-center gap-2">
-                            <BarChart3 className="h-7 w-7 text-emerald-600" />
-                            Current Silver Market Trend
-                        </h2>
-                        <div className="space-y-4">
-                            <p className="text-gray-700 leading-relaxed text-lg">
-                                Silver prices have seen significant movement in recent months, driven by industrial demand and global market uncertainty. The metal&apos;s dual role as both an investment asset and an industrial commodity continues to make it one of the most dynamic precious metals to track.
-                            </p>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-                                <div className="bg-white/80 rounded-xl p-5 text-center border border-emerald-100">
-                                    <p className="text-sm text-gray-500 mb-1">Trend Direction</p>
-                                    <p className="text-xl font-bold text-emerald-600 flex items-center justify-center gap-1">
-                                        <TrendingUp className="h-5 w-5" /> Bullish
-                                    </p>
-                                </div>
-                                <div className="bg-white/80 rounded-xl p-5 text-center border border-emerald-100">
-                                    <p className="text-sm text-gray-500 mb-1">Volatility</p>
-                                    <p className="text-xl font-bold text-amber-600">Very High</p>
-                                </div>
-                                <div className="bg-white/80 rounded-xl p-5 text-center border border-emerald-100">
-                                    <p className="text-sm text-gray-500 mb-1">Key Driver</p>
-                                    <p className="text-xl font-bold text-blue-600">Industrial + Solar</p>
-                                </div>
-                            </div>
-                        </div>
+                <Section id="silver-vs-gold" title="Silver vs gold at a glance">
+                    <div className="overflow-x-auto rounded-xl border border-gw-border">
+                        <table className="w-full">
+                            <thead><tr><th scope="col" className={th}>Factor</th><th scope="col" className={th}>Silver</th><th scope="col" className={th}>Gold</th></tr></thead>
+                            <tbody className="divide-y divide-gw-border">
+                                {[
+                                    ['Price swings', 'High', 'Lower'],
+                                    ['Industrial use', 'Large (electronics, solar)', 'Small'],
+                                    ['Main role', 'Industrial metal and investment', 'Investment and jewellery'],
+                                    ['Storage', 'Bulky for the same value', 'Compact'],
+                                ].map(([f, sv, g]) => (
+                                    <tr key={f}><th scope="row" className={`${td} text-left font-semibold`}>{f}</th><td className={td}>{sv}</td><td className={td}>{g}</td></tr>
+                                ))}
+                            </tbody>
+                        </table>
                     </div>
-                </section>
+                    <p className="mt-2 text-sm"><Link href="/gold-vs-silver" className="font-semibold text-gw-green hover:underline">Full gold vs silver comparison →</Link></p>
+                </Section>
 
-                {/* ⚖️ Silver vs Gold Comparison */}
-                <section className="mb-16">
-                    <div className="card bg-gradient-to-r from-gray-50 via-white to-amber-50 border border-gray-200 rounded-2xl p-8 md:p-10">
-                        <h2 className="text-2xl md:text-3xl font-display font-bold text-gray-900 mb-5 flex items-center gap-2">
-                            <Scale className="h-7 w-7 text-gray-600" />
-                            Silver vs Gold: Quick Comparison
-                        </h2>
-                        <p className="text-gray-700 mb-6 leading-relaxed">
-                            While gold is traditionally the preferred safe-haven asset, silver&apos;s industrial demand gives it a unique investment profile. Understanding the differences helps investors build a balanced precious metals portfolio.
-                        </p>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm border-collapse">
-                                <thead>
-                                    <tr className="bg-gray-800 text-white">
-                                        <th className="px-4 py-3 text-left rounded-tl-lg">Factor</th>
-                                        <th className="px-4 py-3 text-center">🥈 Silver</th>
-                                        <th className="px-4 py-3 text-center rounded-tr-lg">🥇 Gold</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {[
-                                        ['Volatility', 'High', 'Low–Medium'],
-                                        ['Industrial Use', 'Very High (Solar, Electronics)', 'Limited'],
-                                        ['Investment Type', 'Growth + Industrial', 'Safe Haven'],
-                                        ['Liquidity', 'High', 'Very High'],
-                                        ['Storage', 'Bulky (Lower value per gram)', 'Easy (High value per gram)'],
-                                        ['10-Year CAGR (India)', '~10-13%', '~12-14%'],
-                                        ['Best For', 'Higher risk-reward', 'Long-term stability'],
-                                        ['Green Energy Demand', '🔥 Very Strong', 'Minimal'],
-                                    ].map(([factor, silver, gold], i) => (
-                                        <tr key={i} className={i % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-                                            <td className="px-4 py-3 font-medium text-gray-900">{factor}</td>
-                                            <td className="px-4 py-3 text-center text-gray-600 font-medium">{silver}</td>
-                                            <td className="px-4 py-3 text-center text-amber-700 font-medium">{gold}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                        <div className="mt-6 flex flex-wrap gap-4 items-center">
-                            <Link
-                                href="/gold-vs-silver"
-                                className="inline-flex items-center gap-2 bg-gradient-to-r from-gray-600 to-gray-800 text-white px-6 py-3 rounded-lg font-semibold hover:from-gray-700 hover:to-gray-900 transition-all shadow-md hover:shadow-lg"
-                            >
-                                📊 View Full Silver vs Gold Analysis
-                                <ArrowRight className="h-4 w-4" />
-                            </Link>
-                            <Link
-                                href="/gold-rate"
-                                className="inline-flex items-center gap-2 text-amber-600 hover:text-amber-700 font-medium transition-colors"
-                            >
-                                View Gold Rates →
-                            </Link>
-                        </div>
-                    </div>
-                </section>
+                <Section id="ways-to-invest" title="Ways to buy silver">
+                    <dl className="divide-y divide-gw-border border-y border-gw-border">
+                        {[
+                            ['Physical silver', 'Bars, coins and jewellery. Needs safe storage; jewellery carries making charges.'],
+                            ['Silver ETFs', 'Track the silver price and trade on the stock exchange; no storage and easy to sell.'],
+                            ['Silver fund of funds', 'Mutual funds that invest in silver ETFs; can be bought through a SIP.'],
+                            ['Digital silver', 'Sold by apps in small amounts. These products are not regulated by SEBI, so check the provider carefully.'],
+                        ].map(([k, v]) => (
+                            <div key={k} className="grid grid-cols-1 sm:grid-cols-[200px_1fr] gap-1 py-2.5 text-[15px]">
+                                <dt className="font-semibold">{k}</dt><dd className="text-gray-700">{v}</dd>
+                            </div>
+                        ))}
+                    </dl>
+                    <p className="mt-2 text-xs text-gray-500">Silver is usually quoted per kg in the wholesale market and per 10 grams or per gram in shops (1 kg = 1,000 grams).</p>
+                </Section>
 
-                {/* City-Wise Silver Rates — Live Table */}
-                <CitySilverRatesTable />
+                <SilverPurityGuide />
 
-                {/* Features Section */}
-                <section className="mb-16">
-                    <h2 className="text-2xl font-display font-semibold text-gray-900 mb-8 text-center">
-                        Why Track Silver Rates on gpaisa.in?
-                    </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        <div className="card text-center">
-                            <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <TrendingUp className="h-8 w-8 text-green-600" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Live Market Data</h3>
-                            <p className="text-gray-600">
-                                Real-time silver prices updated directly from market feeds.
-                            </p>
-                        </div>
-                        <div className="card text-center">
-                            <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <MapPin className="h-8 w-8 text-blue-600" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">City-Specific Rates</h3>
-                            <p className="text-gray-600">
-                                Accurate rates for over 15 major Indian cities.
-                            </p>
-                        </div>
-                        <div className="card text-center">
-                            <div className="bg-purple-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                                <Calculator className="h-8 w-8 text-purple-600" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-900 mb-2">Smart Calculator</h3>
-                            <p className="text-gray-600">
-                                Calculate value for any weight instantly.
-                            </p>
-                        </div>
-                    </div>
-                </section>
+                <Section id="faq" title="Frequently asked questions">
+                    <FaqList items={faq} />
+                </Section>
 
-                {/* SEO Content */}
-                <article className="card mb-12">
-                    <h2 className="text-2xl font-display font-bold text-gray-900 mb-4">
-                        Understanding Silver Rates in India
-                    </h2>
-                    <div className="prose prose-gray max-w-none text-gray-700 space-y-4">
-                        <p>
-                            Silver is a popular precious metal in India, used extensively in jewelry, silverware, and industry.
-                            Like gold, silver rates in India are influenced by international prices, currency fluctuations, import duties, and local demand.
-                        </p>
-                        <h3 className="text-xl font-semibold text-gray-900 mt-6">Factors Impacting Silver Prices</h3>
-                        <ul className="list-disc list-inside space-y-2">
-                            <li><strong>Industrial Demand:</strong> Silver has massive industrial applications in electronics, solar panels, and medical devices.</li>
-                            <li><strong>Investment Demand:</strong> Investors buy silver as a hedge against inflation and currency devaluation.</li>
-                            <li><strong>USD/INR Rate:</strong> A weaker Rupee makes imported silver more expensive.</li>
-                            <li><strong>Green Energy:</strong> Solar panel manufacturing is one of the fastest-growing sources of silver demand globally.</li>
-                        </ul>
-                        <h3 className="text-xl font-semibold text-gray-900 mt-6">Silver Weight Units</h3>
-                        <p>
-                            Silver is commonly traded in kilograms (kg) in the wholesale market, while retail prices are often quoted per 10 grams or per gram.
-                            1 Kg = 1000 Grams.
-                        </p>
-                    </div>
-                </article>
-
-                {/* Silver Investment Guide - Authority Content */}
-                <article className="card mb-12 bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
-                    <h2 className="text-2xl font-display font-bold text-gray-900 mb-4 flex items-center gap-2">
-                        💡 Silver Investment Guide for 2026
-                    </h2>
-                    <div className="prose prose-gray max-w-none text-gray-700 space-y-4">
-                        <p>
-                            Silver offers unique investment opportunities due to its dual nature as both a precious metal and an industrial commodity. Here are the key ways to invest in silver in India:
-                        </p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-                            <div className="bg-white/80 rounded-xl p-5 border border-blue-100">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Physical Silver</h3>
-                                <p className="text-sm text-gray-600">
-                                    Silver bars, coins, and jewellery. Most traditional form but requires secure storage due to bulk.
-                                </p>
-                            </div>
-                            <div className="bg-white/80 rounded-xl p-5 border border-blue-100">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Silver ETFs</h3>
-                                <p className="text-sm text-gray-600">
-                                    Exchange-traded funds that track silver prices. No storage hassle, highly liquid, and trade on stock exchanges.
-                                </p>
-                            </div>
-                            <div className="bg-white/80 rounded-xl p-5 border border-blue-100">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Silver Mutual Funds</h3>
-                                <p className="text-sm text-gray-600">
-                                    Fund-of-funds that invest in Silver ETFs. Available through SIP for systematic investment.
-                                </p>
-                            </div>
-                            <div className="bg-white/80 rounded-xl p-5 border border-blue-100">
-                                <h3 className="text-lg font-semibold text-gray-900 mb-2">Digital Silver</h3>
-                                <p className="text-sm text-gray-600">
-                                    Buy silver online starting from ₹1. Available on investment platforms with easy buy/sell options.
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </article>
-
-                {/* CTA */}
-                <div className="text-center card bg-gradient-to-r from-gray-100 to-gray-200 border-gray-300">
-                    <h3 className="text-2xl font-display font-bold text-gray-900 mb-3">
-                        Stay Updated with Silver Prices
-                    </h3>
-                    <p className="text-gray-700 mb-6">Track silver rates across all major cities and make informed buying decisions.</p>
-                    <div className="flex flex-wrap justify-center gap-4">
-                        <Link href="/commodities" className="inline-block bg-primary-600 text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-700 transition-colors">
-                            View All Commodity Prices
-                        </Link>
-                        <Link href="/gold-vs-silver" className="inline-block bg-gray-700 text-white px-8 py-3 rounded-lg font-semibold hover:bg-gray-800 transition-colors">
-                            Silver vs Gold Analysis →
-                        </Link>
-                    </div>
-                </div>
-            </div>
-        </div>
+                <p className="mt-8 text-xs leading-relaxed text-gray-500">
+                    Silver rates on gpaisa.in are indicative and come from a third-party market data feed. They can differ from jewellers&apos; rates because of making charges, GST (3%) and local costs.
+                    This page is for information only and is not investment advice.
+                </p>
+            </RateLayout>
+        </>
     );
 }

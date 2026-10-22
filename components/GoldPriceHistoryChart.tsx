@@ -52,27 +52,26 @@ export default function GoldPriceHistoryChart({ cityName }: GoldPriceHistoryChar
 
     return (
         <section
-            className="mb-12"
+            className="mt-9"
             aria-labelledby="historical-gold-chart-heading"
             id="gold-price-history"
         >
             {/* Section Header */}
-            <div className="flex items-center justify-center space-x-3 mb-2">
-                <BarChart3 className="h-7 w-7 text-primary-600" aria-hidden="true" />
+            <div className="border-b border-gw-border pb-2 mb-2">
                 <h2
                     id="historical-gold-chart-heading"
-                    className="text-2xl md:text-3xl font-display font-bold text-gray-900"
+                    className="text-lg font-bold text-gw-text"
                 >
                     Gold Price History {locationLabel} (1964–2026)
                 </h2>
             </div>
-            <p className="text-center text-gray-600 mb-8 max-w-3xl mx-auto text-sm sm:text-base">
+            <p className="text-sm text-gray-600 mb-4">
                 62 years of gold price data sourced from RBI & IBJA archives.
                 Track how 24K gold (per 10g) has performed across different time horizons to make
                 informed investment decisions.
             </p>
 
-            <div className="card bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-xl border border-gw-border overflow-hidden">
                 {/* ─── Time Period Selector ─── */}
                 <div className="flex flex-wrap items-center gap-2 p-4 sm:p-6 pb-0 border-b border-gray-100 mb-0">
                     <Calendar className="h-4 w-4 text-gray-500 mr-1" />

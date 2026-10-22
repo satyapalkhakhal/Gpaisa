@@ -1,19 +1,24 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Coins, MapPin, TrendingUp, ShoppingBag, Landmark, BookOpen, HelpCircle, Calendar, Lightbulb, Store, Languages } from 'lucide-react';
 import { INDEXABLE_ROBOTS } from '@/lib/seo';
-import { fetchGoldRatesAllCarats } from '@/lib/angelOneApi';
 import { getTodayISTHindi } from '@/lib/dateUtils';
 import { HREFLANG, SITE_URL } from '@/lib/articleLocale';
 import { HINDI_CITY_NAMES, getCityGoldDataHi, isHindiGoldPageReviewed } from '@/lib/cityGoldDataHi';
 import { getCityGoldData } from '@/lib/cityGoldData';
 import { goldRateLanguageAlternates, goldRatePath } from '@/lib/goldRateLocale';
-import HindiGoldRateTable from '@/components/gold/HindiGoldRateTable';
-import { HindiGoldDisclaimer, HindiPurityGuide } from '@/components/gold/HindiGoldSections';
+import { fetchMetalNewsCards } from '@/lib/articlesApi';
+import { fetchGoldCityTable, fetchGoldSnapshot, seriesStats } from '@/lib/rates';
+import {
+    Breadcrumb, CityRateTable, FaqList, HistoryTable, KeyRateCards, MetalTabs, RateLayout, RateMatrix, RateNote,
+    RangeStats, RateTitle, Section, feedDate, inr,
+} from '@/components/rates/RatesUi';
+import PriceLineChart from '@/components/rates/PriceLineChart';
+import CityGuide, { PurityGuide } from '@/components/rates/CityGuide';
+import RateRail from '@/components/rates/RateRail';
 
-// Hindi gold rate city pages (Hindi counterpart of /gold-rate/[city]). Rates are server-
-// rendered; the calculator, history and charts stay on the English page, linked below.
+// Hindi gold rate city pages (Hindi counterpart of /gold-rate/[city]), same layout and data
+// as the English page. Unreviewed translations stay noindex (see lib/cityGoldDataHi.ts).
 
 const CITY_SLUGS = Object.keys(HINDI_CITY_NAMES);
 
@@ -21,7 +26,7 @@ export async function generateStaticParams() {
     return CITY_SLUGS.map((city) => ({ city }));
 }
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 export async function generateMetadata(props: { params: Promise<{ city: string }> }): Promise<Metadata> {
     const { city } = await props.params;
@@ -56,13 +61,24 @@ export default async function HindiCityGoldRatePage(props: { params: Promise<{ c
     if (!data || !CITY_SLUGS.includes(citySlug)) notFound();
 
     // The city's own rate (AngelOne takes the English city name), same as /gold-rate/[city].
-    const rates = await fetchGoldRatesAllCarats(getCityGoldData(citySlug)?.city ?? 'India');
+    const [snap, cityRowsEn, hindiNews, englishNews] = await Promise.all([
+        fetchGoldSnapshot(getCityGoldData(citySlug)?.city ?? 'India'),
+        fetchGoldCityTable(),
+        fetchMetalNewsCards('gold', 5, 3600, 'hi').catch(() => []),
+        fetchMetalNewsCards('gold', 5).catch(() => []),
+    ]);
+    const cityRows = cityRowsEn.map(r => ({ ...r, city: HINDI_CITY_NAMES[r.slug] ?? r.city }));
     const today = getTodayISTHindi();
     const url = `${SITE_URL}${goldRatePath('hi', citySlug)}`;
     const {
         city: cityName, state, mainMarkets, tagline, heroDescription, uniqueDescription, goldCulture,
         keyHighlights, buyingTips, popularAreas, faq, priceFactors, investmentInsight, festivalsImpact,
     } = data;
+    const r24 = snap['24K'][0];
+    const r22 = snap['22K'][0];
+    const r18 = snap['18K'][0];
+    const stats = seriesStats(snap['24K']);
+    const days = snap['24K'].length;
 
     const webPageSchema = {
         '@context': 'https://schema.org',
@@ -103,210 +119,119 @@ export default async function HindiCityGoldRatePage(props: { params: Promise<{ c
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
-            <div className="bg-gray-50 py-8 sm:py-12">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <RateLayout rail={
+                <RateRail
+                    lang="hi"
+                    cityTitle="दूसरे शहरों में सोने का भाव"
+                    cityRows={cityRows}
+                    rateKey="22K"
+                    grams={10}
+                    unitLabel="22 कैरेट, प्रति 10 ग्राम"
+                    hrefFor={slug => goldRatePath('hi', slug)}
+                    currentSlug={citySlug}
+                    tools={[
+                        { href: goldRatePath('hi'), label: 'आज भारत में सोने का भाव' },
+                        { href: goldRatePath('en', citySlug), label: 'गोल्ड कैलकुलेटर (English)' },
+                        { href: '/gold-vs-silver', label: 'सोना बनाम चांदी (English)' },
+                        { href: '/hi', label: 'हिंदी खबरें' },
+                    ]}
+                    newsTitle="सोने से जुड़ी खबरें"
+                    news={hindiNews.length > 0 ? hindiNews : englishNews}
+                />
+            }>
+                <Breadcrumb items={[{ label: 'होम', href: '/hi' }, { label: 'सोने का भाव', href: goldRatePath('hi') }, { label: cityName }]} />
+                <MetalTabs active="gold" goldHref={goldRatePath('hi', citySlug)} lang="hi" />
+                <RateTitle
+                    lang="hi"
+                    title={`${cityName} में आज सोने का भाव — ${today}`}
+                    updated={r24 ? feedDate(r24.date, 'hi') : undefined}
+                    summary={r24 && r22 ? (
+                        <>
+                            {cityName} में आज 24 कैरेट सोने का भाव <strong>{inr(r24.perGram * 10)} प्रति 10 ग्राम</strong> है,{' '}
+                            {Math.abs(r24.changePercent) < 0.005 ? 'जो पिछले दिन के बराबर है' : <>जो पिछले दिन से {inr(Math.abs(r24.change * 10))} ({Math.abs(r24.changePercent).toFixed(2)}%) {r24.change > 0 ? 'ज़्यादा' : 'कम'} है</>}।
+                            {' '}22 कैरेट (916) सोना <strong>{inr(r22.perGram * 10)}</strong>{r18 ? <> और 18 कैरेट {inr(r18.perGram * 10)}</> : null} प्रति 10 ग्राम है। {tagline}।
+                        </>
+                    ) : <>{cityName} के आज के भाव फ़िलहाल उपलब्ध नहीं हैं। कृपया थोड़ी देर बाद देखें।</>}
+                />
 
-                    <nav className="mb-6" aria-label="ब्रेडक्रम्ब">
-                        <ol className="flex items-center space-x-2 text-sm text-gray-600">
-                            <li><Link href="/hi" className="hover:text-primary-600">होम</Link></li>
-                            <li>/</li>
-                            <li><Link href={goldRatePath('hi')} className="hover:text-primary-600">सोने का भाव</Link></li>
-                            <li>/</li>
-                            <li className="text-gray-900 font-medium">{cityName}</li>
-                        </ol>
-                    </nav>
+                {r24 && r22 && (
+                    <KeyRateCards rates={[
+                        { label: '24 कैरेट', sub: '10 ग्राम', value: r24.perGram * 10, change: r24.change * 10, changePercent: r24.changePercent },
+                        { label: '22 कैरेट', sub: '10 ग्राम', value: r22.perGram * 10, change: r22.change * 10, changePercent: r22.changePercent },
+                        ...(r18 ? [{ label: '18 कैरेट', sub: '10 ग्राम', value: r18.perGram * 10, change: r18.change * 10, changePercent: r18.changePercent }] : []),
+                    ]} />
+                )}
 
-                    <header className="mb-10">
-                        <div className="flex items-start gap-3 mb-3">
-                            <MapPin className="h-9 w-9 sm:h-10 sm:w-10 text-primary-600 flex-shrink-0 mt-1" />
-                            <div>
-                                <h1 className="text-3xl sm:text-4xl font-display font-bold text-gray-900">
-                                    {cityName} में आज सोने का भाव — {today}
-                                </h1>
-                                <p className="text-sm sm:text-base text-primary-700 font-semibold mt-1">{tagline}</p>
-                            </div>
-                        </div>
-                        <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-4xl">{heroDescription}</p>
-                        <div className="flex flex-wrap gap-2 mt-4">
-                            {mainMarkets.map((market) => (
-                                <span key={market} className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full border border-amber-200">
-                                    <Store className="h-3.5 w-3.5" /> {market}
-                                </span>
-                            ))}
-                            <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-700 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full border border-gray-200">
-                                📍 {state}
-                            </span>
-                        </div>
-                    </header>
+                {r24 && r22 && (
+                    <Section id="today-rates" title={`${cityName} में आज का सोने का भाव`}>
+                        <RateMatrix
+                            lang="hi"
+                            caption={`${cityName} में आज सोने का भाव, शुद्धता और वज़न के हिसाब से`}
+                            rows={[
+                                { label: '24 कैरेट', sub: '99.9% शुद्ध', perGram: r24.perGram },
+                                { label: '22 कैरेट', sub: '91.6% (916)', perGram: r22.perGram },
+                                ...(r18 ? [{ label: '18 कैरेट', sub: '75% शुद्ध', perGram: r18.perGram }] : []),
+                            ]}
+                            weights={[{ label: '1 ग्राम', grams: 1 }, { label: '8 ग्राम', grams: 8 }, { label: '10 ग्राम', grams: 10 }, { label: '100 ग्राम', grams: 100 }]}
+                        />
+                        <RateNote lang="hi" />
+                    </Section>
+                )}
 
-                    <section className="mb-12" aria-labelledby="current-rates-heading">
-                        <div className="flex items-center space-x-2 md:space-x-3 mb-4 md:mb-6">
-                            <Coins className="h-6 w-6 md:h-7 md:w-7 text-primary-600 flex-shrink-0" aria-hidden="true" />
-                            <h2 id="current-rates-heading" className="text-xl md:text-2xl font-display font-semibold text-gray-900">
-                                {cityName} में आज का सोने का भाव
-                            </h2>
-                        </div>
-                        <HindiGoldRateTable rates={rates} placeLabel={cityName} scope="city" />
-                        <Link
-                            href={goldRatePath('en', citySlug)}
-                            hrefLang={HREFLANG.en}
-                            className="inline-flex items-center gap-1.5 mt-4 text-sm font-medium text-primary-600 hover:text-primary-700"
-                        >
-                            <Languages className="h-4 w-4" />
-                            गोल्ड कैलकुलेटर, पिछले भाव और चार्ट (English में) देखें →
-                        </Link>
-                    </section>
+                {days > 1 && (
+                    <Section id="history" title={`${cityName} में पिछले ${days} दिन का सोने का भाव`}>
+                        <HistoryTable
+                            lang="hi"
+                            caption={`${cityName} में पिछले ${days} दिन का सोने का भाव, प्रति 10 ग्राम`}
+                            grams={10}
+                            columns={[{ label: '22 कैरेट (10 ग्राम)', series: snap['22K'] }, { label: '24 कैरेट (10 ग्राम)', series: snap['24K'] }]}
+                        />
+                    </Section>
+                )}
 
-                    <section className="mb-10" aria-labelledby="highlights-heading">
-                        <h2 id="highlights-heading" className="sr-only">{cityName} के सोना बाज़ार की ख़ास बातें</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            {keyHighlights.map((h, i) => (
-                                <div key={i} className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm">
-                                    <div className="text-2xl mb-2">{h.icon}</div>
-                                    <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-1">{h.label}</h3>
-                                    <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{h.detail}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                {days > 1 && (
+                    <Section id="trend" title={`${cityName} में 24 कैरेट सोने का ट्रेंड`}>
+                        <PriceLineChart series={snap['24K']} grams={10} lang="hi" label={`${cityName} में 24 कैरेट सोने का भाव, प्रति 10 ग्राम, पिछले ${days} दिन`} />
+                        <RangeStats stats={stats} grams={10} lang="hi" days={days} />
+                    </Section>
+                )}
 
-                    <article className="mb-10 card" id="about-gold-market">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <Landmark className="h-7 w-7 text-primary-600" />
-                            <h2 className="text-2xl font-display font-bold text-gray-900">{cityName} का सोना बाज़ार</h2>
-                        </div>
-                        <p className="text-gray-700 leading-relaxed text-base">{uniqueDescription}</p>
-                    </article>
+                {cityRows.length > 0 && (
+                    <Section id="cities" title="बड़े शहरों में सोने का भाव">
+                        <CityRateTable
+                            lang="hi"
+                            caption="बड़े शहरों में आज सोने का भाव, प्रति 10 ग्राम"
+                            rows={cityRows}
+                            columns={[{ key: '22K', label: '22 कैरेट (10 ग्राम)', grams: 10 }, { key: '24K', label: '24 कैरेट (10 ग्राम)', grams: 10 }]}
+                            hrefFor={slug => goldRatePath('hi', slug)}
+                            currentSlug={citySlug}
+                        />
+                    </Section>
+                )}
 
-                    <article className="mb-10 card" id="gold-culture">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <BookOpen className="h-7 w-7 text-primary-600" />
-                            <h2 className="text-2xl font-display font-bold text-gray-900">{cityName} की गोल्ड संस्कृति और विरासत</h2>
-                        </div>
-                        <p className="text-gray-700 leading-relaxed text-base">{goldCulture}</p>
-                    </article>
+                <p className="mt-4 text-sm">
+                    <Link href={goldRatePath('en', citySlug)} hrefLang={HREFLANG.en} className="font-semibold text-gw-green hover:underline">
+                        मेकिंग चार्ज और GST के साथ कीमत जोड़ने के लिए गोल्ड कैलकुलेटर (English में) →
+                    </Link>
+                </p>
 
-                    <section className="mb-10 card" id="popular-markets" aria-labelledby="popular-markets-heading">
-                        <div className="flex items-center space-x-3 mb-5">
-                            <ShoppingBag className="h-7 w-7 text-primary-600" />
-                            <h2 id="popular-markets-heading" className="text-2xl font-display font-bold text-gray-900">
-                                {cityName} के प्रमुख सोना बाज़ार
-                            </h2>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {popularAreas.map((area, i) => (
-                                <div key={i} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                                    <h3 className="font-bold text-gray-900 text-base mb-1.5 flex items-center gap-2">
-                                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary-100 text-primary-700 text-xs font-bold">{i + 1}</span>
-                                        {area.name}
-                                    </h3>
-                                    <p className="text-gray-600 text-sm leading-relaxed">{area.specialty}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                <CityGuide
+                    lang="hi"
+                    metal="gold"
+                    info={{ city: cityName, uniqueDescription: `${heroDescription} ${uniqueDescription}`, culture: goldCulture, keyHighlights, popularAreas, buyingTips, priceFactors, investmentInsight, festivalsImpact }}
+                />
+                <PurityGuide lang="hi" />
 
-                    <section className="mb-10 card" id="buying-tips" aria-labelledby="buying-tips-heading">
-                        <div className="flex items-center space-x-3 mb-5">
-                            <Lightbulb className="h-7 w-7 text-amber-500" />
-                            <h2 id="buying-tips-heading" className="text-2xl font-display font-bold text-gray-900">
-                                {cityName} में सोना ख़रीदने के टिप्स
-                            </h2>
-                        </div>
-                        <ol className="space-y-3">
-                            {buyingTips.map((tip, i) => (
-                                <li key={i} className="flex gap-3 text-gray-700 text-sm sm:text-base leading-relaxed">
-                                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold mt-0.5">{i + 1}</span>
-                                    <span>{tip}</span>
-                                </li>
-                            ))}
-                        </ol>
-                    </section>
+                <Section id="faq" title={`${cityName} में सोना: अक्सर पूछे जाने वाले सवाल`}>
+                    <FaqList items={faq} />
+                </Section>
 
-                    <section className="mb-10 card" id="price-factors" aria-labelledby="price-factors-heading">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <TrendingUp className="h-7 w-7 text-primary-600" />
-                            <h2 id="price-factors-heading" className="text-2xl font-display font-bold text-gray-900">
-                                {cityName} में सोने के भाव पर असर डालने वाले कारण
-                            </h2>
-                        </div>
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            {priceFactors.map((factor, i) => (
-                                <li key={i} className="flex items-start gap-2 text-gray-700 text-sm sm:text-base">
-                                    <span className="text-primary-500 mt-1 flex-shrink-0">●</span>
-                                    <span>{factor}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </section>
-
-                    <section className="mb-10 card bg-gradient-to-br from-amber-50 to-white border-amber-200" id="investment-insight" aria-labelledby="investment-heading">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <Lightbulb className="h-7 w-7 text-amber-600" />
-                            <h2 id="investment-heading" className="text-2xl font-display font-bold text-gray-900">{cityName} में सोने में निवेश</h2>
-                        </div>
-                        <p className="text-gray-700 leading-relaxed text-base">{investmentInsight}</p>
-                    </section>
-
-                    <section className="mb-10 card" id="festivals-impact" aria-labelledby="festivals-heading">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <Calendar className="h-7 w-7 text-primary-600" />
-                            <h2 id="festivals-heading" className="text-2xl font-display font-bold text-gray-900">
-                                {cityName} में त्योहार और मौसमी मांग
-                            </h2>
-                        </div>
-                        <p className="text-gray-700 leading-relaxed text-base">{festivalsImpact}</p>
-                    </section>
-
-                    <HindiPurityGuide placeLabel={cityName} />
-
-                    <section className="mb-10 card" id="faq" aria-labelledby="faq-heading">
-                        <div className="flex items-center space-x-3 mb-5">
-                            <HelpCircle className="h-7 w-7 text-primary-600" />
-                            <h2 id="faq-heading" className="text-2xl font-display font-bold text-gray-900">
-                                अक्सर पूछे जाने वाले सवाल — {cityName} में सोना
-                            </h2>
-                        </div>
-                        <div className="space-y-5">
-                            {faq.map((item, i) => (
-                                <details key={i} className="group bg-gray-50 rounded-xl border border-gray-100 overflow-hidden" open={i === 0}>
-                                    <summary className="cursor-pointer p-4 sm:p-5 font-semibold text-gray-900 text-sm sm:text-base flex items-start gap-3 list-none [&::-webkit-details-marker]:hidden">
-                                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-bold mt-0.5">प्र</span>
-                                        <span className="flex-1">{item.question}</span>
-                                        <span className="flex-shrink-0 text-gray-400 group-open:rotate-180 transition-transform text-lg">▼</span>
-                                    </summary>
-                                    <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-0">
-                                        <p className="text-gray-600 text-sm sm:text-base leading-relaxed pl-9">{item.answer}</p>
-                                    </div>
-                                </details>
-                            ))}
-                        </div>
-                    </section>
-
-                    <section className="mb-10 card" aria-labelledby="other-cities-heading">
-                        <h2 id="other-cities-heading" className="text-xl font-display font-semibold text-gray-900 mb-4">
-                            दूसरे शहरों में सोने का भाव
-                        </h2>
-                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
-                            {CITY_SLUGS.filter((c) => c !== citySlug).map((c) => (
-                                <Link
-                                    key={c}
-                                    href={goldRatePath('hi', c)}
-                                    className="block bg-gray-50 hover:bg-amber-50 border border-gray-100 rounded-lg px-3 py-2.5 text-sm font-medium text-gray-800 hover:text-primary-700"
-                                >
-                                    {HINDI_CITY_NAMES[c]} में सोने का भाव
-                                </Link>
-                            ))}
-                        </div>
-                    </section>
-
-                    <HindiGoldDisclaimer placeLabel={cityName} />
-
-                    <footer className="text-center text-xs text-gray-400">
-                        भाव अपडेट: {today} · gpaisa.in
-                    </footer>
-                </div>
-            </div>
+                <p className="mt-8 text-xs leading-relaxed text-gray-500">
+                    {cityName} ({state}; प्रमुख बाज़ार: {mainMarkets.join(', ')}) के ये भाव सांकेतिक हैं और थर्ड-पार्टी मार्केट डेटा फ़ीड से लिए गए हैं।
+                    जौहरी मेकिंग चार्ज और 3% GST जोड़ते हैं, इसलिए उनके भाव थोड़े अलग हो सकते हैं। BIS हॉलमार्क (HUID) ज़रूर जांचें और पक्का बिल लें।
+                    यह जानकारी सिर्फ़ जागरूकता के लिए है, निवेश सलाह नहीं।
+                </p>
+            </RateLayout>
         </>
     );
 }

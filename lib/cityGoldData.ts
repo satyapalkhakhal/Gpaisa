@@ -103,7 +103,7 @@ export const CITY_GOLD_DATA: Record<string, CityGoldInfo> = {
             "For Kundan jewellery, verify whether the stones are real or synthetic — this significantly affects price.",
             "Karol Bagh has more standardised pricing — better for first-time buyers unfamiliar with negotiation.",
             "Always check for BIS hallmark with HUID — Delhi has had issues with under-carating in unorganised shops.",
-            "For investment, consider Sovereign Gold Bonds from RBI — available through banks and post offices across Delhi NCR.",
+            "For investment, consider Gold ETFs or existing Sovereign Gold Bonds traded on NSE/BSE — new SGB issues have stopped since February 2024.",
         ],
         popularAreas: [
             { name: 'Dariba Kalan (Chandni Chowk)', specialty: 'Traditional Kundan, Polki, and Meenakari jewellery' },
@@ -285,7 +285,7 @@ export const CITY_GOLD_DATA: Record<string, CityGoldInfo> = {
             { icon: '📜', label: 'SGB Investments', detail: 'Highest per-capita Sovereign Gold Bond investments among Indian cities' },
         ],
         buyingTips: [
-            "For investment, consider Gold ETFs (available through Zerodha, Groww) or Sovereign Gold Bonds — Bangalore's tech-savvy investors prefer these over physical gold.",
+            "For investment, consider Gold ETFs (available through brokers such as Zerodha and Groww) or existing Sovereign Gold Bonds traded on NSE/BSE — Bangalore's tech-savvy investors prefer these over physical gold.",
             "Chickpet and Avenue Road offer competitive making charges (8-15%) for traditional Kannada jewellery designs.",
             "For corporate gold gifting (employee rewards, Diwali gifts), order MMTC-PAMP certified gold coins in bulk for best rates.",
             "Use digital gold platforms (Paytm Gold, PhonePe Gold) for small, regular investments — Bangalore leads in this adoption.",
@@ -308,7 +308,7 @@ export const CITY_GOLD_DATA: Record<string, CityGoldInfo> = {
             },
             {
                 question: 'Is it better to buy physical gold or digital gold in Bangalore?',
-                answer: 'It depends on your goal. For wearing/gifting, physical gold from Chickpet or Avenue Road offers best value. For investment, Gold ETFs (zero making charges, easy liquidity) or Sovereign Gold Bonds (2.5% annual interest + gold appreciation) are more cost-effective. Many Bangalore investors use a mix of both.',
+                answer: 'It depends on your goal. For wearing/gifting, physical gold from Chickpet or Avenue Road offers best value. For investment, Gold ETFs (zero making charges, easy liquidity) or existing Sovereign Gold Bonds bought on NSE/BSE (they pay 2.5% annual interest; no new SGBs have been issued since February 2024) are more cost-effective. Many Bangalore investors use a mix of both.',
             },
             {
                 question: 'Where is the cheapest gold market in Bangalore?',

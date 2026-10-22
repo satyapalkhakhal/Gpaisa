@@ -287,13 +287,16 @@ export async function fetchFeedArticles(
 /**
  * Lightweight cards for the gold/silver news widgets (client components fetch these via /api/news).
  */
-export async function fetchMetalNewsCards(metal: 'gold' | 'silver', limit: number = 6, revalidateSeconds: number = 3600) {
+export async function fetchMetalNewsCards(metal: 'gold' | 'silver', limit: number = 6, revalidateSeconds: number = 3600, language: ArticleLanguage = 'en') {
+    // Articles about the metal (title match) first, then Business articles that discuss it;
+    // an IPO or card review that mentions gold in passing is not gold news.
     return cachedRows(
-        `SELECT id, title, slug, excerpt, image_url, published_at, date, read_time, author, category FROM articles
-         WHERE status = 'published' AND language = 'en' AND (content ILIKE $1 OR title ILIKE $1)
-         ORDER BY published_at DESC LIMIT ${Math.max(0, Math.floor(limit))}`,
-        [`%${metal}%`],
+        `SELECT id, title, slug, excerpt, image_url, published_at, date, read_time, author, category, language FROM articles
+         WHERE status = 'published' AND language = $2 AND category <> ALL($3::text[])
+           AND (title ILIKE $1 OR (category = 'BUSINESS' AND content ILIKE $1))
+         ORDER BY (title ILIKE $1) DESC, published_at DESC LIMIT ${Math.max(0, Math.floor(limit))}`,
+        [`%${metal}%`, language, DROPPED_CATEGORY_DB_VALUES],
         revalidateSeconds,
-        `fetchMetalNewsCards(${metal})`
+        `fetchMetalNewsCards(${metal},${language})`
     );
 }

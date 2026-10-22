@@ -1,18 +1,22 @@
 import { Metadata } from 'next';
-import Link from 'next/link';
-import { Coins, MapPin, HelpCircle, TrendingUp, Languages } from 'lucide-react';
 import { INDEXABLE_ROBOTS } from '@/lib/seo';
-import { fetchGoldRatesAllCarats } from '@/lib/angelOneApi';
 import { getTodayISTHindi } from '@/lib/dateUtils';
 import { HREFLANG, SITE_URL } from '@/lib/articleLocale';
-import { CITY_GOLD_DATA_HI, HINDI_CITY_NAMES, isHindiGoldPageReviewed } from '@/lib/cityGoldDataHi';
+import { HINDI_CITY_NAMES, isHindiGoldPageReviewed } from '@/lib/cityGoldDataHi';
 import { goldRateLanguageAlternates, goldRatePath } from '@/lib/goldRateLocale';
-import HindiGoldRateTable from '@/components/gold/HindiGoldRateTable';
-import { HindiGoldDisclaimer, HindiPurityGuide } from '@/components/gold/HindiGoldSections';
+import { fetchMetalNewsCards } from '@/lib/articlesApi';
+import { fetchGoldCityTable, fetchGoldSnapshot, seriesStats } from '@/lib/rates';
+import {
+    Breadcrumb, CityRateTable, FaqList, HistoryTable, KeyRateCards, MetalTabs, Prose, RateLayout, RateMatrix, RateNote,
+    RangeStats, RateTitle, Section, feedDate, inr,
+} from '@/components/rates/RatesUi';
+import PriceLineChart from '@/components/rates/PriceLineChart';
+import { PurityGuide } from '@/components/rates/CityGuide';
+import RateRail from '@/components/rates/RateRail';
 
-// Hindi gold rate hub (Hindi counterpart of /gold-rate).
+// Hindi gold rate hub (Hindi counterpart of /gold-rate), same layout and data as the English hub.
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 // General questions only — the facts here match the English pages and the city data.
 const FAQ = [
@@ -53,9 +57,20 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HindiGoldRateHubPage() {
-    const rates = await fetchGoldRatesAllCarats();
+    const [snap, cityRowsEn, hindiNews, englishNews] = await Promise.all([
+        fetchGoldSnapshot('India'),
+        fetchGoldCityTable(),
+        fetchMetalNewsCards('gold', 5, 3600, 'hi').catch(() => []),
+        fetchMetalNewsCards('gold', 5).catch(() => []),
+    ]);
+    const cityRows = cityRowsEn.map(r => ({ ...r, city: HINDI_CITY_NAMES[r.slug] ?? r.city }));
     const today = getTodayISTHindi();
     const url = `${SITE_URL}${goldRatePath('hi')}`;
+    const r24 = snap['24K'][0];
+    const r22 = snap['22K'][0];
+    const r18 = snap['18K'][0];
+    const stats = seriesStats(snap['24K']);
+    const days = snap['24K'].length;
 
     const webPageSchema = {
         '@context': 'https://schema.org',
@@ -87,94 +102,112 @@ export default async function HindiGoldRateHubPage() {
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
 
-            <div className="bg-gray-50 py-8 sm:py-12">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <nav className="mb-6" aria-label="ब्रेडक्रम्ब">
-                        <ol className="flex items-center space-x-2 text-sm text-gray-600">
-                            <li><Link href="/hi" className="hover:text-primary-600">होम</Link></li>
-                            <li>/</li>
-                            <li className="text-gray-900 font-medium">सोने का भाव</li>
-                        </ol>
-                    </nav>
+            <RateLayout rail={
+                <RateRail
+                    lang="hi"
+                    cityTitle="बड़े शहरों में सोने का भाव"
+                    cityRows={cityRows}
+                    rateKey="22K"
+                    grams={10}
+                    unitLabel="22 कैरेट, प्रति 10 ग्राम"
+                    hrefFor={slug => goldRatePath('hi', slug)}
+                    tools={[
+                        { href: goldRatePath('en'), label: 'गोल्ड कैलकुलेटर और 1964 से भाव (English)' },
+                        { href: '/silver-rate', label: 'चांदी का भाव (English)' },
+                        { href: '/gold-vs-silver', label: 'सोना बनाम चांदी (English)' },
+                        { href: '/hi', label: 'हिंदी खबरें' },
+                    ]}
+                    newsTitle="सोने से जुड़ी खबरें"
+                    news={hindiNews.length > 0 ? hindiNews : englishNews}
+                />
+            }>
+                <Breadcrumb items={[{ label: 'होम', href: '/hi' }, { label: 'सोने का भाव' }]} />
+                <MetalTabs active="gold" goldHref={goldRatePath('hi')} lang="hi" />
+                <RateTitle
+                    lang="hi"
+                    title={`आज सोने का भाव — ${today}`}
+                    updated={r24 ? feedDate(r24.date, 'hi') : undefined}
+                    summary={r24 && r22 ? (
+                        <>
+                            भारत में आज 24 कैरेट सोने का सांकेतिक भाव <strong>{inr(r24.perGram * 10)} प्रति 10 ग्राम</strong> है,{' '}
+                            {Math.abs(r24.changePercent) < 0.005 ? 'जो पिछले दिन के बराबर है' : <>जो पिछले दिन से {inr(Math.abs(r24.change * 10))} ({Math.abs(r24.changePercent).toFixed(2)}%) {r24.change > 0 ? 'ज़्यादा' : 'कम'} है</>}।
+                            {' '}22 कैरेट (916) सोना <strong>{inr(r22.perGram * 10)}</strong>{r18 ? <> और 18 कैरेट {inr(r18.perGram * 10)}</> : null} प्रति 10 ग्राम है।
+                            {stats && days > 1 && <> पिछले {days} दिन में 24 कैरेट सोना {Math.abs(stats.changePercent).toFixed(2)}% {stats.change >= 0 ? 'चढ़ा' : 'गिरा'} है।</>}
+                        </>
+                    ) : <>आज के भाव फ़िलहाल उपलब्ध नहीं हैं। कृपया थोड़ी देर बाद देखें।</>}
+                />
 
-                    <header className="mb-8">
-                        <h1 className="text-3xl sm:text-4xl font-display font-bold text-gray-900 mb-3">आज सोने का भाव — {today}</h1>
-                        <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-4xl">
-                            24 कैरेट, 22 कैरेट और 18 कैरेट सोने का आज का सांकेतिक भाव, प्रति ग्राम और 10 ग्राम में। अपने शहर के
-                            सोना बाज़ार, मेकिंग चार्ज और ख़रीदारी के टिप्स के लिए नीचे शहर चुनें।
-                        </p>
-                    </header>
+                {r24 && r22 && (
+                    <KeyRateCards rates={[
+                        { label: '24 कैरेट', sub: '10 ग्राम', value: r24.perGram * 10, change: r24.change * 10, changePercent: r24.changePercent },
+                        { label: '22 कैरेट', sub: '10 ग्राम', value: r22.perGram * 10, change: r22.change * 10, changePercent: r22.changePercent },
+                        ...(r18 ? [{ label: '18 कैरेट', sub: '10 ग्राम', value: r18.perGram * 10, change: r18.change * 10, changePercent: r18.changePercent }] : []),
+                    ]} />
+                )}
 
-                    <section className="mb-12" aria-labelledby="rates-heading">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <Coins className="h-7 w-7 text-primary-600" aria-hidden="true" />
-                            <h2 id="rates-heading" className="text-xl md:text-2xl font-display font-semibold text-gray-900">भारत में आज का सोने का भाव</h2>
-                        </div>
-                        <HindiGoldRateTable rates={rates} placeLabel="आपके शहर" />
-                        <Link
-                            href={goldRatePath('en')}
-                            hrefLang={HREFLANG.en}
-                            className="inline-flex items-center gap-1.5 mt-4 text-sm font-medium text-primary-600 hover:text-primary-700"
-                        >
-                            <Languages className="h-4 w-4" />
-                            गोल्ड कैलकुलेटर, पिछले भाव और चार्ट (English में) देखें →
-                        </Link>
-                    </section>
+                {r24 && r22 && (
+                    <Section id="today-rates" title="शुद्धता और वज़न के हिसाब से आज का भाव">
+                        <RateMatrix
+                            lang="hi"
+                            caption="भारत में आज सोने का भाव, शुद्धता और वज़न के हिसाब से"
+                            rows={[
+                                { label: '24 कैरेट', sub: '99.9% शुद्ध', perGram: r24.perGram },
+                                { label: '22 कैरेट', sub: '91.6% (916)', perGram: r22.perGram },
+                                ...(r18 ? [{ label: '18 कैरेट', sub: '75% शुद्ध', perGram: r18.perGram }] : []),
+                            ]}
+                            weights={[{ label: '1 ग्राम', grams: 1 }, { label: '8 ग्राम', grams: 8 }, { label: '10 ग्राम', grams: 10 }, { label: '100 ग्राम', grams: 100 }, { label: '1 तोला (11.66 ग्राम)', grams: 11.6638 }]}
+                        />
+                        <RateNote lang="hi" />
+                    </Section>
+                )}
 
-                    <section className="mb-12" aria-labelledby="cities-heading">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <MapPin className="h-7 w-7 text-primary-600" aria-hidden="true" />
-                            <h2 id="cities-heading" className="text-xl md:text-2xl font-display font-semibold text-gray-900">शहर के हिसाब से सोने का भाव</h2>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {Object.keys(HINDI_CITY_NAMES).map((slug) => (
-                                <Link
-                                    key={slug}
-                                    href={goldRatePath('hi', slug)}
-                                    className="block bg-white rounded-xl border border-gray-200 p-4 hover:border-amber-300 hover:shadow-md transition-all"
-                                >
-                                    <h3 className="font-bold text-gray-900">{HINDI_CITY_NAMES[slug]} में सोने का भाव</h3>
-                                    <p className="text-sm text-gray-600 mt-1">{CITY_GOLD_DATA_HI[slug].tagline}</p>
-                                </Link>
-                            ))}
-                        </div>
-                    </section>
+                {cityRows.length > 0 && (
+                    <Section id="cities" title="बड़े शहरों में आज सोने का भाव">
+                        <CityRateTable
+                            lang="hi"
+                            caption="बड़े शहरों में आज सोने का भाव, प्रति 10 ग्राम"
+                            rows={cityRows}
+                            columns={[{ key: '22K', label: '22 कैरेट (10 ग्राम)', grams: 10 }, { key: '24K', label: '24 कैरेट (10 ग्राम)', grams: 10 }]}
+                            hrefFor={slug => goldRatePath('hi', slug)}
+                        />
+                    </Section>
+                )}
 
-                    <section className="mb-10 card" aria-labelledby="factors-heading">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <TrendingUp className="h-7 w-7 text-primary-600" />
-                            <h2 id="factors-heading" className="text-2xl font-display font-bold text-gray-900">सोने का भाव किन बातों से बदलता है</h2>
-                        </div>
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-gray-700 text-sm sm:text-base">
-                            <li className="flex gap-2"><span className="text-primary-500">●</span>अंतरराष्ट्रीय स्पॉट गोल्ड भाव और MCX फ्यूचर्स भाव</li>
-                            <li className="flex gap-2"><span className="text-primary-500">●</span>डॉलर/रुपया विनिमय दर — कमज़ोर रुपया सोने को महंगा करता है</li>
-                            <li className="flex gap-2"><span className="text-primary-500">●</span>सोने पर आयात शुल्क और 3% GST</li>
-                            <li className="flex gap-2"><span className="text-primary-500">●</span>त्योहारों और शादी के सीज़न की मांग</li>
-                        </ul>
-                    </section>
+                {days > 1 && (
+                    <Section id="history" title={`पिछले ${days} दिन का सोने का भाव`}>
+                        <HistoryTable
+                            lang="hi"
+                            caption={`भारत में पिछले ${days} दिन का सोने का भाव, प्रति 10 ग्राम`}
+                            grams={10}
+                            columns={[{ label: '22 कैरेट (10 ग्राम)', series: snap['22K'] }, { label: '24 कैरेट (10 ग्राम)', series: snap['24K'] }]}
+                        />
+                    </Section>
+                )}
 
-                    <HindiPurityGuide placeLabel="आपके शहर" />
+                {days > 1 && (
+                    <Section id="trend" title="24 कैरेट सोने का ट्रेंड">
+                        <PriceLineChart series={snap['24K']} grams={10} lang="hi" label={`भारत में 24 कैरेट सोने का भाव, प्रति 10 ग्राम, पिछले ${days} दिन`} />
+                        <RangeStats stats={stats} grams={10} lang="hi" days={days} />
+                    </Section>
+                )}
 
-                    <section className="mb-10 card" aria-labelledby="faq-heading">
-                        <div className="flex items-center space-x-3 mb-5">
-                            <HelpCircle className="h-7 w-7 text-primary-600" />
-                            <h2 id="faq-heading" className="text-2xl font-display font-bold text-gray-900">अक्सर पूछे जाने वाले सवाल</h2>
-                        </div>
-                        <div className="space-y-5">
-                            {FAQ.map((item, i) => (
-                                <details key={i} className="group bg-gray-50 rounded-xl border border-gray-100 overflow-hidden" open={i === 0}>
-                                    <summary className="cursor-pointer p-4 sm:p-5 font-semibold text-gray-900 text-sm sm:text-base list-none [&::-webkit-details-marker]:hidden">
-                                        {item.question}
-                                    </summary>
-                                    <p className="px-4 sm:px-5 pb-4 sm:pb-5 text-gray-600 text-sm sm:text-base leading-relaxed">{item.answer}</p>
-                                </details>
-                            ))}
-                        </div>
-                    </section>
+                <Section id="how-priced" title="भारत में सोने का भाव कैसे तय होता है">
+                    <Prose>
+                        <p>भारत में सोने का भाव अंतरराष्ट्रीय भाव, उस दिन की डॉलर/रुपया विनिमय दर और आयात शुल्क से तय होता है। रुपया कमज़ोर हो तो डॉलर में भाव स्थिर रहने पर भी यहां सोना महंगा हो जाता है।</p>
+                        <p>इस पेज के भाव सांकेतिक हैं और थर्ड-पार्टी मार्केट डेटा फ़ीड से आते हैं। जौहरी इसमें मेकिंग चार्ज और पूरे बिल पर 3% GST जोड़ते हैं, इसलिए दुकान पर क़ीमत यहां दिखे भाव से ज़्यादा होती है।</p>
+                    </Prose>
+                </Section>
 
-                    <HindiGoldDisclaimer placeLabel="सभी शहरों" />
-                </div>
-            </div>
+                <PurityGuide lang="hi" />
+
+                <Section id="faq" title="अक्सर पूछे जाने वाले सवाल">
+                    <FaqList items={FAQ} />
+                </Section>
+
+                <p className="mt-8 text-xs leading-relaxed text-gray-500">
+                    gpaisa.in पर सोने के भाव सांकेतिक हैं। मेकिंग चार्ज, 3% GST और स्थानीय ख़र्च की वजह से जौहरी के भाव अलग हो सकते हैं। यह जानकारी सिर्फ़ जागरूकता के लिए है, निवेश सलाह नहीं।
+                </p>
+            </RateLayout>
         </>
     );
 }

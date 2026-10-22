@@ -49,25 +49,24 @@ export default function SilverPriceHistoryChart({ cityName }: SilverPriceHistory
 
     return (
         <section
-            className="mb-12"
+            className="mt-9"
             aria-labelledby="historical-silver-chart-heading"
             id="silver-price-history"
         >
-            <div className="flex items-center justify-center space-x-3 mb-2">
-                <BarChart3 className="h-7 w-7 text-gray-600" aria-hidden="true" />
+            <div className="border-b border-gw-border pb-2 mb-2">
                 <h2
                     id="historical-silver-chart-heading"
-                    className="text-2xl md:text-3xl font-display font-bold text-gray-900"
+                    className="text-lg font-bold text-gw-text"
                 >
                     Silver Price History {locationLabel} (1981–2026)
                 </h2>
             </div>
-            <p className="text-center text-gray-600 mb-8 max-w-3xl mx-auto text-sm sm:text-base">
+            <p className="text-sm text-gray-600 mb-4">
                 45 years of silver price data sourced from RBI &amp; IBJA archives.
                 Track how silver (per Kg) has performed across different time horizons for informed investment decisions.
             </p>
 
-            <div className="card bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
+            <div className="bg-white rounded-xl border border-gw-border overflow-hidden">
                 {/* Time Period Selector */}
                 <div className="flex flex-wrap items-center gap-2 p-4 sm:p-6 pb-0 border-b border-gray-100 mb-0">
                     <Calendar className="h-4 w-4 text-gray-500 mr-1" />

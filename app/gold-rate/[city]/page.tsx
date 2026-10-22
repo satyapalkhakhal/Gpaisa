@@ -2,34 +2,25 @@ import { Metadata } from 'next';
 import { goldRateLanguageAlternates } from '@/lib/goldRateLocale';
 import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import { notFound } from 'next/navigation';
-import DynamicGoldRates from '@/components/DynamicGoldRates';
 import GoldCalculator from '@/components/GoldCalculator';
-import GoldHistoryTable from '@/components/GoldHistoryTable';
-import DynamicGoldChart from '@/components/DynamicGoldChart';
-import LastUpdatedTime from '@/components/LastUpdatedTime';
-import { IndianCity } from '@/types';
-import { Coins, MapPin, Calculator, TrendingUp, ShoppingBag, Landmark, BookOpen, HelpCircle, Calendar, Lightbulb, Store } from 'lucide-react';
-import Link from 'next/link';
-import { getCityGoldData, CITY_GOLD_DATA } from '@/lib/cityGoldData';
+import { getCityGoldData } from '@/lib/cityGoldData';
 import { getTodayIST } from '@/lib/dateUtils';
-import { fetchGoldHistory, fetchGoldRatesAllCarats } from '@/lib/angelOneApi';
 import { fetchMetalNewsCards } from '@/lib/articlesApi';
-import type { GoldNewsArticle } from '@/components/GoldNewsSection';
-import GoldPriceHistoryChart from '@/components/GoldPriceHistoryChart';
-import GoldNewsSection from '@/components/GoldNewsSection';
-
-const CITIES: IndianCity[] = [
-    "Delhi", "Chennai", "Mumbai", "Pune", "Hyderabad",
-    "Bangalore", "Coimbatore", "Kolkata", "Ahmedabad", "Kerala"
-];
+import { GOLD_CITIES, fetchGoldCityTable, fetchGoldSnapshot, fetchSilverSeries, seriesStats } from '@/lib/rates';
+import { getSilverCity } from '@/lib/silverCities';
+import {
+    Breadcrumb, CityRateTable, FaqList, HistoryTable, KeyRateCards, MetalTabs, RateLayout, RateMatrix, RateNote,
+    RangeStats, RateTitle, Section, feedDate, inr,
+} from '@/components/rates/RatesUi';
+import PriceLineChart from '@/components/rates/PriceLineChart';
+import CityGuide, { PurityGuide } from '@/components/rates/CityGuide';
+import RateRail from '@/components/rates/RateRail';
 
 export async function generateStaticParams() {
-    return CITIES.map((city) => ({
-        city: city.toLowerCase(),
-    }));
+    return GOLD_CITIES.map(({ slug }) => ({ city: slug }));
 }
 
-export const revalidate = 86400;
+export const revalidate = 3600;
 
 export async function generateMetadata(props: { params: Promise<{ city: string }> }): Promise<Metadata> {
     const params = await props.params;
@@ -74,23 +65,28 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
     const citySlug = params.city.toLowerCase();
     const cityData = getCityGoldData(citySlug);
 
-    if (!cityData || !CITIES.map(c => c.toLowerCase()).includes(citySlug)) {
+    if (!cityData || !GOLD_CITIES.some(c => c.slug === citySlug)) {
         notFound();
     }
 
-    // Loaded here (not in the browser) so tables and links are in the server HTML.
-    const [goldRates, cityHistory, goldNews] = await Promise.all([
-        fetchGoldRatesAllCarats(cityData.city), // the city's own rate, same source as its history table
-        fetchGoldHistory(cityData.city, '24k'),
+    // Everything is loaded on the server so rates, tables and links are in the HTML.
+    const silverCity = getSilverCity(citySlug);
+    const [snap, cityRows, goldNews, silverSeries] = await Promise.all([
+        fetchGoldSnapshot(cityData.city), // the city's own rate
+        fetchGoldCityTable(),
         fetchMetalNewsCards('gold', 6).catch(() => []),
+        silverCity ? fetchSilverSeries(silverCity.symbol) : Promise.resolve([]),
     ]);
-    const cityHistory24k = cityHistory?.success ? cityHistory.data : undefined;
 
     const {
         city: cityName, state, mainMarkets, tagline, heroDescription,
         uniqueDescription, goldCulture, keyHighlights, buyingTips,
         popularAreas, faq, priceFactors, investmentInsight, festivalsImpact,
     } = cityData;
+    const r24 = snap['24K'][0];
+    const r22 = snap['22K'][0];
+    const r18 = snap['18K'][0];
+    const stats = seriesStats(snap['24K']);
 
     // ─── Structured Data ─────────────────────────────────────────────────
     const webPageSchema = {
@@ -163,320 +159,124 @@ export default async function CityGoldRatePage(props: { params: Promise<{ city: 
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(articleSchema) }} />
 
-            <div className="bg-gray-50 py-8 sm:py-12">
-                <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <RateLayout rail={
+                <RateRail
+                    lang="en"
+                    cityTitle="Gold rate in other cities"
+                    cityRows={cityRows}
+                    rateKey="22K"
+                    grams={10}
+                    unitLabel="22K, per 10 grams"
+                    hrefFor={slug => `/gold-rate/${slug}`}
+                    currentSlug={citySlug}
+                    other={silverSeries[0] ? { title: `Silver rate in ${cityName}`, href: `/silver-rate/${citySlug}`, label: 'Per kg', value: inr(silverSeries[0].perGram * 1000) } : undefined}
+                    tools={[
+                        { href: '/gold-rate', label: 'Gold rate today in India' },
+                        { href: '/gold-vs-silver', label: 'Gold vs silver' },
+                        { href: '/gold-affordability-index', label: 'Gold affordability index' },
+                        { href: '/calculator/sip', label: 'SIP calculator' },
+                    ]}
+                    newsTitle="Gold news"
+                    news={goldNews}
+                />
+            }>
+                <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Gold Rate', href: '/gold-rate' }, { label: cityName }]} />
+                <MetalTabs active="gold" goldHref={`/gold-rate/${citySlug}`} silverHref={silverCity ? `/silver-rate/${citySlug}` : '/silver-rate'} lang="en" />
+                <RateTitle
+                    lang="en"
+                    title={`Gold Rate in ${cityName} Today — ${getTodayIST()}`}
+                    updated={r24 ? feedDate(r24.date, 'en') : undefined}
+                    summary={r24 && r22 ? (
+                        <>
+                            The price of 24 carat gold in {cityName} is <strong>{inr(r24.perGram * 10)} per 10 grams</strong> today,{' '}
+                            {Math.abs(r24.changePercent) < 0.005 ? 'unchanged from the previous day' : <>{r24.change > 0 ? 'up' : 'down'} {inr(Math.abs(r24.change * 10))} ({Math.abs(r24.changePercent).toFixed(2)}%) from the previous day</>}.
+                            {' '}22 carat (916) gold is <strong>{inr(r22.perGram * 10)}</strong>{r18 ? <> and 18 carat is {inr(r18.perGram * 10)}</> : null} per 10 grams. {tagline}.
+                        </>
+                    ) : <>Today&apos;s gold rates for {cityName} are temporarily unavailable. Please check again shortly.</>}
+                />
 
-                    {/* ── Breadcrumb ─────────────────────────────────────────── */}
-                    <nav className="mb-6" aria-label="Breadcrumb">
-                        <ol className="flex items-center space-x-2 text-sm text-gray-600">
-                            <li><Link href="/" className="hover:text-primary-600">Home</Link></li>
-                            <li>/</li>
-                            <li><Link href="/gold-rate" className="hover:text-primary-600">Gold Rates</Link></li>
-                            <li>/</li>
-                            <li className="text-gray-900 font-medium">{cityName}</li>
-                        </ol>
-                    </nav>
+                {r24 && r22 && (
+                    <KeyRateCards rates={[
+                        { label: '24K gold', sub: '10 grams', value: r24.perGram * 10, change: r24.change * 10, changePercent: r24.changePercent },
+                        { label: '22K gold', sub: '10 grams', value: r22.perGram * 10, change: r22.change * 10, changePercent: r22.changePercent },
+                        ...(r18 ? [{ label: '18K gold', sub: '10 grams', value: r18.perGram * 10, change: r18.change * 10, changePercent: r18.changePercent }] : []),
+                    ]} />
+                )}
 
-                    {/* ── Hero Header ────────────────────────────────────────── */}
-                    <header className="mb-10">
-                        <div className="flex items-start gap-3 mb-3">
-                            <MapPin className="h-9 w-9 sm:h-10 sm:w-10 text-primary-600 flex-shrink-0 mt-1" />
-                            <div>
-                                <h1 className="text-3xl sm:text-4xl font-display font-bold text-gray-900">
-                                    Gold Rate in {cityName} Today — {getTodayIST()}
-                                </h1>
-                                <p className="text-sm sm:text-base text-primary-700 font-semibold mt-1">{tagline}</p>
-                            </div>
-                        </div>
-                        <p className="text-base sm:text-lg text-gray-600 leading-relaxed max-w-4xl">
-                            {heroDescription}
-                        </p>
-                        {/* Key markets badge */}
-                        <div className="flex flex-wrap gap-2 mt-4">
-                            {mainMarkets.map(market => (
-                                <span key={market} className="inline-flex items-center gap-1.5 bg-amber-50 text-amber-800 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full border border-amber-200">
-                                    <Store className="h-3.5 w-3.5" /> {market}
-                                </span>
-                            ))}
-                            <span className="inline-flex items-center gap-1.5 bg-gray-100 text-gray-700 text-xs sm:text-sm font-medium px-3 py-1.5 rounded-full border border-gray-200">
-                                📍 {state}
-                            </span>
-                        </div>
-                    </header>
+                {r24 && r22 && (
+                    <Section id="today-rates" title={`Gold price in ${cityName} today`}>
+                        <RateMatrix
+                            lang="en"
+                            caption={`Gold price in ${cityName} today by purity and weight`}
+                            rows={[
+                                { label: '24K', sub: '99.9% pure', perGram: r24.perGram },
+                                { label: '22K', sub: '91.6% (916)', perGram: r22.perGram },
+                                ...(r18 ? [{ label: '18K', sub: '75% pure', perGram: r18.perGram }] : []),
+                            ]}
+                            weights={[{ label: '1 gram', grams: 1 }, { label: '8 grams', grams: 8 }, { label: '10 grams', grams: 10 }, { label: '100 grams', grams: 100 }]}
+                        />
+                        <RateNote lang="en" />
+                    </Section>
+                )}
 
-                    {/* ── Key Highlights Cards ──────────────────────────────── */}
-                    <section className="mb-10" aria-labelledby="highlights-heading">
-                        <h2 id="highlights-heading" className="sr-only">Key Highlights of {cityName} Gold Market</h2>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            {keyHighlights.map((h, i) => (
-                                <div key={i} className="bg-white rounded-xl border border-gray-200 p-5 shadow-sm hover:shadow-md transition-shadow">
-                                    <div className="text-2xl mb-2">{h.icon}</div>
-                                    <h3 className="font-bold text-gray-900 text-sm sm:text-base mb-1">{h.label}</h3>
-                                    <p className="text-gray-600 text-xs sm:text-sm leading-relaxed">{h.detail}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
+                {snap['24K'].length > 1 && (
+                    <Section id="history" title={`Gold rate in ${cityName}: last ${snap['24K'].length} days`}>
+                        <HistoryTable
+                            lang="en"
+                            caption={`Gold rate in ${cityName} over the last ${snap['24K'].length} days, per 10 grams`}
+                            grams={10}
+                            columns={[{ label: '22K (10g)', series: snap['22K'] }, { label: '24K (10g)', series: snap['24K'] }]}
+                        />
+                    </Section>
+                )}
 
-                    {/* ── Today's Gold Rates ─────────────────────────────────── */}
-                    <section className="mb-12" aria-labelledby="current-rates-heading">
-                        <div className="flex items-center space-x-2 md:space-x-3 mb-4 md:mb-6">
-                            <Coins className="h-6 w-6 md:h-7 md:w-7 text-primary-600 flex-shrink-0" aria-hidden="true" />
-                            <h2 id="current-rates-heading" className="text-xl md:text-2xl font-display font-semibold text-gray-900">
-                                Today&apos;s Gold Rates in {cityName}
-                            </h2>
-                        </div>
-                        <DynamicGoldRates city={cityName} initialRates={goldRates} initialLastUpdated={goldRates.length ? new Date().toISOString() : null} />
-                    </section>
+                {snap['24K'].length > 1 && (
+                    <Section id="trend" title={`24K gold price trend in ${cityName}`}>
+                        <PriceLineChart series={snap['24K']} grams={10} lang="en" label={`24K gold price in ${cityName}, per 10 grams, last ${snap['24K'].length} days`} />
+                        <RangeStats stats={stats} grams={10} lang="en" days={snap['24K'].length} />
+                    </Section>
+                )}
 
-                    {/* ── Gold Calculator ────────────────────────────────────── */}
-                    <section className="mb-12" aria-labelledby="calculator-heading">
-                        <div className="flex items-center space-x-3 mb-6">
-                            <Calculator className="h-7 w-7 text-primary-600" aria-hidden="true" />
-                            <h2 id="calculator-heading" className="text-2xl font-display font-semibold text-gray-900">
-                                Gold Price Calculator for {cityName}
-                            </h2>
-                        </div>
-                        <GoldCalculator />
-                    </section>
+                {cityRows.length > 0 && (
+                    <Section id="cities" title="Gold rate in major cities">
+                        <CityRateTable
+                            lang="en"
+                            caption="Gold rate today in major Indian cities, per 10 grams"
+                            rows={cityRows}
+                            columns={[{ key: '22K', label: '22K (10g)', grams: 10 }, { key: '24K', label: '24K (10g)', grams: 10 }]}
+                            hrefFor={slug => `/gold-rate/${slug}`}
+                            currentSlug={citySlug}
+                        />
+                    </Section>
+                )}
 
-                    {/* ── Gold Rate History ──────────────────────────────────── */}
-                    <section className="mb-12" aria-labelledby="history-heading">
-                        <div className="flex items-center space-x-3 mb-6">
-                            <TrendingUp className="h-7 w-7 text-primary-600" aria-hidden="true" />
-                            <h2 id="history-heading" className="text-2xl font-display font-semibold text-gray-900">
-                                Gold Rate History in {cityName} (24K)
-                            </h2>
-                        </div>
-                        <GoldHistoryTable city={cityName} carat="24k" initialHistory={cityHistory24k} />
-                    </section>
+                <Section id="calculator" title={`Gold price calculator for ${cityName}`}>
+                    <details className="group rounded-xl border border-gw-border">
+                        <summary className="cursor-pointer list-none px-4 py-3 text-[15px] font-semibold flex items-center justify-between [&::-webkit-details-marker]:hidden">
+                            Work out the price with making charges and GST
+                            <span className="text-gray-400 group-open:rotate-45 transition-transform text-lg leading-none">+</span>
+                        </summary>
+                        <div className="px-2 sm:px-4 pb-4"><GoldCalculator /></div>
+                    </details>
+                </Section>
 
-                    {/* ── Gold News ─────────────────────────────────────────── */}
-                    <GoldNewsSection initialArticles={goldNews as GoldNewsArticle[]} />
+                <CityGuide
+                    lang="en"
+                    metal="gold"
+                    info={{ city: cityName, uniqueDescription: `${heroDescription} ${uniqueDescription}`, culture: goldCulture, keyHighlights, popularAreas, buyingTips, priceFactors, investmentInsight, festivalsImpact }}
+                />
+                <PurityGuide lang="en" />
 
-                    {/* ── Gold Price Trend Chart ─────────────────────────────── */}
-                    <section className="mb-12" aria-labelledby="chart-heading">
-                        <DynamicGoldChart carat="24k" city={cityName} initialHistory={cityHistory24k} />
-                    </section>
+                <Section id="faq" title={`Gold in ${cityName}: frequently asked questions`}>
+                    <FaqList items={faq} />
+                </Section>
 
-                    {/* ── Historical Gold Prices — 62 Years ─────────────────── */}
-                    <GoldPriceHistoryChart cityName={cityName} />
-
-                    {/* ═══════════════════════════════════════════════════════════
-                         UNIQUE CITY CONTENT — E-E-A-T SECTIONS
-                         ═══════════════════════════════════════════════════════════ */}
-
-                    {/* ── About the Gold Market ─────────────────────────────── */}
-                    <article className="mb-10 card" id="about-gold-market">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <Landmark className="h-7 w-7 text-primary-600" />
-                            <h2 className="text-2xl font-display font-bold text-gray-900">
-                                About the Gold Market in {cityName}
-                            </h2>
-                        </div>
-                        <div className="prose prose-gray max-w-none">
-                            <p className="text-gray-700 leading-relaxed text-base">{uniqueDescription}</p>
-                        </div>
-                    </article>
-
-                    {/* ── Gold Culture & Heritage ───────────────────────────── */}
-                    <article className="mb-10 card" id="gold-culture">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <BookOpen className="h-7 w-7 text-primary-600" />
-                            <h2 className="text-2xl font-display font-bold text-gray-900">
-                                Gold Culture & Heritage in {cityName}
-                            </h2>
-                        </div>
-                        <div className="prose prose-gray max-w-none">
-                            <p className="text-gray-700 leading-relaxed text-base">{goldCulture}</p>
-                        </div>
-                    </article>
-
-                    {/* ── Popular Gold Markets / Areas ──────────────────────── */}
-                    <section className="mb-10 card" id="popular-markets" aria-labelledby="popular-markets-heading">
-                        <div className="flex items-center space-x-3 mb-5">
-                            <ShoppingBag className="h-7 w-7 text-primary-600" />
-                            <h2 id="popular-markets-heading" className="text-2xl font-display font-bold text-gray-900">
-                                Best Gold Markets & Shopping Areas in {cityName}
-                            </h2>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            {popularAreas.map((area, i) => (
-                                <div key={i} className="bg-gray-50 rounded-xl p-4 border border-gray-100">
-                                    <h3 className="font-bold text-gray-900 text-base mb-1.5 flex items-center gap-2">
-                                        <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-primary-100 text-primary-700 text-xs font-bold">{i + 1}</span>
-                                        {area.name}
-                                    </h3>
-                                    <p className="text-gray-600 text-sm leading-relaxed">{area.specialty}</p>
-                                </div>
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* ── Buying Tips ────────────────────────────────────────── */}
-                    <section className="mb-10 card" id="buying-tips" aria-labelledby="buying-tips-heading">
-                        <div className="flex items-center space-x-3 mb-5">
-                            <Lightbulb className="h-7 w-7 text-amber-500" />
-                            <h2 id="buying-tips-heading" className="text-2xl font-display font-bold text-gray-900">
-                                Gold Buying Tips for {cityName}
-                            </h2>
-                        </div>
-                        <p className="text-gray-600 text-sm mb-4">Expert guidance to help you get the best deal when buying gold in {cityName}.</p>
-                        <ol className="space-y-3">
-                            {buyingTips.map((tip, i) => (
-                                <li key={i} className="flex gap-3 text-gray-700 text-sm sm:text-base leading-relaxed">
-                                    <span className="flex-shrink-0 w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-xs font-bold mt-0.5">{i + 1}</span>
-                                    <span>{tip}</span>
-                                </li>
-                            ))}
-                        </ol>
-                    </section>
-
-                    {/* ── Factors Affecting Price ────────────────────────────── */}
-                    <section className="mb-10 card" id="price-factors" aria-labelledby="price-factors-heading">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <TrendingUp className="h-7 w-7 text-primary-600" />
-                            <h2 id="price-factors-heading" className="text-2xl font-display font-bold text-gray-900">
-                                Factors Affecting Gold Prices in {cityName}
-                            </h2>
-                        </div>
-                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                            {priceFactors.map((factor, i) => (
-                                <li key={i} className="flex items-start gap-2 text-gray-700 text-sm sm:text-base">
-                                    <span className="text-primary-500 mt-1 flex-shrink-0">●</span>
-                                    <span>{factor}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </section>
-
-                    {/* ── Investment Insight ─────────────────────────────────── */}
-                    <section className="mb-10 card bg-gradient-to-br from-amber-50 to-white border-amber-200" id="investment-insight" aria-labelledby="investment-heading">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <Lightbulb className="h-7 w-7 text-amber-600" />
-                            <h2 id="investment-heading" className="text-2xl font-display font-bold text-gray-900">
-                                Gold Investment Outlook in {cityName}
-                            </h2>
-                        </div>
-                        <p className="text-gray-700 leading-relaxed text-base">{investmentInsight}</p>
-                    </section>
-
-                    {/* ── Festivals & Seasonal Impact ────────────────────────── */}
-                    <section className="mb-10 card" id="festivals-impact" aria-labelledby="festivals-heading">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <Calendar className="h-7 w-7 text-primary-600" />
-                            <h2 id="festivals-heading" className="text-2xl font-display font-bold text-gray-900">
-                                Festival & Seasonal Gold Demand in {cityName}
-                            </h2>
-                        </div>
-                        <p className="text-gray-700 leading-relaxed text-base">{festivalsImpact}</p>
-                    </section>
-
-                    {/* ── Gold Purity Explained ──────────────────────────────── */}
-                    <section className="mb-10 card" id="purity-guide" aria-labelledby="purity-heading">
-                        <div className="flex items-center space-x-3 mb-4">
-                            <Coins className="h-7 w-7 text-primary-600" />
-                            <h2 id="purity-heading" className="text-2xl font-display font-bold text-gray-900">
-                                Gold Purity Guide — 24K vs 22K vs 18K
-                            </h2>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                            <div className="bg-amber-50 rounded-xl p-4 border border-amber-100">
-                                <h3 className="font-bold text-gray-900 text-base mb-2">24K Gold (99.9% pure)</h3>
-                                <p className="text-gray-600 text-sm leading-relaxed">
-                                    The purest form of gold, ideal for investment. Too soft for daily-wear jewellery.
-                                    Available as bars and coins from certified dealers in {cityName}.
-                                </p>
-                            </div>
-                            <div className="bg-yellow-50 rounded-xl p-4 border border-yellow-100">
-                                <h3 className="font-bold text-gray-900 text-base mb-2">22K Gold (91.67% pure)</h3>
-                                <p className="text-gray-600 text-sm leading-relaxed">
-                                    The most popular purity for jewellery in India. Also called 916 gold.
-                                    Perfect balance of purity and durability for everyday wear.
-                                </p>
-                            </div>
-                            <div className="bg-orange-50 rounded-xl p-4 border border-orange-100">
-                                <h3 className="font-bold text-gray-900 text-base mb-2">18K Gold (75% pure)</h3>
-                                <p className="text-gray-600 text-sm leading-relaxed">
-                                    Used for modern designer jewellery. More durable due to higher alloy content.
-                                    Popular for contemporary and western-style designs in {cityName}.
-                                </p>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* ── FAQ Section ────────────────────────────────────────── */}
-                    <section className="mb-10 card" id="faq" aria-labelledby="faq-heading">
-                        <div className="flex items-center space-x-3 mb-5">
-                            <HelpCircle className="h-7 w-7 text-primary-600" />
-                            <h2 id="faq-heading" className="text-2xl font-display font-bold text-gray-900">
-                                Frequently Asked Questions — Gold in {cityName}
-                            </h2>
-                        </div>
-                        <div className="space-y-5">
-                            {faq.map((item, i) => (
-                                <details key={i} className="group bg-gray-50 rounded-xl border border-gray-100 overflow-hidden" open={i === 0}>
-                                    <summary className="cursor-pointer p-4 sm:p-5 font-semibold text-gray-900 text-sm sm:text-base flex items-start gap-3 list-none [&::-webkit-details-marker]:hidden">
-                                        <span className="flex-shrink-0 w-6 h-6 rounded-full bg-primary-100 text-primary-700 flex items-center justify-center text-xs font-bold mt-0.5">Q</span>
-                                        <span className="flex-1">{item.question}</span>
-                                        <span className="flex-shrink-0 text-gray-400 group-open:rotate-180 transition-transform text-lg">▼</span>
-                                    </summary>
-                                    <div className="px-4 sm:px-5 pb-4 sm:pb-5 pt-0">
-                                        <p className="text-gray-600 text-sm sm:text-base leading-relaxed pl-9">{item.answer}</p>
-                                    </div>
-                                </details>
-                            ))}
-                        </div>
-                    </section>
-
-                    {/* ── Other Cities ─────────────────────────────────────── */}
-                    <section className="mb-10 card" aria-labelledby="other-cities-heading">
-                        <h2 id="other-cities-heading" className="text-xl font-display font-semibold text-gray-900 mb-4">
-                            Gold Rates in Other Cities
-                        </h2>
-                        <div className="overflow-x-auto">
-                            <table className="w-full text-sm text-left">
-                                <thead className="bg-gray-50 text-gray-600 uppercase text-xs">
-                                    <tr>
-                                        <th className="px-4 py-3">City</th>
-                                        <th className="px-4 py-3 text-right">View Rates</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-100">
-                                    {CITIES.filter(c => c.toLowerCase() !== citySlug).map((c) => (
-                                        <tr key={c} className="hover:bg-gray-50">
-                                            <td className="px-4 py-3 font-medium text-gray-900">{c}</td>
-                                            <td className="px-4 py-3 text-right">
-                                                <Link href={`/gold-rate/${c.toLowerCase()}`} className="text-primary-600 hover:underline">View Rate →</Link>
-                                            </td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </section>
-
-                    {/* ── Disclaimer ─────────────────────────────────────────── */}
-                    <aside className="card bg-yellow-50 border-yellow-200 mb-8">
-                        <h3 className="text-lg font-display font-semibold text-gray-900 mb-3">Important Disclaimer</h3>
-                        <p className="text-sm text-gray-700 leading-relaxed">
-                            The gold rates displayed for {cityName} are indicative and sourced from market data aggregators.
-                            Actual prices may vary slightly at individual jewellery stores due to making charges, GST (3%),
-                            and dealer-specific margins. Always verify the current rate, check for BIS hallmark (HUID number),
-                            and ask for a detailed invoice before making a purchase. The information provided here is for
-                            educational purposes and does not constitute financial or investment advice.
-                        </p>
-                    </aside>
-
-                    {/* ── Last Updated ───────────────────────────────────────── */}
-                    <footer className="text-center">
-                        <LastUpdatedTime />
-                        <p className="text-xs text-gray-400 mt-2">
-                            Written by the gpaisa.in editorial team · {cityName} gold market expert guide
-                        </p>
-                    </footer>
-                </div>
-            </div>
+                <p className="mt-8 text-xs leading-relaxed text-gray-500">
+                    Gold rates for {cityName} ({state}; main markets: {mainMarkets.join(', ')}) are indicative and come from a third-party market data feed.
+                    Jewellers add making charges and 3% GST, and their rates can differ slightly. Check the BIS hallmark (HUID) and ask for an itemised bill.
+                    This page is for information only and is not investment advice.
+                </p>
+            </RateLayout>
         </>
     );
 }
