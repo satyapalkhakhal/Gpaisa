@@ -11,7 +11,8 @@ import { SITE_URL, articlePath, toArticleLanguage } from '@/lib/articleLocale';
 // Article bylines and Article/NewsArticle markup link here (see lib/authors.ts).
 
 export const revalidate = 3600;
-export const dynamicParams = false;
+// No `dynamicParams = false`: with it, regenerating this page after revalidateTag('db')
+// (every admin article save) served a cached 404. Unknown slugs still 404 via notFound().
 
 export function generateStaticParams() {
     return AUTHORS.map(a => ({ slug: a.slug }));
