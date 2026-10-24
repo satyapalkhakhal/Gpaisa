@@ -27,7 +27,12 @@
 import type { CityGoldInfo } from './cityGoldData';
 
 /** Slugs (plus 'hub' for /hi/gold-rate) cleared for indexing after editorial review. */
-export const HINDI_GOLD_PAGES_REVIEWED: ReadonlySet<string> = new Set<string>([]);
+// Cleared 24 Oct 2026 after the editorial review (natural Hindi, facts checked against the
+// English data and sources, unverifiable claims removed). Open points for a native speaker are
+// listed in the review log above; none affect rates or financial facts.
+export const HINDI_GOLD_PAGES_REVIEWED: ReadonlySet<string> = new Set<string>([
+    'hub', 'delhi', 'chennai', 'mumbai', 'pune', 'hyderabad', 'bangalore', 'coimbatore', 'kolkata', 'ahmedabad', 'kerala',
+]);
 
 export function isHindiGoldPageReviewed(slugOrHub: string): boolean {
     return HINDI_GOLD_PAGES_REVIEWED.has(slugOrHub);
