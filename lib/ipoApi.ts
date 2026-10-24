@@ -253,8 +253,19 @@ export async function fetchLatestIpoReviews(limit: number = 5, revalidateSeconds
 export function isIpoIndexable(ipo: IpoDetail): boolean {
     if (ipo.publish_status !== 'published') return false;
     const hasCoreFacts = ipo.price_band_max != null && !!ipo.open_date && !!ipo.close_date;
-    const hasSubstance = ipo.financials.length > 0 || !!ipo.review || ipo.subscription_history.length > 0 || !!ipo.objects_of_issue?.trim();
-    return hasCoreFacts && hasSubstance;
+    if (!hasCoreFacts) return false;
+    // Our own review is unique analysis: always indexable. Otherwise the page is mostly
+    // data-feed fields (~200 words), so only recent issues with financials are indexed;
+    // older ones stay live but noindex (the audit found ~50 such thin pages).
+    if (ipo.review) return true;
+    return ipo.financials.length > 0 && isRecentIssue(ipo.close_date);
+}
+
+/** Closed within the last IPO_RECENT_DAYS days, or still upcoming/open. */
+const IPO_RECENT_DAYS = 90;
+function isRecentIssue(closeDate: string | null): boolean {
+    if (!closeDate) return false;
+    return Date.parse(closeDate) >= Date.now() - IPO_RECENT_DAYS * 86_400_000;
 }
 
 // SQL form of isIpoIndexable, for listing indexable IPOs without loading each one.
@@ -262,10 +273,11 @@ const INDEXABLE_IPO_SQL = `
     i.publish_status = 'published'
     AND i.price_band_max IS NOT NULL AND i.open_date IS NOT NULL AND i.close_date IS NOT NULL
     AND (
-        EXISTS (SELECT 1 FROM ipo_financials f WHERE f.ipo_id = i.id)
-        OR EXISTS (SELECT 1 FROM ipo_reviews r WHERE r.ipo_id = i.id AND r.publish_status = 'published')
-        OR EXISTS (SELECT 1 FROM ipo_subscription_updates s WHERE s.ipo_id = i.id)
-        OR btrim(coalesce(i.objects_of_issue, '')) <> ''
+        EXISTS (SELECT 1 FROM ipo_reviews r WHERE r.ipo_id = i.id AND r.publish_status = 'published')
+        OR (
+            EXISTS (SELECT 1 FROM ipo_financials f WHERE f.ipo_id = i.id)
+            AND i.close_date >= CURRENT_DATE - 90
+        )
     )`;
 
 /**

@@ -14,6 +14,7 @@ export const metadata = {
     title: 'Sitemap - All Pages | gpaisa.in',
     description: 'Browse all pages on gpaisa.in including gold rates, silver rates, news articles, and financial information.',
     robots: INDEXABLE_ROBOTS,
+    alternates: { canonical: 'https://www.gpaisa.in/sitemap-page' },
 };
 
 export const revalidate = 86400; // Cache for 1 day (ISR)

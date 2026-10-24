@@ -1,6 +1,7 @@
 // Server-rendered SVG line chart for a short price series (newest first). The y-axis spans
 // the series' own range (with padding) instead of starting at zero, so a 2–4% move is
-// visible; points carry <title> tooltips. No client JavaScript.
+// visible. No client JavaScript. Points have no SVG <title> tooltips: crawlers read those as
+// extra page titles; the history table on the page carries the same values.
 import type { ArticleLanguage } from '@/lib/articleLocale';
 import type { RateSeries } from '@/lib/rates';
 import { feedDate, inr } from './RatesUi';
@@ -65,9 +66,7 @@ function ChartSvg({ series, grams, lang, color, label, size }: {
             <path d={area} fill={`url(#${gradientId})`} />
             <path d={line} fill="none" stroke={color} strokeWidth="2.5" strokeLinejoin="round" strokeLinecap="round" />
             {values.map((v, i) => (
-                <circle key={i} cx={x(i)} cy={y(v)} r={i === values.length - 1 ? 5 : 3} fill={i === values.length - 1 ? color : '#fff'} stroke={color} strokeWidth="2">
-                    <title>{`${feedDate(points[i].date, lang)}: ${inr(v)}`}</title>
-                </circle>
+                <circle key={i} cx={x(i)} cy={y(v)} r={i === values.length - 1 ? 5 : 3} fill={i === values.length - 1 ? color : '#fff'} stroke={color} strokeWidth="2" />
             ))}
             {xLabels.map(i => (
                 <text key={i} x={x(i)} y={H - 8} textAnchor={i === 0 ? 'start' : i === points.length - 1 ? 'end' : 'middle'} fontSize="12" fill="#6b7280">

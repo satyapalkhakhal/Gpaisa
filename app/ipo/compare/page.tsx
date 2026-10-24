@@ -12,6 +12,7 @@ import FreshnessBadge from '@/components/ipo/FreshnessBadge';
 export const metadata: Metadata = {
     title: 'Compare IPOs | gpaisa.in',
     robots: { index: false, follow: true },
+    alternates: { canonical: 'https://www.gpaisa.in/ipo/compare' },
 };
 
 function formatDate(d: string | null): string {

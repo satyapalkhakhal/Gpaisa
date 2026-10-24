@@ -41,6 +41,11 @@ export async function generateStaticParams() {
 
 // ─── Metadata ────────────────────────────────────────────────────────
 
+// Per-bank/AMC variants (/calculator/hdfc-sip-calculator, /calculator/sbi-home-loan-calculator…)
+// share one template with ~300 words of bank-specific text: live for visitors, but kept out of
+// the index so near-duplicate pages don't weigh on how Google rates the site.
+const BANK_VARIANT_ROBOTS: Metadata['robots'] = { index: false, follow: true };
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const { slug } = await params;
 
@@ -90,6 +95,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                     description: amcData.metaDescription,
                     creator: '@gpaisa_in',
                 },
+                robots: BANK_VARIANT_ROBOTS,
                 alternates: {
                     canonical: `https://www.gpaisa.in/calculator/${slug[0]}`,
                 },
@@ -114,6 +120,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                     description: bank.description,
                     creator: '@gpaisa_in',
                 },
+                robots: BANK_VARIANT_ROBOTS,
                 alternates: {
                     canonical: `https://www.gpaisa.in/calculator/${slug[0]}`,
                 },
@@ -146,6 +153,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
                     title: metaTitle,
                     description: metaDescription,
                 },
+                robots: BANK_VARIANT_ROBOTS,
                 alternates: {
                     canonical: `https://www.gpaisa.in/calculator/${slug[0]}`,
                 },

@@ -1,14 +1,12 @@
 import { MetadataRoute } from 'next';
 import { CATEGORIES, DROPPED_CATEGORY_DB_VALUES, categoryLanguageAlternates, categoryPath } from '@/lib/categories';
 import { GLOSSARY_TERMS } from '@/lib/glossaryData';
-import { IPO_CALCULATORS } from '@/lib/ipoCalculatorsList';
 import { fetchArticleSitemapEntries } from '@/lib/articlesApi';
 import { HREFLANG, articlePath, toArticleLanguage } from '@/lib/articleLocale';
 import { HINDI_CITY_NAMES, isHindiGoldPageReviewed } from '@/lib/cityGoldDataHi';
 import { INDEXABLE_SILVER_CITIES } from '@/lib/silverCities';
 import { goldRateLanguageAlternates } from '@/lib/goldRateLocale';
 import { fetchIndexableIpoSlugs } from '@/lib/ipoApi';
-import { fetchIndexableSlugs } from '@/lib/otherInvestmentsApi';
 import { AUTHORS, authorNameKey, authorPath } from '@/lib/authors';
 
 
@@ -225,57 +223,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             changeFrequency: 'daily',
             priority: 0.75,
         },
-        {
-            url: `${baseUrl}/ipo-calculator`,
-            lastModified: new Date('2026-08-30'),
-            changeFrequency: 'monthly',
-            priority: 0.7,
-        },
-        {
-            url: `${baseUrl}/ncd`,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 0.7,
-        },
-        {
-            url: `${baseUrl}/rights-issue`,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 0.7,
-        },
-        {
-            url: `${baseUrl}/buyback`,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 0.7,
-        },
     ];
 
-    // Other Investments detail pages — only those with editorial text (see
-    // fetchIndexableSlugs); the rest are live but noindex, so not listed here.
-    let ncdPages: MetadataRoute.Sitemap = [];
-    let rightsIssuePages: MetadataRoute.Sitemap = [];
-    let buybackPages: MetadataRoute.Sitemap = [];
-    try {
-        const [ncds, rightsIssues, buybacks] = await Promise.all([
-            fetchIndexableSlugs('ncd_issues'),
-            fetchIndexableSlugs('rights_issues'),
-            fetchIndexableSlugs('buybacks'),
-        ]);
-        ncdPages = ncds.map((n) => ({ url: `${baseUrl}/ncd/${n.slug}`, lastModified: new Date(n.updated_at), changeFrequency: 'daily' as const, priority: 0.65 }));
-        rightsIssuePages = rightsIssues.map((r) => ({ url: `${baseUrl}/rights-issue/${r.slug}`, lastModified: new Date(r.updated_at), changeFrequency: 'daily' as const, priority: 0.65 }));
-        buybackPages = buybacks.map((b) => ({ url: `${baseUrl}/buyback/${b.slug}`, lastModified: new Date(b.updated_at), changeFrequency: 'daily' as const, priority: 0.65 }));
-    } catch (error) {
-        console.error('Error fetching Other Investments for sitemap:', error);
-    }
-
-    // IPO calculator tool pages
-    const ipoCalculatorPages: MetadataRoute.Sitemap = IPO_CALCULATORS.map((c) => ({
-        url: `${baseUrl}/ipo-calculator/${c.slug}`,
-        lastModified: new Date('2026-08-30'),
-        changeFrequency: 'monthly',
-        priority: 0.6,
-    }));
+    // NCD, rights issue and buyback pages (hubs and details) and the IPO calculators are thin
+    // and out of the navigation: live, but noindex and not listed here.
 
     // IPO detail pages — only those that pass isIpoIndexable (published, with core
     // facts and real content); thin ones are live but noindex, so not listed here.
@@ -485,10 +436,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...hindiGoldRatePages,
         ...silverRateCityPages,
         ...articlePages,
-        ...ipoCalculatorPages,
         ...ipoPages,
-        ...ncdPages,
-        ...rightsIssuePages,
-        ...buybackPages,
     ];
 }

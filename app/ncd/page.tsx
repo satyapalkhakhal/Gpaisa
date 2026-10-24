@@ -17,7 +17,8 @@ export async function generateMetadata(): Promise<Metadata> {
             locale: 'en_IN',
         },
         alternates: { canonical: 'https://www.gpaisa.in/ncd' },
-        robots: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 },
+        // Thin and out of the navigation: live for visitors, kept out of the index.
+        robots: { index: false, follow: true },
     };
 }
 

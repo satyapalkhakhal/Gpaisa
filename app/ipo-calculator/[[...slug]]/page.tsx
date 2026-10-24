@@ -20,6 +20,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             title: 'IPO Calculators — Lot Size & Allotment Probability | gpaisa.in',
             description: 'Free IPO calculators: work out your lot size investment and estimate allotment probability for Indian mainboard and SME IPOs.',
             alternates: { canonical: 'https://www.gpaisa.in/ipo-calculator' },
+            robots: { index: false, follow: true },
         };
     }
 
@@ -30,7 +31,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         title: `${calc.name} | gpaisa.in`,
         description: calc.description,
         alternates: { canonical: `https://www.gpaisa.in/ipo-calculator/${calc.slug}` },
-        robots: { index: true, follow: true, 'max-image-preview': 'large', 'max-snippet': -1, 'max-video-preview': -1 },
+        // Thin tool pages, out of the navigation: live for visitors, kept out of the index.
+        robots: { index: false, follow: true },
     };
 }
 
