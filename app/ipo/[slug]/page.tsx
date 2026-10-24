@@ -11,6 +11,7 @@ import CompareCheckbox from '@/components/ipo/CompareCheckbox';
 import LifecycleTimeline from '@/components/ipo/LifecycleTimeline';
 import GmpHistoryChart from '@/components/ipo/GmpHistoryChart';
 import SubscriptionChart from '@/components/ipo/SubscriptionChart';
+import SubscriptionTable from '@/components/ipo/SubscriptionTable';
 import DatesTimelineTable from '@/components/ipo/DatesTimelineTable';
 import MarketLotTable from '@/components/ipo/MarketLotTable';
 import ReservationTable from '@/components/ipo/ReservationTable';
@@ -298,7 +299,13 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                     <h2 className="text-lg font-bold text-gray-900">Subscription Status</h2>
                     <DataSourceBadge kind="official" />
                 </div>
-                <SubscriptionChart history={ipo.subscription_history} />
+                <SubscriptionTable history={ipo.subscription_history} isOpen={ipo.status === 'open'} />
+                {/* The chart compares categories, so it only adds anything once category rows exist. */}
+                {ipo.subscription_history.some(u => u.category !== 'overall') && (
+                    <div className="mt-4">
+                        <SubscriptionChart history={ipo.subscription_history} />
+                    </div>
+                )}
                 {Object.keys(ipo.reservation_percentages).length > 0 && (
                     <div className="mt-4 pt-4 border-t border-gray-100">
                         <h3 className="text-sm font-bold text-gray-900 mb-2">Category-wise Reservation</h3>

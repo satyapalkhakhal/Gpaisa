@@ -182,12 +182,15 @@ function fromUpcoming(g: GrowwUpcoming): GrowwIpo {
     };
 }
 
-function fromOpen(g: GrowwOpen): GrowwIpo {
+function fromOpen(g: GrowwOpen, now: number): GrowwIpo {
     // The retail (IND) category carries the public price band and lot size.
     const retail = g.categories?.find((c) => c.category === 'IND') ?? g.categories?.[0];
+    // Groww keeps an issue in its open feed for a while after bidding ends; past the bid
+    // end time it is closed, and its subscription figure is final.
+    const biddingOver = !!g.bidEndTimestamp && g.bidEndTimestamp < now;
     return {
         ...base('open', g),
-        status: 'open',
+        status: biddingOver ? 'closed' : 'open',
         fields: {
             open_date: istDate(g.bidStartTimestamp),
             close_date: istDate(g.bidEndTimestamp),
@@ -257,7 +260,7 @@ export async function syncGrowwIpos({ dryRun = false } = {}): Promise<GrowwSyncR
     for (const feed of FEEDS) {
         try {
             if (feed === 'upcoming') entries.push(...(await fetchFeed<GrowwUpcoming>(feed)).map(fromUpcoming));
-            if (feed === 'open') entries.push(...(await fetchFeed<GrowwOpen>(feed)).map(fromOpen));
+            if (feed === 'open') entries.push(...(await fetchFeed<GrowwOpen>(feed)).map((g) => fromOpen(g, Date.now())));
             if (feed === 'closed') entries.push(...(await fetchFeed<GrowwClosed>(feed)).map((g) => fromClosed(g, today)));
             report.fetched[feed] = entries.filter((e) => e.feed === feed).length;
         } catch (error) {
@@ -404,8 +407,8 @@ async function syncOverallSubscription(ipo: DbIpo, g: GrowwIpo, today: string): 
     if (!times || times <= 0 || !openDate || g.feed === 'upcoming') return false;
 
     const closeDate = (g.fields.close_date ?? ipo.close_date) as string | null;
-    const isOpen = g.feed === 'open';
-    const lastDay = isOpen || !closeDate ? today : closeDate;
+    const isOpen = g.status === 'open';
+    const lastDay = !closeDate || (isOpen && today < closeDate) ? today : closeDate;
     const day = biddingDay(openDate, lastDay < openDate ? openDate : lastDay);
 
     const rows = await queryRows<{ id: string; day_number: number; data_granularity: string; subscription_times: number }>(
