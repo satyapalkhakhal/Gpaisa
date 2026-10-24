@@ -12,16 +12,19 @@ export interface Author {
     bio: string;
     /** Public profiles (LinkedIn, X, …) for schema.org sameAs. */
     sameAs: string[];
+    /** Topics for schema.org knowsAbout. */
+    knowsAbout: string[];
 }
 
 export const AUTHORS: Author[] = [
     {
         slug: 'satyapal-khakhal',
         name: 'Satyapal Khakhal',
-        jobTitle: 'Founder & Financial Content Author',
+        jobTitle: 'Founder & Writer, Full-Stack Developer',
         image: 'https://res.cloudinary.com/dpqtibvzn/image/upload/v1779511268/thinkscope/merzsltgiiep9ebljs6d.png',
-        bio: 'Satyapal Khakhal is the founder of gpaisa.in and writes about personal finance, gold prices, investment trends, credit cards, and financial tools for Indian readers. His focus is on simplifying complex financial topics into practical, easy-to-understand insights backed by real market data and research.',
-        sameAs: [],
+        bio: 'Satyapal Khakhal is the founder of gpaisa.in. He is a full-stack developer by profession and built the site himself, including its financial calculators and live gold, silver and IPO pages. He writes about the stock market, IPOs, gold prices, credit cards and personal finance out of his interest in markets, explaining how each product works using official sources and worked numbers. Where a review is based on a product he has used himself, the article says so. He is not a SEBI-registered investment adviser, and nothing on gpaisa.in is investment advice.',
+        sameAs: ['https://www.linkedin.com/in/satyapal-khakhal-b5751b1bb/'],
+        knowsAbout: ['Stock market', 'IPOs', 'Personal finance', 'Gold and silver prices', 'Credit cards', 'Software development'],
     },
 ];
 

@@ -37,7 +37,9 @@ export default function AboutPage() {
             name: 'gpaisa.in',
             url: 'https://www.gpaisa.in',
         },
-        description: 'Satyapal Khakhal is the founder of gpaisa.in and writes about personal finance, gold prices, investment trends, credit cards, and financial tools for Indian readers.',
+        description: founder.bio,
+        sameAs: founder.sameAs,
+        knowsAbout: founder.knowsAbout,
     };
 
     const aboutPageSchema = {
@@ -175,16 +177,21 @@ export default function AboutPage() {
                                     Satyapal Khakhal
                                 </h3>
 
-                                <p className="text-primary-600 font-semibold mb-3">
-                                    Founder & Financial Content Author
-                                </p>
+                                <p className="text-primary-600 font-semibold mb-3">{founder.jobTitle}</p>
 
                                 <p className="text-gray-700 leading-relaxed mb-3">
-                                    Satyapal Khakhal is the founder of gpaisa.in and writes about personal finance, gold prices, investment trends, credit cards, and financial tools for Indian readers. His focus is on simplifying complex financial topics into practical, easy-to-understand insights backed by real market data and research.
+                                    {founder.bio}
                                 </p>
-                                <Link href={authorPath(founder)} className="text-primary-600 font-semibold hover:underline">
-                                    All articles by {founder.name} →
-                                </Link>
+                                <div className="flex flex-wrap gap-x-5 gap-y-2">
+                                    <Link href={authorPath(founder)} className="text-primary-600 font-semibold hover:underline">
+                                        All articles by {founder.name} →
+                                    </Link>
+                                    {founder.sameAs.map(url => (
+                                        <a key={url} href={url} rel="me noopener" target="_blank" className="text-primary-600 font-semibold hover:underline">
+                                            {url.includes('linkedin.com') ? 'LinkedIn profile' : url.replace(/^https?:\/\//, '')} ↗
+                                        </a>
+                                    ))}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -255,7 +262,7 @@ export default function AboutPage() {
                         <div className="border-l-4 border-purple-500 pl-4">
                             <h3 className="text-xl font-bold text-gray-900 mb-2">Editorial Standards</h3>
                             <p className="text-gray-700">
-                                All articles and guides are written by domain experts and reviewed for accuracy. We clearly distinguish between informational content and investment advice, and always recommend consulting a SEBI-registered advisor.
+                                Articles are written by the founder from official sources (RBI, SEBI, exchange filings, company documents), with the figures and calculations shown, and are updated when rules change. Reviews say when they are based on a product the author has used. We separate information from advice and recommend consulting a SEBI-registered adviser before investing.
                             </p>
                         </div>
                     </div>

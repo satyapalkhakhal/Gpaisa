@@ -57,6 +57,7 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
             url,
             worksFor: { '@type': 'Organization', name: 'gpaisa.in', url: SITE_URL },
             ...(author.sameAs.length ? { sameAs: author.sameAs } : {}),
+            knowsAbout: author.knowsAbout,
         },
     };
 
@@ -99,6 +100,15 @@ export default async function AuthorPage({ params }: { params: Promise<{ slug: s
                             <h1 className="text-3xl font-display font-bold text-gray-900 mb-1">{author.name}</h1>
                             <p className="text-primary-600 font-semibold mb-4">{author.jobTitle}, gpaisa.in</p>
                             <p className="text-gray-700 leading-relaxed mb-4">{author.bio}</p>
+                            {author.sameAs.length > 0 && (
+                                <p className="mb-4 text-sm">
+                                    {author.sameAs.map(url => (
+                                        <a key={url} href={url} rel="me noopener" target="_blank" className="font-semibold text-primary-600 hover:underline mr-4">
+                                            {url.includes('linkedin.com') ? 'LinkedIn profile' : url.replace(/^https?:\/\//, '')} ↗
+                                        </a>
+                                    ))}
+                                </p>
+                            )}
                             <p className="text-sm text-gray-500">
                                 Articles are for information only, not investment advice. Read our{' '}
                                 <Link href="/disclaimer" className="text-primary-600 hover:underline">disclaimer</Link> and{' '}
