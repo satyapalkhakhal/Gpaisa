@@ -238,19 +238,20 @@ export default function AboutPage() {
                         gpaisa.in was established to provide transparent, real-time commodity prices to Indian retail investors. We believe every buyer — whether purchasing gold jewellery or making a financial investment — deserves access to accurate, up-to-date market data without paywalls or jargon.
                     </p>
                     <p className="text-lg text-gray-700 leading-relaxed mb-6">
-                        Our commitment to data accuracy is backed by sourcing from India&apos;s most trusted market institutions:
+                        Here is exactly where the numbers on gpaisa.in come from, and what they do and don&apos;t include:
                     </p>
                     <div className="grid md:grid-cols-2 gap-6">
                         <div className="border-l-4 border-amber-500 pl-4">
                             <h3 className="text-xl font-bold text-gray-900 mb-2">Gold &amp; Silver Rates</h3>
                             <p className="text-gray-700">
-                                Sourced from <strong>MCX (Multi Commodity Exchange)</strong> and <strong>IBJA (India Bullion and Jewellers Association)</strong> data feeds, updated every market hour on weekdays. International prices are benchmarked against <strong>LBMA (London Bullion Market Association)</strong>.
+                                Indicative rates from a <strong>third-party market data feed</strong>, shown per gram and per 10 grams for the all-India rate and for each city.
+                                They exclude GST (3%) and making charges, and can differ from IBJA benchmark rates and from your jeweller&apos;s price, so always confirm before buying.
                             </p>
                         </div>
                         <div className="border-l-4 border-blue-500 pl-4">
                             <h3 className="text-xl font-bold text-gray-900 mb-2">Market Indices</h3>
                             <p className="text-gray-700">
-                                Sensex, Nifty 50, Nifty Bank, and currency rates are sourced from <strong>BSE</strong>, <strong>NSE</strong>, and public market data providers, refreshed every 60 seconds during trading hours.
+                                Sensex, Nifty 50, Nifty Bank and the rupee rate come from <strong>public market data pages</strong> and are cached for about a minute, so they can lag the exchanges slightly. For trading, use your broker or the NSE/BSE websites.
                             </p>
                         </div>
                         {/* <div className="border-l-4 border-green-500 pl-4">

@@ -20,8 +20,8 @@ const config: Config = {
         extend: {
             fontFamily: {
                 // Noto Sans Devanagari renders Hindi text (Inter/Outfit have no Devanagari glyphs).
-                sans: ['Inter', 'Noto Sans Devanagari', 'system-ui', 'sans-serif'],
-                display: ['Outfit', 'Inter', 'Noto Sans Devanagari', 'sans-serif'],
+                sans: ['var(--font-inter)', 'var(--font-devanagari)', 'system-ui', 'sans-serif'],
+                display: ['var(--font-outfit)', 'var(--font-inter)', 'var(--font-devanagari)', 'sans-serif'],
             },
             backgroundImage: {
                 brand: `linear-gradient(135deg, ${BRAND.from} 0%, ${BRAND.via} 55%, ${BRAND.to} 100%)`,

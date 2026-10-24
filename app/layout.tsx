@@ -1,9 +1,15 @@
 import type { Metadata } from "next";
+import { Inter, Outfit, Noto_Sans_Devanagari } from "next/font/google";
 import "./globals.css";
 import SiteChrome from "@/components/SiteChrome";
 import { LanguageProvider } from "@/lib/i18n";
 import Script from "next/script";
 import { INDEXABLE_ROBOTS } from "@/lib/seo";
+
+// Self-hosted at build time; exposed as CSS variables used by tailwind.config.ts fontFamily.
+const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
+const outfit = Outfit({ subsets: ["latin"], display: "swap", variable: "--font-outfit" });
+const notoDevanagari = Noto_Sans_Devanagari({ subsets: ["devanagari"], weight: ["400", "500", "600", "700"], display: "swap", variable: "--font-devanagari" });
 
 export const metadata: Metadata = {
     metadataBase: new URL('https://www.gpaisa.in'),
@@ -64,7 +70,7 @@ export default function RootLayout({
 }>) {
     return (
         // suppressHydrationWarning: the theme script below sets class/style on <html> before React loads.
-        <html lang="en" suppressHydrationWarning>
+        <html lang="en" suppressHydrationWarning className={`${inter.variable} ${outfit.variable} ${notoDevanagari.variable}`}>
             <head>
                 {/* Theme before first paint (no flash): saved choice, else the system setting. See components/ThemeToggle.tsx. */}
                 <script
