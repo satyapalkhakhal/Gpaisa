@@ -1,4 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse, after } from 'next/server';
+import { articleIndexNowPaths, notifyIndexNow } from '@/lib/indexNow';
 import { revalidateTag } from 'next/cache';
 import { getArticleByIdAdmin, updateArticle, deleteArticle } from '@/lib/adminDb';
 import { resolveArticleLanguage } from '@/lib/adminArticleLanguage';
@@ -68,6 +69,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         });
         // Public pages read through cachedRows (tag 'db'); refresh them now instead of at TTL.
         revalidateTag('db');
+        // Ping IndexNow after the response is sent, so a slow engine never delays the admin.
+        after(() => notifyIndexNow(articleIndexNowPaths(article)));
         return NextResponse.json({ article });
     } catch (error) {
         console.error('[ADMIN_ARTICLE] PATCH failed:', error);
