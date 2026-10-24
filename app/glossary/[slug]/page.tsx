@@ -58,6 +58,12 @@ export default async function GlossaryTermPage({ params }: { params: Promise<{ s
         inDefinedTermSet: 'https://www.gpaisa.in/glossary',
     };
 
+    const faqSchema = term.faq?.length ? {
+        '@context': 'https://schema.org',
+        '@type': 'FAQPage',
+        mainEntity: term.faq.map(f => ({ '@type': 'Question', name: f.question, acceptedAnswer: { '@type': 'Answer', text: f.answer } })),
+    } : null;
+
     const breadcrumbSchema = {
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
@@ -72,6 +78,7 @@ export default async function GlossaryTermPage({ params }: { params: Promise<{ s
         <div className="bg-gray-50 py-8 sm:py-12">
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(definedTermSchema) }} />
             <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
+            {faqSchema && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }} />}
 
             <div className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
                 <nav className="flex items-center text-sm text-gray-500 mb-6" aria-label="Breadcrumb">
@@ -88,7 +95,12 @@ export default async function GlossaryTermPage({ params }: { params: Promise<{ s
                         What is {term.term}?
                     </h1>
                     {term.abbreviation && term.term !== term.abbreviation && (
-                        <p className="text-sm text-gray-400 mb-5">{term.abbreviation}</p>
+                        <p className="text-sm text-gray-400 mb-1">{term.abbreviation}</p>
+                    )}
+                    {term.updated && (
+                        <p className="text-xs text-gray-400 mb-5">
+                            By <Link href="/author/satyapal-khakhal" className="hover:text-primary-600">Satyapal Khakhal</Link> · Updated {new Date(term.updated).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}
+                        </p>
                     )}
 
                     {/* Direct-answer box */}
@@ -110,8 +122,31 @@ export default async function GlossaryTermPage({ params }: { params: Promise<{ s
                     {term.example && (
                         <div className="bg-emerald-50 rounded-xl p-4 border border-emerald-100 my-5">
                             <p className="text-xs font-bold text-emerald-600 uppercase tracking-wider mb-2">Example</p>
-                            <p className="text-sm text-gray-700 leading-relaxed">{term.example}</p>
+                            <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-line">{term.example}</p>
                         </div>
+                    )}
+
+                    {term.mistakes && term.mistakes.length > 0 && (
+                        <section className="my-6">
+                            <h2 className="text-lg font-bold text-gray-900 mb-2">Common mistakes</h2>
+                            <ul className="list-disc pl-5 space-y-1.5 text-gray-700 leading-relaxed marker:text-gray-400">
+                                {term.mistakes.map((m, i) => <li key={i}>{m}</li>)}
+                            </ul>
+                        </section>
+                    )}
+
+                    {term.faq && term.faq.length > 0 && (
+                        <section className="my-6">
+                            <h2 className="text-lg font-bold text-gray-900 mb-2">Frequently asked questions</h2>
+                            <div className="divide-y divide-gray-100 border-y border-gray-100">
+                                {term.faq.map((f, i) => (
+                                    <div key={i} className="py-3">
+                                        <h3 className="text-[15px] font-semibold text-gray-900">{f.question}</h3>
+                                        <p className="mt-1 text-gray-700 leading-relaxed">{f.answer}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </section>
                     )}
 
                     {term.relatedCalculator && (

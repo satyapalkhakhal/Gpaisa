@@ -1,3 +1,5 @@
+import { GLOSSARY_EXPANSIONS } from './glossaryExpanded';
+
 export interface GlossaryTerm {
     slug: string;
     term: string;
@@ -9,9 +11,13 @@ export interface GlossaryTerm {
     example?: string;
     relatedCalculator?: { label: string; href: string };
     relatedTerms: string[];
+    /** Expanded entries: common mistakes, FAQ (also emitted as FAQPage schema) and review date. */
+    mistakes?: string[];
+    faq?: { question: string; answer: string }[];
+    updated?: string;
 }
 
-export const GLOSSARY_TERMS: GlossaryTerm[] = [
+const BASE_TERMS: GlossaryTerm[] = [
     {
         slug: 'cagr',
         term: 'CAGR',
@@ -417,6 +423,9 @@ export const GLOSSARY_TERMS: GlossaryTerm[] = [
         relatedTerms: ['sensex'],
     },
 ];
+
+/** Base entries with the expanded fields (lib/glossaryExpanded.ts) merged in. */
+export const GLOSSARY_TERMS: GlossaryTerm[] = BASE_TERMS.map(t => ({ ...t, ...GLOSSARY_EXPANSIONS[t.slug] }));
 
 export function getGlossaryTermBySlug(slug: string): GlossaryTerm | undefined {
     return GLOSSARY_TERMS.find((t) => t.slug === slug);

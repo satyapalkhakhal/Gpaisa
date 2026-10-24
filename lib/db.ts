@@ -6,7 +6,7 @@
 // responses — so callers see identical shapes: numerics as numbers, `date` as
 // 'YYYY-MM-DD', timestamptz as ISO strings, jsonb/arrays as JSON.
 import { Pool } from 'pg';
-import { unstable_cache } from 'next/cache';
+import { revalidateTag, unstable_cache } from 'next/cache';
 
 declare global {
     // Survives Next.js dev hot-reloads so we don't leak a pool per reload.
@@ -80,26 +80,39 @@ function columnList(data: Record<string, unknown>): string {
     return cols.map((c) => `"${c}"`).join(', ');
 }
 
+/**
+ * After any row write, drop the cached public reads (cachedRows, tag 'db') so pages show the
+ * change on their next render instead of after their cache TTL. Outside a request (scripts)
+ * revalidateTag throws; there is no cache to clear then.
+ */
+function invalidatePublicCache() {
+    try { revalidateTag('db'); } catch { /* not in a Next.js request */ }
+}
+
 export async function insertRow<T = any>(table: string, data: Record<string, unknown>): Promise<T> {
     const cols = columnList(data);
     const [row] = await queryRows<T>(
         `INSERT INTO ${table} (${cols}) SELECT ${cols} FROM json_populate_record(null::${table}, $1::json) RETURNING *`,
         [JSON.stringify(data)]
     );
+    invalidatePublicCache();
     return row;
 }
 
 /** Updates the row with this id; returns [] when no row matched. */
 export async function updateRowById<T = any>(table: string, id: string, data: Record<string, unknown>): Promise<T[]> {
     const cols = columnList(data);
-    return queryRows<T>(
+    const rows = await queryRows<T>(
         `UPDATE ${table} SET (${cols}) = (SELECT ${cols} FROM json_populate_record(null::${table}, $1::json)) WHERE id = $2 RETURNING *`,
         [JSON.stringify(data), id]
     );
+    invalidatePublicCache();
+    return rows;
 }
 
 export async function deleteRowById(table: string, id: string): Promise<void> {
     await getPool().query(`DELETE FROM ${table} WHERE id = $1`, [id]);
+    invalidatePublicCache();
 }
 
 /** Lightweight connectivity check for /api/health. */
