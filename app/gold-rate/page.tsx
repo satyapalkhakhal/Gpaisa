@@ -258,7 +258,9 @@ export default async function GoldRatePage() {
                     </Section>
                 )}
 
-                <GoldPriceHistoryChart />
+                <GoldPriceHistoryChart
+                    today={r24 ? { price: r24.perGram * 10, year: Number(r24.date.match(/\d{4}/)?.[0] ?? new Date().getFullYear()), label: feedDate(r24.date, 'en') } : undefined}
+                />
 
                 <Section id="how-priced" title="How the gold rate in India is set">
                     <Prose>

@@ -15,16 +15,24 @@ import {
 interface GoldPriceHistoryChartProps {
     /** Optional city name for contextual headings */
     cityName?: string;
+    /** Today's live 24K rate per 10 g; replaces the current year's figure so the series ends at today's price. */
+    today?: { price: number; year: number; label: string };
 }
 
-export default function GoldPriceHistoryChart({ cityName }: GoldPriceHistoryChartProps) {
+export default function GoldPriceHistoryChart({ cityName, today }: GoldPriceHistoryChartProps) {
     const [selectedPeriod, setSelectedPeriod] = useState<TimePeriodLabel>('10Y');
 
     const periodConfig = TIME_PERIODS.find(p => p.label === selectedPeriod)!;
 
+    const data = useMemo<GoldYearlyPrice[]>(() => {
+        if (!today) return GOLD_HISTORICAL_DATA;
+        return [...GOLD_HISTORICAL_DATA.filter(d => d.year < today.year), { year: today.year, price: Math.round(today.price) }];
+    }, [today]);
+    const isToday = (year: number) => !!today && year === today.year;
+
     const filteredData = useMemo(
-        () => filterByYears(GOLD_HISTORICAL_DATA, periodConfig.years),
-        [periodConfig.years]
+        () => filterByYears(data, periodConfig.years),
+        [data, periodConfig.years]
     );
 
     const cagr = useMemo(() => calculateCAGR(filteredData), [filteredData]);
@@ -106,7 +114,7 @@ export default function GoldPriceHistoryChart({ cityName }: GoldPriceHistoryChar
                         <p className="text-lg sm:text-xl font-bold text-gray-900">
                             ₹{lastPrice.toLocaleString('en-IN')}
                         </p>
-                        <p className="text-xs text-gray-500">{filteredData[filteredData.length - 1]?.year}</p>
+                        <p className="text-xs text-gray-500">{today ? `Today, ${today.label}` : filteredData[filteredData.length - 1]?.year}</p>
                     </div>
                     <div className={`rounded-xl p-3 sm:p-4 border ${
                         cagr >= 0
@@ -179,7 +187,7 @@ export default function GoldPriceHistoryChart({ cityName }: GoldPriceHistoryChar
                                     const price = payload[0].value as number;
                                     return (
                                         <div className="bg-white/95 backdrop-blur-sm border border-gray-200 rounded-xl p-3 shadow-xl">
-                                            <p className="text-xs text-gray-500 mb-1">Year {label}</p>
+                                            <p className="text-xs text-gray-500 mb-1">{today && label === String(today.year) ? `Today, ${today.label}` : `Year ${label}`}</p>
                                             <p className="text-lg font-bold text-gray-900">
                                                 ₹{price.toLocaleString('en-IN')}
                                             </p>
@@ -230,7 +238,7 @@ export default function GoldPriceHistoryChart({ cityName }: GoldPriceHistoryChar
                                 </thead>
                                 <tbody>
                                     {[...filteredData].reverse().map((item, idx) => {
-                                        const prevItem = GOLD_HISTORICAL_DATA.find(d => d.year === item.year - 1);
+                                        const prevItem = data.find(d => d.year === item.year - 1);
                                         const yoyChange = prevItem
                                             ? ((item.price - prevItem.price) / prevItem.price * 100)
                                             : null;
@@ -240,7 +248,7 @@ export default function GoldPriceHistoryChart({ cityName }: GoldPriceHistoryChar
                                                 key={item.year}
                                                 className={`${idx % 2 === 0 ? 'bg-white' : 'bg-gray-50'} hover:bg-amber-50 transition-colors`}
                                             >
-                                                <td className="px-4 py-2.5 font-medium text-gray-900">{item.year}</td>
+                                                <td className="px-4 py-2.5 font-medium text-gray-900">{isToday(item.year) ? `${item.year} (today, ${today!.label})` : item.year}</td>
                                                 <td className="px-4 py-2.5 text-right text-gray-700 font-semibold">
                                                     ₹{item.price.toLocaleString('en-IN')}
                                                 </td>
@@ -267,7 +275,7 @@ export default function GoldPriceHistoryChart({ cityName }: GoldPriceHistoryChar
                     <Info className="h-3.5 w-3.5 text-gray-400 mt-0.5 flex-shrink-0" />
                     <p className="text-xs text-gray-500 leading-relaxed">
                         <strong>Data Source:</strong> RBI Handbook of Statistics, IBJA (India Bullion and Jewellers Association),
-                        and MCX historical records. Prices reflect average annual 24K gold rate per 10 grams in INR.
+                        and MCX historical records. Prices reflect average annual 24K gold rate per 10 grams in INR{today ? `; the ${today.year} figure is today's indicative rate (${today.label}), excluding GST and making charges` : ''}.
                         Past performance is not indicative of future returns. Gold prices are subject to market risks.{' '}
                         <a
                             href="/gold_prices_india_1964_2026.csv"
