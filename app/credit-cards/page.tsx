@@ -1,12 +1,14 @@
 import { Metadata } from 'next';
 import Link from 'next/link';
 import Image from 'next/image';
-import { fetchCreditCardArticles, Article } from '@/lib/articlesApi';
+import { fetchArticlesByCategory, fetchCreditCardArticles, Article } from '@/lib/articlesApi';
+import { categoryLanguageAlternates, getCategoryBySlug } from '@/lib/categories';
 import { formatArticleDate } from '@/components/home/HomeUi';
 
 export const revalidate = 3600;
 
 const PAGE_URL = 'https://www.gpaisa.in/credit-cards';
+const CREDIT_CARDS = getCategoryBySlug('credit-cards')!;
 
 type SectionKey = 'best' | 'reviews' | 'comparisons' | 'score';
 
@@ -29,13 +31,20 @@ function sectionOf(article: Article): SectionKey {
 
 export async function generateMetadata(): Promise<Metadata> {
     const year = new Date().getFullYear();
-    const hasArticles = (await fetchCreditCardArticles(1)).length > 0;
+    const [cardArticles, english, hindi] = await Promise.all([
+        fetchCreditCardArticles(1),
+        fetchArticlesByCategory(CREDIT_CARDS.dbValue, 1, 3600, 'en'),
+        fetchArticlesByCategory(CREDIT_CARDS.dbValue, 1, 3600, 'hi'),
+    ]);
+    const hasArticles = cardArticles.length > 0;
+    // Pairs with /hi/category/credit-cards, which lists this page as its English version.
+    const languages = categoryLanguageAlternates(CREDIT_CARDS, english.length > 0, hindi.length > 0);
     const title = `Credit Cards in India ${year} — Reviews, Comparisons & Best Cards | gpaisa.in`;
     const description = `Honest credit card reviews, side-by-side comparisons and best-card picks for travel, dining and cashback in India (${year}), plus how to improve your CIBIL score.`;
     return {
         title,
         description,
-        alternates: { canonical: PAGE_URL },
+        alternates: { canonical: PAGE_URL, ...(languages ? { languages } : {}) },
         openGraph: { title, description, url: PAGE_URL, siteName: 'gpaisa.in', locale: 'en_IN', type: 'website' },
         // An empty hub is a soft-404 — keep it out of the index until it has content.
         robots: hasArticles

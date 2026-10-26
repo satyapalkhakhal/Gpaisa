@@ -32,9 +32,10 @@ export default function GmpDailyTable({ days, issuePrice }: { days: DailyGmp[]; 
                 <tbody className="divide-y divide-gray-100">
                     {days.map((d, i) => {
                         const previous = days[i + 1];
-                        const change = previous ? d.gmp_value - previous.gmp_value : null;
+                        // Rounded: subtracting decimal GMPs leaves float noise (0.2999999999999998).
+                        const change = previous ? Math.round((d.gmp_value - previous.gmp_value) * 100) / 100 : null;
                         const gain = d.gmp_percentage ?? (issuePrice ? (d.gmp_value / issuePrice) * 100 : null);
-                        const listing = d.estimated_listing_price ?? (issuePrice ? issuePrice + d.gmp_value : null);
+                        const listing = d.estimated_listing_price ?? (issuePrice ? Math.round((issuePrice + d.gmp_value) * 100) / 100 : null);
                         return (
                             <tr key={d.day}>
                                 <td className="py-2 font-medium text-gray-900 whitespace-nowrap">{formatDay(d.day)}</td>

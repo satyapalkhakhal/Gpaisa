@@ -400,11 +400,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // English and Hindi hubs, each listed once it has articles in its language; pairs carry hreflang.
     // A category whose English hub is a separate page (credit cards -> /credit-cards) has no English entry here.
     const categoryPages: MetadataRoute.Sitemap = CATEGORIES.flatMap((c) => {
-        const hasEnglish = categoriesWithArticles.has(c.dbValue) && categoryPath(c, 'en') === `/category/${c.slug}`;
+        const hasEnglish = categoriesWithArticles.has(c.dbValue);
         const hasHindi = hindiCategoriesWithArticles.has(c.dbValue);
         const languages = categoryLanguageAlternates(c, hasEnglish, hasHindi);
         const entries: MetadataRoute.Sitemap = [];
-        if (hasEnglish) entries.push({
+        if (hasEnglish && categoryPath(c, 'en') === `/category/${c.slug}`) entries.push({
             url: `${baseUrl}${categoryPath(c, 'en')}`,
             lastModified: newestByCategory.get(c.dbValue) ?? new Date(),
             changeFrequency: 'daily',
@@ -425,7 +425,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         ...staticPages.map((p) => {
             if (p.url === `${baseUrl}/gold-rate`) return { ...p, ...goldAlternates() };
             if (p.url === `${baseUrl}/news` && newestNewsDate) return { ...p, lastModified: newestNewsDate };
-            if (p.url === `${baseUrl}/credit-cards` && newestCreditCardDate) return { ...p, lastModified: newestCreditCardDate };
+            if (p.url === `${baseUrl}/credit-cards`) {
+                // Its Hindi pair is /hi/category/credit-cards (see ENGLISH_HUB_OVERRIDES).
+                const c = CATEGORIES.find((cat) => categoryPath(cat, 'en') === '/credit-cards');
+                const languages = c && categoryLanguageAlternates(c, categoriesWithArticles.has(c.dbValue), hindiCategoriesWithArticles.has(c.dbValue));
+                return {
+                    ...p,
+                    ...(newestCreditCardDate ? { lastModified: newestCreditCardDate } : {}),
+                    ...(languages ? { alternates: { languages } } : {}),
+                };
+            }
             return p;
         }),
         ...categoryPages,

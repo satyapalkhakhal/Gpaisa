@@ -1,7 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { fetchAllPublishedIpoSlugs, fetchIpoBySlug, fetchListedIpos, fetchOpenIpos, fetchUpcomingIpos, isIpoIndexable } from '@/lib/ipoApi';
+import { fetchAllPublishedIpoSlugs, fetchIndexableIpoSlugs, fetchIpoBySlug, fetchListedIpos, fetchOpenIpos, fetchUpcomingIpos, isIpoIndexable } from '@/lib/ipoApi';
 import { fetchArticlesForIpo } from '@/lib/articlesApi';
 import { LIFECYCLE_LABELS, RECOMMENDATION_LABELS } from '@/lib/ipoTypes';
 import StatusBadge from '@/components/ipo/StatusBadge';
@@ -78,14 +78,18 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
         ? { name: companyName, eps: valuationKpis.eps, pe_ratio: valuationKpis.peRatio, ronw_percent: valuationKpis.ronwPercent, nav: valuationKpis.nav, income: latestFinancial.revenue }
         : null;
 
-    const [openIpos, upcomingIpos, listedIpos, news] = await Promise.all([
-        fetchOpenIpos({ limit: 6 }),
-        fetchUpcomingIpos({ limit: 6 }),
-        fetchListedIpos({ limit: 6 }),
+    const [openIpos, upcomingIpos, listedIpos, news, indexableSlugs] = await Promise.all([
+        fetchOpenIpos({ limit: 12 }),
+        fetchUpcomingIpos({ limit: 12 }),
+        fetchListedIpos({ limit: 12 }),
         fetchArticlesForIpo(ipo.id, companyName),
+        fetchIndexableIpoSlugs(3600),
     ]);
-    const relatedCurrent = [...openIpos, ...upcomingIpos.filter(i => i.open_date)].filter(i => i.id !== ipo.id).slice(0, 5);
-    const relatedListed = listedIpos.filter(i => i.id !== ipo.id).slice(0, 5);
+    // Only link to indexable IPO pages — links to noindex shells spend crawl budget on pages Google won't index.
+    const indexable = new Set(indexableSlugs.map(i => i.slug));
+    const isRelated = (i: { id: string; slug: string }) => i.id !== ipo.id && indexable.has(i.slug);
+    const relatedCurrent = [...openIpos, ...upcomingIpos.filter(i => i.open_date)].filter(isRelated).slice(0, 5);
+    const relatedListed = listedIpos.filter(isRelated).slice(0, 5);
 
     // Sections render only when they have something to show — IPOs synced from a feed
     // start with little more than dates and price, and empty shells read as thin content.

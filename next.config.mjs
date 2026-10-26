@@ -63,11 +63,21 @@ const nextConfig = {
             },
             {
                 // Cache public assets (icons, manifests) for 7 days
-                source: '/:path(favicon.ico|icon-512.png|icon-192.png|manifest.json|robots.txt|BingSiteAuth.xml)',
+                source: '/:path(favicon.ico|icon-512.png|icon-192.png|manifest.json|BingSiteAuth.xml)',
                 headers: [
                     {
                         key: 'Cache-Control',
                         value: 'public, max-age=604800, stale-while-revalidate=86400',
+                    },
+                ],
+            },
+            {
+                // robots.txt for 1 hour, so rule changes reach crawlers (and the CDN) the same day
+                source: '/robots.txt',
+                headers: [
+                    {
+                        key: 'Cache-Control',
+                        value: 'public, max-age=3600, stale-while-revalidate=3600',
                     },
                 ],
             },

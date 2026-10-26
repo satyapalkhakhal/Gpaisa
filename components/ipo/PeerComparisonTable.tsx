@@ -8,7 +8,8 @@ export default function PeerComparisonTable({ peers, companyName, ownRow }: {
     const rows = ownRow ? [{ ...ownRow, name: `${companyName} (this IPO)` }, ...peers] : peers;
     if (rows.length === 0) return null;
 
-    const fmt = (n: number | null) => (n != null ? n.toString() : '—');
+    // Computed ratios carry float noise (e.g. 58.92000000000001); show at most 2 decimals.
+    const fmt = (n: number | null) => (n != null ? Number(n.toFixed(2)).toString() : '—');
 
     return (
         <div className="overflow-x-auto">
