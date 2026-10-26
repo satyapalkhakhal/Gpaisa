@@ -11,6 +11,7 @@ import PriceLineChart from '@/components/rates/PriceLineChart';
 import { PurityGuide } from '@/components/rates/CityGuide';
 import RateRail from '@/components/rates/RateRail';
 import GoldPriceHistoryChart from '@/components/GoldPriceHistoryChart';
+import NewsletterSubscribe from '@/components/NewsletterSubscribe';
 
 export async function generateMetadata(): Promise<Metadata> {
     const todayDate = getTodayIST();
@@ -270,6 +271,11 @@ export default async function GoldRatePage() {
                 </Section>
 
                 <PurityGuide lang="en" />
+
+                <div className="mt-8">
+                    <NewsletterSubscribe variant="inline" source="gold-rate" title="Gold rate updates by email"
+                        description="Gold and silver price moves and market news, straight to your inbox." />
+                </div>
 
                 <Section id="faq" title="Frequently asked questions">
                     <FaqList items={faq} />

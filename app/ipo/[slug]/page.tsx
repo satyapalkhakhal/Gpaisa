@@ -26,6 +26,7 @@ import IpoFaq from '@/components/ipo/IpoFaq';
 import GmpProfitCalculator from '@/components/ipo/GmpProfitCalculator';
 import RelatedIpos from '@/components/ipo/RelatedIpos';
 import GmpDailyTable from '@/components/ipo/GmpDailyTable';
+import NewsletterSubscribe from '@/components/NewsletterSubscribe';
 import { computeMarketLotTiers, computeValuationKpis, dailyGmpHistory } from '@/lib/ipoComputed';
 import { GMP_SOURCE } from '@/lib/investorgainGmpSync';
 
@@ -516,6 +517,11 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                     <RelatedIpos current={relatedCurrent} listed={relatedListed} />
                 </section>
             )}
+
+            <div className="mb-6">
+                <NewsletterSubscribe variant="inline" source="ipo-detail" title="IPO updates by email"
+                    description="New IPOs, subscription status and listing results, straight to your inbox." />
+            </div>
 
             {/* FAQ */}
             <section className="bg-white rounded-2xl border border-gray-100 p-6">

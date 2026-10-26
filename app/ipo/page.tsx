@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { fetchUpcomingIpos, fetchOpenIpos, fetchClosedIpos, fetchListedIpos } from '@/lib/ipoApi';
 import type { Ipo, IpoType } from '@/lib/ipoTypes';
 import IpoCard from '@/components/ipo/IpoCard';
+import NewsletterSubscribe from '@/components/NewsletterSubscribe';
 import { fetchArticlesByCategory } from '@/lib/articlesApi';
 
 // FAQ for the overview; drives both the visible list and the FAQPage schema.
@@ -150,6 +151,11 @@ export default async function IpoHubPage({
                             <Link href="/category/ipo" className="inline-block mt-3 text-sm font-semibold text-primary-600 hover:underline">All IPO articles →</Link>
                         </section>
                     )}
+
+                    <div className="mt-10 max-w-3xl">
+                        <NewsletterSubscribe variant="inline" source="ipo" title="IPO updates by email"
+                            description="New IPOs, subscription status and listing results, straight to your inbox." />
+                    </div>
 
                     <section className="mt-10 max-w-3xl">
                         <h2 className="text-xl font-bold text-gray-900 border-b border-gray-200 pb-2 mb-4">How IPOs work in India</h2>
