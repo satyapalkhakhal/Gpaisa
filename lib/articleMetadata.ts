@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import type { Article } from './articlesApi';
 import { DROPPED_CATEGORY_DB_VALUES } from './categories';
-import { INDEXABLE_ROBOTS } from './seo';
+import { INDEXABLE_ROBOTS, metaDescription, pageTitle } from './seo';
 import { HREFLANG, SITE_URL, articlePath, toArticleLanguage } from './articleLocale';
 
 export function isDroppedCategory(category?: string | null): boolean {
@@ -29,10 +29,11 @@ export function buildArticleMetadata(article: Article, translation: Article | nu
     const url = `${SITE_URL}${articlePath(lang, article.slug)}`;
     const publishedTime = new Date(article.published_at || Date.now()).toISOString();
     const modifiedTime = new Date(article.content_updated_at || article.published_at || Date.now()).toISOString();
-    const description = article.excerpt || article.title;
+    // The SEO title/description set in admin win over the headline and excerpt, which are usually too long.
+    const description = metaDescription(article.meta_description || article.excerpt || article.title);
 
     return {
-        title: `${article.title} | gpaisa.in`,
+        title: pageTitle(article.meta_title || article.title),
         description,
         authors: [{ name: article.author || 'Gpaisa Desk' }],
         openGraph: {

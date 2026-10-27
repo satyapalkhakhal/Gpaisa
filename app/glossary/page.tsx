@@ -5,7 +5,7 @@ import { BookOpen } from 'lucide-react';
 import { GLOSSARY_TERMS, getGlossaryTermsByCategory } from '@/lib/glossaryData';
 
 export const metadata: Metadata = {
-    title: 'Financial Glossary — Investing, Tax & Savings Terms Explained | gpaisa.in',
+    title: 'Financial Glossary: Investing, Tax & Savings Terms | gpaisa.in',
     description: 'Clear, jargon-free definitions of Indian financial terms — CAGR, SIP, XIRR, PPF, HRA, GST, and more. Every term links to a calculator so you can act on it immediately.',
     alternates: {
         canonical: 'https://www.gpaisa.in/glossary',

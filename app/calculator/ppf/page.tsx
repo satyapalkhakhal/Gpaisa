@@ -3,8 +3,8 @@ import PPFCalculatorClient from '@/components/PPFCalculatorClient';
 
 // Comprehensive SEO metadata targeting high-volume keywords
 export const metadata: Metadata = {
-    title: 'PPF Calculator Online - Calculate Public Provident Fund Returns & Maturity | Gpaisa',
-    description: 'Free PPF Calculator to calculate Public Provident Fund returns, maturity amount, and interest. Plan your PPF investment with our online PPF calculator. Get accurate projections for your wealth creation journey.',
+    title: 'PPF Calculator: Maturity, Interest & Returns | gpaisa.in',
+    description: 'Free PPF calculator: see your Public Provident Fund maturity amount, interest earned and year-by-year growth over 15 years at the current 7.1% rate.',
 
     authors: [{ name: 'Satyapal Khakhal' }],
 

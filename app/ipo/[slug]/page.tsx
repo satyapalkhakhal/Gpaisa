@@ -1,6 +1,7 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
+import { metaDescription, pageTitle } from '@/lib/seo';
 import { fetchAllPublishedIpoSlugs, fetchIndexableIpoSlugs, fetchIpoBySlug, fetchListedIpos, fetchOpenIpos, fetchUpcomingIpos, isIpoIndexable } from '@/lib/ipoApi';
 import { fetchArticlesForIpo } from '@/lib/articlesApi';
 import { LIFECYCLE_LABELS, RECOMMENDATION_LABELS } from '@/lib/ipoTypes';
@@ -43,8 +44,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     if (!ipo) return { title: 'IPO Not Found | gpaisa.in' };
 
     const companyName = ipo.company?.name || ipo.slug;
-    const title = ipo.meta_title || `${companyName} IPO — GMP, Price Band, Subscription, Allotment | gpaisa.in`;
-    const description = ipo.meta_description || `${companyName} ${ipo.ipo_type.toUpperCase()} IPO: price band, lot size, dates, GMP, subscription status, allotment, and review.`;
+    const title = ipo.meta_title || pageTitle(`${companyName} IPO: GMP, Price Band, Subscription`);
+    const description = metaDescription(ipo.meta_description || `${companyName} ${ipo.ipo_type.toUpperCase()} IPO: price band, lot size, dates, GMP, subscription status, allotment, and review.`);
 
     return {
         title,

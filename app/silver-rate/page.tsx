@@ -16,8 +16,8 @@ export async function generateMetadata(): Promise<Metadata> {
     const todayDate = getTodayIST();
 
     return {
-        title: `Silver Rate Today in India — ${todayDate} | Live Price Per Gram/Kg | gpaisa.in`,
-        description: `Check today's silver rate in India on ${todayDate}. Live silver prices per gram and per kg. City-wise rates with historical trends, calculator, market analysis, and silver vs gold comparison.`,
+        title: `Silver Rate Today in India — ${todayDate} | gpaisa.in`,
+        description: `Silver rate today in India, ${todayDate}: price per gram and per kg, city-wise rates, price trend and silver vs gold.`,
 
         openGraph: {
             title: `Silver Rate Today in India — ${todayDate} | Live Prices Per Gram/Kg`,
