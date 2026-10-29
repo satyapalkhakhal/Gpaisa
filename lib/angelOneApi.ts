@@ -1,10 +1,79 @@
 import { SilverCity, SilverCalculatorResponse, SilverHistoryResponse, GoldHistoryResponse } from '@/types';
 import { goldHistoryRatePerGram } from '@/lib/goldUnits';
 import type { GoldCarat, GoldHistoryBundle } from '@/lib/goldHistoryBundle';
+import { SILVER_CITIES } from '@/lib/silverCityList';
 
 const BASE_URL = 'https://kp-hl-httpapi-prod.angelone.in';
 
+/** Gold cities with rate pages; their median is the all-India rate. */
+export const GOLD_CITY_NAMES = ['Delhi', 'Mumbai', 'Chennai', 'Kolkata', 'Bangalore', 'Hyderabad', 'Pune', 'Ahmedabad', 'Coimbatore', 'Kerala'];
+
+function median(values: number[]): number {
+    const s = [...values].sort((a, b) => a - b);
+    const m = s.length >> 1;
+    return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2;
+}
+
+/**
+ * Median per date across city feeds, newest first, with each row's change from the next.
+ * Only dates that at least half the feeds report are kept, so one stray city can't set the rate.
+ */
+function medianSeries(feeds: { date: string; value: number }[][]): { date: string; value: number; change: number; changePercent: number }[] {
+    const byDate = new Map<string, number[]>();
+    for (const feed of feeds) for (const { date, value } of feed) {
+        if (value > 0) byDate.set(date, [...(byDate.get(date) ?? []), value]);
+    }
+    const longest = feeds.reduce((a, b) => (b.length > a.length ? b : a), []);
+    const rows = longest
+        .filter(({ date }) => (byDate.get(date)?.length ?? 0) * 2 >= feeds.length)
+        .map(({ date }) => ({ date, value: median(byDate.get(date)!) }));
+    return rows.map((row, i) => {
+        const prev = rows[i + 1];
+        const change = prev ? row.value - prev.value : 0;
+        return { ...row, change, changePercent: prev ? (change / prev.value) * 100 : 0 };
+    });
+}
+
+/**
+ * AngelOne's own 'India' series runs about 7% (gold) and 16% (silver) below its city rates and
+ * the market, so the all-India rate is the median of the city feeds instead.
+ */
+async function fetchIndiaGoldHistory(carat: string): Promise<GoldHistoryResponse | null> {
+    const feeds = (await Promise.all(GOLD_CITY_NAMES.map(city => fetchCityGoldHistory(city, carat))))
+        .map(res => (res?.data ?? []).map(r => ({ date: r.date, value: goldHistoryRatePerGram(r.rate) })))
+        .filter(feed => feed.length);
+    if (!feeds.length) return null;
+    const sign = (n: number) => (n > 0 ? '+' : '');
+    return {
+        success: true,
+        data: medianSeries(feeds).map(r => ({ date: r.date, rate: r.value.toFixed(2), change: `${sign(r.changePercent)}${r.changePercent.toFixed(2)}` })),
+    };
+}
+
+async function fetchIndiaSilverHistory(gram: number): Promise<SilverHistoryResponse | null> {
+    const feeds = (await Promise.all(SILVER_CITIES.map(c => fetchSilverHistory(c.symbol, gram))))
+        .map(res => (res?.data?.history ?? []).map(h => ({ date: h.date, value: parseFloat(String(h.price)) })))
+        .filter(feed => feed.length);
+    if (!feeds.length) return null;
+    return {
+        success: true,
+        data: {
+            gram,
+            history: medianSeries(feeds).map(r => ({
+                date: r.date,
+                price: r.value.toFixed(2),
+                differenceAmount: r.change.toFixed(2),
+                differencePercentage: r.changePercent.toFixed(2),
+            })),
+        },
+    };
+}
+
 export async function fetchGoldHistory(city: string = 'India', carat: string = '24k'): Promise<GoldHistoryResponse | null> {
+    return city === 'India' ? fetchIndiaGoldHistory(carat) : fetchCityGoldHistory(city, carat);
+}
+
+async function fetchCityGoldHistory(city: string, carat: string): Promise<GoldHistoryResponse | null> {
     try {
         const response = await fetch(`${BASE_URL}/goldhistory?city=${city}&carat=${carat}`, {
             next: { revalidate: 3600 } // Cache for 1 hour
@@ -82,6 +151,7 @@ export async function fetchSilverCities(): Promise<SilverCity[]> {
 }
 
 export async function fetchSilverHistory(symbol: string = 'XAG', gram: number = 10): Promise<SilverHistoryResponse | null> {
+    if (symbol === 'XAG') return fetchIndiaSilverHistory(gram);
     try {
         const response = await fetch(`${BASE_URL}/silverhistory?symbol=${symbol}&gram=${gram}`, {
             next: { revalidate: 3600 } // Cache for 1 hour

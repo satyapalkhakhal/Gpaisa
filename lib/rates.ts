@@ -1,14 +1,12 @@
 // Server-side data for the gold and silver rate pages: today's rate with the change from the
 // previous day, a short history and the city comparison table, all in one shape so the page
 // components (components/rates) can render gold and silver the same way.
-import { fetchGoldHistoryBundle, fetchSilverHistory } from './angelOneApi';
+import { GOLD_CITY_NAMES, fetchGoldHistoryBundle, fetchSilverHistory } from './angelOneApi';
 import { goldHistoryRatePerGram } from './goldUnits';
 import { SILVER_CITIES } from './silverCityList';
 
 /** Gold cities with rate pages (/gold-rate/<slug>), in display order. */
-export const GOLD_CITIES: { city: string; slug: string }[] = [
-    'Delhi', 'Mumbai', 'Chennai', 'Kolkata', 'Bangalore', 'Hyderabad', 'Pune', 'Ahmedabad', 'Coimbatore', 'Kerala',
-].map(city => ({ city, slug: city.toLowerCase() }));
+export const GOLD_CITIES: { city: string; slug: string }[] = GOLD_CITY_NAMES.map(city => ({ city, slug: city.toLowerCase() }));
 
 export interface RatePoint {
     /** Display date as the feed gives it, e.g. "21 October 2026". */
