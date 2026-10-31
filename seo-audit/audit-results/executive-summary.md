@@ -10,6 +10,62 @@
 
 ---
 
+## Re-review 2026-10-26 — after the 10-22 → 10-25 fix batch (read this first)
+
+Live audit `runs/2026-10-26`: 346 URLs, compared with `runs/2026-10-23T12-40-30`. A separate Googlebot-UA check covered all 169 sitemap URLs. Full evidence and next steps: **`re-review-2026-10-26.md`**.
+
+**Confirmed fixed live:**
+- **Sitemap is clean.** It went 247 (10-22) → 212 (10-23) → **169**. All 169 return 200, are indexable, self-canonical and have one `<title>`, with metadata in `<head>` for the Googlebot UA. None is noindex, 404 or a redirect.
+- **Index gate works.** IPO detail pages in the sitemap fell 61 → 7, and NCD/rights/buyback 4 → 0. 109 thin pages stay live with `noindex`.
+- **The 5 fictitious IPO/NCD/rights/buyback records now return 404.**
+- **Content and rendering fixes are live:**
+  - glossary median 111 → 793 words; `/ipo` hub 563 words;
+  - gold/silver tables and IPO subscription are server-rendered;
+  - silver city list: 8 indexable, 10 noindex;
+  - old-slug 308s and `/finance` → `/category/business` are live.
+- **Discover and structured data:** all 47 article lead images are ≥1200 px. `NewsArticle` appears on 18 URLs, there is an author `ProfilePage`, and JSON-LD has 0 parse errors.
+- **Hindi and fonts:** Hindi gold pages, 3 article pairs and 3 category pairs carry reciprocal hreflang. Fonts are self-hosted, and lab CLS is 0.
+- **Issue counts:** High 5 → 2, Medium 258 → 82, 319 occurrences resolved.
+
+**Regressions and new defects:**
+- **Cloudflare Email Obfuscation (new with the Cloudflare move).**
+  - It rewrites the footer `mailto:` on every page into `/cdn-cgi/l/email-protection`, which returns **404**. That is a sitewide broken link and the only High issue left.
+  - It also shows `[email protected]` instead of the contact address to Google.
+  - Fix in the Cloudflare dashboard.
+- **robots.txt (422e4da) is not live at the edge.**
+  - Cloudflare serves a 2-day-old cached copy (`max-age=604800`, from `next.config.mjs:66-70`), with Cloudflare's Managed robots.txt still prepended.
+  - Googlebot is allowed either way, so Search is unaffected.
+
+**Still open:**
+- **`/ipo/priority-jewels-ipo` (sixth seed record).** It is indexable and in the sitemap with wrong figures under "Official" badges:
+  - ₹112 Cr issue size vs ₹91.50 Cr;
+  - 1.93x "final" subscription vs ≈100x reported;
+  - computed P/E 58.9x vs the page's own review saying ≈13.9x;
+  - unrounded floats;
+  - a pre-listing "subscribe" verdict 7 weeks after listing.
+- **`/about` still overclaims** ("actionable investment advice from industry experts", "India's leading…") next to "not investment advice."
+- **Hindi pages serve `<html lang="en">`**, on all 28 `/hi` URLs.
+- **One non-reciprocal hreflang pair:** `/hi/category/credit-cards` → `/credit-cards`.
+
+**Indexing outlook:**
+- Search Console data still ends 2026-10-12, before every fix, so **no indexing change can be claimed yet**.
+- The technical blockers are gone. What remains is site-level trust:
+  - data accuracy on IPO pages;
+  - YMYL E-E-A-T: a single non-credentialed author, no reviewer, no external mentions;
+  - a burst-then-silence publishing pattern.
+
+**Do next (in this order):**
+1. Cloudflare: turn Email Obfuscation off.
+2. Unpublish or correct Priority Jewels.
+3. Fresh GSC exports.
+4. Resubmit the sitemap and validate fixes.
+5. Cloudflare: turn Managed robots.txt off and purge.
+6. Correct /about, /contact and /disclaimer copy.
+
+Code: C1–C10 in `re-review-2026-10-26.md` §5.
+
+---
+
 ## Re-review 2026-10-22 — after the SEO deploy and the IPO sync work
 
 Live audit `runs/2026-10-22`: 318 URLs, compared with `runs/2026-10-21`.
@@ -134,9 +190,10 @@ No fixes have been applied. Implementation waits for your approval of `fix-roadm
 | `content-quality-report.md` | Thin, placeholder, duplicate and outdated candidates; what to keep; per-template improvements |
 | `internal-linking-report.md` | Broken links with source files, weak discovery paths, client-only links, recommended structure |
 | `fix-roadmap.md` | P0–P3 fixes with location, risk, tests and Search Console verification |
+| `re-review-2026-10-26.md` | *(2026-10-26)* Live verification of every 10-22 → 10-25 fix, regressions, remaining trust issues, next actions (off-site vs code) |
 | `search-console-analysis.md` | *(2026-10-21)* Interpretation of the Page-indexing export, revised diagnosis, what to stop doing, exports still needed |
 | `google-discover-readiness.md` | *(2026-10-21)* Discover scorecard, fixes D0–D6, content approach, timeline |
-| `issues.csv` | 114 issue rows: 101 from the automated crawl of 2026-10-21 + 13 from manual review (`source` column) |
-| `url-inventory.csv` | 210 URLs × 43 attributes (status, canonical, robots, words, inlinks, depth, …) |
+| `issues.csv` | *(refreshed 2026-10-26)* 108 rows: 86 from the automated crawl `runs/2026-10-26` + 22 from manual review (`source` column; manual titles prefixed FIXED / PARTLY FIXED / OPEN) |
+| `url-inventory.csv` | *(refreshed 2026-10-26)* 346 URLs × 45 attributes (status, canonical, robots, words, inlinks, depth, …) |
 | `audit-config.json` | Configuration used for this run |
 | `README.md` | How to run, re-run and compare audits |

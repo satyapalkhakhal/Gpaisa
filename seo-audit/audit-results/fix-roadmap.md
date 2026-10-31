@@ -6,6 +6,82 @@ Effort scale: **S** < 2 h · **M** ½–2 days · **L** > 2 days. Fixing these i
 
 ---
 
+## Re-review 2026-10-26
+
+Live audit `runs/2026-10-26` plus a Googlebot-UA check of all 169 sitemap URLs. Evidence: `re-review-2026-10-26.md`.
+
+### Status of earlier items (live)
+| Item | Status 2026-10-26 |
+|---|---|
+| P0-3 / D0 metadata in `<head>` | Done, live on all 169 sitemap URLs |
+| P1-1 fictitious records | **Done for 5/6** (404). `priority-jewels-ipo` is still indexable with wrong data → **P1-11** |
+| P1-2 silver city list | Done (8 indexable, 10 noindex) |
+| P1-3 renamed slugs | Done (308). 2 article-body links still point at the old slugs → edit in /admin |
+| P1-4 broken calculator links | Done (0 internal 404s apart from the Cloudflare URL in P0-5) |
+| P1-5 sitemap `lastmod` | Done for content pages; rate, IPO-board and home pages keep "now" by design |
+| P1-6 server-rendered tables | Done |
+| P1-7 numeric article ids → 404 | Done |
+| P1-8 thin sections out of the nav | Done; the "Other IPOs" widget still links noindex IPOs (84 pages) → P2-13 |
+| P1-9 index gate | Done; sitemap IPO detail 61 → 7, NCD/rights/buyback 4 → 0 |
+| D3 small lead images | Done (47/47 ≥1200 px) |
+| D6 author page / NewsArticle | Done (18 `NewsArticle`, `ProfilePage`, LinkedIn `sameAs`); credentials still missing |
+| P2-10 provenance on synced data | **Open.** "Official" badges remain, including on Priority Jewels' wrong subscription figure |
+
+### P0-5 · Cloudflare Email Obfuscation → sitewide 404 link — **new regression, do first**
+- **Evidence:** the footer `mailto:contact@gpaisa.in` (`components/Footer.tsx:25`) is served as `/cdn-cgi/l/email-protection#…` (404) on all 344 crawled pages, with visible text `[email protected]`.
+- **Change:** Cloudflare → Security → Settings → Scrape Shield → **Email Address Obfuscation: Off**, then purge the cache. No code change.
+- **Test:** `curl -s https://www.gpaisa.in/ | grep -c email-protection` returns 0.
+- **Effort:** S (dashboard).
+
+### P0-6 · robots.txt at the edge
+- **Evidence:** the edge serves a ≈2-day-old cached copy (Cloudflare HIT, `age: 177903`), with Cloudflare Managed robots.txt prepended. Origin has 422e4da.
+- **Change:**
+  1. Cloudflare: **Managed robots.txt off**.
+  2. Purge `/robots.txt`.
+  3. In code, drop the `robots.txt` TTL in `next.config.mjs:66-70` to `max-age=3600`.
+- **Risk:** none for Googlebot, which is allowed in every version.
+- **Effort:** S.
+
+### P1-11 · Unpublish or correct `priority-jewels-ipo`
+- **Evidence:** issue size ₹112 Cr against ₹91.50 Cr reported, and the page's own review says the same. Subscription shows "Official … final 1.93x" against ≈100.45x reported. Computed P/E is 58.92x while the review says ≈13.9x. A pre-listing "subscribe / GMP ₹45" verdict is still shown after the 4 Sept listing.
+- **Change:** set it to draft in /admin. Otherwise correct every figure from the RHP and NSE, and remove the verdict.
+- **Code follow-up:** in `isIpoIndexable()` (`lib/ipoApi.ts:253`), a published review should not override missing or unverified data. Hide subscribe/GMP verdicts once `listing_date` has passed.
+- **Effort:** S.
+
+### P1-12 · Trust-page copy (editorial)
+- **`app/about/page.tsx`:** remove "Expert Financial Analysis / expert commentary" (`:95-97`), "Expert Insights … actionable investment advice from industry experts" (`:217-219`), "We verify all data" (`:128`), and "India's leading … portal" / "trusted source" (`:11`, `:17`, `:50`, `:66`).
+- **`/contact`:** replace "updated in real-time" with "indicative, cached ~1 minute", and add a postal address or drop "Visit Us".
+- **`/disclaimer`:** remove "Agricultural market prices".
+- **Effort:** S.
+
+### P2-11 · Number formatting on IPO pages
+- `components/ipo/PeerComparisonTable.tsx:11` should use `toFixed(2)` instead of `n.toString()` (it prints `3.394230769230769`).
+- `components/ipo/GmpDailyTable.tsx:43` should round `Math.abs(change)` (it prints `0.2999999999999998` on `/ipo/zetwerk-ipo`).
+- **Effort:** S.
+
+### P2-12 · Hindi `<html lang>` and hreflang gap
+- **`<html lang>`:** `app/layout.tsx:73` hard-codes `lang="en"` for `/hi/*` (28 sitemap URLs). Split the root layouts with route groups, so `/hi` renders `<html lang="hi">` on the server.
+- **hreflang gap:** `/credit-cards` (`app/credit-cards/page.tsx:38`) declares no alternates, while `/hi/category/credit-cards` points to it. Add the pair on both pages and in `app/sitemap.ts`.
+- **Effort:** M + S.
+
+### P2-13 · Smaller leftovers
+- "Other IPOs" widget: link only indexable IPOs.
+- Remove the duplicate root-layout robots meta (16 URLs).
+- Add `image` to the gold/silver `Article` JSON-LD (19 URLs).
+- Add the static trust pages to the sitemap.
+- Investigate `/news` lab LCP (8.3 s) and `/calculator/ppf` React error #418.
+- Show the data date (not just "Today") on the rate-page H1.
+
+### Off-site track (no code; see `re-review-2026-10-26.md` §5 O3–O9)
+1. Fresh GSC exports (overview + per-reason URL CSVs) → re-run the audit.
+2. Resubmit the sitemap. Click *Validate fix* on *Crawled – not indexed* and *404*. Request indexing for ~10 best URLs.
+3. Credentials or a named reviewer for IPO/tax content, plus an editorial and corrections policy.
+4. Primary-source citations inside articles.
+5. A steady publishing cadence instead of bursts. Consolidate same-event follow-ups.
+6. Real external mentions and links, plus Bing Webmaster Tools and Google News publisher profile.
+
+---
+
 ## Implementation status — batch 3 (2026-10-22)
 
 Done in the working tree; verified on a production build against a test database.
