@@ -12,5 +12,9 @@ www.gpaisa.in {
 	encode zstd gzip
 	# Cron endpoints are called from inside the VM (deploy/ipo-sync.sh), never from outside.
 	respond /api/cron/* 404
-	reverse_proxy app:3000
+	reverse_proxy app:3000 {
+		# Pages are also served as markdown for `Accept: text/markdown` (middleware.ts), so
+		# responses depend on Accept. Added here because Next.js replaces Vary set in middleware.
+		header_down +Vary Accept
+	}
 }

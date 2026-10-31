@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyAdminSession, ADMIN_SESSION_COOKIE } from '@/lib/auth';
+import { SITE_URL, acceptsPage, isPagePath, pagePathFromTwin, prefersMarkdown, twinPath } from '@/lib/markdownTwin';
 
 // Placeholder articles (25–175 words of off-topic tech/travel demo text) seeded on
 // 2026-03-24 while the site was being set up. They have no finance equivalent to
@@ -81,6 +82,26 @@ export async function middleware(request: NextRequest) {
         return NextResponse.redirect(url, { status: 301 });
     }
 
+    // ── Markdown twins (AEO, see lib/markdownTwin.ts) ──
+    // /ipo.md, or /ipo with `Accept: text/markdown`, is rendered as markdown by
+    // app/api/markdown/route.ts. Only GET/HEAD are negotiated, so server actions are left alone.
+    const isRead = request.method === 'GET' || request.method === 'HEAD';
+    if (isRead && pathname.endsWith('.md') && isPagePath(pagePathFromTwin(pathname))) {
+        return NextResponse.rewrite(new URL('/api/markdown', request.url));
+    }
+    if (isRead && isPagePath(pathname)) {
+        const accept = request.headers.get('accept');
+        if (prefersMarkdown(accept)) {
+            return NextResponse.rewrite(new URL('/api/markdown', request.url));
+        }
+        if (!acceptsPage(accept)) {
+            return new NextResponse('Not Acceptable: this page is available as text/html or text/markdown.', {
+                status: 406,
+                headers: { 'Content-Type': 'text/plain; charset=utf-8', 'Vary': 'Accept' },
+            });
+        }
+    }
+
 
     // Check if it's an old article ID URL (numeric only)
     const articleIdMatch = pathname.match(/^\/articles\/(\d+)$/);
@@ -118,7 +139,27 @@ export async function middleware(request: NextRequest) {
         // every unknown ID to /news made Google treat them as soft 404s.
     }
 
-    return NextResponse.next();
+    // ── /ipo filters → pre-built ISR pages ──
+    // /ipo?tab=&type= is served from app/ipo/list/[tab]/[type] so /ipo never reads
+    // searchParams (which would make it render on every request instead of ISR).
+    let response = NextResponse.next();
+    if (pathname === '/ipo') {
+        const tab = request.nextUrl.searchParams.get('tab');
+        const type = request.nextUrl.searchParams.get('type');
+        const validType = type === 'mainboard' || type === 'sme';
+        if (tab || validType) {
+            const validTab = tab === 'open' || tab === 'upcoming' || tab === 'closed' || tab === 'listed';
+            const target = new URL(`/ipo/list/${validTab ? tab : 'open'}/${validType ? type : 'all'}`, request.url);
+            target.search = '';
+            response = NextResponse.rewrite(target);
+        }
+    }
+    if (isPagePath(pathname)) {
+        // Advertise the markdown twin (AEO spec §6). `Vary: Accept` is added by deploy/Caddyfile,
+        // since Next.js replaces a Vary header set here.
+        response.headers.set('Link', `<${SITE_URL}${twinPath(pathname)}>; rel="alternate"; type="text/markdown"`);
+    }
+    return response;
 }
 
 // Run middleware on all routes for www redirect,
