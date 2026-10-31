@@ -7,6 +7,8 @@ const nextConfig = {
     // UA is on its "HTML-limited bot" list — which matches Google-InspectionTool but not
     // Googlebot, so real Googlebot got canonical/robots in <body> (ignored by Google).
     htmlLimitedBots: /.*/,
+    // How long the CDN may serve a stale ISR page while it regenerates (default: 1 year).
+    expireTime: 86400,
     async redirects() {
         return [
             {
@@ -101,36 +103,10 @@ const nextConfig = {
                     },
                 ],
             },
-            {
-                // Dynamic pages (gold-rate, silver-rate, articles, news, etc.) - cache for 1 day
-                source: '/:path(gold-rate|silver-rate|news|commodities|markets|category)',
-                headers: [
-                    {
-                        key: 'Cache-Control',
-                        value: 'public, s-maxage=86400, stale-while-revalidate=3600',
-                    },
-                ],
-            },
-            {
-                // Dynamic sub-pages - cache for 1 day
-                source: '/:section(gold-rate|silver-rate|articles|category)/:path*',
-                headers: [
-                    {
-                        key: 'Cache-Control',
-                        value: 'public, s-maxage=86400, stale-while-revalidate=3600',
-                    },
-                ],
-            },
-            {
-                // Homepage - cache for 1 day
-                source: '/',
-                headers: [
-                    {
-                        key: 'Cache-Control',
-                        value: 'public, s-maxage=86400, stale-while-revalidate=3600',
-                    },
-                ],
-            },
+            // Pages with `export const revalidate` (home, markets, gold/silver rates, news,
+            // articles, categories, commodities) get no rule here: Next.js sends
+            // s-maxage=<revalidate> itself, and a fixed 1-day value let the CDN serve
+            // gold rates and the homepage up to a day old.
         ];
     },
 };

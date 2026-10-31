@@ -21,7 +21,7 @@ export const metadata: Metadata = {
     }
 };
 
-export const dynamic = 'force-static'; // Static page with client-side data fetching
+export const revalidate = 3600; // matches the 1-hour cache on the AngelOne gold fetch
 
 export default async function CommoditiesPage() {
     const goldRates = await fetchGoldRatesAllCarats();
@@ -36,23 +36,12 @@ export default async function CommoditiesPage() {
             "@type": "ItemList",
             "name": "Gold Rates in India",
             "description": "Current gold rates for different purities",
-            "itemListElement": [
-                {
-                    "@type": "Offer",
-                    "name": "24K Gold Rate",
-                    "description": "99.9% pure gold rate per 10 grams"
-                },
-                {
-                    "@type": "Offer",
-                    "name": "22K Gold Rate",
-                    "description": "91.67% pure gold rate per 10 grams"
-                },
-                {
-                    "@type": "Offer",
-                    "name": "18K Gold Rate",
-                    "description": "75% pure gold rate per 10 grams"
-                }
-            ]
+            // ListItem, not Offer: an Offer needs a price, and these are reference rates, not a sale.
+            "itemListElement": goldRates.map((rate, i) => ({
+                "@type": "ListItem",
+                "position": i + 1,
+                "name": `${rate.purity} Gold Rate: ₹${Math.round(rate.pricePerGram * 10).toLocaleString('en-IN')} per 10 grams`,
+            }))
         }
     };
 
