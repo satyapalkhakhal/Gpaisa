@@ -76,7 +76,9 @@ function GmpTable({ board }: { board: GmpBoardEntry[] }) {
 
 export default async function IpoGmpPage() {
     const todayDate = getTodayIST();
-    const board = await fetchLatestGmpBoard();
+    // Only IPOs with a recorded GMP. DRHP-stage issues have none, and listing them as rows of
+    // "No data" made the page look empty.
+    const board = (await fetchLatestGmpBoard()).filter(e => e.latestGmp);
     const mainboardBoard = board.filter(e => e.ipo.ipo_type === 'mainboard');
     const smeBoard = board.filter(e => e.ipo.ipo_type === 'sme');
 
@@ -110,6 +112,25 @@ export default async function IpoGmpPage() {
             <section className="mb-8">
                 <h2 className="text-lg font-bold text-gray-900 mb-3">SME IPO GMP</h2>
                 <GmpTable board={smeBoard} />
+            </section>
+
+            <section className="mb-8 bg-white rounded-xl border border-gray-100 p-6 text-sm text-gray-700 leading-relaxed">
+                <h2 className="text-lg font-bold text-gray-900 mb-3">How to read IPO GMP</h2>
+                <p className="mb-3">
+                    GMP is the premium over the upper end of the price band at which an IPO&apos;s shares are informally traded before listing.
+                    A GMP of ₹20 on a ₹200 issue means the grey market expects a listing near ₹220, an estimated gain of 10%.
+                    The estimated listing price in the table is simply the upper price band plus the latest GMP.
+                </p>
+                <ul className="list-disc pl-5 space-y-1 mb-3">
+                    <li><strong>Direction matters more than the number.</strong> A GMP that keeps falling in the days before listing often signals a weaker debut.</li>
+                    <li><strong>Read it with subscription.</strong> Heavy demand from institutional and non-institutional investors has historically been a steadier signal than GMP alone.</li>
+                    <li><strong>It is not regulated.</strong> SEBI does not recognise grey market trading, and GMP can swing sharply within hours.</li>
+                </ul>
+                <p>
+                    See how past GMPs compared with actual debuts on our{' '}
+                    <Link href="/ipo/listing-performance" className="text-primary-600 hover:underline">IPO listing performance</Link> page,
+                    or read the full explainer in our <Link href="/glossary/ipo-gmp" className="text-primary-600 hover:underline">IPO GMP glossary entry</Link>.
+                </p>
             </section>
 
             <p className="text-xs text-gray-400 mt-4">
