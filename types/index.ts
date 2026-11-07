@@ -1,13 +1,4 @@
 // Market Data Types
-export interface MarketIndex {
-    name: string;
-    symbol: string;
-    value: number;
-    change: number;
-    changePercent: number;
-    lastUpdated: string;
-}
-
 export interface Stock {
     symbol: string;
     name: string;

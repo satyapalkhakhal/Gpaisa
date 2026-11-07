@@ -1,7 +1,6 @@
-// Groww-style index strip: one compact bordered card per index, scrolling sideways on small
-// screens. Equity indices, the rupee and bullion together, server-rendered (no flicker).
+// Groww-style rate strip: one compact bordered card per rate, scrolling sideways on small
+// screens. Gold and silver, server-rendered (no flicker).
 import Link from 'next/link';
-import type { MarketIndex } from '@/types';
 import type { GoldCaratRate, SilverRateData } from '@/lib/angelOneApi';
 import { ChangeText } from './HomeUi';
 import type { ArticleLanguage } from '@/lib/articleLocale';
@@ -15,13 +14,7 @@ interface StripItem {
     href: string;
 }
 
-const INDEX_LABELS: Record<ArticleLanguage, Record<string, string>> = {
-    en: { 'NIFTY 50': 'NIFTY 50', 'SENSEX': 'SENSEX', 'NIFTY BANK': 'BANK NIFTY', 'USD/INR': 'USD/INR' },
-    hi: { 'NIFTY 50': 'निफ्टी 50', 'SENSEX': 'सेंसेक्स', 'NIFTY BANK': 'बैंक निफ्टी', 'USD/INR': 'डॉलर/रुपया' },
-};
-
-export default function IndexStrip({ indices, gold, silver, silverCity, silverCityHi, lang = 'en' }: {
-    indices: MarketIndex[];
+export default function IndexStrip({ gold, silver, silverCity, silverCityHi, lang = 'en' }: {
     gold: GoldCaratRate[];
     silver: SilverRateData | null;
     silverCity?: string;
@@ -30,14 +23,7 @@ export default function IndexStrip({ indices, gold, silver, silverCity, silverCi
     lang?: ArticleLanguage;
 }) {
     const hi = lang === 'hi';
-    const items: StripItem[] = indices.map(idx => ({
-        label: INDEX_LABELS[lang][idx.name] || idx.name,
-        value: idx.value.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 }),
-        change: idx.change,
-        changePercent: idx.changePercent,
-        changeDigits: 2,
-        href: '/markets',
-    }));
+    const items: StripItem[] = [];
 
     const gold24 = gold.find(g => g.purity === '24K');
     if (gold24) {
@@ -66,7 +52,7 @@ export default function IndexStrip({ indices, gold, silver, silverCity, silverCi
     if (items.length === 0) return null;
 
     return (
-        <section aria-label={hi ? 'बाजार और सोने-चांदी के भाव' : 'Market indices and bullion rates'} className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none]">
+        <section aria-label={hi ? 'सोने-चांदी के भाव' : 'Gold and silver rates'} className="flex gap-3 overflow-x-auto pb-1 [scrollbar-width:none]">
             {items.map(item => (
                 <Link
                     key={item.label}

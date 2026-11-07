@@ -52,21 +52,6 @@
     @apply bg-gray-100 text-gray-700 px-5 sm:px-6 py-2.5 rounded-lg font-medium hover:bg-gray-200 transition-colors duration-200;
   }
 
-  /* Market ticker animation */
-  .ticker-scroll {
-    animation: scroll 30s linear infinite;
-  }
-
-  @keyframes scroll {
-    0% {
-      transform: translateX(0);
-    }
-
-    100% {
-      transform: translateX(-50%);
-    }
-  }
-
   /* Loading skeleton */
   .skeleton {
     @apply animate-pulse bg-gray-200 rounded;

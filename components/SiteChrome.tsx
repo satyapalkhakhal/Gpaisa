@@ -3,7 +3,6 @@
 import { usePathname } from 'next/navigation';
 import Header from './Header';
 import Footer from './Footer';
-import MarketTicker from './MarketTicker';
 import CookieConsent from './CookieConsent';
 import { isHindiPath } from '@/lib/articleLocale';
 
@@ -17,7 +16,6 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
     const chrome = (
         <>
             <Header />
-            <MarketTicker />
             <main className="flex-grow">{children}</main>
             <Footer />
             <CookieConsent />

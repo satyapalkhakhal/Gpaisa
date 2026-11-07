@@ -374,7 +374,7 @@ const BASE_TERMS: GlossaryTerm[] = [
         details: [
             'Sensex is free-float market-capitalisation weighted, meaning larger companies (by tradable market value) have proportionally more influence on the index\'s movement than smaller ones.',
         ],
-        relatedCalculator: { label: 'Live Market Indices', href: '/markets' },
+        relatedCalculator: { label: 'SIP Calculator', href: '/calculator/sip' },
         relatedTerms: ['nifty-50', 'demat-account'],
     },
     {
@@ -385,7 +385,7 @@ const BASE_TERMS: GlossaryTerm[] = [
         details: [
             'Nifty 50 is also free-float market-cap weighted and is reviewed and rebalanced twice a year to reflect changes in company size and eligibility.',
         ],
-        relatedCalculator: { label: 'Live Market Indices', href: '/markets' },
+        relatedCalculator: { label: 'SIP Calculator', href: '/calculator/sip' },
         relatedTerms: ['sensex', 'demat-account'],
     },
     {
@@ -396,7 +396,7 @@ const BASE_TERMS: GlossaryTerm[] = [
         details: [
             'A Demat account is typically paired with a trading account — the Demat account stores your holdings, while the trading account is used to place buy/sell orders on the stock exchange.',
         ],
-        relatedCalculator: { label: 'Live Market Indices', href: '/markets' },
+        relatedCalculator: { label: 'IPO GMP Tracker', href: '/ipo/gmp' },
         relatedTerms: ['sensex', 'nifty-50', 'ipo-gmp'],
     },
     {

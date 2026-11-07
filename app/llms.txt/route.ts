@@ -40,7 +40,6 @@ export function GET() {
         '## News and guides',
         link('Latest news', '/news'),
         ...CATEGORIES.map(c => link(c.name, categoryPath(c, 'en'), c.description)),
-        link('Markets', '/markets'),
         link('Finance glossary', '/glossary'),
         '',
         '## About',

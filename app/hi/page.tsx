@@ -4,7 +4,6 @@ import { fetchArticlesByLanguage } from '@/lib/articlesApi';
 import { INDEXABLE_ROBOTS } from '@/lib/seo';
 import { SITE_URL } from '@/lib/articleLocale';
 import { CATEGORIES, categoryPath } from '@/lib/categories';
-import { fetchMarketIndices } from '@/lib/indicesApi';
 import { fetchGoldRatesAllCarats, fetchSilverRateData, type GoldCaratRate } from '@/lib/angelOneApi';
 import { SILVER_CITIES } from '@/lib/silverCityList';
 import { HINDI_CITY_NAMES } from '@/lib/cityGoldDataHi';
@@ -57,10 +56,9 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function HindiHomePage() {
-    const [articles, englishArticles, indices, gold, silver] = await Promise.all([
+    const [articles, englishArticles, gold, silver] = await Promise.all([
         fetchArticlesByLanguage('hi', 500, 900),
         fetchArticlesByLanguage('en', 3, 900),
-        fetchMarketIndices().catch(() => []),
         fetchGoldRatesAllCarats().catch(() => [] as GoldCaratRate[]),
         fetchSilverRateData(SILVER_CITY.symbol).catch(() => null),
     ]);
@@ -88,7 +86,7 @@ export default async function HindiHomePage() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-6">
                 <h1 className="sr-only">हिंदी में पर्सनल फाइनेंस, आईपीओ, बिज़नेस खबरें और सोने का भाव</h1>
 
-                <IndexStrip indices={indices} gold={gold} silver={silver} silverCityHi="मुंबई" lang="hi" />
+                <IndexStrip gold={gold} silver={silver} silverCityHi="मुंबई" lang="hi" />
                 <div className="mt-4"><PillLinks links={pills} label="श्रेणियां" /></div>
 
                 {!lead ? (

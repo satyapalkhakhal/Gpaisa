@@ -18,6 +18,13 @@ const nextConfig = {
                 destination: '/category/business',
                 permanent: true,
             },
+            {
+                // /markets showed live indices scraped from Google Finance; the scrape stopped
+                // working and the page only said "temporarily unavailable", so it was removed.
+                source: '/markets',
+                destination: '/category/business',
+                permanent: true,
+            },
             // Article slugs renamed in the CMS without a redirect; the old URLs are still
             // linked from article bodies and were reported as 404s.
             {

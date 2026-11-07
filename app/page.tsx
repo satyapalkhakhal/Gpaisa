@@ -5,7 +5,6 @@ import {
     fetchTrendingArticles,
     fetchCreditCardArticles,
 } from '@/lib/articlesApi';
-import { fetchMarketIndices } from '@/lib/indicesApi';
 import { fetchGoldRatesAllCarats, fetchSilverRateData, type GoldCaratRate } from '@/lib/angelOneApi';
 import { SILVER_CITIES } from '@/lib/silverCityList';
 
@@ -76,7 +75,6 @@ export default async function HomePage() {
         businessArticles,
         financeArticles,
         creditCardArticles,
-        marketIndices,
         goldRates,
         silverRateData,
         gmpBoard,
@@ -93,7 +91,6 @@ export default async function HomePage() {
         fetchArticlesByCategory('BUSINESS', 6),
         fetchArticlesByCategory('FINANCE', 6),
         fetchCreditCardArticles(6),
-        fetchMarketIndices().catch(() => []),
         fetchGoldRatesAllCarats().catch(() => [] as GoldCaratRate[]),
         fetchSilverRateData(HOME_SILVER_CITY.symbol).catch(() => null),
         fetchLatestGmpBoard().catch(() => []),
@@ -205,7 +202,7 @@ export default async function HomePage() {
                     {/* Kept for SEO (matches the page title) but not shown */}
                     <h1 className="sr-only">Live Gold Rates, Financial Calculators &amp; Market Data for India</h1>
 
-                    <IndexStrip indices={marketIndices} gold={goldRates} silver={silverRateData} silverCity={HOME_SILVER_CITY.city} />
+                    <IndexStrip gold={goldRates} silver={silverRateData} silverCity={HOME_SILVER_CITY.city} />
                     <div className="mt-4"><PillLinks links={quickLinks} label="Quick links" /></div>
 
                     {lead && (
