@@ -1,14 +1,12 @@
 import Link from 'next/link';
-import type { Ipo } from '@/lib/ipoTypes';
+import { formatPriceBand as priceBandText, type Ipo } from '@/lib/ipoTypes';
 import type { GmpBoardEntry } from '@/lib/ipoApi';
 import StatusBadge from './StatusBadge';
 import DataSourceBadge from './DataSourceBadge';
 import CompareCheckbox from './CompareCheckbox';
 
 function formatPriceBand(ipo: Ipo): string {
-    if (ipo.price_band_min == null && ipo.price_band_max == null) return 'Price band TBA';
-    if (ipo.price_band_min === ipo.price_band_max) return `₹${ipo.price_band_min}`;
-    return `₹${ipo.price_band_min} – ₹${ipo.price_band_max}`;
+    return priceBandText(ipo.price_band_min, ipo.price_band_max) ?? 'Price band TBA';
 }
 
 function formatDateRange(ipo: Ipo): string {

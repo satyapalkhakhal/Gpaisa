@@ -232,6 +232,17 @@ export const LIFECYCLE_ORDER: IpoLifecycleStatus[] = [
     'drhp', 'rhp', 'announced', 'upcoming', 'open', 'closed', 'allotment', 'listed',
 ];
 
+/**
+ * Price band as display text, e.g. "₹1,065 – ₹1,119", or "₹700" for a fixed price or when the
+ * feed only gave one end of the band. Null when neither end is known.
+ */
+export function formatPriceBand(min: number | null, max: number | null): string | null {
+    const lo = min ?? max, hi = max ?? min;
+    if (lo == null || hi == null) return null;
+    const rupees = (n: number) => '₹' + n.toLocaleString('en-IN', { maximumFractionDigits: 2 });
+    return lo === hi ? rupees(hi) : `${rupees(lo)} – ${rupees(hi)}`;
+}
+
 export const LIFECYCLE_LABELS: Record<IpoLifecycleStatus, string> = {
     drhp: 'DRHP Filed',
     rhp: 'RHP Filed',

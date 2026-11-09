@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import Link from 'next/link';
 import { fetchIpoBySlug } from '@/lib/ipoApi';
 import type { IpoDetail } from '@/lib/ipoTypes';
-import { RECOMMENDATION_LABELS } from '@/lib/ipoTypes';
+import { RECOMMENDATION_LABELS, formatPriceBand } from '@/lib/ipoTypes';
 import StatusBadge from '@/components/ipo/StatusBadge';
 import DataSourceBadge from '@/components/ipo/DataSourceBadge';
 import FreshnessBadge from '@/components/ipo/FreshnessBadge';
@@ -54,7 +54,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
         { label: 'Status', render: ipo => <StatusBadge status={ipo.status} /> },
         {
             label: 'Price band',
-            render: ipo => (ipo.price_band_min != null ? `₹${ipo.price_band_min} – ₹${ipo.price_band_max}` : 'TBA'),
+            render: ipo => formatPriceBand(ipo.price_band_min, ipo.price_band_max) ?? 'TBA',
         },
         { label: 'Lot size', render: ipo => (ipo.lot_size ? `${ipo.lot_size} shares` : 'TBA') },
         {

@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { metaDescription, pageTitle } from '@/lib/seo';
 import { fetchAllPublishedIpoSlugs, fetchIndexableIpoSlugs, fetchIpoBySlug, fetchListedIpos, fetchOpenIpos, fetchUpcomingIpos, isIpoIndexable } from '@/lib/ipoApi';
 import { fetchArticlesForIpo } from '@/lib/articlesApi';
-import { LIFECYCLE_LABELS, RECOMMENDATION_LABELS } from '@/lib/ipoTypes';
+import { LIFECYCLE_LABELS, RECOMMENDATION_LABELS, formatPriceBand } from '@/lib/ipoTypes';
 import StatusBadge from '@/components/ipo/StatusBadge';
 import DataSourceBadge from '@/components/ipo/DataSourceBadge';
 import FreshnessBadge from '@/components/ipo/FreshnessBadge';
@@ -166,7 +166,7 @@ export default async function IpoDetailPage({ params }: { params: Promise<{ slug
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                     <div>
                         <p className="text-xs text-gray-400">Price band</p>
-                        <p className="font-bold text-gray-900">{ipo.price_band_min != null ? `${formatCurrency(ipo.price_band_min)} – ${formatCurrency(ipo.price_band_max)}` : 'TBA'}</p>
+                        <p className="font-bold text-gray-900">{formatPriceBand(ipo.price_band_min, ipo.price_band_max) ?? 'TBA'}</p>
                     </div>
                     <div>
                         <p className="text-xs text-gray-400">Lot size</p>
