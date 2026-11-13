@@ -273,6 +273,26 @@ export async function fetchArticleSitemapEntries(
 }
 
 /**
+ * Articles published in the last `hours` (both languages) outside `excludedCategories`,
+ * for the Google News sitemap — which may only list articles from the last two days.
+ */
+export async function fetchNewsSitemapEntries(
+    excludedCategories: string[],
+    hours: number = 48,
+    revalidateSeconds: number = 600
+): Promise<{ slug: string; title: string; published_at: string; language: string }[]> {
+    return cachedRows(
+        `SELECT slug, title, published_at, language FROM articles
+         WHERE status = 'published' AND category <> ALL($1::text[])
+           AND published_at >= NOW() - make_interval(hours => $2::int)
+         ORDER BY published_at DESC LIMIT 1000`,
+        [excludedCategories, hours],
+        revalidateSeconds,
+        `fetchNewsSitemapEntries(${hours})`
+    );
+}
+
+/**
  * Latest published articles outside `excludedCategories`, for the RSS feed.
  */
 export async function fetchFeedArticles(
