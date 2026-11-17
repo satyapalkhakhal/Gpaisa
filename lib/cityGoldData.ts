@@ -23,7 +23,7 @@ export const CITY_GOLD_DATA: Record<string, CityGoldInfo> = {
         city: 'Mumbai',
         slug: 'mumbai',
         state: 'Maharashtra',
-        mainMarkets: ['Zaveri Bazaar', 'Dhantoli'],
+        mainMarkets: ['Zaveri Bazaar', 'Kalbadevi'],
         tagline: "Home of Zaveri Bazaar, India's Bullion Trading Hub",
         heroDescription:
             "Mumbai is a major centre of India's gold trade — traders across the country watch the rates quoted in Zaveri Bazaar. Check today's live gold rate in Mumbai for 24K, 22K, and 18K.",
